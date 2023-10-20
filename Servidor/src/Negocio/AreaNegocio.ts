@@ -1,3 +1,4 @@
+
 import baseDatos from '../Datos/BaseDatos';
 import Funciones from '../Modelos/Funciones';
 import Area from '../Entidades/AreaEntidad';
