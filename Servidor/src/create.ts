@@ -118,7 +118,7 @@ class ${capitalizedTableName} {
     }
 
     isValid(): boolean {
-      return ${propertiesData.filter((property: { name: string; }) => property.name !== 'FECHA_CREACION').map((property: { name: any; }) => `!!this.${property.name}`).join(' && ')};
+      return ${propertiesData.filter((property: { name: string; }) => property.name !== 'FECHA_CREACION' && property.name !== 'ROL_PRF' && property.name !== 'ROL_REPR' && property.name !== 'ROL_ADMIN').map((property: { name: any; }) => `!!this.${property.name}`).join(' && ')};
     }
 }
 export default ${capitalizedTableName};
@@ -198,7 +198,7 @@ async function generateNegocioFile(tableName: string, primaryKeyColumn: string) 
         throw new Error('${capitalizedTableName} no encontrado');
       }
       let new${capitalizedTableName} = rows[0] as ${capitalizedTableName};
-      ${(tableName==='usuario'?`new${capitalizedTableName}.USR_PSWD = 'pswd';`:'')}
+      ${(tableName === 'usuario' ? `new${capitalizedTableName}.USR_PSWD = 'pswd';` : '')}
       return { data: new${capitalizedTableName}, message: 'Encontrado' };
     } catch (error: any) {
       return { data: null, message: error.message }; // Retorna el mensaje del error
@@ -356,8 +356,8 @@ router.patch('/${lowercaseTableName}/:id', async (req, res) => {
   const postlogin = `
 router.patch('/login${capitalizedTableName}', async (req, res) => {
   try {
-    const {usuario, pswd} = req.body;
-    const response = await ${capitalizedTableName}Negocio.login${capitalizedTableName}(usuario,pswd);
+    const {user, pswd} = req.body;
+    const response = await ${capitalizedTableName}Negocio.login${capitalizedTableName}(user,pswd);
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -399,8 +399,8 @@ async function main() {
       await generateServiceFile(baseDatos, tableName);
     }
     console.info('Archivos creados correctamente');
-  } catch (error:any) {
-    console.error('Error: '+ error.message);
+  } catch (error: any) {
+    console.error('Error: ' + error.message);
   } finally {
     process.exit(); // Esto cerrará el programa después de que se complete la ejecución
   }

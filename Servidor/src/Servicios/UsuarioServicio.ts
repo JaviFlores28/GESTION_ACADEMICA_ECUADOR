@@ -68,8 +68,10 @@ router.patch('/usuario/:id', async (req, res) => {
 
 router.patch('/loginUsuario', async (req, res) => {
   try {
-    const {usuario, pswd} = req.body;
-    const response = await UsuarioNegocio.loginUsuario(usuario,pswd);
+    const {user, pswd} = req.body;
+    console.log(req.body);
+
+    const response = await UsuarioNegocio.loginUsuario(user,pswd);
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.message });

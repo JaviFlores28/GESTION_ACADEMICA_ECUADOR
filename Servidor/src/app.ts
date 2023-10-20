@@ -1,4 +1,7 @@
 import express from 'express';
+import cors from 'cors';
+import * as dotenv from 'dotenv';
+
 import AnioLectivoServicio from './Servicios/AnioLectivoServicio';
 import AreaServicio from './Servicios/AreaServicio';
 import AsignaturaServicio from './Servicios/AsignaturaServicio';
@@ -15,14 +18,20 @@ import PeriodoServicio from './Servicios/PeriodoServicio';
 import ProfesorAsignaturaParaleloServicio from './Servicios/ProfesorAsignaturaParaleloServicio';
 import ProfesorServicio from './Servicios/ProfesorServicio';
 import UsuarioServicio from './Servicios/UsuarioServicio';
-import * as dotenv from 'dotenv';
 
 dotenv.config();
-const { SERVER_PORT, SERVER_URL } = process.env;
-
+const { SERVER_PORT, SERVER_URL,PAGE_URL} = process.env;
 const app = express();
-
 app.use(express.json());
+
+// Configuración de CORS
+const corsOptions = {
+  origin: PAGE_URL,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+app.use(cors(corsOptions));
+
 app.use('/api', AnioLectivoServicio);
 app.use('/api', AreaServicio);
 app.use('/api', AsignaturaServicio);

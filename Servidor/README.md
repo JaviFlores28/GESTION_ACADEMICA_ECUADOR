@@ -45,6 +45,8 @@ npm i uuid
 npm i --save-dev @types/uuid
 npm install crypto-js
 npm i --save-dev @types/crypto-js
+npm install cors
+npm i --save-dev @types/cors
 npm i --save-dev @types/node #recomendado
 ```
 ## COMANDOS PARA COMPILAR EL PROYECTO

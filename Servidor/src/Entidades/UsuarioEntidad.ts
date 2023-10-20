@@ -97,7 +97,7 @@ class Usuario {
     }
 
     isValid(): boolean {
-      return !!this.USR_ID && !!this.USR_DNI && !!this.USR_NOM && !!this.USR_NOM2 && !!this.USR_APE && !!this.USR_APE2 && !!this.USR_DIR && !!this.USR_TEL && !!this.USR_CEL && !!this.USR_EMAIL && !!this.USR_FECH_NAC && !!this.USR_GEN && !!this.USUARIO && !!this.USR_PSWD && !!this.ROL_PRF && !!this.ROL_REPR && !!this.ROL_ADMIN && !!this.ESTADO;
+      return !!this.USR_ID && !!this.USR_DNI && !!this.USR_NOM && !!this.USR_NOM2 && !!this.USR_APE && !!this.USR_APE2 && !!this.USR_DIR && !!this.USR_TEL && !!this.USR_CEL && !!this.USR_EMAIL && !!this.USR_FECH_NAC && !!this.USR_GEN && !!this.USUARIO && !!this.USR_PSWD && !!this.ESTADO;
     }
 }
 export default Usuario;

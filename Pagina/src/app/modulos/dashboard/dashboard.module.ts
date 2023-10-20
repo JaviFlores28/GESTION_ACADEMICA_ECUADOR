@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 import { AnioLectivoComponent } from './admin/anio-lectivo/anio-lectivo.component';
 import { AniosLectivosComponent } from './admin/anios-lectivos/anios-lectivos.component';
 import { AreaComponent } from './admin/area/area.component';
@@ -57,7 +60,10 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
   ],
   imports: [
     CommonModule,
-    DashboardRoutingModule
+    DashboardRoutingModule,
+    ReactiveFormsModule,
+    FormsModule,
+    FontAwesomeModule
   ]
 })
 export class DashboardModule { }
