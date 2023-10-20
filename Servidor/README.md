@@ -18,7 +18,6 @@ npm install ts-node-dev -D # soporte para desarrollo en typescript
 3. Modifique tambien para excluir los archivos create y test 
 ```json
 "compilerOptions": {
-  /* contenido */
 },
 "exclude": [
     "src/create.ts",
