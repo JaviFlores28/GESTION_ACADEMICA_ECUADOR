@@ -9,12 +9,12 @@ export class LocalStorageService {
   constructor() { }
 
   setItem(value: any) {
-    localStorage.setItem(params.KEY_ENCRYPT, JSON.stringify(value));
+    localStorage.setItem(params.KEY_ENCRYPT, btoa(JSON.stringify(value)));
   }
 
   getItem(): any {
     const item = localStorage.getItem(params.KEY_ENCRYPT);
-    return item ? JSON.parse(item) : null;
+    return item ? JSON.parse(atob(item)) : null;
   }
 
   removeItem() {

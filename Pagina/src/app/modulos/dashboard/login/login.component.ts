@@ -41,6 +41,7 @@ export class LoginComponent implements OnInit {
             if (!response.data) {
               console.log(response.message);
             }
+            this.localStorage.setItem(response.data);
             this.resetStyle()
             this.router.navigate(['/home']);
           },
@@ -81,7 +82,7 @@ export class LoginComponent implements OnInit {
     this.renderer.removeStyle(appRootElement, 'align-content');
     this.renderer.removeStyle(appRootElement, 'justify-content');
   }
-  
+
 
 
 }
