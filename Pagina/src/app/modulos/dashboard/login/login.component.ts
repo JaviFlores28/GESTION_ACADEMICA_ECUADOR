@@ -6,5 +6,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
+  constructor(private router: Router, private formBuilder: FormBuilder, private authService: AuthService) {
+  }
+  
 
 }

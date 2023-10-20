@@ -1,1 +1,48 @@
-<p>login works!</p>
+<div class="container w-75 bg-primary mt-5 rounded shadow">
+    <div class="row align-items-stretch">
+      <div class="col bg d-none d-lg-block col-md-5 col-lg-5 col-xl-6 rounded">
+      </div>
+      <div class="col bg-white p-5 rounded-end">
+        <div class="text-center">
+          <img width="40" class="rounded" src="/assets/sbEscudo.png" alt="">
+        </div>
+        <h2 class="fw-bold text-center py-5">Bienvenido/a</h2>
+        <form [formGroup]="loginForm">
+          <div class="mb-4">
+            <label for="user" class="form-label">Usuario</label>
+            <input type="text" formControlName="user" class="form-control">
+            <div *ngIf="user.invalid && (user.dirty || user.touched)" class="text-danger">
+              <div *ngIf="user.errors?.['required']">
+                Usuario requerido.
+              </div>
+              <div *ngIf="user.errors?.['minlength']">
+                El usuario no es válido.
+              </div>
+  
+            </div>
+          </div>
+          <div class="mb-4">
+            <label for="pswd" class="form-label">Contraseña</label>
+            <input type="password" formControlName="pswd" class="form-control">
+            <div *ngIf="pswd.invalid && (pswd.dirty || pswd.touched)" class="text-danger">
+              <div *ngIf="pswd.errors?.['required']">
+                Contraseña requerida.
+              </div>
+              <div *ngIf="pswd.errors?.['forbiddenName']">
+                La contraseña no es válida.
+              </div>
+            </div>
+          </div>
+          <div class="mb-4">
+            <ngb-alert #selfClosingAlert *ngIf="successMessage" type="danger"
+              (closed)="successMessage = ''">{{successMessage }}
+            </ngb-alert>
+          </div>
+          <div class="d-grid">
+            <button class="btn btn-dark" (click)="login()">Iniciar Sesión</button>
+          </div>
+  
+        </form>
+      </div>
+    </div>
+  </div>
