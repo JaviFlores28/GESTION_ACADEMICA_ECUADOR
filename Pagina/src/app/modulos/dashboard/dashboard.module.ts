@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
@@ -30,6 +30,7 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { ComponentesModule } from 'src/app/componentes/componentes.module';
+import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { ComponentesModule } from 'src/app/componentes/componentes.module';
     UsuariosComponent,
     BodyComponent,
     NavbarComponent,
-    SidebarComponent
+    SidebarComponent,
+
   ],
   imports: [
     CommonModule,
@@ -65,7 +67,10 @@ import { ComponentesModule } from 'src/app/componentes/componentes.module';
     ReactiveFormsModule,
     FormsModule,
     FontAwesomeModule,
-    ComponentesModule
+    ComponentesModule,
+    NgbCarouselModule,
+    NgIf,
+     NgFor
   ]
 })
 export class DashboardModule { }
