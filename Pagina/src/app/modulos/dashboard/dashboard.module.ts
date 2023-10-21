@@ -29,6 +29,7 @@ import { SidebarComponent } from './dashboard/sidebar/sidebar.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
+import { ComponentesModule } from 'src/app/componentes/componentes.module';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
     DashboardRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    ComponentesModule
   ]
 })
 export class DashboardModule { }
