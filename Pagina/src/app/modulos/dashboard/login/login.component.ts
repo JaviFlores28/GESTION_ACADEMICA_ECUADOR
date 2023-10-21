@@ -11,7 +11,7 @@ import { LocalStorageService } from 'src/app/servicios/local-storage.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 
   constructor(private router: Router, private formBuilder: FormBuilder, private service: UsuarioService, private localStorage: LocalStorageService, private renderer: Renderer2, private el: ElementRef) {
   }
@@ -35,13 +35,13 @@ export class LoginComponent implements OnInit {
         user: this.formulario.value.user || '', // Si es null o undefined, se asigna una cadena vacía.
         pswd: this.formulario.value.pswd || '' // Igual aquí para pswd
       };
-      this.service.login(usuario).subscribe(
+      this.service.validarUsuario(usuario).subscribe(
         {
           next: (response) => {
             if (!response.data) {
               console.log(response.message);
             }
-            this.localStorage.setItem(response.data);
+            this.service.login(response)
             this.resetStyle()
             this.router.navigate(['/home']);
           },

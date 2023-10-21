@@ -66,12 +66,10 @@ router.patch('/usuario/:id', async (req, res) => {
   }
 });
 
-router.patch('/loginUsuario', async (req, res) => {
+router.patch('/validarUsuario', async (req, res) => {
   try {
     const {user, pswd} = req.body;
-    console.log(req.body);
-
-    const response = await UsuarioNegocio.loginUsuario(user,pswd);
+    const response = await UsuarioNegocio.validarUsuario(user,pswd);
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.message });

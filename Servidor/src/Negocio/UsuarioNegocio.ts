@@ -103,7 +103,7 @@ class UsuarioNegocio {
     }
   }
 
-  static async loginUsuario(usuario: string, pswd: string): Promise<{ data: Usuario | null; message: string }> {
+  static async validarUsuario(usuario: string, pswd: string): Promise<{ data: Usuario | null; message: string }> {
     try {
       const [rows] = await baseDatos.execute<any>('SELECT * FROM usuario WHERE USUARIO = ?', [usuario]);
 

@@ -123,8 +123,14 @@ class ${capitalizedTableName} {
 }
 export default ${capitalizedTableName};
 `;
-
   writeFileSync(`src/Entidades/${capitalizedTableName}Entidad.ts`, content, 'utf8');
+
+  let contentinterface = `export interface ${capitalizedTableName} {
+  ${propertiesData.map((property: { name: string; type: any; }) => property.name === 'FECHA_CREACION' ? `${property.name}?:${property.type};` : `${property.name}: ${property.type};`).join('\n   ')}
+}`;
+
+  writeFileSync(`src/Interfaces/${capitalizedTableName}.interface.ts`, contentinterface, 'utf8');
+
 }
 
 async function generateNegocioFile(tableName: string, primaryKeyColumn: string) {
@@ -241,8 +247,8 @@ async function generateNegocioFile(tableName: string, primaryKeyColumn: string) 
     return false;
   }`;
 
-  const functionLogin = `
-  static async login${capitalizedTableName}(${tableName}: string, pswd: string): Promise<{ data: ${capitalizedTableName} | null; message: string }> {
+  const validar = `
+  static async validar${capitalizedTableName}(${tableName}: string, pswd: string): Promise<{ data: ${capitalizedTableName} | null; message: string }> {
     try {
       const [rows] = await baseDatos.execute<any>('SELECT * FROM ${tableName} WHERE USUARIO = ?', [${tableName}]);
 
@@ -275,7 +281,7 @@ class ${capitalizedTableName}Negocio {
   ${functionAdd}
   ${functionDelete}
   ${functionUpdate}
-  ${(tableName === 'usuario') ? functionUpdatePswdUser + '\n' + functionLogin + '\n' + functionPswdValid : ''}
+  ${(tableName === 'usuario') ? functionUpdatePswdUser + '\n' + validar + '\n' + functionPswdValid : ''}
 }
 export default ${capitalizedTableName}Negocio;`;
 
@@ -353,11 +359,11 @@ router.patch('/${lowercaseTableName}/:id', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });`;
-  const postlogin = `
-router.patch('/login${capitalizedTableName}', async (req, res) => {
+  const validar = `
+router.patch('/validar${capitalizedTableName}', async (req, res) => {
   try {
     const {user, pswd} = req.body;
-    const response = await ${capitalizedTableName}Negocio.login${capitalizedTableName}(user,pswd);
+    const response = await ${capitalizedTableName}Negocio.validar${capitalizedTableName}(user,pswd);
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -374,9 +380,10 @@ ${postroute}
 ${putroute}
 ${deleteroute}
 ${searchidroute}
-${(tableName === 'usuario') ? patchrouteUser + '\n' + postlogin : ''}
+${(tableName === 'usuario') ? patchrouteUser + '\n' + validar : ''}
 export default router;
 `;
+
 
   writeFileSync(`src/Servicios/${capitalizedTableName}Servicio.ts`, content, 'utf8');
 }
