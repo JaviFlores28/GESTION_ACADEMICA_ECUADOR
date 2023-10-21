@@ -7,10 +7,14 @@ import { AppComponent } from './app.component';
 import { DashboardModule } from './modulos/dashboard/dashboard.module';
 import { PaginaModule } from './modulos/pagina/pagina.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ComponentesModule } from './componentes/componentes.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -19,6 +23,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     HttpClientModule,
     PaginaModule,
     FontAwesomeModule,
+    ComponentesModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]
