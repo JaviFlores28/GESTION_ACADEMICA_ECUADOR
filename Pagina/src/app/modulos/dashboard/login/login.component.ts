@@ -3,8 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { faUserTie } from '@fortawesome/free-solid-svg-icons';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
-import { usuarioLogin } from '../../../modelos/interfaces/usuario-Login.interface';
-import { LocalStorageService } from 'src/app/servicios/local-storage.service';
+import { UsuarioLogin } from '../../../modelos/interfaces/usuario-Login.interface';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +12,7 @@ import { LocalStorageService } from 'src/app/servicios/local-storage.service';
 })
 export class LoginComponent {
 
-  constructor(private router: Router, private formBuilder: FormBuilder, private service: UsuarioService, private localStorage: LocalStorageService, private renderer: Renderer2, private el: ElementRef) {
+  constructor(private router: Router, private formBuilder: FormBuilder, private service: UsuarioService, private renderer: Renderer2, private el: ElementRef) {
   }
 
   icon = faUserTie;
@@ -31,7 +30,7 @@ export class LoginComponent {
 
   login() {
     if (this.formulario.valid) {
-      const usuario: usuarioLogin = {
+      const usuario: UsuarioLogin = {
         user: this.formulario.value.user || '', // Si es null o undefined, se asigna una cadena vacía.
         pswd: this.formulario.value.pswd || '' // Igual aquí para pswd
       };
@@ -41,12 +40,12 @@ export class LoginComponent {
             if (!response.data) {
               console.log(response.message);
             }
-            this.service.login(response)
+            this.service.login(response.data)
             this.resetStyle()
             this.router.navigate(['/home']);
           },
-          error: (errordata) => {
-            console.error(errordata);
+          error: (error) => {
+            console.error(error);
 
           }
         }

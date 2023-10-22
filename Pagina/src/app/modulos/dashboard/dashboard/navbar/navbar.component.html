@@ -1,1 +1,23 @@
-<p>navbar works!</p>
+<div class="head" [ngClass]="getHeadClass()">
+    <div class="head-content justify-content-end">
+        <div class="fw-bold">
+            Bienvenido {{nombre}}
+        </div>
+        <nav class="navbar navbar-expand">
+            <div class="container">
+                <div class="btn-group" dropdown>
+                    <button id="button-animated" dropdownToggle type="button" class="btn btn-dark dropdown-toggle"
+                        aria-controls="dropdown-animated">
+                        <fa-icon [icon]="icon"></fa-icon>
+                        <span class="caret"></span>
+                    </button>
+                    <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu"
+                        aria-labelledby="button-animated">
+                        <li role="menuitem"><a class="dropdown-item" [routerLink]="'usuarios/'+userid">Mis datos</a></li>
+                        <li role="menuitem"><a class="dropdown-item" (click)="openModal()">Cerrar sesión</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>

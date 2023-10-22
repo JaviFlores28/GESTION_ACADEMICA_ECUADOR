@@ -2,6 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 import { AnioLectivoComponent } from './admin/anio-lectivo/anio-lectivo.component';
 import { AniosLectivosComponent } from './admin/anios-lectivos/anios-lectivos.component';
@@ -25,10 +28,13 @@ import { UsuarioComponent } from './admin/usuario/usuario.component';
 import { UsuariosComponent } from './admin/usuarios/usuarios.component';
 import { BodyComponent } from './dashboard/body/body.component';
 import { NavbarComponent } from './dashboard/navbar/navbar.component';
-import { SidebarComponent } from './dashboard/sidebar/sidebar.component';
-import { HomeComponent } from './home/home.component';
+import { SidenavComponent } from './dashboard/sidenav/sidenav.component';
+import { HomeComponent } from './dashboard/home/home.component';
 import { LoginComponent } from './login/login.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
+import { SubLevelMenuComponent } from './dashboard/sub-level-menu/sub-level-menu.component';
+import { InicioComponent } from './inicio/inicio.component';
+import { AnioActivoComponent } from './admin/anio-activo/anio-activo.component';
 
 @NgModule({
   declarations: [
@@ -56,14 +62,20 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
     UsuariosComponent,
     BodyComponent,
     NavbarComponent,
-    SidebarComponent
+    SidenavComponent,
+    SubLevelMenuComponent,
+    InicioComponent,
+    AnioActivoComponent
   ],
   imports: [
     CommonModule,
     DashboardRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    BsDropdownModule.forRoot(),
+    ModalModule.forRoot(),
+    TooltipModule.forRoot()
   ]
 })
 export class DashboardModule { }
