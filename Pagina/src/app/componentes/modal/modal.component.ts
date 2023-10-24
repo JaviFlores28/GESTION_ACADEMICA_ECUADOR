@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-modal',
@@ -10,9 +9,9 @@ export class ModalComponent {
 
   @Input()
   contenido!: string;
-  constructor(public activeModal: NgbActiveModal) {}
+  constructor() {}
 
   closeModal(action: string) {
-    this.activeModal.close(action);
+   // this.activeModal.close(action);
   }
 }
