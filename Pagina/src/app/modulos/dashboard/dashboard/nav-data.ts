@@ -35,9 +35,9 @@ export const navbarData: NavBarData[] = [
         ]
     },
     {
-        routelink: 'estudiante',
+        routelink: 'Representante',
         icon: faUsers,
-        label: 'Estudiantes',
+        label: 'Representante',
         rol: 'T',
         items: [
             {
