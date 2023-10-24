@@ -13,8 +13,7 @@
             <div *ngIf="itemsDelete.length>0" class="col d-flex align-items-center">
                 <button type="button" class="btn btn-danger" (click)="eliminarItems()">Eliminar</button>
             </div>
-            <app-tabla *ngIf="data.length>0" [data]="data" [headers]="headers" [titulo]="titulo"
-                [icon]="icon" (checkBox)="capturarCheck($event)" ></app-tabla>
+          
         </div>
     </div>
 </div>
