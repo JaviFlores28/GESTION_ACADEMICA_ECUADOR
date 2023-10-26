@@ -1,8 +1,8 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import Area from '../Entidades/AreaEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class AreaNegocio {
   
@@ -16,11 +16,21 @@ class AreaNegocio {
     }
   }
   
+  static async getEnabledArea(): Promise<{ data: Area[], message: string }> {
+    try {
+      let data = 'SELECT * FROM area where Estado=1';
+      const [rows] = await baseDatos.execute<any>(data);
+      return { data: rows as Area[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
   static async searchById(id: String): Promise<{ data: Area | null; message: string }> {
     try {
       const [rows] = await baseDatos.execute<any>('SELECT * FROM area WHERE AREA_ID = ?', [id]);
       if (rows.length <= 0) {
-        throw new Error('Area no encontrado');
+        throw new Error('Objeto de tipo Area no encontrado');
       }
       let newArea = rows[0] as Area;
       

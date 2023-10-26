@@ -1,8 +1,8 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import CalificacionesPeriodo from '../Entidades/CalificacionesPeriodoEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class CalificacionesPeriodoNegocio {
   
@@ -16,11 +16,21 @@ class CalificacionesPeriodoNegocio {
     }
   }
   
+  static async getEnabledCalificacionesPeriodo(): Promise<{ data: CalificacionesPeriodo[], message: string }> {
+    try {
+      let data = 'SELECT * FROM calificaciones_periodo where Estado=1';
+      const [rows] = await baseDatos.execute<any>(data);
+      return { data: rows as CalificacionesPeriodo[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
   static async searchById(id: String): Promise<{ data: CalificacionesPeriodo | null; message: string }> {
     try {
       const [rows] = await baseDatos.execute<any>('SELECT * FROM calificaciones_periodo WHERE CAL_ID = ?', [id]);
       if (rows.length <= 0) {
-        throw new Error('CalificacionesPeriodo no encontrado');
+        throw new Error('Objeto de tipo CalificacionesPeriodo no encontrado');
       }
       let newCalificacionesPeriodo = rows[0] as CalificacionesPeriodo;
       

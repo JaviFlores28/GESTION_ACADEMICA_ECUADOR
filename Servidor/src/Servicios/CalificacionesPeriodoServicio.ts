@@ -13,6 +13,15 @@ router.get('/calificacionesperiodo', async (req, res) => {
    }
 });
 
+router.get('/calificacionesperiodoEnabled', async (req, res) => {
+   try {
+    const calificaciones_periodo = await CalificacionesPeriodoNegocio.getEnabledCalificacionesPeriodo();
+    res.json(calificaciones_periodo);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/calificacionesperiodo', async (req, res) => {
    try {
     const request = req.body;

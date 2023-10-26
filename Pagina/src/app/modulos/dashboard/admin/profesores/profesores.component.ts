@@ -11,14 +11,13 @@ import { Profesor } from 'src/app/modelos/interfaces/profesor.interface';
 export class ProfesoresComponent {
   data: Profesor[] = [];
   headers: string[] = [];
-  titulo = 'Profesor';
   icon = [
     { icono: 'fa-edit', routerLink: 'editar', id: true ,ruta:true },
     { icono: 'fa-eliminar', click:'', id: true ,ruta:false }
 
   ]; 
-  rutaCrear = 'crear';
-
+  routerLink:string='nuevo';
+  title:string='Profesores';
   itemsDelete:any[]=[];
   constructor(//private docenteService: DocentesService, 
     private modalService: NgbModal) {
@@ -35,6 +34,8 @@ export class ProfesoresComponent {
     this.itemsDelete = event
     console.log(this.itemsDelete);  
   }
+
+  
   eliminarItems(){
     const modalRef = this.modalService.open(ModalComponent);
     modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });

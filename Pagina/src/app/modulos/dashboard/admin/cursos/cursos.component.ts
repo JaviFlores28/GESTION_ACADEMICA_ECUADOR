@@ -6,5 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./cursos.component.scss']
 })
 export class CursosComponent {
-
+  routerLink:string='nuevo';
+  title:string='Cursos';
 }

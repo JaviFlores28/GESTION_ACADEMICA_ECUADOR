@@ -13,6 +13,15 @@ router.get('/profesor', async (req, res) => {
    }
 });
 
+router.get('/profesorEnabled', async (req, res) => {
+   try {
+    const profesor = await ProfesorNegocio.getEnabledProfesor();
+    res.json(profesor);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/profesor', async (req, res) => {
    try {
     const request = req.body;

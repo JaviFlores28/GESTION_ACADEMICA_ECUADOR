@@ -13,6 +13,15 @@ router.get('/parametro', async (req, res) => {
    }
 });
 
+router.get('/parametroEnabled', async (req, res) => {
+   try {
+    const parametro = await ParametroNegocio.getEnabledParametro();
+    res.json(parametro);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/parametro', async (req, res) => {
    try {
     const request = req.body;

@@ -13,6 +13,15 @@ router.get('/profesorasignaturaparalelo', async (req, res) => {
    }
 });
 
+router.get('/profesorasignaturaparaleloEnabled', async (req, res) => {
+   try {
+    const profesor_asignatura_paralelo = await ProfesorAsignaturaParaleloNegocio.getEnabledProfesorAsignaturaParalelo();
+    res.json(profesor_asignatura_paralelo);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/profesorasignaturaparalelo', async (req, res) => {
    try {
     const request = req.body;

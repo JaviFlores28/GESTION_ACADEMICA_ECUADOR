@@ -13,6 +13,15 @@ router.get('/usuario', async (req, res) => {
    }
 });
 
+router.get('/usuarioEnabled', async (req, res) => {
+   try {
+    const usuario = await UsuarioNegocio.getEnabledUsuario();
+    res.json(usuario);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/usuario', async (req, res) => {
    try {
     const request = req.body;
@@ -66,7 +75,7 @@ router.patch('/usuario/:id', async (req, res) => {
   }
 });
 
-router.patch('/validarUsuario', async (req, res) => {
+router.patch('/UsuarioValidar', async (req, res) => {
   try {
     const {user, pswd} = req.body;
     const response = await UsuarioNegocio.validarUsuario(user,pswd);

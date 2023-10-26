@@ -1,8 +1,8 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import AnioLectivo from '../Entidades/AnioLectivoEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class AnioLectivoNegocio {
   
@@ -16,11 +16,21 @@ class AnioLectivoNegocio {
     }
   }
   
+  static async getEnabledAnioLectivo(): Promise<{ data: AnioLectivo[], message: string }> {
+    try {
+      let data = 'SELECT * FROM anio_lectivo where Estado=1';
+      const [rows] = await baseDatos.execute<any>(data);
+      return { data: rows as AnioLectivo[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
   static async searchById(id: String): Promise<{ data: AnioLectivo | null; message: string }> {
     try {
       const [rows] = await baseDatos.execute<any>('SELECT * FROM anio_lectivo WHERE AL_ID = ?', [id]);
       if (rows.length <= 0) {
-        throw new Error('AnioLectivo no encontrado');
+        throw new Error('Objeto de tipo AnioLectivo no encontrado');
       }
       let newAnioLectivo = rows[0] as AnioLectivo;
       

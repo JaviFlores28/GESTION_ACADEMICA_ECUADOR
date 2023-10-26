@@ -196,12 +196,24 @@ async function generateNegocioFile(tableName: string, primaryKeyColumn: string) 
     }
   }`;
 
+  const functionGetEnabled = `
+  static async getEnabled${capitalizedTableName}(): Promise<{ data: ${capitalizedTableName}[], message: string }> {
+    try {
+      let data = 'SELECT * FROM ${tableName} where Estado=1';
+      const [rows] = await baseDatos.execute<any>(data);
+      return { data: rows as ${capitalizedTableName}[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }`;
+
+
   const functionSearch = `
   static async searchById(id: String): Promise<{ data: ${capitalizedTableName} | null; message: string }> {
     try {
       const [rows] = await baseDatos.execute<any>('SELECT * FROM ${tableName} WHERE ${primaryKeyColumn} = ?', [id]);
       if (rows.length <= 0) {
-        throw new Error('${capitalizedTableName} no encontrado');
+        throw new Error('Objeto de tipo ${capitalizedTableName} no encontrado');
       }
       let new${capitalizedTableName} = rows[0] as ${capitalizedTableName};
       ${(tableName === 'usuario' ? `new${capitalizedTableName}.USR_PSWD = 'pswd';` : '')}
@@ -271,12 +283,13 @@ async function generateNegocioFile(tableName: string, primaryKeyColumn: string) 
 
   const content = `
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import ${capitalizedTableName} from '../Entidades/${capitalizedTableName}Entidad';
 import { v4 as uuidv4 } from 'uuid';
+${(tableName === 'usuario') ? `import Funciones from '../Modelos/Funciones';` : ''}
 
 class ${capitalizedTableName}Negocio {
   ${functionGet}
+  ${functionGetEnabled}
   ${functionSearch} 
   ${functionAdd}
   ${functionDelete}
@@ -293,6 +306,7 @@ async function generateServiceFile(connection: any, tableName: any) {
 
   const propertiesData = await queryTableInfo(connection, tableName);
   const lowercaseTableName = convertToCamelCase(tableName);
+
   const getroute = `
 router.get('/${lowercaseTableName}', async (req, res) => {
    try {
@@ -302,6 +316,17 @@ router.get('/${lowercaseTableName}', async (req, res) => {
     res.status(500).json({ message: error.message });
    }
 });`;
+
+const getrouteEnabled = `
+router.get('/${lowercaseTableName}Enabled', async (req, res) => {
+   try {
+    const ${tableName} = await ${capitalizedTableName}Negocio.getEnabled${capitalizedTableName}();
+    res.json(${tableName});
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});`;
+
   const postroute = `
 router.post('/${lowercaseTableName}', async (req, res) => {
    try {
@@ -360,7 +385,7 @@ router.patch('/${lowercaseTableName}/:id', async (req, res) => {
   }
 });`;
   const validar = `
-router.patch('/validar${capitalizedTableName}', async (req, res) => {
+router.patch('/${capitalizedTableName}Validar', async (req, res) => {
   try {
     const {user, pswd} = req.body;
     const response = await ${capitalizedTableName}Negocio.validar${capitalizedTableName}(user,pswd);
@@ -376,6 +401,7 @@ const router = Router();
 import ${capitalizedTableName}Negocio from '../Negocio/${capitalizedTableName}Negocio';
 import ${capitalizedTableName}Entidad from '../Entidades/${capitalizedTableName}Entidad';
 ${getroute}
+${getrouteEnabled}
 ${postroute}
 ${putroute}
 ${deleteroute}

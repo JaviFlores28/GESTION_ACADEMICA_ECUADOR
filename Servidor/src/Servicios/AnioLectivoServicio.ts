@@ -13,6 +13,15 @@ router.get('/aniolectivo', async (req, res) => {
    }
 });
 
+router.get('/aniolectivoEnabled', async (req, res) => {
+   try {
+    const anio_lectivo = await AnioLectivoNegocio.getEnabledAnioLectivo();
+    res.json(anio_lectivo);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/aniolectivo', async (req, res) => {
    try {
     const request = req.body;

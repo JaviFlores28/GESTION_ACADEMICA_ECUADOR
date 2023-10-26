@@ -1,4 +1,7 @@
 import { Component, Input } from '@angular/core';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-modal',
@@ -8,10 +11,18 @@ import { Component, Input } from '@angular/core';
 export class ModalComponent {
 
   @Input()
-  contenido!: string;
-  constructor() {}
+  contenido: string = '';
+  @Input()
+  color: string = 'info';
+  @Input()
+  icon: IconProp = faCircleExclamation;
+  @Input()
+  modal: boolean = true;
 
-  closeModal(action: string) {
-   // this.activeModal.close(action);
+  constructor(public activeModal: NgbActiveModal) {
+  }
+
+  saveModal(action: string) {
+    this.activeModal.close(action);
   }
 }

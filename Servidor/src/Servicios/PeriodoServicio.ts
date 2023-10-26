@@ -13,6 +13,15 @@ router.get('/periodo', async (req, res) => {
    }
 });
 
+router.get('/periodoEnabled', async (req, res) => {
+   try {
+    const periodo = await PeriodoNegocio.getEnabledPeriodo();
+    res.json(periodo);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/periodo', async (req, res) => {
    try {
     const request = req.body;

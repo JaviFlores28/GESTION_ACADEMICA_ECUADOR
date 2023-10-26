@@ -1,8 +1,8 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import Usuario from '../Entidades/UsuarioEntidad';
 import { v4 as uuidv4 } from 'uuid';
+import Funciones from '../Modelos/Funciones';
 
 class UsuarioNegocio {
   
@@ -16,11 +16,21 @@ class UsuarioNegocio {
     }
   }
   
+  static async getEnabledUsuario(): Promise<{ data: Usuario[], message: string }> {
+    try {
+      let data = 'SELECT * FROM usuario where Estado=1';
+      const [rows] = await baseDatos.execute<any>(data);
+      return { data: rows as Usuario[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
   static async searchById(id: String): Promise<{ data: Usuario | null; message: string }> {
     try {
       const [rows] = await baseDatos.execute<any>('SELECT * FROM usuario WHERE USR_ID = ?', [id]);
       if (rows.length <= 0) {
-        throw new Error('Usuario no encontrado');
+        throw new Error('Objeto de tipo Usuario no encontrado');
       }
       let newUsuario = rows[0] as Usuario;
       newUsuario.USR_PSWD = 'pswd';

@@ -1,8 +1,8 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import Periodo from '../Entidades/PeriodoEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class PeriodoNegocio {
   
@@ -16,11 +16,21 @@ class PeriodoNegocio {
     }
   }
   
+  static async getEnabledPeriodo(): Promise<{ data: Periodo[], message: string }> {
+    try {
+      let data = 'SELECT * FROM periodo where Estado=1';
+      const [rows] = await baseDatos.execute<any>(data);
+      return { data: rows as Periodo[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
   static async searchById(id: String): Promise<{ data: Periodo | null; message: string }> {
     try {
       const [rows] = await baseDatos.execute<any>('SELECT * FROM periodo WHERE PRD_ID = ?', [id]);
       if (rows.length <= 0) {
-        throw new Error('Periodo no encontrado');
+        throw new Error('Objeto de tipo Periodo no encontrado');
       }
       let newPeriodo = rows[0] as Periodo;
       

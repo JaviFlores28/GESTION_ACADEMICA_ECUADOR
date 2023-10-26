@@ -13,6 +13,15 @@ router.get('/area', async (req, res) => {
    }
 });
 
+router.get('/areaEnabled', async (req, res) => {
+   try {
+    const area = await AreaNegocio.getEnabledArea();
+    res.json(area);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/area', async (req, res) => {
    try {
     const request = req.body;

@@ -26,11 +26,6 @@ export const navbarData: NavBarData[] = [
             {
                 routelink: 'planes-tudios',
                 label: 'Planes de estudio',
-                items: [
-                    {
-                        routelink: 'cursos',
-                        label: 'Mis cursos',
-                    },]
             },
         ]
     },
@@ -45,8 +40,8 @@ export const navbarData: NavBarData[] = [
                 label: 'Horarios',
             },
             {
-                routelink: 'estudiantes',
-                label: 'Estudiantes',
+                routelink: 'calificaciones',
+                label: 'Calificaciones',
             },
             {
                 routelink: 'planestudios',
@@ -55,10 +50,6 @@ export const navbarData: NavBarData[] = [
             {
                 routelink: 'solicitudes',
                 label: 'Solicitudes',
-            },
-            {
-                routelink: 'reportes',
-                label: 'Reportes',
             },
         ]
 
@@ -70,8 +61,26 @@ export const navbarData: NavBarData[] = [
         rol: 'T',
         items: [
             {
-                routelink: 'anio-lectivo',
+                routelink: 'institucion/anio-lectivo',
                 label: 'Año lectivo',
+                items: [
+                    {
+                        routelink: 'activo',
+                        label: 'Año actual',
+                    },
+                    {
+                        routelink: 'anios',
+                        label: 'Años lectivos',
+                    }
+                ]
+            },
+            {
+                routelink: 'areas',
+                label: 'Areas',
+            },
+            {
+                routelink: 'cursos',
+                label: 'Cursos',
             },
             {
                 routelink: 'asignaturas',
@@ -82,8 +91,8 @@ export const navbarData: NavBarData[] = [
                 label: 'Profesores',
             },
             {
-                routelink: 'cursos',
-                label: 'Cursos',
+                routelink: 'paralelos',
+                label: 'Paralelos',
             },
             {
                 routelink: 'representantes',
@@ -119,12 +128,11 @@ export const navbarData: NavBarData[] = [
             }
         ]
     },
-
     {
         routelink: 'usuarios',
         icon: faUsers,
         label: 'Usuarios',
-        rol: 'T'
+        rol: 'T',
     },
 
 ];

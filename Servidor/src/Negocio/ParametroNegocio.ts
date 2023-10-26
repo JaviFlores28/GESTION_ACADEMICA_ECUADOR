@@ -1,8 +1,8 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import Parametro from '../Entidades/ParametroEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class ParametroNegocio {
   
@@ -16,11 +16,21 @@ class ParametroNegocio {
     }
   }
   
+  static async getEnabledParametro(): Promise<{ data: Parametro[], message: string }> {
+    try {
+      let data = 'SELECT * FROM parametro where Estado=1';
+      const [rows] = await baseDatos.execute<any>(data);
+      return { data: rows as Parametro[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
   static async searchById(id: String): Promise<{ data: Parametro | null; message: string }> {
     try {
       const [rows] = await baseDatos.execute<any>('SELECT * FROM parametro WHERE PRMT_ID = ?', [id]);
       if (rows.length <= 0) {
-        throw new Error('Parametro no encontrado');
+        throw new Error('Objeto de tipo Parametro no encontrado');
       }
       let newParametro = rows[0] as Parametro;
       

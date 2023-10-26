@@ -1,8 +1,8 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import Profesor from '../Entidades/ProfesorEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class ProfesorNegocio {
   
@@ -16,11 +16,21 @@ class ProfesorNegocio {
     }
   }
   
+  static async getEnabledProfesor(): Promise<{ data: Profesor[], message: string }> {
+    try {
+      let data = 'SELECT * FROM profesor where Estado=1';
+      const [rows] = await baseDatos.execute<any>(data);
+      return { data: rows as Profesor[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
   static async searchById(id: String): Promise<{ data: Profesor | null; message: string }> {
     try {
       const [rows] = await baseDatos.execute<any>('SELECT * FROM profesor WHERE PRF_ID = ?', [id]);
       if (rows.length <= 0) {
-        throw new Error('Profesor no encontrado');
+        throw new Error('Objeto de tipo Profesor no encontrado');
       }
       let newProfesor = rows[0] as Profesor;
       

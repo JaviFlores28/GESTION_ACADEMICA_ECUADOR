@@ -1,8 +1,8 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import Matricula from '../Entidades/MatriculaEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class MatriculaNegocio {
   
@@ -16,11 +16,21 @@ class MatriculaNegocio {
     }
   }
   
+  static async getEnabledMatricula(): Promise<{ data: Matricula[], message: string }> {
+    try {
+      let data = 'SELECT * FROM matricula where Estado=1';
+      const [rows] = await baseDatos.execute<any>(data);
+      return { data: rows as Matricula[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
   static async searchById(id: String): Promise<{ data: Matricula | null; message: string }> {
     try {
       const [rows] = await baseDatos.execute<any>('SELECT * FROM matricula WHERE MTR_ID = ?', [id]);
       if (rows.length <= 0) {
-        throw new Error('Matricula no encontrado');
+        throw new Error('Objeto de tipo Matricula no encontrado');
       }
       let newMatricula = rows[0] as Matricula;
       

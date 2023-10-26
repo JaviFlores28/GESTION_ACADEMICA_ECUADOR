@@ -1,8 +1,8 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import Curso from '../Entidades/CursoEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class CursoNegocio {
   
@@ -16,11 +16,21 @@ class CursoNegocio {
     }
   }
   
+  static async getEnabledCurso(): Promise<{ data: Curso[], message: string }> {
+    try {
+      let data = 'SELECT * FROM curso where Estado=1';
+      const [rows] = await baseDatos.execute<any>(data);
+      return { data: rows as Curso[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
   static async searchById(id: String): Promise<{ data: Curso | null; message: string }> {
     try {
       const [rows] = await baseDatos.execute<any>('SELECT * FROM curso WHERE CRS_ID = ?', [id]);
       if (rows.length <= 0) {
-        throw new Error('Curso no encontrado');
+        throw new Error('Objeto de tipo Curso no encontrado');
       }
       let newCurso = rows[0] as Curso;
       

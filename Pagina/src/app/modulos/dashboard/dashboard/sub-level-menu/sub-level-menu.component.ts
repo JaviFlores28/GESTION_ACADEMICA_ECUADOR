@@ -43,13 +43,7 @@ export class SubLevelMenuComponent implements OnInit {
   }
 
   handleClick(item: any): void {
-    if (!this.multiple) {
-      if (this.data) {
-        if (this.data.items) {
-          this.data.items.forEach(modelItem => modelItem.expanded = false);
-        }
-      }
-    }
+
     item.expanded = !item.expanded;
   }
 }

@@ -10,7 +10,7 @@ import { UsuarioLogin } from '../../../modelos/interfaces/usuario-Login.interfac
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
 
   constructor(private router: Router, private formBuilder: FormBuilder, private service: UsuarioService, private renderer: Renderer2, private el: ElementRef) {
   }
@@ -73,7 +73,7 @@ export class LoginComponent {
     const htmlElement = this.el.nativeElement.ownerDocument.documentElement;
     const bodyElement = this.el.nativeElement.ownerDocument.body;
     const appRootElement = this.el.nativeElement.ownerDocument.querySelector('app-root');
-    this.renderer.removeStyle(htmlElement, 'height');
+     this.renderer.removeStyle(htmlElement, 'height');
     this.renderer.removeStyle(bodyElement, 'height');
     this.renderer.removeStyle(appRootElement, 'height');
     this.renderer.removeStyle(appRootElement, 'display');

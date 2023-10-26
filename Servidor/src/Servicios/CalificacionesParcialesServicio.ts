@@ -13,6 +13,15 @@ router.get('/calificacionesparciales', async (req, res) => {
    }
 });
 
+router.get('/calificacionesparcialesEnabled', async (req, res) => {
+   try {
+    const calificaciones_parciales = await CalificacionesParcialesNegocio.getEnabledCalificacionesParciales();
+    res.json(calificaciones_parciales);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/calificacionesparciales', async (req, res) => {
    try {
     const request = req.body;

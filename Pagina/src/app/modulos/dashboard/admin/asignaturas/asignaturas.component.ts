@@ -7,4 +7,8 @@ import { Component } from '@angular/core';
 })
 export class AsignaturasComponent {
 
+  routerLink:string='nuevo';
+  title:string='Asignaturas';
 }
+
+

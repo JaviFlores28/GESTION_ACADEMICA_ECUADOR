@@ -1,8 +1,8 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import CalificacionesParciales from '../Entidades/CalificacionesParcialesEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class CalificacionesParcialesNegocio {
   
@@ -16,11 +16,21 @@ class CalificacionesParcialesNegocio {
     }
   }
   
+  static async getEnabledCalificacionesParciales(): Promise<{ data: CalificacionesParciales[], message: string }> {
+    try {
+      let data = 'SELECT * FROM calificaciones_parciales where Estado=1';
+      const [rows] = await baseDatos.execute<any>(data);
+      return { data: rows as CalificacionesParciales[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
   static async searchById(id: String): Promise<{ data: CalificacionesParciales | null; message: string }> {
     try {
       const [rows] = await baseDatos.execute<any>('SELECT * FROM calificaciones_parciales WHERE CAL_ID = ?', [id]);
       if (rows.length <= 0) {
-        throw new Error('CalificacionesParciales no encontrado');
+        throw new Error('Objeto de tipo CalificacionesParciales no encontrado');
       }
       let newCalificacionesParciales = rows[0] as CalificacionesParciales;
       

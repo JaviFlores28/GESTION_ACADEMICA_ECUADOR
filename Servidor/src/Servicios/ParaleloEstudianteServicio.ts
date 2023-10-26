@@ -13,6 +13,15 @@ router.get('/paraleloestudiante', async (req, res) => {
    }
 });
 
+router.get('/paraleloestudianteEnabled', async (req, res) => {
+   try {
+    const paralelo_estudiante = await ParaleloEstudianteNegocio.getEnabledParaleloEstudiante();
+    res.json(paralelo_estudiante);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/paraleloestudiante', async (req, res) => {
    try {
     const request = req.body;

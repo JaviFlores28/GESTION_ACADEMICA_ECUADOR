@@ -1,8 +1,8 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import Parcial from '../Entidades/ParcialEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class ParcialNegocio {
   
@@ -16,11 +16,21 @@ class ParcialNegocio {
     }
   }
   
+  static async getEnabledParcial(): Promise<{ data: Parcial[], message: string }> {
+    try {
+      let data = 'SELECT * FROM parcial where Estado=1';
+      const [rows] = await baseDatos.execute<any>(data);
+      return { data: rows as Parcial[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
   static async searchById(id: String): Promise<{ data: Parcial | null; message: string }> {
     try {
       const [rows] = await baseDatos.execute<any>('SELECT * FROM parcial WHERE PRCL_ID = ?', [id]);
       if (rows.length <= 0) {
-        throw new Error('Parcial no encontrado');
+        throw new Error('Objeto de tipo Parcial no encontrado');
       }
       let newParcial = rows[0] as Parcial;
       

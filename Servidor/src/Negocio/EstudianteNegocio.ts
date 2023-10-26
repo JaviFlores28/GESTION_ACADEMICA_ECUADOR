@@ -1,8 +1,8 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import Estudiante from '../Entidades/EstudianteEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class EstudianteNegocio {
   
@@ -16,11 +16,21 @@ class EstudianteNegocio {
     }
   }
   
+  static async getEnabledEstudiante(): Promise<{ data: Estudiante[], message: string }> {
+    try {
+      let data = 'SELECT * FROM estudiante where Estado=1';
+      const [rows] = await baseDatos.execute<any>(data);
+      return { data: rows as Estudiante[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
   static async searchById(id: String): Promise<{ data: Estudiante | null; message: string }> {
     try {
       const [rows] = await baseDatos.execute<any>('SELECT * FROM estudiante WHERE EST_ID = ?', [id]);
       if (rows.length <= 0) {
-        throw new Error('Estudiante no encontrado');
+        throw new Error('Objeto de tipo Estudiante no encontrado');
       }
       let newEstudiante = rows[0] as Estudiante;
       

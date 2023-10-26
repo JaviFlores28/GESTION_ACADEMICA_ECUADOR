@@ -1,8 +1,8 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import ParaleloEstudiante from '../Entidades/ParaleloEstudianteEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class ParaleloEstudianteNegocio {
   
@@ -16,11 +16,21 @@ class ParaleloEstudianteNegocio {
     }
   }
   
+  static async getEnabledParaleloEstudiante(): Promise<{ data: ParaleloEstudiante[], message: string }> {
+    try {
+      let data = 'SELECT * FROM paralelo_estudiante where Estado=1';
+      const [rows] = await baseDatos.execute<any>(data);
+      return { data: rows as ParaleloEstudiante[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
   static async searchById(id: String): Promise<{ data: ParaleloEstudiante | null; message: string }> {
     try {
       const [rows] = await baseDatos.execute<any>('SELECT * FROM paralelo_estudiante WHERE PRLL_EST_ID = ?', [id]);
       if (rows.length <= 0) {
-        throw new Error('ParaleloEstudiante no encontrado');
+        throw new Error('Objeto de tipo ParaleloEstudiante no encontrado');
       }
       let newParaleloEstudiante = rows[0] as ParaleloEstudiante;
       

@@ -13,6 +13,15 @@ router.get('/parcial', async (req, res) => {
    }
 });
 
+router.get('/parcialEnabled', async (req, res) => {
+   try {
+    const parcial = await ParcialNegocio.getEnabledParcial();
+    res.json(parcial);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/parcial', async (req, res) => {
    try {
     const request = req.body;

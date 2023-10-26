@@ -1,8 +1,8 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import ProfesorAsignaturaParalelo from '../Entidades/ProfesorAsignaturaParaleloEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class ProfesorAsignaturaParaleloNegocio {
   
@@ -16,11 +16,21 @@ class ProfesorAsignaturaParaleloNegocio {
     }
   }
   
+  static async getEnabledProfesorAsignaturaParalelo(): Promise<{ data: ProfesorAsignaturaParalelo[], message: string }> {
+    try {
+      let data = 'SELECT * FROM profesor_asignatura_paralelo where Estado=1';
+      const [rows] = await baseDatos.execute<any>(data);
+      return { data: rows as ProfesorAsignaturaParalelo[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
   static async searchById(id: String): Promise<{ data: ProfesorAsignaturaParalelo | null; message: string }> {
     try {
       const [rows] = await baseDatos.execute<any>('SELECT * FROM profesor_asignatura_paralelo WHERE PRF_ASG_PRLL_ID = ?', [id]);
       if (rows.length <= 0) {
-        throw new Error('ProfesorAsignaturaParalelo no encontrado');
+        throw new Error('Objeto de tipo ProfesorAsignaturaParalelo no encontrado');
       }
       let newProfesorAsignaturaParalelo = rows[0] as ProfesorAsignaturaParalelo;
       

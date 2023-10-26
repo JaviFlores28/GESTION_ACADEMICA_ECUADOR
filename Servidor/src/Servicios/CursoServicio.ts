@@ -13,6 +13,15 @@ router.get('/curso', async (req, res) => {
    }
 });
 
+router.get('/cursoEnabled', async (req, res) => {
+   try {
+    const curso = await CursoNegocio.getEnabledCurso();
+    res.json(curso);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/curso', async (req, res) => {
    try {
     const request = req.body;

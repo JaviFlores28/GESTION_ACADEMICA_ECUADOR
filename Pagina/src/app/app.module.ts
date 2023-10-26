@@ -7,6 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardModule } from './modulos/dashboard/dashboard.module';
 import { PaginaModule } from './modulos/pagina/pagina.module';
+import { ComponentesModule } from './componentes/componentes.module';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,7 @@ import { PaginaModule } from './modulos/pagina/pagina.module';
     PaginaModule,
     FontAwesomeModule,
     BrowserAnimationsModule,
-    
+    ComponentesModule
   ],
   providers: [],
   bootstrap: [AppComponent]

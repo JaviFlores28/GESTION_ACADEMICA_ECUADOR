@@ -13,6 +13,15 @@ router.get('/paralelo', async (req, res) => {
    }
 });
 
+router.get('/paraleloEnabled', async (req, res) => {
+   try {
+    const paralelo = await ParaleloNegocio.getEnabledParalelo();
+    res.json(paralelo);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/paralelo', async (req, res) => {
    try {
     const request = req.body;

@@ -13,6 +13,15 @@ router.get('/matricula', async (req, res) => {
    }
 });
 
+router.get('/matriculaEnabled', async (req, res) => {
+   try {
+    const matricula = await MatriculaNegocio.getEnabledMatricula();
+    res.json(matricula);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/matricula', async (req, res) => {
    try {
     const request = req.body;

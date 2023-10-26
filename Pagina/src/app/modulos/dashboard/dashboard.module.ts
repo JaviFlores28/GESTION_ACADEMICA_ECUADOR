@@ -1,10 +1,7 @@
 import { NgModule } from '@angular/core';
-import { CommonModule, NgFor, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 import { AnioLectivoComponent } from './admin/anio-lectivo/anio-lectivo.component';
 import { AniosLectivosComponent } from './admin/anios-lectivos/anios-lectivos.component';
@@ -35,6 +32,7 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { SubLevelMenuComponent } from './dashboard/sub-level-menu/sub-level-menu.component';
 import { InicioComponent } from './inicio/inicio.component';
 import { AnioActivoComponent } from './admin/anio-activo/anio-activo.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -72,10 +70,9 @@ import { AnioActivoComponent } from './admin/anio-activo/anio-activo.component';
     DashboardRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    FontAwesomeModule,
-    BsDropdownModule.forRoot(),
-    ModalModule.forRoot(),
-    TooltipModule.forRoot()
+    FontAwesomeModule, 
+    NgbModule,
+
   ]
 })
 export class DashboardModule { }

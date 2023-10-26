@@ -1,8 +1,8 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import Asignatura from '../Entidades/AsignaturaEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class AsignaturaNegocio {
   
@@ -16,11 +16,21 @@ class AsignaturaNegocio {
     }
   }
   
+  static async getEnabledAsignatura(): Promise<{ data: Asignatura[], message: string }> {
+    try {
+      let data = 'SELECT * FROM asignatura where Estado=1';
+      const [rows] = await baseDatos.execute<any>(data);
+      return { data: rows as Asignatura[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
   static async searchById(id: String): Promise<{ data: Asignatura | null; message: string }> {
     try {
       const [rows] = await baseDatos.execute<any>('SELECT * FROM asignatura WHERE ASG_ID = ?', [id]);
       if (rows.length <= 0) {
-        throw new Error('Asignatura no encontrado');
+        throw new Error('Objeto de tipo Asignatura no encontrado');
       }
       let newAsignatura = rows[0] as Asignatura;
       

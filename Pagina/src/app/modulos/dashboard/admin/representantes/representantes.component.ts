@@ -6,5 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./representantes.component.scss']
 })
 export class RepresentantesComponent {
-
+  routerLink:string='nuevo';
+  title:string='Representantes';
 }
