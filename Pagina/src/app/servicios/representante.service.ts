@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError } from 'rxjs';
-import { Respuesta } from '../modelos/interfaces/respuesta.interface';
 import { variables } from '../modelos/variables/variables';
 import { ErrorHandlerService } from './error-handler.service';
 import { Usuario } from '../modelos/interfaces/Usuario.interface';
+import { Respuesta } from '../modelos/interfaces/respuesta.interface';
 
 @Injectable({
   providedIn: 'root'

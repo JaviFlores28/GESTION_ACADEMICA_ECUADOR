@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { getFormattedToday } from 'src/app/modelos/variables/variables';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
@@ -15,8 +16,8 @@ export class AnioLectivoComponent implements OnInit{
   elementoId: number = 0;
 
   anioForm = this.formBuilder.group({
-    ini: [this.getFormattedToday(), Validators.required],
-    fin: [this.getFormattedToday(), Validators.required],
+    ini: [getFormattedToday(), Validators.required],
+    fin: [getFormattedToday(), Validators.required],
     per: ['1', Validators.required],
     par: ['1', Validators.required],
     ex: ['1', Validators.required],
@@ -53,26 +54,5 @@ export class AnioLectivoComponent implements OnInit{
     });
   }
   
-
-  getFormattedToday(): string {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth() + 1;
-    const day = today.getDate();
-    const monthString = month < 10 ? `0${month}` : `${month}`;
-    const dayString = day < 10 ? `0${day}` : `${day}`;
-    return `${year}-${monthString}-${dayString}`;
-  }
-
-  getFormattedDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const monthString = month < 10 ? `0${month}` : `${month}`;
-    const dayString = day < 10 ? `0${day}` : `${day}`;
-    return `${year}-${monthString}-${dayString}`;
-  }
-
-
 
 }

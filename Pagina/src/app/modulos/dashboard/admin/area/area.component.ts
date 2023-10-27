@@ -14,6 +14,7 @@ import { AreaService } from 'src/app/servicios/area.service';
   styleUrls: ['./area.component.scss']
 })
 export class AreaComponent implements OnInit {
+  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: AreaService) {}
 
   modoEdicion: boolean = false;
   elementoId: string = '';
@@ -22,9 +23,6 @@ export class AreaComponent implements OnInit {
     nom: ['', Validators.required],
     estado: [true]
   });
-
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: AreaService) {
-  }
 
   ngOnInit(): void {
     this.validarEdicion();
@@ -56,7 +54,7 @@ export class AreaComponent implements OnInit {
         const area: Area = {
           AREA_ID: '0',
           AREA_NOM: this.form.value.nom || '',
-          ESTADO: (this.form.value.estado) ? '1' : '2',
+          ESTADO: this.form.value.estado||false,
           CREADOR_ID: userid || ''
         };
         this.service.post(area).subscribe(
@@ -89,7 +87,7 @@ export class AreaComponent implements OnInit {
       const area: Area = {
         AREA_ID: this.elementoId,
         AREA_NOM: this.form.value.nom || '',
-        ESTADO: (this.form.value.estado) ? '1' : '2',
+        ESTADO: this.form.value.estado||false,
         CREADOR_ID: '1'
       };
       this.service.put(area).subscribe(
@@ -132,7 +130,7 @@ export class AreaComponent implements OnInit {
   }
 
   llenarForm(data: Area) {
-    const estado = (data.ESTADO === 'Activo') ? true : false;
+    const estado = data.ESTADO
     this.form.get('estado')?.setValue(estado); // Asumiendo que 'estado' es un control en tu formulario
     this.form.get('nom')?.setValue(data.AREA_NOM); // Asumiendo que 'nom' es un control en tu formulario
   }

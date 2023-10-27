@@ -4,8 +4,23 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 const { DB_DATABASE } = process.env;
 
+interface ColumnData {
+  Type: string;
+  Field: any;
+}
+
+interface MappedProperty {
+  name: any;
+  type: any;
+}
+
+
 function getMappedType(fieldType: string | string[], propertyName: string) {
-  if (fieldType.includes('char') || fieldType.includes('varchar') || fieldType.includes('enum')) {
+  console.log(fieldType);
+
+  if (fieldType.includes('tinyint')) {
+    return 'boolean';
+  } else if (fieldType.includes('char') || fieldType.includes('varchar') || fieldType.includes('enum')) {
     return 'string';
   } else if (fieldType.includes('date') || fieldType.includes('datetime')) {
     return `${propertyName === 'FECHA_CREACION' ? 'Date | undefined' : 'Date'}`;
@@ -14,6 +29,16 @@ function getMappedType(fieldType: string | string[], propertyName: string) {
   } else {
     return 'any';
   }
+}
+
+function mapProperties(properties: ColumnData[]): MappedProperty[] {
+  return properties.map((column: ColumnData) => {
+    const fieldType = column.Type.toLowerCase();
+    const propertyName = column.Field;
+    const mappedType = getMappedType(fieldType, propertyName);
+
+    return { name: propertyName, type: mappedType };
+  });
 }
 
 function capitalizeFirstLetter(str: string) {
@@ -42,93 +67,140 @@ async function queryPrimaryKey(connection: any, tableName: any) {
   return results;
 }
 
+
+function generateDefinitionProps(propertiesData: any[]) {
+  return propertiesData.map((property: { name: string; type: any; }) => {
+    if (property.name === 'FECHA_CREACION') {
+      return `${property.name}?: ${property.type};`;
+    } else {
+      return `${property.name}: ${property.type};`;
+    }
+  }).join('\n    ');
+}
+
+function generateConstructProps(propertiesData: any[]) {
+  return propertiesData
+    .filter((property: { name: string; }) => property.name !== 'USUARIO' && property.name !== 'USR_PSWD')
+    .map((property: { name: string; type: any; }) => {
+      if (property.name === 'FECHA_CREACION') {
+        return `${property.name}?: ${property.type}`;
+      } else {
+        return `${property.name}: ${property.type}`;
+      }
+    })
+    .join(', ');
+}
+
+function generateMappedPropsConstruct(propertiesData: any[]) {
+  return propertiesData.map((property: { name: string; }) => {
+    if (property.name === 'USR_PSWD') {
+      return `this.${property.name} = Funciones.encrypt(USR_DNI);`;
+    } else if (property.name === 'USUARIO') {
+      return `this.${property.name} = this.crearUsuario(USR_DNI, USR_NOM, USR_NOM2, USR_APE);`;
+    } else {
+      return `this.${property.name} = ${property.name};`;
+    }
+  }).join('\n      ');
+}
+
+
 async function generateEntityFile(connection: any, tableName: string, primaryKeyColumn: string) {
   const capitalizedTableName = capitalizeTableName(tableName);
-
   const properties = await queryTableInfo(connection, tableName);
+  const propertiesData = mapProperties(properties);
 
-  const propertiesData = properties.map((column: { Type: string; Field: any; }) => {
-    const fieldType = column.Type.toLowerCase();
-    const propertyName = column.Field;
-    const mappedType = getMappedType(fieldType, propertyName);
+  const sqlInsert = `
+sqlInsert(): { query: string; values: any[] } {
+  const propiedades: any[] = [];
+  const valores: any[] = [];
 
-    return { name: propertyName, type: mappedType };
+  // Iterar sobre las propiedades del objeto
+  Object.keys(this).forEach(propiedad => {
+      const valor = this[propiedad as keyof this];
+
+      if (valor !== undefined && propiedad !== 'FECHA_CREACION') {
+          propiedades.push(propiedad);
+
+          if (typeof valor === 'string' || valor instanceof Date) {
+              valores.push(valor);
+          } else {
+              valores.push(valor);
+          }
+      }
   });
 
-  const content = `
+  const valoresStr = propiedades.map(() => '?').join(', ');
+  const propiedadesStr = propiedades.join(', ');
+
+  const query = \`INSERT INTO ${tableName} (\${propiedadesStr}) VALUES (\${valoresStr});\`;
+
+  return { query, values: valores };
+}
+`;
+
+  const sqlUpdate = `
+sqlUpdate(): { query: string; values: any[] } {
+  const valoresStr: string[] = [];
+  const valores: any[] = [];
+
+  // Iterar sobre las propiedades del objeto
+  Object.keys(this).forEach(propiedad => {
+      const valor = this[propiedad as keyof this];
+
+      if (valor !== undefined && propiedad !== 'FECHA_CREACION' && propiedad !== '${primaryKeyColumn}' && propiedad !== 'CREADOR_ID' ${(tableName === 'usuario') ? '&& propiedad!==\'USR_PSWD\' && propiedad!==\'USUARIO\'' : ''}) {
+          if (typeof valor === 'string') {
+              valoresStr.push(\`\${propiedad} = ?\`);
+              valores.push(valor);
+          } else if (valor instanceof Date) {
+              const fecha = valor.toISOString().slice(0, 10);
+              valoresStr.push(\`\${propiedad} = ?\`);
+              valores.push(fecha);
+          } else {
+              valoresStr.push(\`\${propiedad} = ?\`);
+              valores.push(valor);
+          }
+      }
+  });
+  valores.push(this.${primaryKeyColumn});
+  const query = \`UPDATE ${tableName} SET \${valoresStr.join(', ')} WHERE ${primaryKeyColumn} = ?;\`;
+  return { query, values: valores };
+}
+`;
+
+  const crearUsr = `
+crearUsuario(dni:string,nom:string,nom2:string,ape:string) {
+  let usr = '';
+  usr += nom[0] || ''; // Agregamos el primer carácter de nom1 si existe
+  usr += nom2[0] || '';// Usa ?. para evitar problemas con valores null o undefined
+  usr += ape|| '';
+  usr += dni.substring(dni.length - 4); // Obtener los últimos 4 caracteres
+  return usr;
+}`;
+
+  const isValid = `
+isValid(): boolean {
+  return ${propertiesData.filter((property: { name: string; }) => property.name !== 'FECHA_CREACION' && property.name !== 'ROL_PRF' && property.name !== 'ROL_REPR' && property.name !== 'ROL_ADMIN' && property.name !== 'USUARIO' && property.name !== 'USR_PSWD' && property.name !== 'ESTADO').map((property: { name: any; }) => `!!this.${property.name}`).join(' && ')};
+}
+`;
+
+  const content = `${(tableName === 'usuario') ? `import Funciones from "../Modelos/Funciones";` : ''}
 class ${capitalizedTableName} {
-    ${propertiesData.map((property: { name: string; type: any; }) => property.name === 'FECHA_CREACION' ? `${property.name}?:${property.type};` : `${property.name}: ${property.type};`).join('\n    ')}
-    
-    constructor(${propertiesData.map((property: { name: string; type: any; }) => property.name === 'FECHA_CREACION' ? `${property.name}?: ${property.type}` : `${property.name}: ${property.type}`).join(', ')}) {
-        ${propertiesData.map((property: { name: any; }) => `this.${property.name} = ${property.name};`).join('\n      ')}
+  ${generateDefinitionProps(propertiesData)}    
+    constructor(${generateConstructProps(propertiesData)}) {
+       ${generateMappedPropsConstruct(propertiesData)}
     }
 
-    sqlInsert(): { query: string; values: any[] } {
-        const propiedades: any[] = [];
-        const valores: any[] = [];
+    ${(tableName === 'usuario') ? crearUsr : ''}
 
-        // Iterar sobre las propiedades del objeto
-        Object.keys(this).forEach(propiedad => {
-            const valor = this[propiedad as keyof this];
-
-            if (valor !== undefined && propiedad !== 'FECHA_CREACION') {
-                propiedades.push(propiedad);
-
-                if (typeof valor === 'string' || valor instanceof Date) {
-                    valores.push(valor);
-                } else {
-                    valores.push(valor);
-                }
-            }
-        });
-
-        const valoresStr = propiedades.map(() => '?').join(', ');
-        const propiedadesStr = propiedades.join(', ');
-
-        const query = \`INSERT INTO ${tableName} (\${propiedadesStr}) VALUES (\${valoresStr});\`;
-
-        return { query, values: valores };
-    }
-
-    sqlUpdate(): { query: string; values: any[] } {
-        const valoresStr: string[] = [];
-        const valores: any[] = [];
-
-        // Iterar sobre las propiedades del objeto
-        Object.keys(this).forEach(propiedad => {
-            const valor = this[propiedad as keyof this];
-
-            if (valor !== undefined && propiedad !== 'FECHA_CREACION' && propiedad !== '${primaryKeyColumn}' && propiedad !== 'CREADOR_ID' ${(tableName === 'usuario') ? '&& propiedad!==\'USR_PSWD\'' : ''}) {
-                if (typeof valor === 'string') {
-                    valoresStr.push(\`\${propiedad} = ?\`);
-                    valores.push(valor);
-                } else if (valor instanceof Date) {
-                    const fecha = valor.toISOString().slice(0, 10);
-                    valoresStr.push(\`\${propiedad} = ?\`);
-                    valores.push(fecha);
-                } else {
-                    valoresStr.push(\`\${propiedad} = ?\`);
-                    valores.push(valor);
-                }
-            }
-        });
-        valores.push(this.${primaryKeyColumn});
-        const query = \`UPDATE ${tableName} SET \${valoresStr.join(', ')} WHERE ${primaryKeyColumn} = ?;\`;
-        return { query, values: valores };
-    }
-
-    isValid(): boolean {
-      return ${propertiesData.filter((property: { name: string; }) => property.name !== 'FECHA_CREACION' && property.name !== 'ROL_PRF' && property.name !== 'ROL_REPR' && property.name !== 'ROL_ADMIN').map((property: { name: any; }) => `!!this.${property.name}`).join(' && ')};
-    }
 }
 export default ${capitalizedTableName};
 `;
-  writeFileSync(`src/Entidades/${capitalizedTableName}Entidad.ts`, content, 'utf8');
+
 
   let contentinterface = `export interface ${capitalizedTableName} {
-  ${propertiesData.map((property: { name: string; type: any; }) => property.name === 'FECHA_CREACION' ? `${property.name}?:${property.type};` : `${property.name}: ${property.type};`).join('\n   ')}
+  ${generateDefinitionProps(propertiesData)}
 }`;
-
+  writeFileSync(`src/Entidades/${capitalizedTableName}Entidad.ts`, content, 'utf8');
   writeFileSync(`src/Interfaces/${capitalizedTableName}.interface.ts`, contentinterface, 'utf8');
 
 }
@@ -317,7 +389,7 @@ router.get('/${lowercaseTableName}', async (req, res) => {
    }
 });`;
 
-const getrouteEnabled = `
+  const getrouteEnabled = `
 router.get('/${lowercaseTableName}Enabled', async (req, res) => {
    try {
     const ${tableName} = await ${capitalizedTableName}Negocio.getEnabled${capitalizedTableName}();
@@ -331,7 +403,7 @@ router.get('/${lowercaseTableName}Enabled', async (req, res) => {
 router.post('/${lowercaseTableName}', async (req, res) => {
    try {
     const request = req.body;
-    const ${tableName} = new ${capitalizedTableName}Entidad(${propertiesData.map((prop: { Field: any; }) => `request.${prop.Field}`).join(', ')});
+    const ${tableName} = new ${capitalizedTableName}Entidad(${propertiesData.filter((property: { name: string; }) => property.name !== 'USUARIO' && property.name !== 'USR_PSWD').map((prop: { Field: any; }) => `request.${prop.Field}`).join(', ')});
     const response = await ${capitalizedTableName}Negocio.add${capitalizedTableName}(${tableName});
     res.json(response);
   } catch (error: any) {
@@ -343,7 +415,7 @@ router.post('/${lowercaseTableName}', async (req, res) => {
 router.put('/${lowercaseTableName}', async (req, res) => {
   try {
     const request = req.body;
-    const ${tableName} = new ${capitalizedTableName}Entidad(${propertiesData.map((prop: { Field: any; }) => `request.${prop.Field}`).join(', ')});
+    const ${tableName} = new ${capitalizedTableName}Entidad(${propertiesData.filter((property: { name: string; }) => property.name !== 'USUARIO' && property.name !== 'USR_PSWD').map((prop: { Field: any; }) => `request.${prop.Field}`).join(', ')});
     const response = await ${capitalizedTableName}Negocio.update${capitalizedTableName}(${tableName});
     res.json(response);
   } catch (error: any) {
@@ -414,6 +486,165 @@ export default router;
   writeFileSync(`src/Servicios/${capitalizedTableName}Servicio.ts`, content, 'utf8');
 }
 
+async function generateComponentFile(connection: any, tableName: any, primaryKeyColumn: string) {
+  const capitalizedTableName = capitalizeTableName(tableName);
+  const lowercaseTableName = convertToCamelCase(tableName);
+  const propertiesData = await queryTableInfo(connection, tableName);
+
+  const content = `
+constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: ${capitalizedTableName}Service) { }
+
+modoEdicion: boolean = false;
+elementoId: string = '';
+form = this.formBuilder.group({
+  ${propertiesData.map((prop: { Field: any; }) => `${prop.Field}: ['',Validators.required]`).join(',\n   ')}
+})
+
+ngOnInit(): void {
+  this.validarEdicion();
+}
+
+validarEdicion() {
+  this.route.paramMap.subscribe(params => {
+    const id = params.get('id');
+    if (id) {
+      this.modoEdicion = true;
+      this.elementoId = id;
+      this.loadData();
+    } else {
+      this.modoEdicion = false;
+      this.elementoId = '';
+    }
+  });
+}
+
+onSubmit() {
+  this.openConfirmationModal();
+}
+
+crear() {
+  if (this.form.valid) {
+    let userid = localStorage.getItem(variables.KEY_NAME);
+    if (userid) {
+      userid = JSON.parse(atob(userid));
+      const ${lowercaseTableName}: ${capitalizedTableName} = {
+        ${propertiesData.map((prop: { Field: any; }) => `${prop.Field}:this.form.value.${prop.Field}|| ''`).join(',\n   ')},
+        ESTADO: (this.form.value.ESTADO) ? '1' : '2',
+        CREADOR_ID: userid || ''
+      };
+      this.service.post(${lowercaseTableName}).subscribe(
+        {
+          next: (response) => {
+            if (!response.data) {
+              this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
+              console.log(response.message);
+            } else {
+              this.openAlertModal(response.message, 'success')
+              console.log(response.message);
+              this.form.reset();
+              this.router.navigate(['../'], { relativeTo: this.route });
+            }
+          },
+          error: (error) => {
+            this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
+            console.log(error);;
+          }
+        }
+      );
+    }
+  } else {
+    this.form.markAllAsTouched();
+  }
+}
+
+editar() {
+  if (this.form.valid) {
+    const ${lowercaseTableName}: ${capitalizedTableName} = {
+      ${primaryKeyColumn}: this.elementoId,
+      ${propertiesData.map((prop: { Field: any; }) => `${prop.Field}:this.form.value.${prop.Field}|| ''`).join(',\n   ')},
+      ESTADO: (this.form.value.ESTADO) ? '1' : '2',
+    };
+    this.service.put(${lowercaseTableName}).subscribe(
+      {
+        next: (response) => {
+          if (!response.data) {
+            this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
+            console.log(response.message);
+          } else {
+            this.openAlertModal(response.message, 'success')
+            console.log(response.message);
+          }
+
+        },
+        error: (errordata) => {
+          this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
+          console.log(errordata);
+        }
+      }
+    );
+    // this.form.reset();
+  } else {
+    this.form.markAllAsTouched();
+  }
+}
+
+loadData() {
+  this.service.searchById(this.elementoId).subscribe({
+    next: (value) => {
+      if (value.data) {
+        this.llenarForm(value.data);
+      } else {
+        console.log(value.message);
+      }
+    },
+    error: (error) => {
+      console.log(error);
+    }
+  });
+}
+
+llenarForm(data: ${capitalizedTableName}) {
+  const estado = (data.ESTADO === 'Activo') ? true : false;
+  ${propertiesData.map((prop: { Field: any; }) => ` this.form.get('${prop.Field}')?.setValue(data.${prop.Field})`).join(';\n   ')}
+  this.form.get('ESTADO')?.setValue(estado); // Asumiendo que 'estado' es un control en tu formulario
+
+}
+
+openAlertModal(content: string, alertType: string) {
+  const modalRef = this.ngBootstrap.open(ModalComponent);
+  modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
+  modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = content);
+  modalRef.componentInstance.icon = (alertType == 'success') ? faCircleCheck : (alertType == 'danger') ? faCircleXmark : faInfoCircle;
+  modalRef.componentInstance.color = alertType;
+  modalRef.componentInstance.modal = false;
+}
+
+openConfirmationModal() {
+  const modalRef = this.ngBootstrap.open(ModalComponent);
+  modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
+
+  // Usa el operador Elvis para asegurarte de que activeModal y contenido estén definidos
+  modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = (!this.modoEdicion) ? '¿Desea guardar profesor?' : '¿Desea editar profesor?');
+  modalRef.componentInstance.icon = faInfoCircle;
+  modalRef.componentInstance.color = 'warning';
+  modalRef.result.then((result) => {
+    if (result === 'save') {
+      if (this.modoEdicion) {
+        this.editar();
+      } else {
+        this.crear();
+      }
+    }
+  }).catch((error) => {
+    console.log(error);
+  });
+}
+`;
+
+
+  writeFileSync(`src/componentes/${capitalizedTableName}.ts`, content, 'utf8');
+}
+
 
 async function main() {
   try {
@@ -430,6 +661,7 @@ async function main() {
       await generateEntityFile(baseDatos, tableName, primaryKeyColumn);
       await generateNegocioFile(tableName, primaryKeyColumn);
       await generateServiceFile(baseDatos, tableName);
+      await generateComponentFile(baseDatos, tableName, primaryKeyColumn);
     }
     console.info('Archivos creados correctamente');
   } catch (error: any) {

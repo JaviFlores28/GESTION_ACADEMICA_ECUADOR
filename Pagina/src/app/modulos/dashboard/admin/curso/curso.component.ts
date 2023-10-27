@@ -60,7 +60,7 @@ export class CursoComponent {
           CRS_NOM: this.form.value.nom || '',
           CRS_TIPO: this.form.value.tip || '',
           CRS_ORDEN: this.form.value.orden || 0,
-          ESTADO: (this.form.value.estado) ? '1' : '2',
+          ESTADO: this.form.value.estado || false,
           CREADOR_ID: userid || ''
         };
         this.service.post(curso).subscribe(
@@ -91,11 +91,11 @@ export class CursoComponent {
   editar() {
     if (this.form.valid) {
       const curso: Curso = {
-        CRS_ID:this.elementoId,
+        CRS_ID: this.elementoId,
         CRS_NOM: this.form.value.nom || '',
         CRS_TIPO: this.form.value.tip || '',
         CRS_ORDEN: this.form.value.orden || 0,
-        ESTADO: (this.form.value.estado) ? '1' : '2',
+        ESTADO: this.form.value.estado || false,
         CREADOR_ID: '1'
       };
       this.service.put(curso).subscribe(
@@ -138,11 +138,10 @@ export class CursoComponent {
   }
 
   llenarForm(data: Curso) {
-    const estado = (data.ESTADO === 'Activo') ? true : false;
     this.form.get('nom')?.setValue(data.CRS_NOM); // Asumiendo que 'nom' es un control en tu formulario
     this.form.get('tip')?.setValue(data.CRS_TIPO); // Asumiendo que 'estado' es un control en tu formulario
     this.form.get('orden')?.setValue(data.CRS_ORDEN); // Asumiendo que 'nom' es un control en tu formulario
-    this.form.get('estado')?.setValue(estado); // Asumiendo que 'estado' es un control en tu formulario
+    this.form.get('estado')?.setValue(data.ESTADO); // Asumiendo que 'estado' es un control en tu formulario
   }
 
   openAlertModal(content: string, alertType: string) {
@@ -159,7 +158,7 @@ export class CursoComponent {
     modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
 
     // Usa el operador Elvis para asegurarte de que activeModal y contenido estén definidos
-    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = (!this.modoEdicion) ? '¿Desea guardar el área?' : '¿Desea editar el área?');
+    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = (!this.modoEdicion) ? '¿Desea guardar curso?' : '¿Desea editar curso?');
     modalRef.componentInstance.icon = faInfoCircle;
     modalRef.componentInstance.color = 'warning';
     modalRef.result.then((result) => {

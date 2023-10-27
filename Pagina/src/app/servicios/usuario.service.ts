@@ -2,11 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, lastValueFrom } from 'rxjs';
 
-import { UsuarioLogin } from '../modelos/interfaces/usuario-Login.interface';
-import { Usuario } from '../modelos/interfaces/Usuario.interface';
 import { variables } from '../modelos/variables/variables';
-import { Respuesta } from '../modelos/interfaces/respuesta.interface';
 import { ErrorHandlerService } from './error-handler.service';
+import { Usuario } from '../modelos/interfaces/Usuario.interface';
+import { Respuesta } from '../modelos/interfaces/respuesta.interface';
+import { UsuarioLogin } from '../modelos/interfaces/usuario-Login.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -91,9 +91,9 @@ export class UsuarioService extends ErrorHandlerService {
     const user = await this.getUserLogged();
     if (!user) return false;
 
-    return (user.ROL_PRF === 1 && rol === 'P') ||
-      (user.ROL_ADMIN === 1 && rol === 'A') ||
-      (user.ROL_REPR === 1 && rol === 'R');
+    return (user.ROL_PRF && rol === 'P') ||
+      (user.ROL_ADMIN&& rol === 'A') ||
+      (user.ROL_REPR && rol === 'R');
   }
 
 }

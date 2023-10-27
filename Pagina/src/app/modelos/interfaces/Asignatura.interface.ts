@@ -4,7 +4,7 @@ export interface Asignatura {
    ASG_TIPO: string;
    AREA_ID: string;
    CRS_ID: string;
-   ESTADO: string;
+   ESTADO: boolean;
    CREADOR_ID: string;
    FECHA_CREACION?:Date | undefined;
 }

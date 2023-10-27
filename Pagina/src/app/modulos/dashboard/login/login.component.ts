@@ -2,15 +2,15 @@ import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { faUserTie } from '@fortawesome/free-solid-svg-icons';
+import { UsuarioLogin } from 'src/app/modelos/interfaces/usuario-Login.interface';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
-import { UsuarioLogin } from '../../../modelos/interfaces/usuario-Login.interface';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit{
+export class LoginComponent implements OnInit {
 
   constructor(private router: Router, private formBuilder: FormBuilder, private service: UsuarioService, private renderer: Renderer2, private el: ElementRef) {
   }
@@ -37,12 +37,13 @@ export class LoginComponent implements OnInit{
       this.service.validarUsuario(usuario).subscribe(
         {
           next: (response) => {
-            if (!response.data) {
+            if (response.data === null) {
               console.log(response.message);
+            } else {
+              this.service.login(response.data)
+              this.resetStyle()
+              this.router.navigate(['/home']);
             }
-            this.service.login(response.data)
-            this.resetStyle()
-            this.router.navigate(['/home']);
           },
           error: (error) => {
             console.error(error);
@@ -73,7 +74,7 @@ export class LoginComponent implements OnInit{
     const htmlElement = this.el.nativeElement.ownerDocument.documentElement;
     const bodyElement = this.el.nativeElement.ownerDocument.body;
     const appRootElement = this.el.nativeElement.ownerDocument.querySelector('app-root');
-     this.renderer.removeStyle(htmlElement, 'height');
+    this.renderer.removeStyle(htmlElement, 'height');
     this.renderer.removeStyle(bodyElement, 'height');
     this.renderer.removeStyle(appRootElement, 'height');
     this.renderer.removeStyle(appRootElement, 'display');

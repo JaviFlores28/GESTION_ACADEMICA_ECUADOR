@@ -3,7 +3,7 @@ export interface ProfesorAsignaturaParalelo {
    ASG_ID: string;
    PRF_ID: string;
    PRLL_ID: string;
-   ESTADO: string;
+   ESTADO: boolean;
    CREADOR_ID: string;
    FECHA_CREACION?:Date | undefined;
 }

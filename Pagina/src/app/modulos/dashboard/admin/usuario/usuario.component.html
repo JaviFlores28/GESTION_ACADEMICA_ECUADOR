@@ -1,1 +1,70 @@
-<p>usuario works!</p>
+<div class="container">
+    <div class="card text-start border border-0 rounded shadow">
+        <div class="card-body">
+            <h2 class="card-title">{{ modoEdicion ? 'Editar Usuario' : 'Crear Usuario' }}</h2>
+            <hr class="border border-secondary opacity-25">
+            <form class="row g-3 align-items-end" [formGroup]="form" (ngSubmit)="onSubmit()">
+                <div class="col-md-12">
+                    <label class="form-label" for="USR_DNI">Cédula del usuario:</label>
+                    <input class="form-control" id="USR_DNI" type="text" formControlName="USR_DNI">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="USR_NOM">Primer nombre:</label>
+                    <input class="form-control" type="text" formControlName="USR_NOM">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="USR_NOM2">Segundo nombre:</label>
+                    <input class="form-control" type="atext" formControlName="USR_NOM2">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="USR_APE">Primer apellido:</label>
+                    <input class="form-control" type="text" formControlName="USR_APE">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="USR_APE2">Segundo apellido:</label>
+                    <input class="form-control" type="text" formControlName="USR_APE2">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="USR_FECH_NAC" class="form-label">Fecha de nacimiento</label>
+                    <input class="form-control" type="date" class="form-control" id="USR_FECH_NAC" formControlName="USR_FECH_NAC">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="USR_GEN">Género</label>
+                    <select class="form-select" formControlName="USR_GEN" id="USR_GEN">
+                        <option value="1">Femenino</option>
+                        <option value="2">Masculino</option>
+                    </select>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label" for="USR_DIR">Dirección domicilio:</label>
+                    <input class="form-control" type="text" formControlName="USR_DIR" id="USR_DIR">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="USR_TEL">Teléfono:</label>
+                    <input class="form-control" type="text" formControlName="USR_TEL" pattern="^[0-9]+">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="USR_CEL">Celular:</label>
+                    <input class="form-control" type="text" formControlName="USR_CEL" pattern="^[0-9]+">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="USR_EMAIL">Correo:</label>
+                    <input class="form-control" id="USR_EMAIL" type="text" formControlName="USR_EMAIL">
+                </div>
+                <div class="col-md-6">
+                    <label for="ESTADO" class="form-label pb-2">Estado</label>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" id="ESTADO" type="checkbox" role="switch" formControlName="ESTADO">
+                    </div>
+                </div>
+                <div *ngIf="modoEdicion" class="col-md-6">
+                    <label class="form-label" for="USUARIO">Usuario:</label>
+                    <input class="form-control" type="text" formControlName="USUARIO">
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-dark">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -131,6 +131,8 @@ const routes: Routes = [
         path: 'usuarios',
         children: [
           { path: '', component: UsuariosComponent, },
+          { path: 'nuevo', component: UsuarioComponent },
+          { path: 'editar/:id', component: UsuarioComponent },
           { path: 'myinfo/:id', component: UsuarioComponent },
         ]
 

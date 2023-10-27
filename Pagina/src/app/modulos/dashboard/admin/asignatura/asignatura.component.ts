@@ -69,7 +69,7 @@ export class AsignaturaComponent {
           ASG_TIPO: (this.form.value.cltv) ? '1' : '2',
           AREA_ID: this.form.value.area || '',
           CRS_ID: this.form.value.curso || '',
-          ESTADO: (this.form.value.estado) ? '1' : '2',
+          ESTADO: this.form.value.estado || false,
           CREADOR_ID: userid || ''
         };
         this.service.post(asignatura).subscribe(
@@ -105,7 +105,7 @@ export class AsignaturaComponent {
         ASG_TIPO: (this.form.value.cltv) ? '1' : '2',
         AREA_ID: this.form.value.area || '',
         CRS_ID: this.form.value.curso || '',
-        ESTADO: (this.form.value.estado) ? '1' : '2',
+        ESTADO: this.form.value.estado || false,
         CREADOR_ID: '1'
       };
       this.service.put(asignatura).subscribe(
@@ -178,8 +178,8 @@ export class AsignaturaComponent {
   }
 
   llenarForm(data: Asignatura) {
-    const estado = (data.ESTADO === 'Activo') ? true : false;
-    const tipo=(data.ASG_TIPO==='CUALITATIVA')?true:false;
+    const estado = data.ESTADO
+    const tipo = (data.ASG_TIPO === 'CUALITATIVA') ? true : false;
     this.form.get('nom')?.setValue(data.ASG_NOM); // Asumiendo que 'nom' es un control en tu formulario
     this.form.get('cltv')?.setValue(tipo); // Asumiendo que 'nom' es un control en tu formulario
     this.form.get('area')?.setValue(data.AREA_ID); // Asumiendo que 'nom' es un control en tu formulario
@@ -201,7 +201,7 @@ export class AsignaturaComponent {
     modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
 
     // Usa el operador Elvis para asegurarte de que activeModal y contenido estén definidos
-    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = (!this.modoEdicion) ? '¿Desea guardar el área?' : '¿Desea editar el área?');
+    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = (!this.modoEdicion) ? '¿Desea guardar la asignatura?' : '¿Desea editar la asignatura?');
     modalRef.componentInstance.icon = faInfoCircle;
     modalRef.componentInstance.color = 'warning';
     modalRef.result.then((result) => {

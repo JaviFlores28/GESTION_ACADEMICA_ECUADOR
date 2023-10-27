@@ -3,7 +3,7 @@ export interface Paralelo {
    PRLL_NOM: string;
    CRS_ID: string;
    AL_ID: string;
-   ESTADO: string;
+   ESTADO: boolean;
    CREADOR_ID: string;
    FECHA_CREACION?:Date | undefined;
 }

@@ -16,18 +16,18 @@ export interface Estudiante {
    EST_NAC_ETN: string;
    EST_COM_ETN: string;
    EST_COD_ELE: string;
-   EST_NEC_ASO_DIS: number;
-   EST_NEC_NO_ASO_DIS: number;
-   EST_ENF_CAT: number;
+   EST_NEC_ASO_DIS: boolean;
+   EST_NEC_NO_ASO_DIS: boolean;
+   EST_ENF_CAT: boolean;
    EST_NUM_CONA: string;
-   EST_INTE: number;
-   EST_TV: number;
-   EST_RAD: number;
-   EST_PC: number;
-   EST_CEL: number;
+   EST_INTE: boolean;
+   EST_TV: boolean;
+   EST_RAD: boolean;
+   EST_PC: boolean;
+   EST_CEL: boolean;
    REPR_ID: string;
    REL_EST_REP: string;
-   ESTADO: string;
+   ESTADO: boolean;
    CREADOR_ID: string;
    FECHA_CREACION?:Date | undefined;
 }
