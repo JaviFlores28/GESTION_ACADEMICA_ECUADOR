@@ -3,24 +3,25 @@ import path from 'path';
 import baseDatos from './Datos/BaseDatos';
 import * as dotenv from 'dotenv';
 
-
 dotenv.config();
 const { DB_DATABASE } = process.env;
 
 interface ColumnData {
   Type: string;
   Field: any;
+  Key: any;
 }
 
 interface MappedProperty {
   name: any;
   type: any;
+  key: any;
 }
 
-
+//obtiene el tipo de mapeo a convertir
 function getMappedType(fieldType: string | string[], propertyName: string) {
   if (fieldType.includes('tinyint')) {
-    return 'boolean';
+    return 'number';
   } else if (fieldType.includes('char') || fieldType.includes('varchar') || fieldType.includes('enum')) {
     return 'string';
   } else if (fieldType.includes('date') || fieldType.includes('datetime')) {
@@ -32,13 +33,14 @@ function getMappedType(fieldType: string | string[], propertyName: string) {
   }
 }
 
+//mapea el tipo
 function mapProperties(properties: ColumnData[]): MappedProperty[] {
   return properties.map((column: ColumnData) => {
     const fieldType = column.Type.toLowerCase();
     const propertyName = column.Field;
     const mappedType = getMappedType(fieldType, propertyName);
-
-    return { name: propertyName, type: mappedType };
+    const key = column.Key;
+    return { name: propertyName, type: mappedType, key: key };
   });
 }
 
@@ -46,31 +48,30 @@ function capitalizeFirstLetter(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-function capitalizeTableName(tableName: string) {
+function stringToCapitalize(tableName: string) {
   const words = tableName.split('_');
   const capitalizedWords = words.map((word: any) => capitalizeFirstLetter(word));
   return capitalizedWords.join('');
 }
 
-function convertToCamelCase(tableName: string) {
+function stringToCamelCase(tableName: string) {
   return tableName
     .replace(/_(\w)/g, (_: any, match: string) => match.toLowerCase())
     .replace(/^\w/, (c: string) => c.toLowerCase());
 }
 
-async function queryTableInfo(connection: any, tableName: any) {
+async function getTableInfo(connection: any, tableName: any) {
   const [results] = await connection.execute(`DESCRIBE ${tableName}`);
   return results;
 }
 
-async function queryPrimaryKey(connection: any, tableName: any) {
+async function getPrimaryKey(connection: any, tableName: any) {
   const [results] = await connection.execute(`SHOW KEYS FROM ${tableName} WHERE Key_name = 'PRIMARY'`);
   return results;
 }
 
-
-function generateDefinitionProps(propertiesData: any[]) {
-  return propertiesData.map((property: { name: string; type: any; }) => {
+function generatePropsDefinitions(propertiesData: MappedProperty[]) {
+  return propertiesData.map((property) => {
     if (property.name === 'FECHA_CREACION') {
       return `${property.name}?: ${property.type};`;
     } else {
@@ -79,10 +80,10 @@ function generateDefinitionProps(propertiesData: any[]) {
   }).join('\n    ');
 }
 
-function generateConstructProps(propertiesData: any[]) {
+function generatePropsConstruct(propertiesData: MappedProperty[]) {
   return propertiesData
-    .filter((property: { name: string; }) => property.name !== 'USUARIO' && property.name !== 'USR_PSWD')
-    .map((property: { name: string; type: any; }) => {
+    .filter((property) => property.name !== 'USUARIO' && property.name !== 'USR_PSWD')
+    .map((property) => {
       if (property.name === 'FECHA_CREACION') {
         return `${property.name}?: ${property.type}`;
       } else {
@@ -92,8 +93,8 @@ function generateConstructProps(propertiesData: any[]) {
     .join(', ');
 }
 
-function generateMappedPropsConstruct(propertiesData: any[]) {
-  return propertiesData.map((property: { name: string; }) => {
+function generatePropsValues(propertiesData: MappedProperty[]) {
+  return propertiesData.map((property) => {
     if (property.name === 'USR_PSWD') {
       return `this.${property.name} = Funciones.encrypt(USR_DNI);`;
     } else if (property.name === 'USUARIO') {
@@ -104,7 +105,7 @@ function generateMappedPropsConstruct(propertiesData: any[]) {
   }).join('\n      ');
 }
 
-function generateIsValidProps(propertiesData: any[]) {
+function generatePropsIsValid(propertiesData: MappedProperty[]) {
   const excludedProperties = [
     'FECHA_CREACION',
     'ROL_PRF',
@@ -114,17 +115,72 @@ function generateIsValidProps(propertiesData: any[]) {
     'USR_PSWD',
     'ESTADO'
   ];
-
   return propertiesData
-    .filter((property: { name: string; }) => !excludedProperties.includes(property.name))
-    .map((property: { name: any; }) => `!!this.${property.name}`)
+    .filter((property) => !excludedProperties.includes(property.name))
+    .map((property) => `!!this.${property.name}`)
     .join(' && ');
 }
 
+function generatePropsInstance(propertiesData: MappedProperty[], table: string) {
+  const excludedProperties = (table !== 'usuario') ? ['FECHA_CREACION'] : ['USUARIO', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID'];
+
+  return propertiesData
+    .filter((property) => !excludedProperties.includes(property.name))
+    .map((property) => `request.${property.name}`)
+    .join(', ');
+}
+
+function generatePropsComponentForm(propertiesData: MappedProperty[]) {
+
+  const excludedProperties = ['USR_ID', 'USR_PSWD', 'FECHA_CREACION', 'ESTADO', 'CREADOR_ID', 'ROL_ADMIN', 'ROL_REPR', 'ROL_PRF'];
+  return propertiesData
+    .filter((property) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
+    .map((property) => {
+      if (property.type === 'Date') {
+        return `${property.name}: [getFormattedDate(new Date()),Validators.required]`
+      } else if (property.type === 'boolean') {
+        return `${property.name}: [false,Validators.required]`
+      } else {
+        return `${property.name}: ['',Validators.required]`
+      }
+    }
+    )
+    .join(',\n ');
+}
+
+function generatePropsComponentInstance(propertiesData: MappedProperty[]) {
+  const excludedProperties = ['USR_ID', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID', 'USUARIO'];
+  return propertiesData
+    .filter((property) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
+    .map((property) => {
+      if (property.type === 'Date') {
+        return `${property.name}:this.form.value.${property.name} ? new Date(this.form.value.${property.name}) : new Date()`
+      } else if (property.type === 'boolean') {
+        return `${property.name}:this.form.value.${property.name}|| false`
+      } else {
+        return `${property.name}:this.form.value.${property.name}|| ''`
+      }
+    })
+    .join(',\n ');
+}
+
+function generatePropsComponentFormFill(propertiesData: MappedProperty[]) {
+  const excludedProperties = ['USR_ID', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID', 'ROL_ADMIN', 'ROL_REPR', 'ROL_PRF'];
+  return propertiesData
+    .filter((property: { name: string; key: string }) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
+    .map((property) => {
+      if (property.type === 'Date') {
+        return `this.form.get('${property.name}')?.setValue(getFormattedDate(data.${property.name}))`
+      } else {
+        return `this.form.get('${property.name}')?.setValue(data.${property.name})`
+      }
+    })
+    .join(',\n ');
+}
 
 async function generateEntityFile(connection: any, tableName: string, primaryKeyColumn: string) {
-  const capitalizedTableName = capitalizeTableName(tableName);
-  const properties = await queryTableInfo(connection, tableName);
+  const capitalizedTableName = stringToCapitalize(tableName);
+  const properties = await getTableInfo(connection, tableName);
   const propertiesData = mapProperties(properties);
 
   const sqlInsert = `
@@ -197,49 +253,57 @@ crearUsuario(dni:string,nom:string,nom2:string,ape:string) {
 
   const isValid = `
 isValid(): boolean {
-  return ${generateIsValidProps(propertiesData)};
+  return ${generatePropsIsValid(propertiesData)};
 }
 `;
 
   const content = `${(tableName === 'usuario') ? `import Funciones from "../Modelos/Funciones";` : ''}
 class ${capitalizedTableName} {
-  ${generateDefinitionProps(propertiesData)}    
-    constructor(${generateConstructProps(propertiesData)}) {
-       ${generateMappedPropsConstruct(propertiesData)}
+  ${generatePropsDefinitions(propertiesData)}    
+    constructor(${generatePropsConstruct(propertiesData)}) {
+       ${generatePropsValues(propertiesData)}
     }
-
+    ${sqlInsert}
+    ${sqlUpdate}
+    ${isValid}
     ${(tableName === 'usuario') ? crearUsr : ''}
-
 }
 export default ${capitalizedTableName};
 `;
 
-  const content_Interface = `export interface ${capitalizedTableName} {
-  ${generateDefinitionProps(propertiesData)}
-}`;
-
   const carpetaEntidades = path.join(__dirname, 'Entidades');
   const archivoEntidad = path.join(carpetaEntidades, `${capitalizedTableName}Entidad.ts`);
 
-  const carpetaInterface = path.join(__dirname, 'Interfaces');
-  const archivoInterface = path.join(carpetaInterface, `${capitalizedTableName}.interface.ts`);
-
-  // Verificar si la carpeta existe, si no, crearla
   if (!existsSync(carpetaEntidades)) {
     mkdirSync(carpetaEntidades, { recursive: true });
   }
 
-  if (!existsSync(carpetaInterface)) {
-    mkdirSync(carpetaInterface, { recursive: true });
+  writeFileSync(archivoEntidad, content, 'utf8');
+
+}
+
+async function generateInterfaceFile(connection: any, tableName: string) {
+  const capitalizedTableName = stringToCapitalize(tableName);
+  const properties = await getTableInfo(connection, tableName);
+  const propertiesData = mapProperties(properties);
+
+  const content = `export interface ${capitalizedTableName} {
+  ${generatePropsDefinitions(propertiesData)}
+}`;
+
+  const carpeta = path.join(__dirname, 'Interfaces');
+  const archivo = path.join(carpeta, `${capitalizedTableName}.interface.ts`);
+
+  if (!existsSync(carpeta)) {
+    mkdirSync(carpeta, { recursive: true });
   }
 
-  writeFileSync(archivoEntidad, content, 'utf8');
-  writeFileSync(archivoInterface, content_Interface, 'utf8');
+  writeFileSync(archivo, content, 'utf8');
 
 }
 
 async function generateNegocioFile(tableName: string, primaryKeyColumn: string) {
-  const capitalizedTableName = capitalizeTableName(tableName);
+  const capitalizedTableName = stringToCapitalize(tableName);
 
   const functionAdd = `
   static async add${capitalizedTableName}(${tableName}: ${capitalizedTableName}): Promise<{ data: string | null, message: string }> {
@@ -248,9 +312,8 @@ async function generateNegocioFile(tableName: string, primaryKeyColumn: string) 
         throw new Error('Objeto de tipo ${capitalizedTableName} no tiene la estructura esperada.');
       }
       ${tableName}.${primaryKeyColumn} = uuidv4(); //asigna un identificador unico
-      ${(tableName === 'usuario') ? 'usuario.USR_PSWD = Funciones.encrypt(usuario.USR_PSWD); // cifra la contraseña en caso de ser usuario' : ''}
-      let data = ${tableName}.sqlInsert();
-      const [result] = await baseDatos.execute<any>(data.query, data.values);
+      let sql = ${tableName}.sqlInsert();
+      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar ${capitalizedTableName}');
       }
@@ -266,8 +329,8 @@ async function generateNegocioFile(tableName: string, primaryKeyColumn: string) 
       if (!${tableName}.isValid()){ //validar estructura del objeto
         throw new Error('Objeto de tipo ${capitalizedTableName} no tiene la estructura esperada.');
       }
-      let data = ${tableName}.sqlUpdate();
-      const [result] = await baseDatos.execute<any>(data.query, data.values);
+      let sql = ${tableName}.sqlUpdate();
+      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo actualizar ${capitalizedTableName}');
       }
@@ -280,7 +343,8 @@ async function generateNegocioFile(tableName: string, primaryKeyColumn: string) 
   const functionDelete = `
   static async delete${capitalizedTableName}(id: String): Promise<{ data: boolean, message: string }> {
     try {
-      const [result] = await baseDatos.execute<any>('delete FROM ${tableName} WHERE ${primaryKeyColumn} = ?', [id]);
+      let sql = 'delete FROM ${tableName} WHERE ${primaryKeyColumn} = ?';
+      const [result] = await baseDatos.execute<any>(sql, [id]);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo eliminar el objeto de tipo ${capitalizedTableName}');
       }
@@ -293,8 +357,8 @@ async function generateNegocioFile(tableName: string, primaryKeyColumn: string) 
   const functionGet = `
   static async get${capitalizedTableName}(): Promise<{ data: ${capitalizedTableName}[], message: string }> {
     try {
-      let data = 'SELECT * FROM ${tableName}';
-      const [rows] = await baseDatos.execute<any>(data);
+      let sql = 'SELECT * FROM ${tableName}';
+      const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as ${capitalizedTableName}[], message: '' };
     } catch (error: any) {
       return { data: [], message: error.message }; // Retorna el mensaje del error
@@ -304,24 +368,24 @@ async function generateNegocioFile(tableName: string, primaryKeyColumn: string) 
   const functionGetEnabled = `
   static async getEnabled${capitalizedTableName}(): Promise<{ data: ${capitalizedTableName}[], message: string }> {
     try {
-      let data = 'SELECT * FROM ${tableName} where Estado=1';
-      const [rows] = await baseDatos.execute<any>(data);
+      let sql = 'SELECT * FROM ${tableName} where Estado=1';
+      const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as ${capitalizedTableName}[], message: '' };
     } catch (error: any) {
       return { data: [], message: error.message }; // Retorna el mensaje del error
     }
   }`;
 
-
   const functionSearch = `
   static async searchById(id: String): Promise<{ data: ${capitalizedTableName} | null; message: string }> {
     try {
-      const [rows] = await baseDatos.execute<any>('SELECT * FROM ${tableName} WHERE ${primaryKeyColumn} = ?', [id]);
+      let sql = 'SELECT * FROM ${tableName} WHERE ${primaryKeyColumn} = ?';
+      const [rows] = await baseDatos.execute<any>(sql, [id]);
       if (rows.length <= 0) {
         throw new Error('Objeto de tipo ${capitalizedTableName} no encontrado');
       }
       let new${capitalizedTableName} = rows[0] as ${capitalizedTableName};
-      ${(tableName === 'usuario' ? `new${capitalizedTableName}.USR_PSWD = 'pswd';` : '')}
+      ${(tableName === 'usuario' ? `//new${capitalizedTableName}.USR_PSWD = 'pswd';` : '')}
       return { data: new${capitalizedTableName}, message: 'Encontrado' };
     } catch (error: any) {
       return { data: null, message: error.message }; // Retorna el mensaje del error
@@ -341,10 +405,10 @@ async function generateNegocioFile(tableName: string, primaryKeyColumn: string) 
       if (!this.pswdValid(pswdOld, pswdUser)) {
         throw new Error('Contraseña actual incorrecta.');
       }
-      let data = 'UPDATE ${tableName} SET USR_PSWD=? WHERE ${primaryKeyColumn} = ?';
+      let sql = 'UPDATE ${tableName} SET USR_PSWD=? WHERE ${primaryKeyColumn} = ?';
       pswdNew = Funciones.encrypt(pswdNew);
 
-      const [result] = await baseDatos.execute<any>(data, [pswdNew, id]);
+      const [result] = await baseDatos.execute<any>(sql, [pswdNew, id]);
 
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo actualizar el objeto de tipo ${capitalizedTableName}.');
@@ -367,7 +431,8 @@ async function generateNegocioFile(tableName: string, primaryKeyColumn: string) 
   const validar = `
   static async validar${capitalizedTableName}(${tableName}: string, pswd: string): Promise<{ data: ${capitalizedTableName} | null; message: string }> {
     try {
-      const [rows] = await baseDatos.execute<any>('SELECT * FROM ${tableName} WHERE USUARIO = ?', [${tableName}]);
+      let sql = 'SELECT * FROM ${tableName} WHERE USUARIO = ?';
+      const [rows] = await baseDatos.execute<any>(sql, [${tableName}]);
 
       if (rows.length <= 0) {
         throw new Error('${capitalizedTableName} no encontrado');
@@ -403,14 +468,21 @@ class ${capitalizedTableName}Negocio {
 }
 export default ${capitalizedTableName}Negocio;`;
 
-  writeFileSync(`src/Negocio/${capitalizedTableName}Negocio.ts`, content, 'utf8');
+  const carpeta = path.join(__dirname, 'Negocio');
+  const archivo = path.join(carpeta, `${capitalizedTableName}Negocio.ts`);
+
+  if (!existsSync(carpeta)) {
+    mkdirSync(carpeta, { recursive: true });
+  }
+  writeFileSync(archivo, content, 'utf8');
+
 }
 
 async function generateServiceFile(connection: any, tableName: any) {
-  const capitalizedTableName = capitalizeTableName(tableName);
-
-  const propertiesData = await queryTableInfo(connection, tableName);
-  const lowercaseTableName = convertToCamelCase(tableName);
+  const capitalizedTableName = stringToCapitalize(tableName);
+  const lowercaseTableName = stringToCamelCase(tableName);
+  const properties = await getTableInfo(connection, tableName);
+  const propertiesData = mapProperties(properties);
 
   const getroute = `
 router.get('/${lowercaseTableName}', async (req, res) => {
@@ -436,7 +508,7 @@ router.get('/${lowercaseTableName}Enabled', async (req, res) => {
 router.post('/${lowercaseTableName}', async (req, res) => {
    try {
     const request = req.body;
-    const ${tableName} = new ${capitalizedTableName}Entidad(${propertiesData.filter((property: { name: string; }) => property.name !== 'USUARIO' && property.name !== 'USR_PSWD').map((prop: { Field: any; }) => `request.${prop.Field}`).join(', ')});
+    const ${tableName} = new ${capitalizedTableName}Entidad(${generatePropsInstance(propertiesData,tableName)});
     const response = await ${capitalizedTableName}Negocio.add${capitalizedTableName}(${tableName});
     res.json(response);
   } catch (error: any) {
@@ -448,7 +520,7 @@ router.post('/${lowercaseTableName}', async (req, res) => {
 router.put('/${lowercaseTableName}', async (req, res) => {
   try {
     const request = req.body;
-    const ${tableName} = new ${capitalizedTableName}Entidad(${propertiesData.filter((property: { name: string; }) => property.name !== 'USUARIO' && property.name !== 'USR_PSWD').map((prop: { Field: any; }) => `request.${prop.Field}`).join(', ')});
+    const ${tableName} = new ${capitalizedTableName}Entidad(${generatePropsInstance(propertiesData,tableName)});
     const response = await ${capitalizedTableName}Negocio.update${capitalizedTableName}(${tableName});
     res.json(response);
   } catch (error: any) {
@@ -489,11 +561,12 @@ router.patch('/${lowercaseTableName}/:id', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });`;
+
   const validar = `
 router.patch('/${capitalizedTableName}Validar', async (req, res) => {
   try {
-    const {user, pswd} = req.body;
-    const response = await ${capitalizedTableName}Negocio.validar${capitalizedTableName}(user,pswd);
+    const {usuario, pswd} = req.body;
+    const response = await ${capitalizedTableName}Negocio.validar${capitalizedTableName}(usuario,pswd);
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -514,15 +587,20 @@ ${searchidroute}
 ${(tableName === 'usuario') ? patchrouteUser + '\n' + validar : ''}
 export default router;
 `;
+  const carpeta = path.join(__dirname, 'Servicios');
+  const archivo = path.join(carpeta, `${capitalizedTableName}Servicio.ts`);
 
-
-  writeFileSync(`src/Servicios/${capitalizedTableName}Servicio.ts`, content, 'utf8');
+  if (!existsSync(carpeta)) {
+    mkdirSync(carpeta, { recursive: true });
+  }
+  writeFileSync(archivo, content, 'utf8');
 }
 
 async function generateComponentFile(connection: any, tableName: any, primaryKeyColumn: string) {
-  const capitalizedTableName = capitalizeTableName(tableName);
-  const lowercaseTableName = convertToCamelCase(tableName);
-  const propertiesData = await queryTableInfo(connection, tableName);
+  const capitalizedTableName = stringToCapitalize(tableName);
+  const lowercaseTableName = stringToCamelCase(tableName);
+  const properties = await getTableInfo(connection, tableName);
+  const propertiesData = mapProperties(properties);
 
   const content = `
 constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: ${capitalizedTableName}Service) { }
@@ -530,7 +608,7 @@ constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, privat
 modoEdicion: boolean = false;
 elementoId: string = '';
 form = this.formBuilder.group({
-  ${propertiesData.map((prop: { Field: any; }) => `${prop.Field}: ['',Validators.required]`).join(',\n   ')}
+  ${generatePropsComponentForm(propertiesData)}
 })
 
 ngOnInit(): void {
@@ -561,8 +639,7 @@ crear() {
     if (userid) {
       userid = JSON.parse(atob(userid));
       const ${lowercaseTableName}: ${capitalizedTableName} = {
-        ${propertiesData.map((prop: { Field: any; }) => `${prop.Field}:this.form.value.${prop.Field}|| ''`).join(',\n   ')},
-        ESTADO: (this.form.value.ESTADO) ? '1' : '2',
+        ${generatePropsComponentInstance(propertiesData)},
         CREADOR_ID: userid || ''
       };
       this.service.post(${lowercaseTableName}).subscribe(
@@ -594,8 +671,7 @@ editar() {
   if (this.form.valid) {
     const ${lowercaseTableName}: ${capitalizedTableName} = {
       ${primaryKeyColumn}: this.elementoId,
-      ${propertiesData.map((prop: { Field: any; }) => `${prop.Field}:this.form.value.${prop.Field}|| ''`).join(',\n   ')},
-      ESTADO: (this.form.value.ESTADO) ? '1' : '2',
+      ${generatePropsComponentInstance(propertiesData)},
     };
     this.service.put(${lowercaseTableName}).subscribe(
       {
@@ -637,10 +713,7 @@ loadData() {
 }
 
 llenarForm(data: ${capitalizedTableName}) {
-  const estado = (data.ESTADO === 'Activo') ? true : false;
-  ${propertiesData.map((prop: { Field: any; }) => ` this.form.get('${prop.Field}')?.setValue(data.${prop.Field})`).join(';\n   ')}
-  this.form.get('ESTADO')?.setValue(estado); // Asumiendo que 'estado' es un control en tu formulario
-
+  ${generatePropsComponentFormFill(propertiesData)}
 }
 
 openAlertModal(content: string, alertType: string) {
@@ -674,17 +747,21 @@ openConfirmationModal() {
 }
 `;
 
+  const carpeta = path.join(__dirname, 'Componentes');
+  const archivo = path.join(carpeta, `${capitalizedTableName}.ts`);
 
-  writeFileSync(`src/componentes/${capitalizedTableName}.ts`, content, 'utf8');
+  if (!existsSync(carpeta)) {
+    mkdirSync(carpeta, { recursive: true });
+  }
+  writeFileSync(archivo, content, 'utf8');
 }
-
 
 async function main() {
   try {
     const [tables] = await baseDatos.execute<any>('SHOW TABLES');
     for (const table of tables) {
       const tableName = table[`Tables_in_${DB_DATABASE}`];
-      const primaryKeyResult = await queryPrimaryKey(baseDatos, tableName);
+      const primaryKeyResult = await getPrimaryKey(baseDatos, tableName);
       let primaryKeyColumn = 'ID'; // Valor predeterminado
 
       if (primaryKeyResult && primaryKeyResult.length > 0) {
@@ -692,8 +769,9 @@ async function main() {
       }
 
       await generateEntityFile(baseDatos, tableName, primaryKeyColumn);
-      //  await generateNegocioFile(tableName, primaryKeyColumn);
-      //await generateServiceFile(baseDatos, tableName);
+      await generateInterfaceFile(baseDatos, tableName);
+      await generateNegocioFile(tableName, primaryKeyColumn);
+      await generateServiceFile(baseDatos, tableName);
       //await generateComponentFile(baseDatos, tableName, primaryKeyColumn);
     }
     console.info('Archivos creados correctamente');

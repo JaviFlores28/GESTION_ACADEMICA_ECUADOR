@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
 
   icon = faUserTie;
   formulario = this.formBuilder.group({
-    user: ['administrador', [Validators.required, Validators.minLength(8)]],
+    usuario: ['administrador', [Validators.required, Validators.minLength(8)]],
     pswd: ['admin', Validators.required]
   })
 
@@ -25,13 +25,13 @@ export class LoginComponent implements OnInit {
     this.addStyle();
   }
 
-  get user() { return this.formulario.get('user'); }
+  get usuario() { return this.formulario.get('usuario'); }
   get pswd() { return this.formulario.get('pswd'); }
 
   login() {
     if (this.formulario.valid) {
       const usuario: UsuarioLogin = {
-        user: this.formulario.value.user || '', // Si es null o undefined, se asigna una cadena vacía.
+        usuario: this.formulario.value.usuario || '', // Si es null o undefined, se asigna una cadena vacía.
         pswd: this.formulario.value.pswd || '' // Igual aquí para pswd
       };
       this.service.validarUsuario(usuario).subscribe(

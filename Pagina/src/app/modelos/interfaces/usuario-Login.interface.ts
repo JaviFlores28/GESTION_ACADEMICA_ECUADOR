@@ -1,4 +1,4 @@
 export interface UsuarioLogin {
-    user: string,
+    usuario: string,
     pswd: string
 }

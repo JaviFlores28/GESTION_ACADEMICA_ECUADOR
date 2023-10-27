@@ -172,6 +172,8 @@ export class UsuarioComponent {
   }
 
   llenarForm(data: Usuario) {
+    console.log(data);
+    
     this.form.get('USR_DNI')?.setValue(data.USR_DNI);
     this.form.get('USR_NOM')?.setValue(data.USR_NOM);
     this.form.get('USR_NOM2')?.setValue(data.USR_NOM2);
@@ -184,7 +186,7 @@ export class UsuarioComponent {
     this.form.get('USR_FECH_NAC')?.setValue(getFormattedDate(data.USR_FECH_NAC));
     this.form.get('USR_GEN')?.setValue(data.USR_GEN);
     this.form.get('USUARIO')?.setValue(data.USUARIO);
-    this.form.get('ESTADO')?.setValue(data.ESTADO); // Asumiendo que 'estado' es un control en tu formulario
+    this.form.get('ESTADO')?.setValue((data.ESTADO===0)?false:true); // Asumiendo que 'estado' es un control en tu formulario
 
   }
 

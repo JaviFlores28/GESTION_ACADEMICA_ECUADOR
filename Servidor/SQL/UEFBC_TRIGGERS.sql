@@ -38,3 +38,15 @@ BEGIN
 END ;
 //
 DELIMITER ;
+
+--
+DELIMITER $$
+CREATE TRIGGER evitar_eliminacion
+BEFORE DELETE ON usuarios
+FOR EACH ROW
+BEGIN
+  IF OLD.no_eliminable = 1 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No puedes eliminar este registro.';
+  END IF;
+END$$
+DELIMITER ;
