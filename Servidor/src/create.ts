@@ -1,6 +1,9 @@
-import { writeFileSync } from 'fs';
+import { writeFileSync, existsSync, mkdirSync } from 'fs';
+import path from 'path';
 import baseDatos from './Datos/BaseDatos';
 import * as dotenv from 'dotenv';
+
+
 dotenv.config();
 const { DB_DATABASE } = process.env;
 
@@ -16,8 +19,6 @@ interface MappedProperty {
 
 
 function getMappedType(fieldType: string | string[], propertyName: string) {
-  console.log(fieldType);
-
   if (fieldType.includes('tinyint')) {
     return 'boolean';
   } else if (fieldType.includes('char') || fieldType.includes('varchar') || fieldType.includes('enum')) {
@@ -103,6 +104,23 @@ function generateMappedPropsConstruct(propertiesData: any[]) {
   }).join('\n      ');
 }
 
+function generateIsValidProps(propertiesData: any[]) {
+  const excludedProperties = [
+    'FECHA_CREACION',
+    'ROL_PRF',
+    'ROL_REPR',
+    'ROL_ADMIN',
+    'USUARIO',
+    'USR_PSWD',
+    'ESTADO'
+  ];
+
+  return propertiesData
+    .filter((property: { name: string; }) => !excludedProperties.includes(property.name))
+    .map((property: { name: any; }) => `!!this.${property.name}`)
+    .join(' && ');
+}
+
 
 async function generateEntityFile(connection: any, tableName: string, primaryKeyColumn: string) {
   const capitalizedTableName = capitalizeTableName(tableName);
@@ -179,7 +197,7 @@ crearUsuario(dni:string,nom:string,nom2:string,ape:string) {
 
   const isValid = `
 isValid(): boolean {
-  return ${propertiesData.filter((property: { name: string; }) => property.name !== 'FECHA_CREACION' && property.name !== 'ROL_PRF' && property.name !== 'ROL_REPR' && property.name !== 'ROL_ADMIN' && property.name !== 'USUARIO' && property.name !== 'USR_PSWD' && property.name !== 'ESTADO').map((property: { name: any; }) => `!!this.${property.name}`).join(' && ')};
+  return ${generateIsValidProps(propertiesData)};
 }
 `;
 
@@ -196,12 +214,27 @@ class ${capitalizedTableName} {
 export default ${capitalizedTableName};
 `;
 
-
-  let contentinterface = `export interface ${capitalizedTableName} {
+  const content_Interface = `export interface ${capitalizedTableName} {
   ${generateDefinitionProps(propertiesData)}
 }`;
-  writeFileSync(`src/Entidades/${capitalizedTableName}Entidad.ts`, content, 'utf8');
-  writeFileSync(`src/Interfaces/${capitalizedTableName}.interface.ts`, contentinterface, 'utf8');
+
+  const carpetaEntidades = path.join(__dirname, 'Entidades');
+  const archivoEntidad = path.join(carpetaEntidades, `${capitalizedTableName}Entidad.ts`);
+
+  const carpetaInterface = path.join(__dirname, 'Interfaces');
+  const archivoInterface = path.join(carpetaInterface, `${capitalizedTableName}.interface.ts`);
+
+  // Verificar si la carpeta existe, si no, crearla
+  if (!existsSync(carpetaEntidades)) {
+    mkdirSync(carpetaEntidades, { recursive: true });
+  }
+
+  if (!existsSync(carpetaInterface)) {
+    mkdirSync(carpetaInterface, { recursive: true });
+  }
+
+  writeFileSync(archivoEntidad, content, 'utf8');
+  writeFileSync(archivoInterface, content_Interface, 'utf8');
 
 }
 
@@ -659,9 +692,9 @@ async function main() {
       }
 
       await generateEntityFile(baseDatos, tableName, primaryKeyColumn);
-      await generateNegocioFile(tableName, primaryKeyColumn);
-      await generateServiceFile(baseDatos, tableName);
-      await generateComponentFile(baseDatos, tableName, primaryKeyColumn);
+      //  await generateNegocioFile(tableName, primaryKeyColumn);
+      //await generateServiceFile(baseDatos, tableName);
+      //await generateComponentFile(baseDatos, tableName, primaryKeyColumn);
     }
     console.info('Archivos creados correctamente');
   } catch (error: any) {
