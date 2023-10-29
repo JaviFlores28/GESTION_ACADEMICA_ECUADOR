@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faCircleCheck, faCircleXmark, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCircleCheck, faCircleXmark, faInfoCircle, faKey, faPersonChalkboard, faUser } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from 'src/app/componentes/modal/modal.component';
+import { DetalleUsuarioProfesor } from 'src/app/modelos/interfaces/DetalleUsuarioProfesor.interface';
 import { Usuario } from 'src/app/modelos/interfaces/Usuario.interface';
-import { getFormattedDate, variables } from 'src/app/modelos/variables/variables';
+import { getFormattedDate } from 'src/app/modelos/variables/variables';
+import { DetalleUsuarioProfesorService } from 'src/app/servicios/detalle-usuario-profesor.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
@@ -15,10 +17,18 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 })
 export class UsuarioComponent {
 
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: UsuarioService) { }
+  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: UsuarioService, private serviceDetalle: DetalleUsuarioProfesorService) { }
 
   modoEdicion: boolean = false;
   elementoId: string = '';
+  icon = faInfoCircle;
+  fauser = faUser;
+  fakey = faKey;
+  faperson = faPersonChalkboard;
+  isRep = false;
+  isAdmin = false;
+  isProf = false;
+
   form = this.formBuilder.group({
     USR_DNI: ['', Validators.required],
     USR_NOM: ['', Validators.required],
@@ -31,13 +41,34 @@ export class UsuarioComponent {
     USR_EMAIL: ['', Validators.required],
     USR_FECH_NAC: [getFormattedDate(new Date()), Validators.required],
     USR_GEN: ['', Validators.required],
-    USUARIO: ['', Validators.required],
+    USUARIO: [{ value: '', disabled: true }, Validators.required],
     ESTADO: [true, Validators.required],
+    PRF_FECH_INGR_INST: [getFormattedDate(new Date()), Validators.required],
+    PRF_FECH_INGR_MAG: [getFormattedDate(new Date()), Validators.required]
+  })
+
+  formPswd = this.formBuilder.group({
+    USR_PSWD_NEW: ['', Validators.required],
+    USR_PSWD: ['', Validators.required]
   })
 
   ngOnInit(): void {
-    this.validarEdicion();
+    this.determinarRolDesdeRuta();
+    this.validarEdicion();    
   }
+
+  determinarRolDesdeRuta() {
+    const rutaActual = this.router.url.split('/');
+    const rol = rutaActual[2];
+
+    if (rol === 'usuarios') {
+        this.isAdmin = true;
+    } else if (rol === 'institucion') {
+        const subrol = rutaActual[3];
+        this.isRep = (subrol === 'representantes');
+        this.isProf = (subrol === 'profesores');
+    }
+}
 
   validarEdicion() {
     this.route.paramMap.subscribe(params => {
@@ -57,110 +88,134 @@ export class UsuarioComponent {
     this.openConfirmationModal();
   }
 
+  onSubmitPswd() {
+    console.log(this.form.value);
+  }
+
   crear() {
-    this.form.get('USUARIO')?.disable();
     if (this.form.valid) {
-      console.log('aqui');
-      let userid = localStorage.getItem(variables.KEY_NAME);
-      if (userid) {
-        userid = JSON.parse(atob(userid));
-        const usuario: Usuario = {
-          USR_ID: '0',
-          USR_DNI: this.form.value.USR_DNI || '',
-          USR_NOM: this.form.value.USR_NOM || '',
-          USR_NOM2: this.form.value.USR_NOM2 || '',
-          USR_APE: this.form.value.USR_APE || '',
-          USR_APE2: this.form.value.USR_APE2 || '',
-          USR_DIR: this.form.value.USR_DIR || '',
-          USR_TEL: this.form.value.USR_TEL || '',
-          USR_CEL: this.form.value.USR_CEL || '',
-          USR_EMAIL: this.form.value.USR_EMAIL || '',
-          USR_FECH_NAC: this.form.value.USR_FECH_NAC ? new Date(this.form.value.USR_FECH_NAC) : new Date(),
-          USR_GEN: this.form.value.USR_GEN || '',
-          USUARIO: 'NO USER',
-          ROL_PRF: false,
-          ROL_REPR: false,
-          ROL_ADMIN: true,
-          ESTADO: this.form.value.ESTADO || false,
-          USR_PSWD: 'NO PSWD'
-        };
-        this.service.post(usuario).subscribe(
-          {
-            next: (response) => {
-              if (!response.data) {
-                this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-                console.log(response.message);
-              } else {
-                this.openAlertModal(response.message, 'success')
-                console.log(response.message);
-                this.form.reset();
-                this.router.navigate(['../'], { relativeTo: this.route });
-              }
-            },
-            error: (error) => {
-              this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-              console.log(error);;
-            }
-          }
-        );
-      }
+      //const userId = this.service.getUserLoggedId();
+      const usuario: Usuario = this.buildUsuarioObject();
+      const detalle = this.isProf ? this.buildDetalleUsuarioProfesorObject() : undefined;
+
+      this.service.post(usuario, detalle).subscribe(
+        {
+          next: (response) => {
+            this.handleResponse(response);
+          },
+          error: (error) => this.handleErrorResponse(error)
+        }
+      );
     } else {
       this.form.markAllAsTouched();
     }
   }
 
+
   editar() {
     if (this.form.valid) {
-      const usuario: Usuario = {
-        USR_ID: this.elementoId,
-        USR_DNI: this.form.value.USR_DNI || '',
-        USR_NOM: this.form.value.USR_NOM || '',
-        USR_NOM2: this.form.value.USR_NOM2 || '',
-        USR_APE: this.form.value.USR_APE || '',
-        USR_APE2: this.form.value.USR_APE2 || '',
-        USR_DIR: this.form.value.USR_DIR || '',
-        USR_TEL: this.form.value.USR_TEL || '',
-        USR_CEL: this.form.value.USR_CEL || '',
-        USR_EMAIL: this.form.value.USR_EMAIL || '',
-        USR_FECH_NAC: (this.form.value.USR_FECH_NAC) ? new Date(this.form.value.USR_FECH_NAC) : new Date(),
-        USR_GEN: this.form.value.USR_GEN || '',
-        USUARIO: 'NO USER',
-        ROL_PRF: false,
-        ROL_REPR: false,
-        ROL_ADMIN: true,
-        ESTADO: this.form.value.ESTADO || false,
-        USR_PSWD: 'NO PSWD'
-      };
+      const usuario: Usuario = this.buildUsuarioObjectEdit();
 
       this.service.put(usuario).subscribe(
         {
           next: (response) => {
-            if (!response.data) {
-              this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-              console.log(response.message);
-            } else {
-              this.openAlertModal(response.message, 'success')
-              console.log(response.message);
-            }
-
+            this.handleResponse(response);
           },
-          error: (errordata) => {
-            this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-            console.log(errordata);
-          }
+          error: (error) => this.handleErrorResponse(error)
         }
       );
-      // this.form.reset();
+
     } else {
       this.form.markAllAsTouched();
     }
+  }
+
+  handleResponse(response: any) {
+    if (!response.data) {
+      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+      console.log(response.message);
+    } else {
+      if (this.modoEdicion) {
+        this.openAlertModal(response.message, 'success');
+        console.log(response.message);
+      } else {
+        this.openAlertModal(response.message, 'success');
+        this.form.reset();
+        this.router.navigate(['../editar/' + response.data], { relativeTo: this.route });
+      }
+
+    }
+  }
+
+  handleErrorResponse(error: any) {
+    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    console.log(error);
+  }
+
+  buildUsuarioObjectEdit() {
+    const usuario: Usuario = {
+      USR_ID: this.elementoId,
+      USR_DNI: this.form.value.USR_DNI || '',
+      USR_NOM: this.form.value.USR_NOM || '',
+      USR_NOM2: this.form.value.USR_NOM2 || '',
+      USR_APE: this.form.value.USR_APE || '',
+      USR_APE2: this.form.value.USR_APE2 || '',
+      USR_DIR: this.form.value.USR_DIR || '',
+      USR_TEL: this.form.value.USR_TEL || '',
+      USR_CEL: this.form.value.USR_CEL || '',
+      USR_EMAIL: this.form.value.USR_EMAIL || '',
+      USR_FECH_NAC: (this.form.value.USR_FECH_NAC) ? new Date(this.form.value.USR_FECH_NAC) : new Date(),
+      USR_GEN: this.form.value.USR_GEN || '',
+      USUARIO: 'NO USER',
+      ROL_PRF: (this.isProf) ? 1 : 0,
+      ROL_REPR: (this.isRep) ? 1 : 0,
+      ROL_ADMIN: (this.isAdmin) ? 1 : 0,
+      ESTADO: (this.form.value.ESTADO) ? 1 : 0,
+      USR_PSWD: 'NO PSWD'
+    };
+    return usuario;
+  }
+
+  buildUsuarioObject() {
+    const usuario: Usuario = {
+      USR_ID: '0',
+      USR_DNI: this.form.value.USR_DNI || '',
+      USR_NOM: this.form.value.USR_NOM || '',
+      USR_NOM2: this.form.value.USR_NOM2 || '',
+      USR_APE: this.form.value.USR_APE || '',
+      USR_APE2: this.form.value.USR_APE2 || '',
+      USR_DIR: this.form.value.USR_DIR || '',
+      USR_TEL: this.form.value.USR_TEL || '',
+      USR_CEL: this.form.value.USR_CEL || '',
+      USR_EMAIL: this.form.value.USR_EMAIL || '',
+      USR_FECH_NAC: this.form.value.USR_FECH_NAC ? new Date(this.form.value.USR_FECH_NAC) : new Date(),
+      USR_GEN: this.form.value.USR_GEN || '',
+      USUARIO: 'NO USER',
+      ROL_PRF: (this.isProf) ? 1 : 0,
+      ROL_REPR: (this.isRep) ? 1 : 0,
+      ROL_ADMIN: (this.isAdmin) ? 1 : 0,
+      ESTADO: (this.form.value.ESTADO) ? 1 : 0,
+      USR_PSWD: 'NO PSWD'
+    };
+    return usuario;
+  }
+
+  buildDetalleUsuarioProfesorObject() {
+    const detalle: DetalleUsuarioProfesor = {
+      DTLL_PRF_ID: '0',
+      PRF_FECH_INGR_INST: this.form.value.PRF_FECH_INGR_INST ? new Date(this.form.value.PRF_FECH_INGR_INST) : new Date(),
+      PRF_FECH_INGR_MAG: this.form.value.PRF_FECH_INGR_MAG ? new Date(this.form.value.PRF_FECH_INGR_MAG) : new Date(),
+      USR_ID: '0'
+    }
+    return detalle;
   }
 
   loadData() {
     this.service.searchById(this.elementoId).subscribe({
       next: (value) => {
         if (value.data) {
-          this.llenarForm(value.data);
+          this.loadForm(value.data);
+          this.loadDetalle()
         } else {
           console.log(value.message);
         }
@@ -171,9 +226,7 @@ export class UsuarioComponent {
     });
   }
 
-  llenarForm(data: Usuario) {
-    console.log(data);
-    
+  loadForm(data: Usuario) {
     this.form.get('USR_DNI')?.setValue(data.USR_DNI);
     this.form.get('USR_NOM')?.setValue(data.USR_NOM);
     this.form.get('USR_NOM2')?.setValue(data.USR_NOM2);
@@ -186,8 +239,28 @@ export class UsuarioComponent {
     this.form.get('USR_FECH_NAC')?.setValue(getFormattedDate(data.USR_FECH_NAC));
     this.form.get('USR_GEN')?.setValue(data.USR_GEN);
     this.form.get('USUARIO')?.setValue(data.USUARIO);
-    this.form.get('ESTADO')?.setValue((data.ESTADO===0)?false:true); // Asumiendo que 'estado' es un control en tu formulario
+    this.form.get('ESTADO')?.setValue((data.ESTADO === 0) ? false : true); // Asumiendo que 'estado' es un control en tu formulario
+    this.isAdmin = (data.ROL_ADMIN === 0) ? false : true;
+    this.isProf = (data.ROL_PRF === 0) ? false : true;
+    this.isRep = (data.ROL_REPR === 0) ? false : true;
+  }
 
+  loadDetalle() {
+    this.serviceDetalle.searchById(this.elementoId).subscribe({
+      next: (value) => {
+        if (value.data) {
+          this.loadFormDetalle(value.data)
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+  }
+
+  loadFormDetalle(data: any) {
+    this.form.get('PRF_FECH_INGR_INST')?.setValue(getFormattedDate(data.PRF_FECH_INGR_INST));
+    this.form.get('PRF_FECH_INGR_MAG')?.setValue(getFormattedDate(data.PRF_FECH_INGR_MAG));
   }
 
   openAlertModal(content: string, alertType: string) {

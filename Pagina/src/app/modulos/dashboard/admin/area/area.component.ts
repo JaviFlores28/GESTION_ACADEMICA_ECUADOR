@@ -5,8 +5,8 @@ import { faCircleCheck, faCircleXmark, faInfoCircle } from '@fortawesome/free-so
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from 'src/app/componentes/modal/modal.component';
 import { Area } from 'src/app/modelos/interfaces/Area.interface';
-import { variables } from 'src/app/modelos/variables/variables';
 import { AreaService } from 'src/app/servicios/area.service';
+import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
   selector: 'app-area',
@@ -14,7 +14,7 @@ import { AreaService } from 'src/app/servicios/area.service';
   styleUrls: ['./area.component.scss']
 })
 export class AreaComponent implements OnInit {
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: AreaService) {}
+  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: AreaService, private serviceUsuario: UsuarioService) { }
 
   modoEdicion: boolean = false;
   elementoId: string = '';
@@ -48,14 +48,13 @@ export class AreaComponent implements OnInit {
 
   crear() {
     if (this.form.valid) {
-      let userid = localStorage.getItem(variables.KEY_NAME);
-      if (userid) {
-        userid = JSON.parse(atob(userid));
+      let userid = this.serviceUsuario.getUserLoggedId();
+      if (userid !== '') {
         const area: Area = {
           AREA_ID: '0',
           AREA_NOM: this.form.value.nom || '',
-          ESTADO: this.form.value.estado||false,
-          CREADOR_ID: userid || ''
+          ESTADO: (this.form.value.estado) ? 1 : 0,
+          CREADOR_ID: userid
         };
         this.service.post(area).subscribe(
           {
@@ -87,7 +86,7 @@ export class AreaComponent implements OnInit {
       const area: Area = {
         AREA_ID: this.elementoId,
         AREA_NOM: this.form.value.nom || '',
-        ESTADO: this.form.value.estado||false,
+        ESTADO: (this.form.value.estado) ? 1 : 0,
         CREADOR_ID: '1'
       };
       this.service.put(area).subscribe(
@@ -130,8 +129,7 @@ export class AreaComponent implements OnInit {
   }
 
   llenarForm(data: Area) {
-    const estado = data.ESTADO
-    this.form.get('estado')?.setValue(estado); // Asumiendo que 'estado' es un control en tu formulario
+    this.form.get('estado')?.setValue((data.ESTADO === 0) ? false : true); // Asumiendo que 'estado' es un control en tu formulario
     this.form.get('nom')?.setValue(data.AREA_NOM); // Asumiendo que 'nom' es un control en tu formulario
   }
 
@@ -164,5 +162,5 @@ export class AreaComponent implements OnInit {
       console.log(error);
     });
   }
-  
+
 }

@@ -1,16 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError } from 'rxjs';
+import { DetalleUsuarioProfesor } from '../modelos/interfaces/DetalleUsuarioProfesor.interface';
+import { Respuesta } from '../modelos/interfaces_sistema/respuesta.interface';
 import { variables } from '../modelos/variables/variables';
 import { ErrorHandlerService } from './error-handler.service';
-import { Profesor } from '../modelos/interfaces/profesor.interface';
-import { Respuesta } from '../modelos/interfaces/respuesta.interface';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProfesorService extends ErrorHandlerService {
-  private apiUrl = variables.URL_API + '/profesor'// Reemplaza con tu URL
+export class DetalleUsuarioProfesorService extends ErrorHandlerService {
+  private apiUrl = variables.URL_API + '/detalleusuarioprofesor'// Reemplaza con tu URL
 
   constructor(private http: HttpClient) {
     super();
@@ -26,12 +26,12 @@ export class ProfesorService extends ErrorHandlerService {
       catchError(this.handleError));
   }
 
-  post(profesor: Profesor): Observable<any> {
+  post(profesor: DetalleUsuarioProfesor): Observable<any> {
     return this.http.post(this.apiUrl, profesor).pipe(
       catchError(this.handleError));
   }
 
-  put(profesor: Profesor): Observable<any> {
+  put(profesor: DetalleUsuarioProfesor): Observable<any> {
     return this.http.put(this.apiUrl, profesor).pipe(
       catchError(this.handleError));
   }

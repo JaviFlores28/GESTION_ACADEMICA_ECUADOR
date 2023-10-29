@@ -1,12 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { TablaComponent } from './tabla/tabla.component';
 import { ModalComponent } from './modal/modal.component';
 import { AppRoutingModule } from '../app-routing.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-
-
 
 @NgModule({
   declarations: [
@@ -16,11 +15,14 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   imports: [
     CommonModule,
     AppRoutingModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
-  exports:[
+  exports: [
     TablaComponent,
-    ModalComponent
+    ModalComponent,
   ]
+  
 })
 export class ComponentesModule { }

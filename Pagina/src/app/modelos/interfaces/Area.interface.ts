@@ -1,7 +1,7 @@
 export interface Area {
   AREA_ID: string;
     AREA_NOM: string;
-    ESTADO: boolean;
+    ESTADO: number;
     CREADOR_ID: string;
     FECHA_CREACION?: Date | undefined;
 }

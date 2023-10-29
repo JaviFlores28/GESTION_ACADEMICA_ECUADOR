@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError } from 'rxjs';
 import { variables } from '../modelos/variables/variables';
 import { ErrorHandlerService } from './error-handler.service';
+import { Respuesta } from '../modelos/interfaces_sistema/respuesta.interface';
 import { AnioLectivo } from '../modelos/interfaces/AnioLectivo.interface';
-import { Respuesta } from '../modelos/interfaces/respuesta.interface';
 
 @Injectable({
   providedIn: 'root'

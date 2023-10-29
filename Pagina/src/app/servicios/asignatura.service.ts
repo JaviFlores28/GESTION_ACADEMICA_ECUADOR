@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, catchError } from 'rxjs';
 import { variables } from '../modelos/variables/variables';
 import { ErrorHandlerService } from './error-handler.service';
+import { Respuesta } from '../modelos/interfaces_sistema/respuesta.interface';
 import { Asignatura } from '../modelos/interfaces/Asignatura.interface';
-import { Respuesta } from '../modelos/interfaces/respuesta.interface';
 
 @Injectable({
   providedIn: 'root'

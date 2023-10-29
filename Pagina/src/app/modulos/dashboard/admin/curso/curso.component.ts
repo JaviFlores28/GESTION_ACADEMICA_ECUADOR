@@ -5,8 +5,8 @@ import { faCircleCheck, faCircleXmark, faInfoCircle } from '@fortawesome/free-so
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from 'src/app/componentes/modal/modal.component';
 import { Curso } from 'src/app/modelos/interfaces/Curso.interface';
-import { variables } from 'src/app/modelos/variables/variables';
 import { CursoService } from 'src/app/servicios/curso.service';
+import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
   selector: 'app-curso',
@@ -15,7 +15,7 @@ import { CursoService } from 'src/app/servicios/curso.service';
 })
 export class CursoComponent {
 
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: CursoService) { }
+  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: CursoService, private serviceUsuario:UsuarioService) { }
 
 
   modoEdicion: boolean = false;
@@ -52,15 +52,14 @@ export class CursoComponent {
 
   crear() {
     if (this.form.valid) {
-      let userid = localStorage.getItem(variables.KEY_NAME);
-      if (userid) {
-        userid = JSON.parse(atob(userid));
+      let userid = this.serviceUsuario.getUserLoggedId();
+      if (userid!=='') {
         const curso: Curso = {
           CRS_ID: '0',
           CRS_NOM: this.form.value.nom || '',
           CRS_TIPO: this.form.value.tip || '',
           CRS_ORDEN: this.form.value.orden || 0,
-          ESTADO: this.form.value.estado || false,
+          ESTADO:(this.form.value.estado) ? 1 : 0,
           CREADOR_ID: userid || ''
         };
         this.service.post(curso).subscribe(
@@ -95,7 +94,7 @@ export class CursoComponent {
         CRS_NOM: this.form.value.nom || '',
         CRS_TIPO: this.form.value.tip || '',
         CRS_ORDEN: this.form.value.orden || 0,
-        ESTADO: this.form.value.estado || false,
+        ESTADO: (this.form.value.estado) ? 1 : 0,
         CREADOR_ID: '1'
       };
       this.service.put(curso).subscribe(
@@ -141,7 +140,7 @@ export class CursoComponent {
     this.form.get('nom')?.setValue(data.CRS_NOM); // Asumiendo que 'nom' es un control en tu formulario
     this.form.get('tip')?.setValue(data.CRS_TIPO); // Asumiendo que 'estado' es un control en tu formulario
     this.form.get('orden')?.setValue(data.CRS_ORDEN); // Asumiendo que 'nom' es un control en tu formulario
-    this.form.get('estado')?.setValue(data.ESTADO); // Asumiendo que 'estado' es un control en tu formulario
+    this.form.get('estado')?.setValue((data.ESTADO === 0) ? false : true); // Asumiendo que 'estado' es un control en tu formulario
   }
 
   openAlertModal(content: string, alertType: string) {

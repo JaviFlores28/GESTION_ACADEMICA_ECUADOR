@@ -3,7 +3,7 @@ export interface Parametro {
     PRMT_NOM: string;
     PRMT_DESCR: string;
     PRMT_URL_IMG: string;
-    ESTADO: boolean;
+    ESTADO: number;
     CREADOR_ID: string;
     FECHA_CREACION?: Date | undefined;
 }

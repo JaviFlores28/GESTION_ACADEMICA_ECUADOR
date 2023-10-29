@@ -5,7 +5,7 @@ export interface CalificacionesPeriodo {
     CALIFICACION_CNTVA: number;
     CALIFICACION_CLTVA: string;
     PRD_ID: string;
-    ESTADO: boolean;
+    ESTADO: number;
     CREADOR_ID: string;
     FECHA_CREACION?: Date | undefined;
 }

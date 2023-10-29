@@ -16,6 +16,7 @@ interface MappedProperty {
   name: any;
   type: any;
   key: any;
+  type_old: any;
 }
 
 //obtiene el tipo de mapeo a convertir
@@ -40,7 +41,8 @@ function mapProperties(properties: ColumnData[]): MappedProperty[] {
     const propertyName = column.Field;
     const mappedType = getMappedType(fieldType, propertyName);
     const key = column.Key;
-    return { name: propertyName, type: mappedType, key: key };
+
+    return { name: propertyName, type: mappedType, key: key, type_old: fieldType };
   });
 }
 
@@ -131,14 +133,13 @@ function generatePropsInstance(propertiesData: MappedProperty[], table: string) 
 }
 
 function generatePropsComponentForm(propertiesData: MappedProperty[]) {
-
-  const excludedProperties = ['USR_ID', 'USR_PSWD', 'FECHA_CREACION', 'ESTADO', 'CREADOR_ID', 'ROL_ADMIN', 'ROL_REPR', 'ROL_PRF'];
+  const excludedProperties = ['USR_ID', 'USR_PSWD', 'FECHA_CREACION', 'ESTADO', 'CREADOR_ID'];
   return propertiesData
     .filter((property) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
     .map((property) => {
       if (property.type === 'Date') {
         return `${property.name}: [getFormattedDate(new Date()),Validators.required]`
-      } else if (property.type === 'boolean') {
+      } else if (property.type_old.includes('tinyint')) {
         return `${property.name}: [false,Validators.required]`
       } else {
         return `${property.name}: ['',Validators.required]`
@@ -149,14 +150,14 @@ function generatePropsComponentForm(propertiesData: MappedProperty[]) {
 }
 
 function generatePropsComponentInstance(propertiesData: MappedProperty[]) {
-  const excludedProperties = ['USR_ID', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID', 'USUARIO'];
+  const excludedProperties = ['USR_ID', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID', 'USUARIO', 'ROL_ADMIN', 'ROL_REPR', 'ROL_PRF'];
   return propertiesData
     .filter((property) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
     .map((property) => {
       if (property.type === 'Date') {
         return `${property.name}:this.form.value.${property.name} ? new Date(this.form.value.${property.name}) : new Date()`
-      } else if (property.type === 'boolean') {
-        return `${property.name}:this.form.value.${property.name}|| false`
+      } else if (property.type_old.includes('tinyint')) {
+        return `${property.name}: (this.form.value.${property.name}) ? 1 : 0`
       } else {
         return `${property.name}:this.form.value.${property.name}|| ''`
       }
@@ -171,6 +172,8 @@ function generatePropsComponentFormFill(propertiesData: MappedProperty[]) {
     .map((property) => {
       if (property.type === 'Date') {
         return `this.form.get('${property.name}')?.setValue(getFormattedDate(data.${property.name}))`
+      } else if (property.type_old.includes('tinyint')) {
+        return `this.form.get('${property.name}')?.setValue((data.${property.name} === 1) ? true : false)`
       } else {
         return `this.form.get('${property.name}')?.setValue(data.${property.name})`
       }
@@ -221,7 +224,7 @@ sqlUpdate(): { query: string; values: any[] } {
   Object.keys(this).forEach(propiedad => {
       const valor = this[propiedad as keyof this];
 
-      if (valor !== undefined && propiedad !== 'FECHA_CREACION' && propiedad !== '${primaryKeyColumn}' && propiedad !== 'CREADOR_ID' ${(tableName === 'usuario') ? '&& propiedad!==\'USR_PSWD\' && propiedad!==\'USUARIO\'' : ''}) {
+      if (valor !== undefined && propiedad !== 'FECHA_CREACION' && propiedad !== '${primaryKeyColumn}' && propiedad !== 'CREADOR_ID' ${(tableName === 'usuario') ? '&& propiedad!==\'USR_PSWD\' && propiedad!==\'USUARIO\'  && propiedad!==\'ROL_ADMIN\'  && propiedad!==\'ROL_PRF\'  && propiedad!==\'ROL_REPR\'' : ''}) {
           if (typeof valor === 'string') {
               valoresStr.push(\`\${propiedad} = ?\`);
               valores.push(valor);
@@ -508,7 +511,7 @@ router.get('/${lowercaseTableName}Enabled', async (req, res) => {
 router.post('/${lowercaseTableName}', async (req, res) => {
    try {
     const request = req.body;
-    const ${tableName} = new ${capitalizedTableName}Entidad(${generatePropsInstance(propertiesData,tableName)});
+    const ${tableName} = new ${capitalizedTableName}Entidad(${generatePropsInstance(propertiesData, tableName)});
     const response = await ${capitalizedTableName}Negocio.add${capitalizedTableName}(${tableName});
     res.json(response);
   } catch (error: any) {
@@ -520,7 +523,7 @@ router.post('/${lowercaseTableName}', async (req, res) => {
 router.put('/${lowercaseTableName}', async (req, res) => {
   try {
     const request = req.body;
-    const ${tableName} = new ${capitalizedTableName}Entidad(${generatePropsInstance(propertiesData,tableName)});
+    const ${tableName} = new ${capitalizedTableName}Entidad(${generatePropsInstance(propertiesData, tableName)});
     const response = await ${capitalizedTableName}Negocio.update${capitalizedTableName}(${tableName});
     res.json(response);
   } catch (error: any) {
@@ -640,6 +643,7 @@ crear() {
       userid = JSON.parse(atob(userid));
       const ${lowercaseTableName}: ${capitalizedTableName} = {
         ${generatePropsComponentInstance(propertiesData)},
+       ${(tableName === 'usuario') ? ' ROL_PRF: 0,\nROL_REPR: 0,\nROL_ADMIN: 1,' : ''}
         CREADOR_ID: userid || ''
       };
       this.service.post(${lowercaseTableName}).subscribe(
@@ -768,11 +772,11 @@ async function main() {
         primaryKeyColumn = primaryKeyResult[0].Column_name;
       }
 
-      await generateEntityFile(baseDatos, tableName, primaryKeyColumn);
+     // await generateEntityFile(baseDatos, tableName, primaryKeyColumn);
       await generateInterfaceFile(baseDatos, tableName);
-      await generateNegocioFile(tableName, primaryKeyColumn);
-      await generateServiceFile(baseDatos, tableName);
-      //await generateComponentFile(baseDatos, tableName, primaryKeyColumn);
+     // await generateNegocioFile(tableName, primaryKeyColumn);
+      //await generateServiceFile(baseDatos, tableName);
+      await generateComponentFile(baseDatos, tableName, primaryKeyColumn);
     }
     console.info('Archivos creados correctamente');
   } catch (error: any) {

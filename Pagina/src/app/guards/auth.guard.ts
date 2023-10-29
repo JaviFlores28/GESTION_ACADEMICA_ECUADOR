@@ -25,3 +25,15 @@ export const authGuardLogin: CanActivateFn = (route, state) => {
     return true;
   }
 };
+
+
+export const isAdmin: CanActivateFn = async (route, state) => {
+  const auth=inject(UsuarioService);
+  const router=inject(Router);
+  if (await auth.hasRol('A')) {
+    return true;
+  }else{
+    router.navigate(['']);
+    return false;
+  }
+};

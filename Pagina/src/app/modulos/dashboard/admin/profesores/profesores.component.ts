@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from 'src/app/componentes/modal/modal.component';
-import { Profesor } from 'src/app/modelos/interfaces/profesor.interface';
+import { DetalleUsuarioProfesor } from 'src/app/modelos/interfaces/DetalleUsuarioProfesor.interface';
 
 @Component({
   selector: 'app-profesores',
@@ -9,7 +9,7 @@ import { Profesor } from 'src/app/modelos/interfaces/profesor.interface';
   styleUrls: ['./profesores.component.scss']
 })
 export class ProfesoresComponent {
-  data: Profesor[] = [];
+  data: DetalleUsuarioProfesor[] = [];
   headers: string[] = [];
   icon = [
     { icono: 'fa-edit', routerLink: 'editar', id: true ,ruta:true },

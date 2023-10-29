@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './dashboard/home/home.component';
 import { LoginComponent } from './login/login.component';
-import { authGuard, authGuardLogin } from 'src/app/guards/auth.guard';
+import { authGuard, authGuardLogin, isAdmin } from 'src/app/guards/auth.guard';
 import { InicioComponent } from './inicio/inicio.component';
 import { CursoComponent } from './admin/curso/curso.component';
 import { CursosComponent } from './admin/cursos/cursos.component';
@@ -16,8 +16,6 @@ import { MatriculasComponent } from './admin/matriculas/matriculas.component';
 import { UsuariosComponent } from './admin/usuarios/usuarios.component';
 import { UsuarioComponent } from './admin/usuario/usuario.component';
 import { AsignaturaComponent } from './admin/asignatura/asignatura.component';
-import { ProfesorComponent } from './admin/profesor/profesor.component';
-import { RepresentanteComponent } from './admin/representante/representante.component';
 import { EstudianteComponent } from './admin/estudiante/estudiante.component';
 import { MatriculaComponent } from './admin/matricula/matricula.component';
 import { AnioLectivoComponent } from './admin/anio-lectivo/anio-lectivo.component';
@@ -46,7 +44,7 @@ const routes: Routes = [
         }]
       },
       {
-        path: 'institucion',
+        path: 'institucion', canActivate: [isAdmin],
         children: [
           {
             path: 'anio-lectivo', children: [
@@ -82,8 +80,8 @@ const routes: Routes = [
             path: 'profesores',
             children: [
               { path: '', component: ProfesoresComponent },
-              { path: 'nuevo', component: ProfesorComponent },
-              { path: 'editar/:id', component: ProfesorComponent },
+              { path: 'nuevo', component: UsuarioComponent },
+              { path: 'editar/:id', component: UsuarioComponent },
             ]
           },
           {
@@ -106,8 +104,8 @@ const routes: Routes = [
             path: 'representantes',
             children: [
               { path: '', component: RepresentantesComponent },
-              { path: 'nuevo', component: RepresentanteComponent },
-              { path: 'editar/:id', component: RepresentanteComponent },
+              { path: 'nuevo', component: UsuarioComponent },
+              { path: 'editar/:id', component: UsuarioComponent },
             ]
           },
           {
@@ -125,7 +123,8 @@ const routes: Routes = [
               { path: 'nuevo', component: MatriculaComponent },
               { path: 'editar/:id', component: MatriculaComponent },
             ]
-          },]
+          },
+        ]
       },
       {
         path: 'usuarios',

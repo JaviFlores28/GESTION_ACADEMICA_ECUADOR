@@ -1,20 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, lastValueFrom } from 'rxjs';
-
+import { Observable, catchError, lastValueFrom, of, switchMap } from 'rxjs';
 import { variables } from '../modelos/variables/variables';
 import { ErrorHandlerService } from './error-handler.service';
+import { Respuesta } from '../modelos/interfaces_sistema/respuesta.interface';
+import { UsuarioLogin } from '../modelos/interfaces_sistema/usuario-Login.interface';
+import { DetalleUsuarioProfesor } from '../modelos/interfaces/DetalleUsuarioProfesor.interface';
+import { DetalleUsuarioProfesorService } from './detalle-usuario-profesor.service';
 import { Usuario } from '../modelos/interfaces/Usuario.interface';
-import { Respuesta } from '../modelos/interfaces/respuesta.interface';
-import { UsuarioLogin } from '../modelos/interfaces/usuario-Login.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsuarioService extends ErrorHandlerService {
-  private apiUrl = variables.URL_API +'/usuario' // Reemplaza con tu URL
+  private apiUrl = variables.URL_API + '/usuario' // Reemplaza con tu URL
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private detalleService: DetalleUsuarioProfesorService) {
     super();
   }
 
@@ -28,10 +29,15 @@ export class UsuarioService extends ErrorHandlerService {
       catchError(this.handleError));
   }
 
-  post(usuario: Usuario): Observable<any> {
-    return this.http.post(this.apiUrl, usuario).pipe(
-      catchError(this.handleError));
+
+  post(usuario: Usuario, detalle?: DetalleUsuarioProfesor): Observable<any> {
+    if (detalle) {
+      return this.http.post(this.apiUrl, {usuario,detalle}).pipe(catchError(this.handleError));
+    } else {
+      return this.http.post(this.apiUrl, {usuario}).pipe(catchError(this.handleError));
+    }
   }
+
 
   put(usuario: Usuario): Observable<any> {
     return this.http.put(this.apiUrl, usuario).pipe(
@@ -66,17 +72,21 @@ export class UsuarioService extends ErrorHandlerService {
     localStorage.removeItem(variables.KEY_NAME);
   }
 
+
+  getUserLoggedId() {
+    const userId = localStorage.getItem(variables.KEY_NAME);
+    return userId ? JSON.parse(atob(userId)) : '';
+  }
+
   isLoggedIn(): boolean {
     const userString = localStorage.getItem(variables.KEY_NAME);
     return !!userString;
   }
 
   async getUserLogged(): Promise<Usuario | null> {
-    const id = localStorage.getItem(variables.KEY_NAME);
-    if (!id) { return null; }
-    const parsedId = JSON.parse(atob(id));
+    const id = this.getUserLoggedId()
     try {
-      const response = await lastValueFrom(this.searchById(parsedId));
+      const response = await lastValueFrom(this.searchById(id));
       if (!response) {
         return null;
       }
@@ -91,9 +101,9 @@ export class UsuarioService extends ErrorHandlerService {
     const user = await this.getUserLogged();
     if (!user) return false;
 
-    return (user.ROL_PRF && rol === 'P') ||
-      (user.ROL_ADMIN&& rol === 'A') ||
-      (user.ROL_REPR && rol === 'R');
+    return (user.ROL_PRF === 1 && rol === 'P') ||
+      (user.ROL_ADMIN === 1 && rol === 'A') ||
+      (user.ROL_REPR === 1 && rol === 'R');
   }
 
 }

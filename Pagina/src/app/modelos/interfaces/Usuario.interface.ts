@@ -13,9 +13,9 @@ export interface Usuario {
     USR_GEN: string;
     USUARIO: string;
     USR_PSWD: string;
-    ROL_PRF: boolean;
-    ROL_REPR: boolean;
-    ROL_ADMIN: boolean;
-    ESTADO: boolean;
+    ROL_PRF: number;
+    ROL_REPR: number;
+    ROL_ADMIN: number;
+    ESTADO: number;
     FECHA_CREACION?: Date | undefined;
 }

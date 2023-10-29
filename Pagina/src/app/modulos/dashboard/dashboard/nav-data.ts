@@ -1,5 +1,5 @@
 import { faChalkboardTeacher, faHome, faLaptopFile, faSchool, faUsers } from "@fortawesome/free-solid-svg-icons";
-import { NavBarData } from "src/app/modelos/interfaces/NavBarData.interface";
+import { NavBarData } from "src/app/modelos/interfaces_sistema/NavBarData.interface";
 
 
 export const navbarData: NavBarData[] = [
@@ -58,7 +58,7 @@ export const navbarData: NavBarData[] = [
         routelink: 'institucion',
         icon: faSchool,
         label: 'Institución',
-        rol: 'T',
+        rol: 'A',
         items: [
             {
                 routelink: 'institucion/anio-lectivo',

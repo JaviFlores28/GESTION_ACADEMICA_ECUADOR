@@ -11,7 +11,7 @@ export interface AnioLectivo {
     NUM_EXAM: number;
     NUM_PRCL: number;
     NUM_SUSP: number;
-    ESTADO: boolean;
+    ESTADO: number;
     CREADOR_ID: string;
     FECHA_CREACION?: Date | undefined;
 }

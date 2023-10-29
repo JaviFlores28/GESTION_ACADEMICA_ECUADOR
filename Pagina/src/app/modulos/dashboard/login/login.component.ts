@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { faUserTie } from '@fortawesome/free-solid-svg-icons';
-import { UsuarioLogin } from 'src/app/modelos/interfaces/usuario-Login.interface';
+import { UsuarioLogin } from 'src/app/modelos/interfaces_sistema/usuario-Login.interface';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({

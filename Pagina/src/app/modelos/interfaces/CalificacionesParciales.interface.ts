@@ -4,7 +4,7 @@ export interface CalificacionesParciales {
     PRLL_EST_ID: string;
     PRCL_ID: string;
     CALIFICACION: number;
-    ESTADO: boolean;
+    ESTADO: number;
     CREADOR_ID: string;
     FECHA_CREACION?: Date | undefined;
 }

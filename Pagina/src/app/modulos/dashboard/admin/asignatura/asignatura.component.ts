@@ -7,10 +7,11 @@ import { ModalComponent } from 'src/app/componentes/modal/modal.component';
 import { Area } from 'src/app/modelos/interfaces/Area.interface';
 import { Asignatura } from 'src/app/modelos/interfaces/Asignatura.interface';
 import { Curso } from 'src/app/modelos/interfaces/Curso.interface';
-import { variables } from 'src/app/modelos/variables/variables';
+
 import { AreaService } from 'src/app/servicios/area.service';
 import { AsignaturaService } from 'src/app/servicios/asignatura.service';
 import { CursoService } from 'src/app/servicios/curso.service';
+import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
   selector: 'app-asignatura',
@@ -18,7 +19,7 @@ import { CursoService } from 'src/app/servicios/curso.service';
   styleUrls: ['./asignatura.component.scss']
 })
 export class AsignaturaComponent {
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: AsignaturaService, private serviceArea: AreaService, private serviceCursos: CursoService) { }
+  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: AsignaturaService, private serviceArea: AreaService, private serviceCursos: CursoService, private serviceUsuario: UsuarioService) { }
 
   modoEdicion: boolean = false;
   elementoId: string = '';
@@ -60,16 +61,15 @@ export class AsignaturaComponent {
 
   crear() {
     if (this.form.valid) {
-      let userid = localStorage.getItem(variables.KEY_NAME);
-      if (userid) {
-        userid = JSON.parse(atob(userid));
+      let userid = this.serviceUsuario.getUserLoggedId();
+      if (userid !== '') {
         const asignatura: Asignatura = {
           ASG_ID: '1',
           ASG_NOM: this.form.value.nom || '',
           ASG_TIPO: (this.form.value.cltv) ? '1' : '2',
           AREA_ID: this.form.value.area || '',
           CRS_ID: this.form.value.curso || '',
-          ESTADO: this.form.value.estado || false,
+          ESTADO: (this.form.value.estado) ? 1 : 0,
           CREADOR_ID: userid || ''
         };
         this.service.post(asignatura).subscribe(
@@ -105,7 +105,7 @@ export class AsignaturaComponent {
         ASG_TIPO: (this.form.value.cltv) ? '1' : '2',
         AREA_ID: this.form.value.area || '',
         CRS_ID: this.form.value.curso || '',
-        ESTADO: this.form.value.estado || false,
+        ESTADO: (this.form.value.estado) ? 1 : 0,
         CREADOR_ID: '1'
       };
       this.service.put(asignatura).subscribe(
@@ -184,7 +184,7 @@ export class AsignaturaComponent {
     this.form.get('cltv')?.setValue(tipo); // Asumiendo que 'nom' es un control en tu formulario
     this.form.get('area')?.setValue(data.AREA_ID); // Asumiendo que 'nom' es un control en tu formulario
     this.form.get('curso')?.setValue(data.CRS_ID); // Asumiendo que 'nom' es un control en tu formulario
-    this.form.get('estado')?.setValue(estado); // Asumiendo que 'estado' es un control en tu formulario
+    this.form.get('estado')?.setValue((data.ESTADO === 0) ? false : true); // Asumiendo que 'estado' es un control en tu formulario
   }
 
   openAlertModal(content: string, alertType: string) {
