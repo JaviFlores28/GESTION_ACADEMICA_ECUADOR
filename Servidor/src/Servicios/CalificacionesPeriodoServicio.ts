@@ -13,10 +13,19 @@ router.get('/calificacionesperiodo', async (req, res) => {
    }
 });
 
+router.get('/calificacionesperiodoEnabled', async (req, res) => {
+   try {
+    const calificaciones_periodo = await CalificacionesPeriodoNegocio.getEnabledCalificacionesPeriodo();
+    res.json(calificaciones_periodo);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/calificacionesperiodo', async (req, res) => {
    try {
     const request = req.body;
-    const calificaciones_periodo = new CalificacionesPeriodoEntidad(request.CAL_ID, request.PRF_ASG_PRLL_ID, request.PRLL_EST_ID, request.CALIFICACION_CNTVA, request.CALIFICACION_CLTVA, request.PRD_ID, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const calificaciones_periodo = new CalificacionesPeriodoEntidad(request.CAL_ID, request.PRF_ASG_PRLL_ID, request.PRLL_EST_ID, request.CALIFICACION_CNTVA, request.CALIFICACION_CLTVA, request.PRD_ID, request.ESTADO, request.CREADOR_ID);
     const response = await CalificacionesPeriodoNegocio.addCalificacionesPeriodo(calificaciones_periodo);
     res.json(response);
   } catch (error: any) {
@@ -27,7 +36,7 @@ router.post('/calificacionesperiodo', async (req, res) => {
 router.put('/calificacionesperiodo', async (req, res) => {
   try {
     const request = req.body;
-    const calificaciones_periodo = new CalificacionesPeriodoEntidad(request.CAL_ID, request.PRF_ASG_PRLL_ID, request.PRLL_EST_ID, request.CALIFICACION_CNTVA, request.CALIFICACION_CLTVA, request.PRD_ID, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const calificaciones_periodo = new CalificacionesPeriodoEntidad(request.CAL_ID, request.PRF_ASG_PRLL_ID, request.PRLL_EST_ID, request.CALIFICACION_CNTVA, request.CALIFICACION_CLTVA, request.PRD_ID, request.ESTADO, request.CREADOR_ID);
     const response = await CalificacionesPeriodoNegocio.updateCalificacionesPeriodo(calificaciones_periodo);
     res.json(response);
   } catch (error: any) {

@@ -1,21 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
 /* @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+ @import "~@ng-select/ng-select/themes/default.theme.css";
  */
+
+
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';
 
-/* @import "~@ng-select/ng-select/themes/default.theme.css";
 * {
-    margin: 0;
+   margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing: border-box; 
 }
 
 body {
-    position: relative;
-    font-family: 'Roboto', sans-serif;
-*/
-
+   position: relative;
+   // font-family: 'Roboto', sans-serif;
+}
 
 .ng-valid:not(form).ng-touched {
     border-left: 5px solid #42A948;

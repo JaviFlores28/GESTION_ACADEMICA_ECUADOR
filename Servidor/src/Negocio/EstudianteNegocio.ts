@@ -1,15 +1,25 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import Estudiante from '../Entidades/EstudianteEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class EstudianteNegocio {
   
   static async getEstudiante(): Promise<{ data: Estudiante[], message: string }> {
     try {
-      let data = 'SELECT * FROM estudiante';
-      const [rows] = await baseDatos.execute<any>(data);
+      let sql = 'SELECT * FROM estudiante';
+      const [rows] = await baseDatos.execute<any>(sql);
+      return { data: rows as Estudiante[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
+  static async getEnabledEstudiante(): Promise<{ data: Estudiante[], message: string }> {
+    try {
+      let sql = 'SELECT * FROM estudiante where Estado=1';
+      const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as Estudiante[], message: '' };
     } catch (error: any) {
       return { data: [], message: error.message }; // Retorna el mensaje del error
@@ -18,9 +28,10 @@ class EstudianteNegocio {
   
   static async searchById(id: String): Promise<{ data: Estudiante | null; message: string }> {
     try {
-      const [rows] = await baseDatos.execute<any>('SELECT * FROM estudiante WHERE EST_ID = ?', [id]);
+      let sql = 'SELECT * FROM estudiante WHERE EST_ID = ?';
+      const [rows] = await baseDatos.execute<any>(sql, [id]);
       if (rows.length <= 0) {
-        throw new Error('Estudiante no encontrado');
+        throw new Error('Objeto de tipo Estudiante no encontrado');
       }
       let newEstudiante = rows[0] as Estudiante;
       
@@ -36,9 +47,8 @@ class EstudianteNegocio {
         throw new Error('Objeto de tipo Estudiante no tiene la estructura esperada.');
       }
       estudiante.EST_ID = uuidv4(); //asigna un identificador unico
-      
-      let data = estudiante.sqlInsert();
-      const [result] = await baseDatos.execute<any>(data.query, data.values);
+      let sql = estudiante.sqlInsert();
+      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar Estudiante');
       }
@@ -50,7 +60,8 @@ class EstudianteNegocio {
   
   static async deleteEstudiante(id: String): Promise<{ data: boolean, message: string }> {
     try {
-      const [result] = await baseDatos.execute<any>('delete FROM estudiante WHERE EST_ID = ?', [id]);
+      let sql = 'delete FROM estudiante WHERE EST_ID = ?';
+      const [result] = await baseDatos.execute<any>(sql, [id]);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo eliminar el objeto de tipo Estudiante');
       }
@@ -65,8 +76,8 @@ class EstudianteNegocio {
       if (!estudiante.isValid()){ //validar estructura del objeto
         throw new Error('Objeto de tipo Estudiante no tiene la estructura esperada.');
       }
-      let data = estudiante.sqlUpdate();
-      const [result] = await baseDatos.execute<any>(data.query, data.values);
+      let sql = estudiante.sqlUpdate();
+      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo actualizar Estudiante');
       }

@@ -13,10 +13,19 @@ router.get('/area', async (req, res) => {
    }
 });
 
+router.get('/areaEnabled', async (req, res) => {
+   try {
+    const area = await AreaNegocio.getEnabledArea();
+    res.json(area);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/area', async (req, res) => {
    try {
     const request = req.body;
-    const area = new AreaEntidad(request.AREA_ID, request.AREA_NOM, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const area = new AreaEntidad(request.AREA_ID, request.AREA_NOM, request.ESTADO, request.CREADOR_ID);
     const response = await AreaNegocio.addArea(area);
     res.json(response);
   } catch (error: any) {
@@ -27,7 +36,7 @@ router.post('/area', async (req, res) => {
 router.put('/area', async (req, res) => {
   try {
     const request = req.body;
-    const area = new AreaEntidad(request.AREA_ID, request.AREA_NOM, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const area = new AreaEntidad(request.AREA_ID, request.AREA_NOM, request.ESTADO, request.CREADOR_ID);
     const response = await AreaNegocio.updateArea(area);
     res.json(response);
   } catch (error: any) {

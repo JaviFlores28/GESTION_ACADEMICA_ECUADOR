@@ -13,10 +13,19 @@ router.get('/paralelo', async (req, res) => {
    }
 });
 
+router.get('/paraleloEnabled', async (req, res) => {
+   try {
+    const paralelo = await ParaleloNegocio.getEnabledParalelo();
+    res.json(paralelo);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/paralelo', async (req, res) => {
    try {
     const request = req.body;
-    const paralelo = new ParaleloEntidad(request.PRLL_ID, request.PRLL_NOM, request.CRS_ID, request.AL_ID, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const paralelo = new ParaleloEntidad(request.PRLL_ID, request.PRLL_NOM, request.CRS_ID, request.AL_ID, request.ESTADO, request.CREADOR_ID);
     const response = await ParaleloNegocio.addParalelo(paralelo);
     res.json(response);
   } catch (error: any) {
@@ -27,7 +36,7 @@ router.post('/paralelo', async (req, res) => {
 router.put('/paralelo', async (req, res) => {
   try {
     const request = req.body;
-    const paralelo = new ParaleloEntidad(request.PRLL_ID, request.PRLL_NOM, request.CRS_ID, request.AL_ID, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const paralelo = new ParaleloEntidad(request.PRLL_ID, request.PRLL_NOM, request.CRS_ID, request.AL_ID, request.ESTADO, request.CREADOR_ID);
     const response = await ParaleloNegocio.updateParalelo(paralelo);
     res.json(response);
   } catch (error: any) {

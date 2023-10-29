@@ -13,10 +13,19 @@ router.get('/curso', async (req, res) => {
    }
 });
 
+router.get('/cursoEnabled', async (req, res) => {
+   try {
+    const curso = await CursoNegocio.getEnabledCurso();
+    res.json(curso);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/curso', async (req, res) => {
    try {
     const request = req.body;
-    const curso = new CursoEntidad(request.CRS_ID, request.CRS_NOM, request.CRS_TIPO, request.CRS_ORDEN, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const curso = new CursoEntidad(request.CRS_ID, request.CRS_NOM, request.CRS_TIPO, request.CRS_ORDEN, request.ESTADO, request.CREADOR_ID);
     const response = await CursoNegocio.addCurso(curso);
     res.json(response);
   } catch (error: any) {
@@ -27,7 +36,7 @@ router.post('/curso', async (req, res) => {
 router.put('/curso', async (req, res) => {
   try {
     const request = req.body;
-    const curso = new CursoEntidad(request.CRS_ID, request.CRS_NOM, request.CRS_TIPO, request.CRS_ORDEN, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const curso = new CursoEntidad(request.CRS_ID, request.CRS_NOM, request.CRS_TIPO, request.CRS_ORDEN, request.ESTADO, request.CREADOR_ID);
     const response = await CursoNegocio.updateCurso(curso);
     res.json(response);
   } catch (error: any) {

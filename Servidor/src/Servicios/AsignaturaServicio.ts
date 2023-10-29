@@ -13,10 +13,19 @@ router.get('/asignatura', async (req, res) => {
    }
 });
 
+router.get('/asignaturaEnabled', async (req, res) => {
+   try {
+    const asignatura = await AsignaturaNegocio.getEnabledAsignatura();
+    res.json(asignatura);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/asignatura', async (req, res) => {
    try {
     const request = req.body;
-    const asignatura = new AsignaturaEntidad(request.ASG_ID, request.ASG_NOM, request.ASG_TIPO, request.AREA_ID, request.CRS_ID, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const asignatura = new AsignaturaEntidad(request.ASG_ID, request.ASG_NOM, request.ASG_TIPO, request.AREA_ID, request.CRS_ID, request.ESTADO, request.CREADOR_ID);
     const response = await AsignaturaNegocio.addAsignatura(asignatura);
     res.json(response);
   } catch (error: any) {
@@ -27,7 +36,7 @@ router.post('/asignatura', async (req, res) => {
 router.put('/asignatura', async (req, res) => {
   try {
     const request = req.body;
-    const asignatura = new AsignaturaEntidad(request.ASG_ID, request.ASG_NOM, request.ASG_TIPO, request.AREA_ID, request.CRS_ID, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const asignatura = new AsignaturaEntidad(request.ASG_ID, request.ASG_NOM, request.ASG_TIPO, request.AREA_ID, request.CRS_ID, request.ESTADO, request.CREADOR_ID);
     const response = await AsignaturaNegocio.updateAsignatura(asignatura);
     res.json(response);
   } catch (error: any) {

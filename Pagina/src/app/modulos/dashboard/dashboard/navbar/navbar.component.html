@@ -1,1 +1,24 @@
-<p>navbar works!</p>
+<div class="head" [ngClass]="getHeadClass()">
+    <div class="head-content justify-content-end">
+        <div class="fw-bold">
+            Bienvenido {{nombre}}
+        </div>
+        <nav class="navbar navbar-expand">
+            <div class="container">
+                <div class="collapse navbar-collapse ">
+                    <ul class="navbar-nav">
+                        <div ngbDropdown class="d-inline-block dropdown-center" placement="bottom-start">
+                            <button type="button" class="btn btn-dark dropdown-toggle" id="dropdownBasic1" ngbDropdownToggle>
+                                <fa-icon [icon]="icon"></fa-icon>
+                            </button>
+                            <div ngbDropdownMenu class="dropdown-menu-end" aria-labelledby="dropdownBasic1">
+                                <button ngbDropdownItem [routerLink]="'usuarios/myinfo/'+userid">Mis datos</button>
+                                <button ngbDropdownItem (click)="openModal()">Cerrar sesión </button>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>

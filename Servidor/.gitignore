@@ -9,6 +9,9 @@
 # Node
 /node_modules
 /build
+/src/Componentes
+/src/Interfaces
+
 npm-debug.log
 yarn-error.log
 

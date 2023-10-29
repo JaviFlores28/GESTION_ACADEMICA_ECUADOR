@@ -25,12 +25,15 @@ npm install ts-node-dev -D # soporte para desarrollo en typescript
 ]
 ```
 4. Modifique package.js
+> **Nota:** create.ts o npm run generate no ejecutar en este momento, solo era para cambios iniciales de la base de datos
+
 ```js
  "scripts": {
     "prestart": "tsc",
     "start": "node build/app.js",
-    "predev": "ts-node-dev src/create.ts",
-    "dev":"ts-node-dev src/app.ts"
+    "generate": "ts-node-dev src/create.ts",
+    "dev": "ts-node-dev src/app.ts",
+    "testdev": "ts-node-dev src/test.ts"
   },
   ```
 5. Instalaremos las dependencias de desarrollo

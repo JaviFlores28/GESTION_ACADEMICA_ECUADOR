@@ -13,10 +13,19 @@ router.get('/paraleloestudiante', async (req, res) => {
    }
 });
 
+router.get('/paraleloestudianteEnabled', async (req, res) => {
+   try {
+    const paralelo_estudiante = await ParaleloEstudianteNegocio.getEnabledParaleloEstudiante();
+    res.json(paralelo_estudiante);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/paraleloestudiante', async (req, res) => {
    try {
     const request = req.body;
-    const paralelo_estudiante = new ParaleloEstudianteEntidad(request.PRLL_EST_ID, request.PRLL_ID, request.MTR_ID, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const paralelo_estudiante = new ParaleloEstudianteEntidad(request.PRLL_EST_ID, request.PRLL_ID, request.MTR_ID, request.ESTADO, request.CREADOR_ID);
     const response = await ParaleloEstudianteNegocio.addParaleloEstudiante(paralelo_estudiante);
     res.json(response);
   } catch (error: any) {
@@ -27,7 +36,7 @@ router.post('/paraleloestudiante', async (req, res) => {
 router.put('/paraleloestudiante', async (req, res) => {
   try {
     const request = req.body;
-    const paralelo_estudiante = new ParaleloEstudianteEntidad(request.PRLL_EST_ID, request.PRLL_ID, request.MTR_ID, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const paralelo_estudiante = new ParaleloEstudianteEntidad(request.PRLL_EST_ID, request.PRLL_ID, request.MTR_ID, request.ESTADO, request.CREADOR_ID);
     const response = await ParaleloEstudianteNegocio.updateParaleloEstudiante(paralelo_estudiante);
     res.json(response);
   } catch (error: any) {

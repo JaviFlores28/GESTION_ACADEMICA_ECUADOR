@@ -1,15 +1,25 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import ParaleloEstudiante from '../Entidades/ParaleloEstudianteEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class ParaleloEstudianteNegocio {
   
   static async getParaleloEstudiante(): Promise<{ data: ParaleloEstudiante[], message: string }> {
     try {
-      let data = 'SELECT * FROM paralelo_estudiante';
-      const [rows] = await baseDatos.execute<any>(data);
+      let sql = 'SELECT * FROM paralelo_estudiante';
+      const [rows] = await baseDatos.execute<any>(sql);
+      return { data: rows as ParaleloEstudiante[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
+  static async getEnabledParaleloEstudiante(): Promise<{ data: ParaleloEstudiante[], message: string }> {
+    try {
+      let sql = 'SELECT * FROM paralelo_estudiante where Estado=1';
+      const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as ParaleloEstudiante[], message: '' };
     } catch (error: any) {
       return { data: [], message: error.message }; // Retorna el mensaje del error
@@ -18,9 +28,10 @@ class ParaleloEstudianteNegocio {
   
   static async searchById(id: String): Promise<{ data: ParaleloEstudiante | null; message: string }> {
     try {
-      const [rows] = await baseDatos.execute<any>('SELECT * FROM paralelo_estudiante WHERE PRLL_EST_ID = ?', [id]);
+      let sql = 'SELECT * FROM paralelo_estudiante WHERE PRLL_EST_ID = ?';
+      const [rows] = await baseDatos.execute<any>(sql, [id]);
       if (rows.length <= 0) {
-        throw new Error('ParaleloEstudiante no encontrado');
+        throw new Error('Objeto de tipo ParaleloEstudiante no encontrado');
       }
       let newParaleloEstudiante = rows[0] as ParaleloEstudiante;
       
@@ -36,9 +47,8 @@ class ParaleloEstudianteNegocio {
         throw new Error('Objeto de tipo ParaleloEstudiante no tiene la estructura esperada.');
       }
       paralelo_estudiante.PRLL_EST_ID = uuidv4(); //asigna un identificador unico
-      
-      let data = paralelo_estudiante.sqlInsert();
-      const [result] = await baseDatos.execute<any>(data.query, data.values);
+      let sql = paralelo_estudiante.sqlInsert();
+      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar ParaleloEstudiante');
       }
@@ -50,7 +60,8 @@ class ParaleloEstudianteNegocio {
   
   static async deleteParaleloEstudiante(id: String): Promise<{ data: boolean, message: string }> {
     try {
-      const [result] = await baseDatos.execute<any>('delete FROM paralelo_estudiante WHERE PRLL_EST_ID = ?', [id]);
+      let sql = 'delete FROM paralelo_estudiante WHERE PRLL_EST_ID = ?';
+      const [result] = await baseDatos.execute<any>(sql, [id]);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo eliminar el objeto de tipo ParaleloEstudiante');
       }
@@ -65,8 +76,8 @@ class ParaleloEstudianteNegocio {
       if (!paralelo_estudiante.isValid()){ //validar estructura del objeto
         throw new Error('Objeto de tipo ParaleloEstudiante no tiene la estructura esperada.');
       }
-      let data = paralelo_estudiante.sqlUpdate();
-      const [result] = await baseDatos.execute<any>(data.query, data.values);
+      let sql = paralelo_estudiante.sqlUpdate();
+      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo actualizar ParaleloEstudiante');
       }

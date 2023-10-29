@@ -1,15 +1,25 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import Matricula from '../Entidades/MatriculaEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class MatriculaNegocio {
   
   static async getMatricula(): Promise<{ data: Matricula[], message: string }> {
     try {
-      let data = 'SELECT * FROM matricula';
-      const [rows] = await baseDatos.execute<any>(data);
+      let sql = 'SELECT * FROM matricula';
+      const [rows] = await baseDatos.execute<any>(sql);
+      return { data: rows as Matricula[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
+  static async getEnabledMatricula(): Promise<{ data: Matricula[], message: string }> {
+    try {
+      let sql = 'SELECT * FROM matricula where Estado=1';
+      const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as Matricula[], message: '' };
     } catch (error: any) {
       return { data: [], message: error.message }; // Retorna el mensaje del error
@@ -18,9 +28,10 @@ class MatriculaNegocio {
   
   static async searchById(id: String): Promise<{ data: Matricula | null; message: string }> {
     try {
-      const [rows] = await baseDatos.execute<any>('SELECT * FROM matricula WHERE MTR_ID = ?', [id]);
+      let sql = 'SELECT * FROM matricula WHERE MTR_ID = ?';
+      const [rows] = await baseDatos.execute<any>(sql, [id]);
       if (rows.length <= 0) {
-        throw new Error('Matricula no encontrado');
+        throw new Error('Objeto de tipo Matricula no encontrado');
       }
       let newMatricula = rows[0] as Matricula;
       
@@ -36,9 +47,8 @@ class MatriculaNegocio {
         throw new Error('Objeto de tipo Matricula no tiene la estructura esperada.');
       }
       matricula.MTR_ID = uuidv4(); //asigna un identificador unico
-      
-      let data = matricula.sqlInsert();
-      const [result] = await baseDatos.execute<any>(data.query, data.values);
+      let sql = matricula.sqlInsert();
+      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar Matricula');
       }
@@ -50,7 +60,8 @@ class MatriculaNegocio {
   
   static async deleteMatricula(id: String): Promise<{ data: boolean, message: string }> {
     try {
-      const [result] = await baseDatos.execute<any>('delete FROM matricula WHERE MTR_ID = ?', [id]);
+      let sql = 'delete FROM matricula WHERE MTR_ID = ?';
+      const [result] = await baseDatos.execute<any>(sql, [id]);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo eliminar el objeto de tipo Matricula');
       }
@@ -65,8 +76,8 @@ class MatriculaNegocio {
       if (!matricula.isValid()){ //validar estructura del objeto
         throw new Error('Objeto de tipo Matricula no tiene la estructura esperada.');
       }
-      let data = matricula.sqlUpdate();
-      const [result] = await baseDatos.execute<any>(data.query, data.values);
+      let sql = matricula.sqlUpdate();
+      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo actualizar Matricula');
       }

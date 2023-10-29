@@ -1,1 +1,51 @@
-<p>anio-lectivo works!</p>
+<div class="container-fluid">
+    <div class="card text-start border border-0 rounded shadow">
+        <div class="card-body">
+            <h2 class="card-title">{{ modoEdicion ? 'Editar Año lectivo' : 'Crear Año lectivo' }}</h2>
+            <hr class="border border-secondary opacity-25">
+            <form class="row g-3 align-items-end" [formGroup]="anioForm" (ngSubmit)="onSubmit()">
+                <div class="col-md-6">
+                    <label for="ini" class="form-label">Fecha de inicio</label>
+                    <input type="date" formControlName="ini" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label for="fin" class="form-label">Fecha de fin</label>
+                    <input type="date" formControlName="fin" class="form-control">
+                </div>
+                <div class="col-3">
+                    <label for="per" class="form-label">Periodos</label>
+                    <input type="number" class="form-control" formControlName="per" min="1" pattern="^[0-9]+">
+                </div>
+                <div class="col-3">
+                    <label for="par" class="form-label">Parciales</label>
+                    <input type="number" class="form-control" formControlName="par" min="1" pattern="^[0-9]+">
+                </div>
+                <div class="col-md-3">
+                    <label for="ex" class="form-label">Examenes</label>
+                    <input type="number" class="form-control" formControlName="ex" min="1" pattern="^[0-9]+">
+                </div>
+                <div class="col-md-3">
+                    <label for="extr" class="form-label">Extras</label>
+                    <input type="number" formControlName="extr" class="form-control" min="0" pattern="^[0-9]+">
+                </div>
+                <div class="col-md-4">
+                    <label for="pper" class="form-label">Porcentaje periodo</label>
+                    <input type="number" formControlName="pper" class="form-control" min="1" pattern="^[0-9]+">
+                </div>
+                <div class="col-md-4">
+                    <label for="pex" class="form-label">Porcentaje examenes</label>
+                    <input type="number" formControlName="pex" class="form-control" min="1" pattern="^[0-9]+">
+                </div>
+                <div class="col-md-4">
+                    <label for="estado" class="form-label pb-2">Estado</label>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" id="estado" type="checkbox" role="switch" formControlName="estado">
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button type="submit" [disabled]="!anioForm.valid" class="btn btn-dark">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

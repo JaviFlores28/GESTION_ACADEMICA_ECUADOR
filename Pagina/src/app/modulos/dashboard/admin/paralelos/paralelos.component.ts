@@ -6,5 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./paralelos.component.scss']
 })
 export class ParalelosComponent {
-
+  routerLink:string='nuevo';
+  title:string='Paralelos';
 }

@@ -13,10 +13,19 @@ router.get('/matricula', async (req, res) => {
    }
 });
 
+router.get('/matriculaEnabled', async (req, res) => {
+   try {
+    const matricula = await MatriculaNegocio.getEnabledMatricula();
+    res.json(matricula);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/matricula', async (req, res) => {
    try {
     const request = req.body;
-    const matricula = new MatriculaEntidad(request.MTR_ID, request.CRS_ID, request.EST_ID, request.ESTADO, request.PASE, request.CREADOR_ID, request.FECHA_CREACION);
+    const matricula = new MatriculaEntidad(request.MTR_ID, request.CRS_ID, request.EST_ID, request.ESTADO, request.PASE, request.CREADOR_ID);
     const response = await MatriculaNegocio.addMatricula(matricula);
     res.json(response);
   } catch (error: any) {
@@ -27,7 +36,7 @@ router.post('/matricula', async (req, res) => {
 router.put('/matricula', async (req, res) => {
   try {
     const request = req.body;
-    const matricula = new MatriculaEntidad(request.MTR_ID, request.CRS_ID, request.EST_ID, request.ESTADO, request.PASE, request.CREADOR_ID, request.FECHA_CREACION);
+    const matricula = new MatriculaEntidad(request.MTR_ID, request.CRS_ID, request.EST_ID, request.ESTADO, request.PASE, request.CREADOR_ID);
     const response = await MatriculaNegocio.updateMatricula(matricula);
     res.json(response);
   } catch (error: any) {

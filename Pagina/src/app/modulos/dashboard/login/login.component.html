@@ -11,13 +11,13 @@
         <div class="col">
           <form class="row row-cols-1 g-3 justify-content-center p-4" [formGroup]="formulario">
             <div class="col align-items-center">
-              <label for="user" class="form-label">Usuario</label>
-              <input type="text" formControlName="user" class="form-control" id="user">
-              <div *ngIf="user?.invalid && (user?.dirty || user?.touched)" class="alert alert-danger mt-2">
-                <div *ngIf="user?.errors?.['required']">
+              <label for="usuario" class="form-label">Usuario</label>
+              <input type="text" formControlName="usuario" class="form-control" id="usuario">
+              <div *ngIf="usuario?.invalid && (usuario?.dirty || usuario?.touched)" class="alert alert-danger mt-2">
+                <div *ngIf="usuario?.errors?.['required']">
                   Ingrese un valor de Usuario.
                 </div>
-                <div *ngIf="user?.errors?.['minlength']">
+                <div *ngIf="usuario?.errors?.['minlength']">
                   debe tener un minimo de 8 caracteres
                 </div>
               </div>

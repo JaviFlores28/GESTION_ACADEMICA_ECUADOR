@@ -1,15 +1,25 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import Paralelo from '../Entidades/ParaleloEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class ParaleloNegocio {
   
   static async getParalelo(): Promise<{ data: Paralelo[], message: string }> {
     try {
-      let data = 'SELECT * FROM paralelo';
-      const [rows] = await baseDatos.execute<any>(data);
+      let sql = 'SELECT * FROM paralelo';
+      const [rows] = await baseDatos.execute<any>(sql);
+      return { data: rows as Paralelo[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
+  static async getEnabledParalelo(): Promise<{ data: Paralelo[], message: string }> {
+    try {
+      let sql = 'SELECT * FROM paralelo where Estado=1';
+      const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as Paralelo[], message: '' };
     } catch (error: any) {
       return { data: [], message: error.message }; // Retorna el mensaje del error
@@ -18,9 +28,10 @@ class ParaleloNegocio {
   
   static async searchById(id: String): Promise<{ data: Paralelo | null; message: string }> {
     try {
-      const [rows] = await baseDatos.execute<any>('SELECT * FROM paralelo WHERE PRLL_ID = ?', [id]);
+      let sql = 'SELECT * FROM paralelo WHERE PRLL_ID = ?';
+      const [rows] = await baseDatos.execute<any>(sql, [id]);
       if (rows.length <= 0) {
-        throw new Error('Paralelo no encontrado');
+        throw new Error('Objeto de tipo Paralelo no encontrado');
       }
       let newParalelo = rows[0] as Paralelo;
       
@@ -36,9 +47,8 @@ class ParaleloNegocio {
         throw new Error('Objeto de tipo Paralelo no tiene la estructura esperada.');
       }
       paralelo.PRLL_ID = uuidv4(); //asigna un identificador unico
-      
-      let data = paralelo.sqlInsert();
-      const [result] = await baseDatos.execute<any>(data.query, data.values);
+      let sql = paralelo.sqlInsert();
+      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar Paralelo');
       }
@@ -50,7 +60,8 @@ class ParaleloNegocio {
   
   static async deleteParalelo(id: String): Promise<{ data: boolean, message: string }> {
     try {
-      const [result] = await baseDatos.execute<any>('delete FROM paralelo WHERE PRLL_ID = ?', [id]);
+      let sql = 'delete FROM paralelo WHERE PRLL_ID = ?';
+      const [result] = await baseDatos.execute<any>(sql, [id]);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo eliminar el objeto de tipo Paralelo');
       }
@@ -65,8 +76,8 @@ class ParaleloNegocio {
       if (!paralelo.isValid()){ //validar estructura del objeto
         throw new Error('Objeto de tipo Paralelo no tiene la estructura esperada.');
       }
-      let data = paralelo.sqlUpdate();
-      const [result] = await baseDatos.execute<any>(data.query, data.values);
+      let sql = paralelo.sqlUpdate();
+      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo actualizar Paralelo');
       }

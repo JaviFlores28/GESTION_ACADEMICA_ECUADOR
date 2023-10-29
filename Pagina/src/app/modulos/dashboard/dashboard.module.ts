@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AnioLectivoComponent } from './admin/anio-lectivo/anio-lectivo.component';
 import { AniosLectivosComponent } from './admin/anios-lectivos/anios-lectivos.component';
@@ -17,53 +17,57 @@ import { MatriculaComponent } from './admin/matricula/matricula.component';
 import { MatriculasComponent } from './admin/matriculas/matriculas.component';
 import { ParaleloComponent } from './admin/paralelo/paralelo.component';
 import { ParalelosComponent } from './admin/paralelos/paralelos.component';
-import { ProfesorComponent } from './admin/profesor/profesor.component';
 import { ProfesoresComponent } from './admin/profesores/profesores.component';
-import { RepresentanteComponent } from './admin/representante/representante.component';
 import { RepresentantesComponent } from './admin/representantes/representantes.component';
 import { UsuarioComponent } from './admin/usuario/usuario.component';
 import { UsuariosComponent } from './admin/usuarios/usuarios.component';
 import { BodyComponent } from './dashboard/body/body.component';
 import { NavbarComponent } from './dashboard/navbar/navbar.component';
-import { SidebarComponent } from './dashboard/sidebar/sidebar.component';
-import { HomeComponent } from './home/home.component';
+import { SidenavComponent } from './dashboard/sidenav/sidenav.component';
+import { HomeComponent } from './dashboard/home/home.component';
 import { LoginComponent } from './login/login.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
+import { SubLevelMenuComponent } from './dashboard/sub-level-menu/sub-level-menu.component';
+import { InicioComponent } from './inicio/inicio.component';
+import { AnioActivoComponent } from './admin/anio-activo/anio-activo.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
-  declarations: [
-    LoginComponent,
-    AnioLectivoComponent,
-    AniosLectivosComponent,
-    AreaComponent,
-    AreasComponent,
-    AsignaturaComponent,
-    AsignaturasComponent,
-    CursoComponent,
-    CursosComponent,
-    EstudianteComponent,
-    EstudiantesComponent,
-    MatriculaComponent,
-    MatriculasComponent,
-    ParaleloComponent,
-    ParalelosComponent,
-    HomeComponent,
-    ProfesorComponent,
-    ProfesoresComponent,
-    RepresentanteComponent,
-    RepresentantesComponent,
-    UsuarioComponent,
-    UsuariosComponent,
-    BodyComponent,
-    NavbarComponent,
-    SidebarComponent
-  ],
-  imports: [
-    CommonModule,
-    DashboardRoutingModule,
-    ReactiveFormsModule,
-    FormsModule,
-    FontAwesomeModule
-  ]
+    declarations: [
+        LoginComponent,
+        AnioLectivoComponent,
+        AniosLectivosComponent,
+        AreaComponent,
+        AreasComponent,
+        AsignaturaComponent,
+        AsignaturasComponent,
+        CursoComponent,
+        CursosComponent,
+        EstudianteComponent,
+        EstudiantesComponent,
+        MatriculaComponent,
+        MatriculasComponent,
+        ParaleloComponent,
+        ParalelosComponent,
+        HomeComponent,
+        ProfesoresComponent,
+        RepresentantesComponent,
+        UsuarioComponent,
+        UsuariosComponent,
+        BodyComponent,
+        NavbarComponent,
+        SidenavComponent,
+        SubLevelMenuComponent,
+        InicioComponent,
+        AnioActivoComponent
+    ],
+    imports: [
+        CommonModule,
+        DashboardRoutingModule,
+        ReactiveFormsModule,
+        FontAwesomeModule,
+        NgbModule,
+    ]
 })
+
 export class DashboardModule { }
