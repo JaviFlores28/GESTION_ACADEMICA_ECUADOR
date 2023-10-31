@@ -18,6 +18,7 @@ export class AreaComponent implements OnInit {
 
   modoEdicion: boolean = false;
   elementoId: string = '';
+  icon = faInfoCircle;
 
   form = this.formBuilder.group({
     nom: ['', Validators.required],

@@ -17,9 +17,9 @@ export class CursoComponent {
 
   constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: CursoService, private serviceUsuario:UsuarioService) { }
 
-
   modoEdicion: boolean = false;
   elementoId: string = '';
+  icon = faInfoCircle;
 
   form = this.formBuilder.group({
     nom: ['', Validators.required],

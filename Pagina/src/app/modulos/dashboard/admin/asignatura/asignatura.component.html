@@ -1,9 +1,10 @@
 <div class="container-fluid">
     <div class="card text-start border border-0 rounded shadow">
         <div class="card-body">
-            <h2 class="card-title">{{ modoEdicion ? 'Editar Asignatura' : 'Crear Asignatura' }}</h2>
-            <hr class="border border-secondary opacity-25">
-            <form class="row row-cols-2 g-3 align-items-end" [formGroup]="form" (ngSubmit)="onSubmit()">
+            <h3 class="card-title"> <fa-icon [icon]="icon" size="1x"></fa-icon> {{ modoEdicion ? 'Editar Asignatura' :
+                'Crear Asignatura' }}</h3>
+            <hr>
+            <form class="row row-cols-1 row-cols-sm-3 g-3 justify-content-center justify-content-md-start align-items-center" [formGroup]="form" (ngSubmit)="onSubmit()">
                 <div class="col">
                     <label for="nom" class="form-label">Nombre:</label>
                     <input type="text" id="nom" formControlName="nom" class="form-control">
@@ -35,7 +36,7 @@
                             formControlName="estado">
                     </div>
                 </div>
-                <div class="col-12">
+                <div class="col-12 col-sm-12 text-center text-md-start">
                     <button type="submit" [disabled]="!form.valid" class="btn btn-dark">Guardar</button>
                 </div>
             </form>
