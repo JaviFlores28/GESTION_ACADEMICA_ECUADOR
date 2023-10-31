@@ -32,9 +32,9 @@ export class UsuarioService extends ErrorHandlerService {
 
   post(usuario: Usuario, detalle?: DetalleUsuarioProfesor): Observable<any> {
     if (detalle) {
-      return this.http.post(this.apiUrl, {usuario,detalle}).pipe(catchError(this.handleError));
+      return this.http.post(this.apiUrl, { usuario, detalle }).pipe(catchError(this.handleError));
     } else {
-      return this.http.post(this.apiUrl, {usuario}).pipe(catchError(this.handleError));
+      return this.http.post(this.apiUrl, { usuario }).pipe(catchError(this.handleError));
     }
   }
 
@@ -54,8 +54,8 @@ export class UsuarioService extends ErrorHandlerService {
       catchError(this.handleError));
   }
 
-  updatePswd(id: string, pswdNew: string, pswdOld: string): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/${id}`, { pswdNew, pswdOld }).pipe(
+  updatePswd(data: any): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${data.id}`, { pswdNew: data.pswdNew, pswdOld: data.pswdOld }).pipe(
       catchError(this.handleError));
   }
 

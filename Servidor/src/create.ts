@@ -133,7 +133,7 @@ function generatePropsInstance(propertiesData: MappedProperty[], table: string) 
 }
 
 function generatePropsComponentForm(propertiesData: MappedProperty[]) {
-  const excludedProperties = ['USR_ID', 'USR_PSWD', 'FECHA_CREACION', 'ESTADO', 'CREADOR_ID'];
+  const excludedProperties = ['USR_ID', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID'];
   return propertiesData
     .filter((property) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
     .map((property) => {
@@ -141,6 +141,8 @@ function generatePropsComponentForm(propertiesData: MappedProperty[]) {
         return `${property.name}: [getFormattedDate(new Date()),Validators.required]`
       } else if (property.type_old.includes('tinyint')) {
         return `${property.name}: [false,Validators.required]`
+      }else if(property.type === 'number'){
+        return `${property.name}: [0,Validators.required]`
       } else {
         return `${property.name}: ['',Validators.required]`
       }
@@ -158,7 +160,9 @@ function generatePropsComponentInstance(propertiesData: MappedProperty[]) {
         return `${property.name}:this.form.value.${property.name} ? new Date(this.form.value.${property.name}) : new Date()`
       } else if (property.type_old.includes('tinyint')) {
         return `${property.name}: (this.form.value.${property.name}) ? 1 : 0`
-      } else {
+      }else if(property.type === 'number'){
+        return `${property.name}:this.form.value.${property.name}|| 0`
+      }else {
         return `${property.name}:this.form.value.${property.name}|| ''`
       }
     })
@@ -606,117 +610,134 @@ async function generateComponentFile(connection: any, tableName: any, primaryKey
   const propertiesData = mapProperties(properties);
 
   const content = `
-constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: ${capitalizedTableName}Service) { }
+  
+  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private serviceUsuario: UsuarioService, private service: ${capitalizedTableName}Service) { }
 
-modoEdicion: boolean = false;
-elementoId: string = '';
-form = this.formBuilder.group({
-  ${generatePropsComponentForm(propertiesData)}
-})
+  modoEdicion: boolean = false;
+  elementoId: string = '';
+  icon = faInfoCircle;
+ 
+  form = this.formBuilder.group({
+    ${generatePropsComponentForm(propertiesData)}
+  })
 
-ngOnInit(): void {
-  this.validarEdicion();
-}
+  ngOnInit(): void {
+    this.validarEdicion();    
+  }
 
-validarEdicion() {
-  this.route.paramMap.subscribe(params => {
-    const id = params.get('id');
-    if (id) {
-      this.modoEdicion = true;
-      this.elementoId = id;
-      this.loadData();
-    } else {
-      this.modoEdicion = false;
-      this.elementoId = '';
-    }
-  });
-}
 
-onSubmit() {
-  this.openConfirmationModal();
-}
+  validarEdicion() {
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.modoEdicion = true;
+        this.elementoId = id;
+        this.loadData();
+      } else {
+        this.modoEdicion = false;
+        this.elementoId = '';
+      }
+    });
+  }
 
-crear() {
-  if (this.form.valid) {
-    let userid = localStorage.getItem(variables.KEY_NAME);
-    if (userid) {
-      userid = JSON.parse(atob(userid));
-      const ${lowercaseTableName}: ${capitalizedTableName} = {
-        ${generatePropsComponentInstance(propertiesData)},
-       ${(tableName === 'usuario') ? ' ROL_PRF: 0,\nROL_REPR: 0,\nROL_ADMIN: 1,' : ''}
-        CREADOR_ID: userid || ''
-      };
+  onSubmit() {
+    this.openConfirmationModal();
+  }
+
+  crear() {
+    if (this.form.valid) {
+      const ${lowercaseTableName}: ${capitalizedTableName} = this.buildObject();
       this.service.post(${lowercaseTableName}).subscribe(
         {
           next: (response) => {
-            if (!response.data) {
-              this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-              console.log(response.message);
-            } else {
-              this.openAlertModal(response.message, 'success')
-              console.log(response.message);
-              this.form.reset();
-              this.router.navigate(['../'], { relativeTo: this.route });
-            }
+            this.handleResponse(response);
           },
-          error: (error) => {
-            this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-            console.log(error);;
-          }
+          error: (error) => this.handleErrorResponse(error)
         }
       );
+    } else {
+      this.form.markAllAsTouched();
     }
-  } else {
-    this.form.markAllAsTouched();
   }
-}
 
-editar() {
-  if (this.form.valid) {
+
+  editar() {
+    if (this.form.valid) {
+      const ${lowercaseTableName}: ${capitalizedTableName} = this.buildObjectEdit();
+
+      this.service.put(${lowercaseTableName}).subscribe(
+        {
+          next: (response) => {
+            this.handleResponse(response);
+          },
+          error: (error) => this.handleErrorResponse(error)
+        }
+      );
+
+    } else {
+      this.form.markAllAsTouched();
+    }
+  }
+
+  handleResponse(response: any) {
+    if (!response.data) {
+      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+      console.log(response.message);
+    } else {
+      if (this.modoEdicion) {
+        this.openAlertModal(response.message, 'success');
+        console.log(response.message);
+      } else {
+        this.openAlertModal(response.message, 'success');
+        this.form.reset();
+        this.router.navigate(['../editar/' + response.data], { relativeTo: this.route });
+      }
+
+    }
+  }
+
+  handleErrorResponse(error: any) {
+    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    console.log(error);
+  }
+
+  buildObject() {
+    const userId = this.serviceUsuario.getUserLoggedId();
+    const ${lowercaseTableName}: ${capitalizedTableName} = {
+      ${primaryKeyColumn}: '0',
+      ${generatePropsComponentInstance(propertiesData)},
+      CREADOR_ID: userId || ''
+     ${(tableName === 'usuario') ? ' ROL_PRF: 0,\nROL_REPR: 0,\nROL_ADMIN: 1,' : ''}
+    };
+    return ${lowercaseTableName};
+  }
+
+  buildObjectEdit() {
     const ${lowercaseTableName}: ${capitalizedTableName} = {
       ${primaryKeyColumn}: this.elementoId,
       ${generatePropsComponentInstance(propertiesData)},
+      CREADOR_ID: '0'
     };
-    this.service.put(${lowercaseTableName}).subscribe(
-      {
-        next: (response) => {
-          if (!response.data) {
-            this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-            console.log(response.message);
-          } else {
-            this.openAlertModal(response.message, 'success')
-            console.log(response.message);
-          }
-
-        },
-        error: (errordata) => {
-          this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-          console.log(errordata);
-        }
-      }
-    );
-    // this.form.reset();
-  } else {
-    this.form.markAllAsTouched();
+    return ${lowercaseTableName};
   }
-}
 
-loadData() {
-  this.service.searchById(this.elementoId).subscribe({
-    next: (value) => {
-      if (value.data) {
-        this.llenarForm(value.data);
-      } else {
-        console.log(value.message);
+  loadData() {
+    this.service.searchById(this.elementoId).subscribe({
+      next: (value) => {
+        if (value.data) {
+          this.loadForm(value.data);
+        } else {
+          console.log(value.message);
+        }
+      },
+      error: (error) => {
+        console.log(error);
       }
-    },
-    error: (error) => {
-      console.log(error);
-    }
-  });
-}
+    });
+  }
 
-llenarForm(data: ${capitalizedTableName}) {
+
+loadForm(data: ${capitalizedTableName}) {
   ${generatePropsComponentFormFill(propertiesData)}
 }
 
@@ -734,7 +755,7 @@ openConfirmationModal() {
   modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
 
   // Usa el operador Elvis para asegurarte de que activeModal y contenido estén definidos
-  modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = (!this.modoEdicion) ? '¿Desea guardar profesor?' : '¿Desea editar profesor?');
+  modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = (!this.modoEdicion) ? '¿Desea guardar?' : '¿Desea editar?');
   modalRef.componentInstance.icon = faInfoCircle;
   modalRef.componentInstance.color = 'warning';
   modalRef.result.then((result) => {

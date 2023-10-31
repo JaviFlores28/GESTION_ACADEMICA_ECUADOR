@@ -54,7 +54,7 @@ export class UsuarioComponent {
 
   ngOnInit(): void {
     this.determinarRolDesdeRuta();
-    this.validarEdicion();    
+    this.validarEdicion();
   }
 
   determinarRolDesdeRuta() {
@@ -62,13 +62,13 @@ export class UsuarioComponent {
     const rol = rutaActual[2];
 
     if (rol === 'usuarios') {
-        this.isAdmin = true;
+      this.isAdmin = true;
     } else if (rol === 'institucion') {
-        const subrol = rutaActual[3];
-        this.isRep = (subrol === 'representantes');
-        this.isProf = (subrol === 'profesores');
+      const subrol = rutaActual[3];
+      this.isRep = (subrol === 'representantes');
+      this.isProf = (subrol === 'profesores');
     }
-}
+  }
 
   validarEdicion() {
     this.route.paramMap.subscribe(params => {
@@ -89,13 +89,27 @@ export class UsuarioComponent {
   }
 
   onSubmitPswd() {
-    console.log(this.form.value);
+    if (this.form.valid) {
+      //const userId = this.service.getUserLoggedId();
+
+      const pswd = { id: this.elementoId, pswdNew: this.formPswd.value.USR_PSWD_NEW, pswdOld: this.formPswd.value.USR_PSWD};
+      this.service.updatePswd(pswd).subscribe(
+        {
+          next: (response) => {
+            this.handleResponse(response);
+          },
+          error: (error) => this.handleErrorResponse(error)
+        }
+      );
+    } else {
+      this.form.markAllAsTouched();
+    }
   }
 
   crear() {
     if (this.form.valid) {
       //const userId = this.service.getUserLoggedId();
-      const usuario: Usuario = this.buildUsuarioObject();
+      const usuario: Usuario = this.buildObject();
       const detalle = this.isProf ? this.buildDetalleUsuarioProfesorObject() : undefined;
 
       this.service.post(usuario, detalle).subscribe(
@@ -114,7 +128,7 @@ export class UsuarioComponent {
 
   editar() {
     if (this.form.valid) {
-      const usuario: Usuario = this.buildUsuarioObjectEdit();
+      const usuario: Usuario = this.buildObjectEdit();
 
       this.service.put(usuario).subscribe(
         {
@@ -152,7 +166,7 @@ export class UsuarioComponent {
     console.log(error);
   }
 
-  buildUsuarioObjectEdit() {
+  buildObjectEdit() {
     const usuario: Usuario = {
       USR_ID: this.elementoId,
       USR_DNI: this.form.value.USR_DNI || '',
@@ -176,7 +190,7 @@ export class UsuarioComponent {
     return usuario;
   }
 
-  buildUsuarioObject() {
+  buildObject() {
     const usuario: Usuario = {
       USR_ID: '0',
       USR_DNI: this.form.value.USR_DNI || '',

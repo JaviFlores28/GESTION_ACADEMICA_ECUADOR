@@ -1,20 +1,23 @@
 <div class="container-fluid">
     <div class="card text-start border border-0 rounded shadow">
         <div class="card-body">
-            <h2 class="card-title">{{ modoEdicion ? 'Editar Área' : 'Crear Área' }}</h2>
-            <hr class="border border-secondary opacity-25">
-            <form class="row g-3 align-items-end" [formGroup]="form" (ngSubmit)="onSubmit()">
-                <div class="col-md-6">
+            <h3 class="card-title"> <fa-icon [icon]="icon" size="1x"></fa-icon> {{ modoEdicion ? 'Editar Área' : 'Crear Área' }}</h3>
+            <hr>
+            <form
+                class="row row-cols-1 row-cols-sm-2 g-3 justify-content-center justify-content-md-start align-items-center"
+                [formGroup]="form" (ngSubmit)="onSubmit()">
+                <div class="col">
                     <label for="nom" class="form-label">Nombre</label>
                     <input type="text" id="nom" formControlName="nom" class="form-control">
                 </div>
-                <div class="col-md-6">
+                <div class="col">
                     <label for="estado" class="form-label pb-2">Estado</label>
                     <div class="form-check form-switch">
-                        <input class="form-check-input" id="estado" type="checkbox" role="switch" formControlName="estado">
+                        <input class="form-check-input" id="estado" type="checkbox" role="switch"
+                            formControlName="estado">
                     </div>
                 </div>
-                <div class="col-12">
+                <div class="col-12 col-sm-12 text-center text-md-start">
                     <button type="submit" [disabled]="!form.valid" class="btn btn-dark">Guardar</button>
                 </div>
             </form>

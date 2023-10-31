@@ -25,6 +25,7 @@ export class AsignaturaComponent {
   elementoId: string = '';
   areas: Area[] = [];
   cursos: Curso[] = [];
+  icon = faInfoCircle;
 
   form = this.formBuilder.group({
     nom: ['', Validators.required],

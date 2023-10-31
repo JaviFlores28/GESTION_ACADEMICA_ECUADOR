@@ -1,33 +1,35 @@
 <div class="container-fluid pb-3">
-    <form class="row row-cols-1 g-3" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form
+        class="row row-cols-1 row-cols-md-2 g-3 justify-content-center justify-content-md-start align-items-md-start align-items-center"
+        [formGroup]="form" (ngSubmit)="onSubmit()">
         <div class="col">
-            <div class="card text-start border border-0 rounded shadow">
+            <div class="card text-start border border-0 rounded shadow h-100">
                 <div class="card-body">
                     <h5 class="card-title"> <fa-icon [icon]="icon" size="1x"></fa-icon> Datos informativos</h5>
                     <hr>
                     <div class="row g-3">
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-12 col-lg-6">
                             <label class="form-label" for="USR_DNI">Cédula:</label>
                             <input class="form-control" id="USR_DNI" type="text" formControlName="USR_DNI">
                         </div>
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-12 col-lg-6">
                             <label class="form-label" for="USR_FECH_NAC" class="form-label">Fecha de nacimiento:</label>
                             <input class="form-control" type="date" class="form-control" id="USR_FECH_NAC"
                                 formControlName="USR_FECH_NAC">
                         </div>
-                        <div class="col-md-3 col-12">
+                        <div class="col-md-12 col-lg-6">
                             <label class="form-label" for="USR_NOM">Primer nombre:</label>
                             <input class="form-control" type="text" formControlName="USR_NOM">
                         </div>
-                        <div class="col-md-3 col-12">
+                        <div class="col-md-12 col-lg-6">
                             <label class="form-label" for="USR_NOM2">Segundo nombre:</label>
                             <input class="form-control" type="atext" formControlName="USR_NOM2">
                         </div>
-                        <div class="col-md-3 col-12">
+                        <div class="col-md-12 col-lg-6">
                             <label class="form-label" for="USR_APE">Primer apellido:</label>
                             <input class="form-control" type="text" formControlName="USR_APE">
                         </div>
-                        <div class="col-md-3 col-12">
+                        <div class="col-md-12 col-lg-6">
                             <label class="form-label" for="USR_APE2">Segundo apellido:</label>
                             <input class="form-control" type="text" formControlName="USR_APE2">
                         </div>
@@ -35,19 +37,19 @@
                             <label class="form-label" for="USR_DIR">Dirección domicilio:</label>
                             <input class="form-control" type="text" formControlName="USR_DIR" id="USR_DIR">
                         </div>
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-12 col-lg-6">
                             <label class="form-label" for="USR_TEL">Teléfono:</label>
                             <input class="form-control" type="text" formControlName="USR_TEL" pattern="^[0-9]+">
                         </div>
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-12 col-lg-6">
                             <label class="form-label" for="USR_CEL">Celular:</label>
                             <input class="form-control" type="text" formControlName="USR_CEL" pattern="^[0-9]+">
                         </div>
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-12 col-lg-6">
                             <label class="form-label" for="USR_EMAIL">Correo:</label>
                             <input class="form-control" id="USR_EMAIL" type="text" formControlName="USR_EMAIL">
                         </div>
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-12 col-lg-6">
                             <label class="form-label" for="USR_GEN">Género:</label>
                             <select class="form-select" formControlName="USR_GEN" id="USR_GEN">
                                 <option value="1">Femenino</option>
@@ -58,104 +60,81 @@
                 </div>
             </div>
         </div>
-        <div class="col" *ngIf="isProf">
-            <div class="card text-start border border-0 rounded shadow">
-                <div class="card-body">
-                    <h5 class="card-title"> <fa-icon [icon]="faperson" size="1x"></fa-icon> Datos institucionales </h5>
-                    <hr>
-                    <div class="row g-3">
-                        <div class="col-md-6 col-12">
-                            <label class="form-label" for="PRF_FECH_INGR_INST" class="form-label">Fecha de
-                                ingreso a la institución:</label>
-                            <input class="form-control" type="date" class="form-control" id="PRF_FECH_INGR_INST"
-                                formControlName="PRF_FECH_INGR_INST">
-                        </div>
-                        <div class="col-md-6 col-12">
-                            <label class="form-label" for="PRF_FECH_INGR_MAG" class="form-label">Fecha de
-                                ingreso al magisterio:</label>
-                            <input class="form-control" type="date" class="form-control" id="PRF_FECH_INGR_MAG"
-                                formControlName="PRF_FECH_INGR_MAG">
+        <div class="col">
+            <div class="row row-cols-1 g-3">
+               <div class="col">
+                <div class="card text-start border border-0 rounded shadow" *ngIf="isProf">
+                    <div class="card-body">
+                        <h5 class="card-title"> <fa-icon [icon]="faperson" size="1x"></fa-icon> Datos institucionales
+                        </h5>
+                        <hr>
+                        <div class="row g-3">
+                            <div class="col-md-12 col-lg-6">
+                                <label class="form-label" for="PRF_FECH_INGR_INST" class="form-label">Fecha de
+                                    ingreso a la institución:</label>
+                                <input class="form-control" type="date" class="form-control" id="PRF_FECH_INGR_INST"
+                                    formControlName="PRF_FECH_INGR_INST">
+                            </div>
+                            <div class="col-md-12 col-lg-6">
+                                <label class="form-label" for="PRF_FECH_INGR_MAG" class="form-label">Fecha de
+                                    ingreso al magisterio:</label>
+                                <input class="form-control" type="date" class="form-control" id="PRF_FECH_INGR_MAG"
+                                    formControlName="PRF_FECH_INGR_MAG">
+                            </div>
                         </div>
                     </div>
                 </div>
+               </div>
+              <div class="col">
+                <div class="card text-start border border-0 rounded shadow">
+                    <div class="card-body">
+                        <h5 class="card-title"> <fa-icon [icon]="fauser" size="1x"></fa-icon> Datos de usuario </h5>
+                        <hr>
+                        <div class="row row-cols-lg-auto row-cols-1 g-3 justify-content-center justify-content-md-start align-items-center">
+                            <div class="col">
+                                <label class="form-label" for="USUARIO">Usuario:</label>
+                                <input class="form-control" type="text" formControlName="USUARIO">
+                            </div>
+                            <div class="col">
+                                <label for="ESTADO" class="form-label pb-2">Estado</label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" id="ESTADO" type="checkbox" role="switch"
+                                        formControlName="ESTADO">
+                                </div>
+                            </div>
+                            <div class="col text-center text-md-start">
+                                <button type="submit" class="btn btn-dark" [disabled]="!form.valid">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
             </div>
         </div>
         <div class="col">
-            <div class="card text-start border border-0 rounded shadow">
+            <div class="card text-start border border-0 rounded shadow" *ngIf="modoEdicion">
                 <div class="card-body">
-                    <h5 class="card-title"> <fa-icon [icon]="fauser" size="1x"></fa-icon> Datos de usuario </h5>
+                    <h5 class="card-title"> <fa-icon [icon]="fakey" size="1x"></fa-icon> Cambiar Contraseña</h5>
                     <hr>
-                    <div class="row g-3">
-                        <div class="col-md-3 col-12">
-                            <label class="form-label" for="USUARIO">Usuario:</label>
-                            <input class="form-control" type="text" formControlName="USUARIO">
+                    <form class="row row-cols-12 row-cols-lg-2 row-cols-md-1 g-3 justify-content-center justify-content-md-start align-items-md-start align-items-center"
+                        [formGroup]="formPswd" (ngSubmit)="onSubmitPswd()">
+                        <div class="col">
+                            <label for="USR_PSWD" class="form-label">Contraseña actual:</label>
+                            <input type="password" formControlName="USR_PSWD" class="form-control" id="USR_PSWD">
+
                         </div>
-                        <!--   <div class="col-md-3 col-12">
-                        <div class="row g-2">
-                            <div class="col-12">
-                                <label class="form-label">Rol:</label>
-                            </div>
-                            <div class="col" *ngIf="isAdmin">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="ROL_ADMIN"
-                                        formControlName="ROL_ADMIN">
-                                    <label class="form-check-label" for="ROL_ADMIN">
-                                        Administrador
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col" *ngIf="isProf">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="ROL_PRF" formControlName="ROL_PRF">
-                                    <label class="form-check-label" for="ROL_PRF">
-                                        Profesor
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col" *ngIf="isRep">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="ROL_REPR"
-                                        formControlName="ROL_REPR">
-                                    <label class="form-check-label" for="ROL_REPR">
-                                        Representante
-                                    </label>
-                                </div>
-                            </div>
+                        <div class="col">
+                            <label for="USR_PSWD_NEW" class="form-label">Nueva contraseña:</label>
+                            <input type="password" formControlName="USR_PSWD_NEW" class="form-control"
+                                id="USR_PSWD_NEW">
                         </div>
-                    </div> -->
-                        <div class="col-md-3 col-12">
-                            <label for="ESTADO" class="form-label pb-2">Estado</label>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" id="ESTADO" type="checkbox" role="switch"
-                                    formControlName="ESTADO">
-                            </div>
+                        <div class="col">
+                            <button type="submit" class="btn btn-dark" [disabled]="!formPswd.valid">Cambiar</button>
                         </div>
-                        <div class="col-md-3 col-12">
-                            <button type="submit" class="btn btn-dark" [disabled]="!form.valid">Guardar</button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
     </form>
-    <div class="card text-start border border-0 rounded shadow mt-3" *ngIf="modoEdicion">
-        <div class="card-body">
-            <h5 class="card-title"> <fa-icon [icon]="fakey" size="1x"></fa-icon> Cambiar Contraseña</h5>
-            <hr>
-            <form class="row g-3" [formGroup]="formPswd" (ngSubmit)="onSubmitPswd()">
-                <div class="col">
-                    <label for="USR_PSWD" class="form-label">Contraseña actual:</label>
-                    <input type="password" formControlName="USR_PSWD" class="form-control" id="USR_PSWD">
 
-                </div>
-                <div class="col">
-                    <label for="USR_PSWD_NEW" class="form-label">Nueva contraseña:</label>
-                    <input type="password" formControlName="USR_PSWD_NEW" class="form-control" id="USR_PSWD_NEW">
-                </div>
-                <div class="col">
-                    <button type="submit" class="btn btn-dark" [disabled]="!formPswd.valid">Cambiar</button>
-                </div>
-            </form>
-        </div>
-    </div>
 </div>
