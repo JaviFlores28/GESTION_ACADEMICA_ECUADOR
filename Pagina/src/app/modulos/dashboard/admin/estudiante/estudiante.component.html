@@ -1,1 +1,138 @@
-<p>estudiante works!</p>
+<div class="container">
+    <div class="card text-start border border-0 rounded shadow">
+        <div class="card-body">
+            <h2 class="card-title">{{ modoEdicion ? 'Editar Estudiante' : 'Crear Estudiante' }}</h2>
+            <hr class="border border-secondary opacity-25">
+            <form class="row g-3 align-items-end" [formGroup]="form" (ngSubmit)="onSubmit()">
+                <div class="col-md-4">
+                        <label for="REPR_ID" class="form-label">Representante</label>
+                        <ng-select class="ng-select" [items]="listaRepre" bindLabel="USR_NOM" bindValue="USR_ID" id="REPR_ID" formControlName="REPR_ID"
+                            [(ngModel)]="represelected">
+                        </ng-select>
+                </div>
+                <div class="col-md-4">
+                    <label for="apeP">Relación Representante:</label>
+                    <input class="form-control" type="text" formControlName="relR">
+                </div>
+                <div class="col-md-4">
+                    <label for="estado" class="form-label pb-2">Estado</label>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" id="estado" type="checkbox" role="switch"
+                            formControlName="estado">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="a">Primer apellido:</label>
+                    <input class="form-control" type="text" formControlName="ape1">
+                </div>
+                <div class="col-md-3">
+                    <label for="">Segundo apellido:</label>
+                    <input class="form-control" type="text" formControlName="ape2">
+                </div>
+                <div class="col-md-3">
+                    <label for="">Primer nombre:</label>
+                    <input class="form-control" type="text" formControlName="nom1">
+                </div>
+                <div class="col-md-3">
+                    <label for="">Segundo nombre:</label>
+                    <input class="form-control" type="text" formControlName="nom2">
+                </div>
+                <div class="col-md-4">
+                    <label for="a">DNI:</label>
+                    <input class="form-control" type="text" formControlName="dniE">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="">Género</label>
+                    <select class="form-control" formControlName="gen" id="">
+                        <option value="F">Femenino</option>
+                        <option value="M">Masculino</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="" class="control-label">Fecha de nacimiento:</label>
+                    <input class="form-control" type="date" formControlName="fecN">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="">Provincia:</label>
+                    <input class="form-control" type="text" formControlName="prv">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="">Cantón:</label>
+                    <input class="form-control" type="text" formControlName="cnt">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="">Parroquia:</label>
+                    <input class="form-control" type="text" formControlName="prr">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="">Código único eléctrico:</label>
+                    <input class="form-control" type="text" formControlName="cue">
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label" for="">Dirección exacta:</label>
+                    <input class="form-control" type="text" formControlName="dir">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="nac">Nacionalidad:</label>
+                    <input class="form-control" type="text" formControlName="nac">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="nac">Autodefinición étnica:</label>
+                    <input class="form-control" type="text" formControlName="ate">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="nac">Nacionalidad étnica:</label>
+                    <input class="form-control" type="text" formControlName="ne">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="nac">Comunidad étnica:</label>
+                    <input class="form-control" type="text" formControlName="ce">
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Tiene necesidad educativa especial asociada a la discapacidad:</label>
+                    <br>
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox1" formControlName="ad">
+                    <label class="form-check-label" for="inlineCheckbox1">Sí</label>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Tiene necesidad educativa especial no asociada a la discapacidad:</label>
+                    <br>
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" formControlName="nad">
+                    <label class="form-check-label" for="inlineCheckbox2">Sí</label>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Posee enfermedad catastrófica::</label>
+                    <br>
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox3" formControlName="enfc">
+                    <label class="form-check-label" for="inlineCheckbox3">Sí</label>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Tiene carnet de CONADIS:</label>
+                    <br>
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox4" formControlName="cona">
+                    <label class="form-check-label" for="inlineCheckbox4">Sí</label>
+                </div>
+                <div class="col-md-6" *ngIf="this.form.get('cona')?.value">
+                    <label class="form-label" for="nro">Nro:</label>
+                    <input class="form-control" type="text" formControlName="nroCona">
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">¿Qué equipos de comunicación dispone en su hogar?</label>
+                    <br>
+                    <div *ngFor="let equipo of listEquiposE">
+                        <input class="form-check-input" type="checkbox" [id]="equipo.nombre" [value]="equipo.value"
+                            [formControlName]="equipo.nombre">
+                        <label class="form-check-label" [for]="equipo.nombre">{{ equipo.nombre }}</label>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label for="">Observación:</label>
+                    <textarea class="form-control" formControlName="obs" id="" cols="30" rows="6"></textarea>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-dark">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
