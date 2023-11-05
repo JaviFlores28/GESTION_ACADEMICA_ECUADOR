@@ -24,8 +24,8 @@ export class UsuarioService extends ErrorHandlerService {
       catchError(this.handleError));
   }
 
-  getEnabled(): Observable<any> {
-    return this.http.get(`${this.apiUrl}Enabled`).pipe(
+  getEnabled(tipo:string): Observable<any> {
+    return this.http.get(`${this.apiUrl}Enabled/${tipo}`).pipe(
       catchError(this.handleError));
   }
 

@@ -1,0 +1,41 @@
+<div class="container-fluid">
+    <form class="row g-3 justify-content-center" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="col-12">
+            <div class="card text-start border border-0 rounded shadow">
+                <div class="card-body">
+                    <h3 class="card-title pb-4"> <fa-icon [icon]="icon" size="1x"></fa-icon> Asignar estudiantes</h3>
+                    <div class="row g-2 justify-content-center align-items-center">
+                        <div class="col">
+                            <label for="CRS_ID" class="form-label">Curso:</label>
+                            <ng-select [items]="cursos" bindLabel="CRS_NOM" bindValue="CRS_ID" formControlName="CRS_ID"
+                                id="CRS_ID">
+                            </ng-select>
+                        </div>
+                        <div class="col">
+                            <button type="submit" class="btn btn-dark">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-start border border-0 rounded shadow">
+                <div class="card-body">
+                    <h4 class="card-title">Estudiantes</h4>
+                    <p class="card-text">Text</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-start border border-0 rounded shadow">
+                <div class="card-body">
+                    <h4 class="card-title">Paralelos</h4>
+                    <label for="PRLL_ID" class="form-label">Curso:</label>
+                    <ng-select [items]="paralelos" bindLabel="PRLL_NOM" bindValue="PRLL_ID" formControlName="PRLL_ID"
+                        id="PRLL_ID">
+                    </ng-select>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

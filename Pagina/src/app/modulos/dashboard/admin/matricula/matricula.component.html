@@ -1,1 +1,46 @@
-<p>matricula works!</p>
+<div class="container-fluid">
+    <div class="card text-start border border-0 rounded shadow">
+        <div class="card-body">
+            <div class="row row-cols-1">
+                <div class="col">
+                    <form class="row g-3 py-3 align-items-end" [formGroup]="form" (ngSubmit)="onSubmit()">
+                        <div class="col">
+                            <label for="CRS_ID" class="form-label">Curso:</label>
+                            <ng-select [items]="cursos" bindLabel="CRS_NOM" bindValue="CRS_ID" formControlName="CRS_ID"
+                                id="CRS_ID">
+                            </ng-select>
+                        </div>
+                        <div class="col">
+                            <label for="EST_ID" class="form-label">Estudiante:</label>
+                            <ng-select [items]="estudiantes" bindLabel="EST_NOM" bindValue="EST_ID"
+                                formControlName="EST_ID" id="EST_ID">
+                            </ng-select>
+                        </div>
+
+                        <div class="col">
+                            <label for="PASE" class="form-label">Pase:</label>
+                            <select class="form-select" formControlName="PASE" id="PASE">
+                                <option disabled selected>Selecciona una opción</option>
+                                <option value='1'>Aprobado</option>
+                                <option value='2'>Reprobado</option>
+                                <option value='3'>Suspenso</option>
+                                <option value='4'>En proceso</option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <div class="btn-group" role="group">
+                                <button type="submit" [disabled]="!form.valid" class="btn btn-dark">Guardar</button>
+                                <button *ngIf="modoEdicion" type="button" class="btn btn-danger"
+                                    (click)="clear()">X</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col">
+                    <!--  <app-tabla *ngIf="data.length>0" [data]="data" [headers]="headers" [titulo]="titulo" [icon]="icon"
+                (buttonAction)="actions($event)"></app-tabla> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

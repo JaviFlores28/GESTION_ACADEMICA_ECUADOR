@@ -5,14 +5,15 @@ import { AreaService } from 'src/app/servicios/area.service';
 @Component({
   selector: 'app-areas',
   templateUrl: './areas.component.html',
-  styleUrls: ['./areas.component.scss']
+  styleUrls: ['./areas.component.scss'],
 })
-export class AreasComponent implements OnInit{
+export class AreasComponent implements OnInit {
 
-  routerLink:string='nuevo';
-  title:string='Áreas';
+  routerLink: string = 'nuevo';
+  title: string = 'Áreas';
 
   data: Area[] = [];
+  headers = ['NOMBRE', 'ESTADO'];
 
   constructor(private service: AreaService) {
   }
@@ -27,11 +28,9 @@ export class AreasComponent implements OnInit{
       next: response => {
         if (response.data.length > 0) {
           this.data = response.data;
-          console.log(this.data);
         }
         else {
           console.log(response.message);
-
         }
       },
       error: error => {
@@ -40,5 +39,14 @@ export class AreasComponent implements OnInit{
     });
   }
 
+  eliminar(id: any) {
+    console.log(id);
+
+  }
+
+  checkedsAction(data: any) {
+    console.log(data);
+
+  }
 }
 

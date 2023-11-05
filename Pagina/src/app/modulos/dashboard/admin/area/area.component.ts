@@ -130,7 +130,7 @@ export class AreaComponent implements OnInit {
   }
 
   llenarForm(data: Area) {
-    this.form.get('estado')?.setValue((data.ESTADO === 0) ? false : true); // Asumiendo que 'estado' es un control en tu formulario
+    this.form.get('estado')?.setValue(data.ESTADO === 1);// Asumiendo que 'estado' es un control en tu formulario
     this.form.get('nom')?.setValue(data.AREA_NOM); // Asumiendo que 'nom' es un control en tu formulario
   }
 

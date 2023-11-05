@@ -8,9 +8,9 @@
                         <button [routerLink]="[routerLink]" class="btn btn-primary">Crear</button>
                     </div>  
                 </div>
-                <div *ngFor="let item of data" class="col">
-                    {{item.AL_ID}}
-                </div>
+                <div *ngIf="data" class="col">
+                    <app-ng-table [data]="data" [headers]="headers"></app-ng-table>
+                  </div>
             </div>
         </div>
     </div>

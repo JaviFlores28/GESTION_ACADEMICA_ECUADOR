@@ -23,9 +23,13 @@ export class EstudianteComponent {
   modoEdicion: boolean = false;
   elementoId: string = '';
   icon = faInfoCircle;
-  listEquiposE = [{ nombre: 'Internet', value: 5 }, { nombre: 'TV', value: 1 }, { nombre: 'Radio', value: 2 }, { nombre: 'Computador', value: 3, }, { nombre: 'Celular', value: 4 }]
-  listaRepre: Usuario[]=[];
-  represelected='';
+  listEquiposE = [
+    { id: 'EST_INTE', nombre: 'Internet', value: 5 },
+    { id: 'EST_TV', nombre: 'TV', value: 1 },
+    { id: 'EST_RAD', nombre: 'Radio', value: 2 },
+    { id: 'EST_PC', nombre: 'Computador', value: 3, },
+    { id: 'EST_CEL', nombre: 'Celular', value: 4 }]
+  usuarios: Usuario[] = [];
   form = this.formBuilder.group({
     EST_DNI: ['', Validators.required],
     EST_NOM: ['', Validators.required],
@@ -46,6 +50,7 @@ export class EstudianteComponent {
     EST_NEC_ASO_DIS: [false, Validators.required],
     EST_NEC_NO_ASO_DIS: [false, Validators.required],
     EST_ENF_CAT: [false, Validators.required],
+    haveConadis: [false],
     EST_NUM_CONA: ['', Validators.required],
     EST_INTE: [false, Validators.required],
     EST_TV: [false, Validators.required],
@@ -59,6 +64,7 @@ export class EstudianteComponent {
 
   ngOnInit(): void {
     this.validarEdicion();
+    this.loadUsuarios();
   }
 
 
@@ -160,7 +166,7 @@ export class EstudianteComponent {
       EST_NEC_ASO_DIS: (this.form.value.EST_NEC_ASO_DIS) ? 1 : 0,
       EST_NEC_NO_ASO_DIS: (this.form.value.EST_NEC_NO_ASO_DIS) ? 1 : 0,
       EST_ENF_CAT: (this.form.value.EST_ENF_CAT) ? 1 : 0,
-      EST_NUM_CONA: this.form.value.EST_NUM_CONA || '',
+      EST_NUM_CONA: this.form.value.EST_NUM_CONA || '0',
       EST_INTE: (this.form.value.EST_INTE) ? 1 : 0,
       EST_TV: (this.form.value.EST_TV) ? 1 : 0,
       EST_RAD: (this.form.value.EST_RAD) ? 1 : 0,
@@ -197,7 +203,7 @@ export class EstudianteComponent {
       EST_NEC_ASO_DIS: (this.form.value.EST_NEC_ASO_DIS) ? 1 : 0,
       EST_NEC_NO_ASO_DIS: (this.form.value.EST_NEC_NO_ASO_DIS) ? 1 : 0,
       EST_ENF_CAT: (this.form.value.EST_ENF_CAT) ? 1 : 0,
-      EST_NUM_CONA: this.form.value.EST_NUM_CONA || '',
+      EST_NUM_CONA: (this.form.value.haveConadis) ? this.form.value.EST_NUM_CONA || '0' : '0',
       EST_INTE: (this.form.value.EST_INTE) ? 1 : 0,
       EST_TV: (this.form.value.EST_TV) ? 1 : 0,
       EST_RAD: (this.form.value.EST_RAD) ? 1 : 0,
@@ -226,36 +232,51 @@ export class EstudianteComponent {
     });
   }
 
+  loadUsuarios() {
+    this.serviceUsuario.getEnabled('R').subscribe({
+      next: (value) => {
+        if (value.data) {
+          this.usuarios = value.data
+        } else {
+          console.log(value.message);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+  }
 
   loadForm(data: Estudiante) {
-    this.form.get('EST_DNI')?.setValue(data.EST_DNI),
-      this.form.get('EST_NOM')?.setValue(data.EST_NOM),
-      this.form.get('EST_NOM2')?.setValue(data.EST_NOM2),
-      this.form.get('EST_APE')?.setValue(data.EST_APE),
-      this.form.get('EST_APE2')?.setValue(data.EST_APE2),
-      this.form.get('EST_FECH_NAC')?.setValue(getFormattedDate(data.EST_FECH_NAC)),
-      this.form.get('EST_GEN')?.setValue(data.EST_GEN),
-      this.form.get('EST_PRV')?.setValue(data.EST_PRV),
-      this.form.get('EST_CAN')?.setValue(data.EST_CAN),
-      this.form.get('EST_PARR')?.setValue(data.EST_PARR),
-      this.form.get('EST_DIR')?.setValue(data.EST_DIR),
-      this.form.get('EST_NAC')?.setValue(data.EST_NAC),
-      this.form.get('EST_ETN')?.setValue(data.EST_ETN),
-      this.form.get('EST_NAC_ETN')?.setValue(data.EST_NAC_ETN),
-      this.form.get('EST_COM_ETN')?.setValue(data.EST_COM_ETN),
-      this.form.get('EST_COD_ELE')?.setValue(data.EST_COD_ELE),
-      this.form.get('EST_NEC_ASO_DIS')?.setValue((data.EST_NEC_ASO_DIS === 1) ? true : false),
-      this.form.get('EST_NEC_NO_ASO_DIS')?.setValue((data.EST_NEC_NO_ASO_DIS === 1) ? true : false),
-      this.form.get('EST_ENF_CAT')?.setValue((data.EST_ENF_CAT === 1) ? true : false),
-      this.form.get('EST_NUM_CONA')?.setValue(data.EST_NUM_CONA),
-      this.form.get('EST_INTE')?.setValue((data.EST_INTE === 1) ? true : false),
-      this.form.get('EST_TV')?.setValue((data.EST_TV === 1) ? true : false),
-      this.form.get('EST_RAD')?.setValue((data.EST_RAD === 1) ? true : false),
-      this.form.get('EST_PC')?.setValue((data.EST_PC === 1) ? true : false),
-      this.form.get('EST_CEL')?.setValue((data.EST_CEL === 1) ? true : false),
-      this.form.get('REPR_ID')?.setValue(data.REPR_ID),
-      this.form.get('REL_EST_REP')?.setValue(data.REL_EST_REP),
-      this.form.get('ESTADO')?.setValue((data.ESTADO === 1) ? true : false)
+    this.form.get('EST_DNI')?.setValue(data.EST_DNI);
+    this.form.get('EST_NOM')?.setValue(data.EST_NOM);
+    this.form.get('EST_NOM2')?.setValue(data.EST_NOM2);
+    this.form.get('EST_APE')?.setValue(data.EST_APE);
+    this.form.get('EST_APE2')?.setValue(data.EST_APE2);
+    this.form.get('EST_FECH_NAC')?.setValue(getFormattedDate(data.EST_FECH_NAC));
+    this.form.get('EST_GEN')?.setValue(data.EST_GEN);
+    this.form.get('EST_PRV')?.setValue(data.EST_PRV);
+    this.form.get('EST_CAN')?.setValue(data.EST_CAN);
+    this.form.get('EST_PARR')?.setValue(data.EST_PARR);
+    this.form.get('EST_DIR')?.setValue(data.EST_DIR);
+    this.form.get('EST_NAC')?.setValue(data.EST_NAC);
+    this.form.get('EST_ETN')?.setValue(data.EST_ETN);
+    this.form.get('EST_NAC_ETN')?.setValue(data.EST_NAC_ETN);
+    this.form.get('EST_COM_ETN')?.setValue(data.EST_COM_ETN);
+    this.form.get('EST_COD_ELE')?.setValue(data.EST_COD_ELE);
+    this.form.get('EST_NEC_ASO_DIS')?.setValue(data.EST_NEC_ASO_DIS === 1);
+    this.form.get('EST_NEC_NO_ASO_DIS')?.setValue(data.EST_NEC_NO_ASO_DIS === 1);
+    this.form.get('EST_ENF_CAT')?.setValue(data.EST_ENF_CAT === 1);
+    this.form.get('haveConadis')?.setValue(data.EST_NUM_CONA !== '0');
+    this.form.get('EST_NUM_CONA')?.setValue((data.EST_NUM_CONA !== '0') ? data.EST_NUM_CONA : '0');
+    this.form.get('EST_INTE')?.setValue(data.EST_INTE === 1);
+    this.form.get('EST_TV')?.setValue(data.EST_TV === 1);
+    this.form.get('EST_RAD')?.setValue(data.EST_RAD === 1);
+    this.form.get('EST_PC')?.setValue(data.EST_PC === 1);
+    this.form.get('EST_CEL')?.setValue(data.EST_CEL === 1);
+    this.form.get('REPR_ID')?.setValue(data.REPR_ID);
+    this.form.get('REL_EST_REP')?.setValue(data.REL_EST_REP);
+    this.form.get('ESTADO')?.setValue(data.ESTADO === 1);
   }
 
   openAlertModal(content: string, alertType: string) {

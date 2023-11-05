@@ -14,9 +14,10 @@ router.get('/usuario', async (req, res) => {
   }
 });
 
-router.get('/usuarioEnabled', async (req, res) => {
+router.get('/usuarioEnabled/:tipo', async (req, res) => {
   try {
-    const usuario = await UsuarioNegocio.getEnabledUsuario();
+    const tipo = req.params.tipo;
+    const usuario = await UsuarioNegocio.getEnabledUsuario(tipo);
     res.json(usuario);
   } catch (error: any) {
     res.status(500).json({ message: error.message });

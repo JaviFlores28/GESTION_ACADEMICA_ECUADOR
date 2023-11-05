@@ -23,6 +23,7 @@ import { AniosLectivosComponent } from './admin/anios-lectivos/anios-lectivos.co
 import { AreasComponent } from './admin/areas/areas.component';
 import { ParalelosComponent } from './admin/paralelos/paralelos.component';
 import { ParaleloComponent } from './admin/paralelo/paralelo.component';
+import { ParaleloEstudianteComponent } from './admin/paralelo-estudiante/paralelo-estudiante.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent, canActivate: [authGuardLogin] },
@@ -93,14 +94,6 @@ const routes: Routes = [
             ]
           },
           {
-            path: 'paralelos',
-            children: [
-              { path: '', component: ParalelosComponent },
-              { path: 'nuevo', component: ParaleloComponent },
-              { path: 'editar/:id', component: ParaleloComponent },
-            ]
-          },
-          {
             path: 'representantes',
             children: [
               { path: '', component: RepresentantesComponent },
@@ -116,12 +109,20 @@ const routes: Routes = [
               { path: 'editar/:id', component: EstudianteComponent },
             ]
           },
+          { path: 'matriculas', component: MatriculaComponent },
+          { path: 'matriculas/:id', component: MatriculaComponent },
           {
-            path: 'matriculas',
+            path: 'paralelos',
             children: [
-              { path: '', component: MatriculasComponent },
-              { path: 'nuevo', component: MatriculaComponent },
-              { path: 'editar/:id', component: MatriculaComponent },
+              {
+                path: 'crear-paralelo',
+                children: [
+                  { path: '', component: ParalelosComponent },
+                  { path: 'nuevo', component: ParaleloComponent },
+                  { path: 'editar/:id', component: ParaleloComponent },
+                ]
+              },
+              { path: 'asignar-paralelo', component: ParaleloEstudianteComponent },
             ]
           },
         ]

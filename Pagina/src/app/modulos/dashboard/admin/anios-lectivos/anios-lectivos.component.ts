@@ -12,6 +12,7 @@ export class AniosLectivosComponent implements OnInit {
   routerLink: string = 'nuevo';
   title: string = 'Años lectivos';
   data: AnioLectivo[] = [];
+  headers = ['ID', 'NOMBRE', 'CREADOR', 'ESTADO', 'FECHA'];
 
   constructor(private service: AnioLectivoService) {
   }
@@ -19,7 +20,6 @@ export class AniosLectivosComponent implements OnInit {
   ngOnInit(): void {
     this.loadData();
   }
-
 
   loadData() {
     this.service.get().subscribe({

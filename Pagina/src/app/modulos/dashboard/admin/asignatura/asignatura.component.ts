@@ -180,12 +180,12 @@ export class AsignaturaComponent {
 
   llenarForm(data: Asignatura) {
     const estado = data.ESTADO
-    const tipo = (data.ASG_TIPO === 'CUALITATIVA') ? true : false;
+    const tipo = (data.ASG_TIPO === 'CUALITATIVA');
     this.form.get('nom')?.setValue(data.ASG_NOM); // Asumiendo que 'nom' es un control en tu formulario
     this.form.get('cltv')?.setValue(tipo); // Asumiendo que 'nom' es un control en tu formulario
     this.form.get('area')?.setValue(data.AREA_ID); // Asumiendo que 'nom' es un control en tu formulario
     this.form.get('curso')?.setValue(data.CRS_ID); // Asumiendo que 'nom' es un control en tu formulario
-    this.form.get('estado')?.setValue((data.ESTADO === 0) ? false : true); // Asumiendo que 'estado' es un control en tu formulario
+    this.form.get('estado')?.setValue(data.ESTADO === 1); // Asumiendo que 'estado' es un control en tu formulario
   }
 
   openAlertModal(content: string, alertType: string) {

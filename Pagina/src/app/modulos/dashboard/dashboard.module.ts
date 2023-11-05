@@ -33,6 +33,8 @@ import { LoginComponent } from './login/login.component';
 import { SubLevelMenuComponent } from './dashboard/sub-level-menu/sub-level-menu.component';
 import { InicioComponent } from './inicio/inicio.component';
 import { AnioActivoComponent } from './admin/anio-activo/anio-activo.component';
+import { ParaleloEstudianteComponent } from './admin/paralelo-estudiante/paralelo-estudiante.component';
+import { NgTableComponent } from "../../componentes/ng-table/ng-table.component";
 
 
 @NgModule({
@@ -62,7 +64,8 @@ import { AnioActivoComponent } from './admin/anio-activo/anio-activo.component';
         SidenavComponent,
         SubLevelMenuComponent,
         InicioComponent,
-        AnioActivoComponent
+        AnioActivoComponent,
+        ParaleloEstudianteComponent,
     ],
     imports: [
         CommonModule,
@@ -71,7 +74,8 @@ import { AnioActivoComponent } from './admin/anio-activo/anio-activo.component';
         ReactiveFormsModule,
         FontAwesomeModule,
         NgbModule,
-        NgSelectModule
+        NgSelectModule,
+        NgTableComponent
     ]
 })
 

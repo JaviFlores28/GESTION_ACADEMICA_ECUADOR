@@ -140,7 +140,7 @@ export class CursoComponent {
     this.form.get('nom')?.setValue(data.CRS_NOM); // Asumiendo que 'nom' es un control en tu formulario
     this.form.get('tip')?.setValue(data.CRS_TIPO); // Asumiendo que 'estado' es un control en tu formulario
     this.form.get('orden')?.setValue(data.CRS_ORDEN); // Asumiendo que 'nom' es un control en tu formulario
-    this.form.get('estado')?.setValue((data.ESTADO === 0) ? false : true); // Asumiendo que 'estado' es un control en tu formulario
+    this.form.get('estado')?.setValue(data.ESTADO === 1);// Asumiendo que 'estado' es un control en tu formulario
   }
 
   openAlertModal(content: string, alertType: string) {

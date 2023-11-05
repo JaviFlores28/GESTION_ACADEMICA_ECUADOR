@@ -151,6 +151,40 @@ function generatePropsComponentForm(propertiesData: MappedProperty[]) {
     .join(',\n ');
 }
 
+function generateHTMLForm(propertiesData: MappedProperty[]) {
+  const excludedProperties = ['USR_ID', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID'];
+  return propertiesData
+    .filter((property) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
+    .map((property) => {
+      if (property.type === 'Date') {
+        return `<div class="col">
+        <label for="${property.name}" class="form-label">${property.name}</label>
+        <input type="date" id="${property.name}" formControlName="${property.name}" class="form-control">
+    </div>`;
+      } else if (property.type_old.includes('tinyint')) {
+        return `  <div class="col">
+        <label for="${property.name}" class="form-label pb-2">${property.name}</label>
+        <div class="form-check form-switch">
+            <input class="form-check-input" id="${property.name}" type="checkbox" role="switch"
+                formControlName="${property.name}">
+        </div>
+    </div>`
+      }else if(property.type === 'number'){
+        return `<div class="col">
+        <label for="${property.name}" class="form-label">${property.name}</label>
+        <input type="numvber" id="${property.name}" formControlName="${property.name}" class="form-control">
+    </div>`
+      } else {
+        return `<div class="col">
+        <label for="${property.name}" class="form-label">${property.name}</label>
+        <input type="text" id="${property.name}" formControlName="${property.name}" class="form-control">
+    </div>`
+      }
+    }
+    )
+    .join('\n ');
+}
+
 function generatePropsComponentInstance(propertiesData: MappedProperty[]) {
   const excludedProperties = ['USR_ID', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID', 'USUARIO', 'ROL_ADMIN', 'ROL_REPR', 'ROL_PRF'];
   return propertiesData
@@ -781,6 +815,22 @@ openConfirmationModal() {
   writeFileSync(archivo, content, 'utf8');
 }
 
+
+async function generateHTMLFile(connection: any, tableName: any, primaryKeyColumn: string) {
+  const capitalizedTableName = stringToCapitalize(tableName);
+  const lowercaseTableName = stringToCamelCase(tableName);
+  const properties = await getTableInfo(connection, tableName);
+  const propertiesData = mapProperties(properties);
+
+  const content = `${generateHTMLForm(propertiesData)}`;
+  const carpeta = path.join(__dirname, 'html');
+  const archivo = path.join(carpeta, `${capitalizedTableName}.html`);
+
+  if (!existsSync(carpeta)) {
+    mkdirSync(carpeta, { recursive: true });
+  }
+  writeFileSync(archivo, content, 'utf8');
+}
 async function main() {
   try {
     const [tables] = await baseDatos.execute<any>('SHOW TABLES');
@@ -794,10 +844,13 @@ async function main() {
       }
 
      // await generateEntityFile(baseDatos, tableName, primaryKeyColumn);
-      await generateInterfaceFile(baseDatos, tableName);
+      //await generateInterfaceFile(baseDatos, tableName);
      // await generateNegocioFile(tableName, primaryKeyColumn);
       //await generateServiceFile(baseDatos, tableName);
-      await generateComponentFile(baseDatos, tableName, primaryKeyColumn);
+      //await generateComponentFile(baseDatos, tableName, primaryKeyColumn);
+      await generateHTMLFile(baseDatos, tableName, primaryKeyColumn);
+
+
     }
     console.info('Archivos creados correctamente');
   } catch (error: any) {
