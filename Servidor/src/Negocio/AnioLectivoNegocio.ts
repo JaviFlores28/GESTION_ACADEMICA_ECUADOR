@@ -8,7 +8,7 @@ class AnioLectivoNegocio {
   
   static async getAnioLectivo(): Promise<{ data: AnioLectivo[], message: string }> {
     try {
-      let sql = 'SELECT * FROM anio_lectivo';
+      let sql = 'SELECT `AL_ID` as id, `AL_NOM`, DATE_FORMAT(`AL_INICIO`, \'%d-%m-%Y\') as AL_INICIO, DATE_FORMAT(`AL_FIN`, \'%d-%m-%Y\') as AL_FIN, `NUM_PRD`, `NUM_EXAM`, `ESTADO` FROM anio_lectivo;';
       const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as AnioLectivo[], message: '' };
     } catch (error: any) {

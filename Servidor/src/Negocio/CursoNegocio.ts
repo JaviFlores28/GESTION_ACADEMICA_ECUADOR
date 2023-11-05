@@ -8,7 +8,7 @@ class CursoNegocio {
   
   static async getCurso(): Promise<{ data: Curso[], message: string }> {
     try {
-      let sql = 'SELECT * FROM curso';
+      let sql = 'SELECT `CRS_ID` as id,concat( `CRS_NOM`,\'-\',`CRS_TIPO`) as CRS_NOM, `CRS_ORDEN`, `ESTADO` FROM curso ORDER BY CRS_ORDEN ASC';
       const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as Curso[], message: '' };
     } catch (error: any) {
@@ -18,7 +18,7 @@ class CursoNegocio {
   
   static async getEnabledCurso(): Promise<{ data: Curso[], message: string }> {
     try {
-      let sql = 'SELECT * FROM curso where Estado=1';
+      let sql = 'SELECT `CRS_ID`,concat( `CRS_NOM`,\'-\',`CRS_TIPO`) as CRS_NOM, `CRS_ORDEN`, `ESTADO` FROM curso WHERE Estado=1 ORDER BY CRS_ORDEN ASC';
       const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as Curso[], message: '' };
     } catch (error: any) {

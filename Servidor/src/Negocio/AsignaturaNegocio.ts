@@ -8,7 +8,7 @@ class AsignaturaNegocio {
   
   static async getAsignatura(): Promise<{ data: Asignatura[], message: string }> {
     try {
-      let sql = 'SELECT * FROM asignatura';
+      let sql = 'SELECT a.`ASG_ID` as id, a.`ASG_NOM`, a.`ASG_TIPO`, c.AREA_NOM as AREA, concat(b.CRS_NOM,\'-\' ,b.CRS_TIPO) CURSO, a.`ESTADO`  FROM asignatura as a JOIN curso as b ON a.CRS_ID = b.CRS_ID JOIN area as c ON a.AREA_ID = c.AREA_ID ORDER BY a.CRS_ID ASC;';
       const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as Asignatura[], message: '' };
     } catch (error: any) {

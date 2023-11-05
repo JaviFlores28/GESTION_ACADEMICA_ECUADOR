@@ -8,9 +8,16 @@ import DetalleUsuarioProfesorNegocio from './DetalleUsuarioProfesorNegocio';
 
 class UsuarioNegocio {
 
-  static async getUsuario(): Promise<{ data: Usuario[], message: string }> {
+  static async getUsuario(tipo: string): Promise<{ data: Usuario[], message: string }> {
     try {
-      let sql = 'SELECT * FROM usuario';
+      let sql = 'SELECT  `USR_ID` as id, `USR_DNI`, concat(`USR_NOM`,\' \' , `USR_NOM2`,\' \', `USR_APE`,\' \' , `USR_APE2`) as USR_NOM, `USR_CEL`, `USR_EMAIL`,`ESTADO` FROM usuario';
+      if (tipo === 'R') {
+        sql += ' where ROL_REPR=1'; // Added a space before AND
+      } else if (tipo === 'P') {
+        sql += ' where ROL_PRF=1';
+      } else if (tipo === 'A') {
+        sql += 'where ROL_ADMIN=1';
+      } 
       const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as Usuario[], message: '' };
     } catch (error: any) {

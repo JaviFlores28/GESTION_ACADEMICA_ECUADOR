@@ -18,8 +18,6 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
   styleUrls: ['./matricula.component.scss']
 })
 export class MatriculaComponent {
-
-
   constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private serviceUsuario: UsuarioService, private service: MatriculaService, private serviceCurso: CursoService, private serviceEstudiante: EstudianteService) { }
 
   modoEdicion: boolean = false;
@@ -27,7 +25,8 @@ export class MatriculaComponent {
   icon = faInfoCircle;
   estudiantes: Estudiante[] = [];
   cursos: Curso[] = [];
-
+  data: Matricula[] = [];
+  headers = ['CURSO','NOMBRES','PASE', 'ESTADO'];
 
   form = this.formBuilder.group({
     CRS_ID: ['', Validators.required],
@@ -37,6 +36,7 @@ export class MatriculaComponent {
   })
 
   ngOnInit(): void {
+    this.loadMatriculas();
     this.loadCursos();
     this.loadEstudiantes();
     this.validarEdicion();
@@ -76,7 +76,6 @@ export class MatriculaComponent {
       this.form.markAllAsTouched();
     }
   }
-
 
   editar() {
     if (this.form.valid) {
@@ -166,15 +165,14 @@ export class MatriculaComponent {
       'Suspenso': '3',
       'En proceso': '4'
     };
-  
+
     const paseValue = paseMapping[data.PASE] || '';
     this.form.get('PASE')?.setValue(paseValue);
-  
+
     this.form.get('CRS_ID')?.setValue(data.CRS_ID);
     this.form.get('EST_ID')?.setValue(data.EST_ID);
     this.form.get('ESTADO')?.setValue(data.ESTADO === 1);
   }
-  
 
   loadCursos() {
     this.serviceCurso.getEnabled().subscribe({
@@ -208,9 +206,44 @@ export class MatriculaComponent {
     });
   }
 
+  loadMatriculas() {
+    this.service.get().subscribe({
+      next: response => {
+        if (response.data.length > 0) {
+          this.data = response.data;
+        }
+        else {
+          console.log(response.message);
+        }
+      },
+      error: error => {
+        console.error('Error al cargar los datos:', error);
+      }
+    });
+  }
 
-  clear() { }
-  changeCurso(data: any) { }
+  eliminar(id: any) {
+    console.log(id);
+  }
+
+  checkedsAction(data: any) {
+    console.log(data);
+  }
+
+  filaAction(data: any) {
+    if (data.option === 'editar') {
+      this.router.navigate([data.id], { relativeTo: this.route });
+    } else if (data.option === 'eliminar') {
+      console.log(data.id);
+    }
+  }
+
+  clear() {
+    this.router.navigate(['../'], { relativeTo: this.route });
+   }
+
+  changeCurso(data: any) {
+   }
 
   openAlertModal(content: string, alertType: string) {
     const modalRef = this.ngBootstrap.open(ModalComponent);

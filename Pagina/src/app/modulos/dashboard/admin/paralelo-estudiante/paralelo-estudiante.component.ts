@@ -4,11 +4,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Curso } from 'src/app/modelos/interfaces/Curso.interface';
+import { Estudiante } from 'src/app/modelos/interfaces/Estudiante.interface';
 import { Paralelo } from 'src/app/modelos/interfaces/Paralelo.interface';
 import { CursoService } from 'src/app/servicios/curso.service';
-import { ParaleloEstudianteService } from 'src/app/servicios/paralelo-estudiante.service';
+import { EstudianteService } from 'src/app/servicios/estudiante.service';
 import { ParaleloService } from 'src/app/servicios/paralelo.service';
-import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
   selector: 'app-paralelo-estudiante',
@@ -16,11 +16,16 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
   styleUrls: ['./paralelo-estudiante.component.scss']
 })
 export class ParaleloEstudianteComponent implements OnInit {
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private serviceUsuario: UsuarioService, private service: ParaleloEstudianteService, private serviceCurso: CursoService, private serviceParalelo: ParaleloService) { }
+  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private serviceCurso: CursoService, private serviceParalelo: ParaleloService, private serviceEstudiante: EstudianteService) {// Suscribirse a cambios en CRS_ID
+    this.form.get('CRS_ID')?.valueChanges.subscribe(newValue => {
+      // Aquí puedes ejecutar tu código cuando el valor de CRS_ID cambie
+      return this.loadEstudiantes(newValue);      
+    });
+  }
 
   cursos: Curso[] = [];
   paralelos: Paralelo[] = [];
-
+  estudiantes: Estudiante[] = [];
   icon = faInfoCircle;
 
   form = this.formBuilder.group({
@@ -35,7 +40,7 @@ export class ParaleloEstudianteComponent implements OnInit {
     this.loadParalelos()
   }
 
-  onSubmit(){}
+  onSubmit() { }
 
   loadCursos() {
     this.serviceCurso.getEnabled().subscribe({
@@ -57,6 +62,22 @@ export class ParaleloEstudianteComponent implements OnInit {
       next: (value) => {
         if (value.data) {
           this.paralelos = value.data
+        } else {
+          console.log(value.message);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+  }
+
+  loadEstudiantes(cursoid:any) {
+    this.serviceEstudiante.getByCurso(cursoid).subscribe({
+      next: (value) => {
+        if (value.data) {
+          this.estudiantes = value.data
+          console.log(value.data);
         } else {
           console.log(value.message);
         }

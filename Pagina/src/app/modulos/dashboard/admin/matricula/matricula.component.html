@@ -1,8 +1,10 @@
 <div class="container-fluid">
-    <div class="card text-start border border-0 rounded shadow">
-        <div class="card-body">
-            <div class="row row-cols-1">
-                <div class="col">
+    <div class="row row-cols-1 g-3">
+        <div class="col">
+            <div class="card text-start border border-0 rounded shadow">
+                <div class="card-body">
+                    <h3 class="card-title">Matrículas</h3>
+                    <hr>
                     <form class="row g-3 py-3 align-items-end" [formGroup]="form" (ngSubmit)="onSubmit()">
                         <div class="col">
                             <label for="CRS_ID" class="form-label">Curso:</label>
@@ -36,9 +38,13 @@
                         </div>
                     </form>
                 </div>
-                <div class="col">
-                    <!--  <app-tabla *ngIf="data.length>0" [data]="data" [headers]="headers" [titulo]="titulo" [icon]="icon"
-                (buttonAction)="actions($event)"></app-tabla> -->
+            </div>
+        </div>
+        <div class="col">
+            <div class="card text-start border border-0 rounded shadow">
+                <div class="card-body">
+                    <app-ng-table [data]="data" [headers]="headers" (eliminarAction)="eliminar($event)"
+                        (checkedAction)="checkedsAction($event)" (filaAction)="filaAction($event)"></app-ng-table>
                 </div>
             </div>
         </div>

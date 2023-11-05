@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Area } from 'src/app/modelos/interfaces/Area.interface';
 import { AreaService } from 'src/app/servicios/area.service';
 
@@ -8,6 +9,7 @@ import { AreaService } from 'src/app/servicios/area.service';
   styleUrls: ['./areas.component.scss'],
 })
 export class AreasComponent implements OnInit {
+  constructor(private service: AreaService, private router: Router, private route: ActivatedRoute) { }
 
   routerLink: string = 'nuevo';
   title: string = 'Áreas';
@@ -15,13 +17,9 @@ export class AreasComponent implements OnInit {
   data: Area[] = [];
   headers = ['NOMBRE', 'ESTADO'];
 
-  constructor(private service: AreaService) {
-  }
-
   ngOnInit(): void {
     this.loadData();
   }
-
 
   loadData() {
     this.service.get().subscribe({
@@ -46,7 +44,14 @@ export class AreasComponent implements OnInit {
 
   checkedsAction(data: any) {
     console.log(data);
+  }
 
+  filaAction(data: any) {
+    if (data.option === 'editar') {
+      this.router.navigate(['editar/' + data.id], { relativeTo: this.route });
+    } else if (data.option === 'eliminar') {
+      console.log(data.id);
+    }
   }
 }
 

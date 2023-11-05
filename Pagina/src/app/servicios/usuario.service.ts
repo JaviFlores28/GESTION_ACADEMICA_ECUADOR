@@ -6,7 +6,6 @@ import { ErrorHandlerService } from './error-handler.service';
 import { Respuesta } from '../modelos/interfaces_sistema/respuesta.interface';
 import { UsuarioLogin } from '../modelos/interfaces_sistema/usuario-Login.interface';
 import { DetalleUsuarioProfesor } from '../modelos/interfaces/DetalleUsuarioProfesor.interface';
-import { DetalleUsuarioProfesorService } from './detalle-usuario-profesor.service';
 import { Usuario } from '../modelos/interfaces/Usuario.interface';
 
 @Injectable({
@@ -15,12 +14,12 @@ import { Usuario } from '../modelos/interfaces/Usuario.interface';
 export class UsuarioService extends ErrorHandlerService {
   private apiUrl = variables.URL_API + '/usuario' // Reemplaza con tu URL
 
-  constructor(private http: HttpClient, private detalleService: DetalleUsuarioProfesorService) {
+  constructor(private http: HttpClient) {
     super();
   }
 
-  get(): Observable<any> {
-    return this.http.get(this.apiUrl).pipe(
+  get(tipo:string): Observable<any> {
+    return this.http.get(this.apiUrl+'s/'+tipo).pipe(
       catchError(this.handleError));
   }
 

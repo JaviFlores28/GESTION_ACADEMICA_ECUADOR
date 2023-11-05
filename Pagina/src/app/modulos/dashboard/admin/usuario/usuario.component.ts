@@ -253,7 +253,7 @@ export class UsuarioComponent {
     this.form.get('USR_FECH_NAC')?.setValue(getFormattedDate(data.USR_FECH_NAC));
     this.form.get('USR_GEN')?.setValue(data.USR_GEN);
     this.form.get('USUARIO')?.setValue(data.USUARIO);
-    this.form.get('ESTADO')?.setValue(data.ESTADO === 0); // Asumiendo que 'estado' es un control en tu formulario
+    this.form.get('ESTADO')?.setValue(data.ESTADO !== 0); // Asumiendo que 'estado' es un control en tu formulario
     this.isAdmin = (data.ROL_ADMIN !== 0);
     this.isProf = (data.ROL_PRF !== 0);
     this.isRep = (data.ROL_REPR !== 0);

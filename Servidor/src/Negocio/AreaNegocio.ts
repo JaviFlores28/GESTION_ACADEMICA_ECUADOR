@@ -18,7 +18,7 @@ class AreaNegocio {
   
   static async getEnabledArea(): Promise<{ data: Area[], message: string }> {
     try {
-      let sql = 'SELECT `AREA_ID`as id, `AREA_NOM`, `ESTADO`,  FROM area where Estado=1';
+      let sql = 'SELECT * FROM area where Estado=1';
       const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as Area[], message: '' };
     } catch (error: any) {

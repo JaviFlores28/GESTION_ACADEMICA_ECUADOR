@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AnioLectivo } from 'src/app/modelos/interfaces/AnioLectivo.interface';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 
@@ -9,13 +10,13 @@ import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 })
 export class AniosLectivosComponent implements OnInit {
 
+  constructor(private service: AnioLectivoService, private router: Router, private route: ActivatedRoute) {
+  }
+
   routerLink: string = 'nuevo';
   title: string = 'Años lectivos';
   data: AnioLectivo[] = [];
-  headers = ['ID', 'NOMBRE', 'CREADOR', 'ESTADO', 'FECHA'];
-
-  constructor(private service: AnioLectivoService) {
-  }
+  headers = ['NOMBRE', 'FECHA INICIO', 'FECHA FIN', 'PERIODOS', 'EXAMENES','ESTADO'];
 
   ngOnInit(): void {
     this.loadData();
@@ -39,6 +40,22 @@ export class AniosLectivosComponent implements OnInit {
     });
   }
 
+  eliminar(id: any) {
+    console.log(id);
+
+  }
+
+  checkedsAction(data: any) {
+    console.log(data);
+  }
+
+  filaAction(data: any) {
+    if (data.option === 'editar') {
+      this.router.navigate(['editar/' + data.id], { relativeTo: this.route });
+    } else if (data.option === 'eliminar') {
+      console.log(data.id);
+    }
+  }
 
 }
 

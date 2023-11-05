@@ -8,7 +8,7 @@ class ParaleloNegocio {
   
   static async getParalelo(): Promise<{ data: Paralelo[], message: string }> {
     try {
-      let sql = 'SELECT * FROM paralelo';
+      let sql = 'SELECT a.`PRLL_ID` as id, a.`PRLL_NOM`, CONCAT(b.`CRS_NOM`, \'-\', b.`CRS_TIPO`) as CRS_NOM, c.AL_NOM, a.`ESTADO` FROM `paralelo` as a JOIN `curso` as b ON a.`CRS_ID` = b.`CRS_ID` JOIN `anio_lectivo` as c ON a.`AL_ID` = c.`AL_ID` AND C.ESTADO=1 ORDER BY a.CRS_ID ASC;';
       const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as Paralelo[], message: '' };
     } catch (error: any) {
@@ -18,7 +18,7 @@ class ParaleloNegocio {
   
   static async getEnabledParalelo(): Promise<{ data: Paralelo[], message: string }> {
     try {
-      let sql = 'SELECT * FROM paralelo where Estado=1';
+      let sql = 'SELECT a.`PRLL_ID` as id, a.`PRLL_NOM`, CONCAT(b.`CRS_NOM`, \'-\', b.`CRS_TIPO`) as CRS_NOM, c.AL_NOM, a.`ESTADO` FROM `paralelo` as a JOIN `curso` as b ON a.`CRS_ID` = b.`CRS_ID` JOIN `anio_lectivo` as c ON a.`AL_ID` = c.`AL_ID` WHERE a.ESTADO = 1 AND c.ESTADO = 1 ORDER BY a.CRS_ID ASC;';
       const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as Paralelo[], message: '' };
     } catch (error: any) {

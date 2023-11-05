@@ -9,7 +9,7 @@
                     </div>
                 </div>
                 <div *ngIf="data" class="col">
-                  <app-ng-table [data]="data" [headers]="headers" (eliminarAction)="eliminar($event)" (checkedAction)="checkedsAction($event)"></app-ng-table>
+                  <app-ng-table [data]="data" [headers]="headers" (eliminarAction)="eliminar($event)" (checkedAction)="checkedsAction($event)" (filaAction)="filaAction($event)"></app-ng-table>
                 </div>
             </div>
         </div>

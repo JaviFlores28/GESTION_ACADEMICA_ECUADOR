@@ -160,7 +160,7 @@ export class ParaleloComponent implements OnInit {
   loadCursos() {
     this.serviceCursos.getEnabled().subscribe({
       next: (value) => {
-        if (value.data) {
+        if (value.data) {          
           this.cursos = value.data
         } else {
           console.log(value.message);

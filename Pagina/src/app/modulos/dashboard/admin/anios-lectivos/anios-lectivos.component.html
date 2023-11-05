@@ -6,11 +6,13 @@
                     <div class="py-3 ps-3">
                         <span class="h2 pe-2 card-title">{{title}}</span>
                         <button [routerLink]="[routerLink]" class="btn btn-primary">Crear</button>
-                    </div>  
+                    </div>
                 </div>
                 <div *ngIf="data" class="col">
-                    <app-ng-table [data]="data" [headers]="headers"></app-ng-table>
-                  </div>
+                    <app-ng-table [data]="data" [headers]="headers" [botonEdit]="false" [botonDelete]="false" [botonVer]="true"
+                        [checks]="false" (eliminarAction)="eliminar($event)" (checkedAction)="checkedsAction($event)"
+                        (filaAction)="filaAction($event)"></app-ng-table>
+                </div>
             </div>
         </div>
     </div>

@@ -2,8 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormsModule } from '@angular/forms';
 import { NgbTypeaheadModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
-import { ActivatedRoute, Router } from '@angular/router';
-import { faEdit, faToggleOff, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faEye, faToggleOff, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
@@ -15,12 +14,18 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 })
 
 export class NgTableComponent {
-  constructor(private router: Router, private route: ActivatedRoute) { }
 
   @Input() data: any[] = [];
   @Input() headers: any[] = [];
+  @Input() botonera: boolean = true;
+  @Input() botonEdit: boolean = true;
+  @Input() botonDelete: boolean = true;
+  @Input() botonVer: boolean = false;
+  @Input() checks: boolean = true;
+
   @Output() eliminarAction = new EventEmitter<any>();
   @Output() checkedAction = new EventEmitter<any>();
+  @Output() filaAction = new EventEmitter<any>();
 
   filter = new FormControl('', { nonNullable: true });
   private cachedHeaders: string[] | null = null;
@@ -29,7 +34,8 @@ export class NgTableComponent {
   isCheckedAll = false;
   icon = faToggleOff;
   icon2 = faTrash;
-
+  icon3 = faEye;
+  
   get getHeaders(): string[] {
     if (this.cachedHeaders) {
       return this.cachedHeaders;
@@ -45,8 +51,8 @@ export class NgTableComponent {
   get dataAux(): any[] {
     const filterValue = this.filter.value.toString().toLowerCase();
     return this.data.filter(objeto =>
-      Object.values(objeto).some((value: any) =>
-        value.toString().toLowerCase().includes(filterValue)
+      Object.entries(objeto).some(([key, value]: [string, any]) =>
+        key !== 'id' && value.toString().toLowerCase().includes(filterValue)
       )
     );
   }
@@ -59,11 +65,7 @@ export class NgTableComponent {
   }
 
   seleccionarFila(id: string, option: any) {
-    if (option === 'editar') {
-      this.router.navigate(['editar/' + id], { relativeTo: this.route });
-    } else if (option === 'eliminar') {
-      this.eliminarAction.emit(id); // Emitir el evento con el objeto data
-    }
+    this.filaAction.emit({ id, option })
   }
 
   toggleAll(event: any) {
