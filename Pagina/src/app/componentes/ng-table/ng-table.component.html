@@ -31,7 +31,7 @@
 				<ng-container *ngIf="checks">
 					<td>
 						<div class="form-check w-auto">
-							<input class="form-check-input" type="checkbox" [(ngModel)]="item.isChecked">
+							<input class="form-check-input" type="checkbox" [(ngModel)]="item.isChecked" (click)="actionCheck($event,item)">
 						</div>
 					</td>
 				</ng-container>
@@ -41,22 +41,24 @@
 				<td *ngFor="let propiedad of getHeaders">
 					<ngb-highlight [result]="item[propiedad].toString()" [term]="filter.value"></ngb-highlight>
 				</td>
+				<ng-container *ngIf="botonEstado">
 				<td>
 					<div class="form-switch text-center">
 						<input class="form-check-input" type="checkbox" role="switch" id="estado"
 							[(ngModel)]="item.ESTADO" disabled=>
 					</div>
 				</td>
+				</ng-container>
 				<ng-container *ngIf="botonera">
 					<td>
 						<div class="btn-group" role="group">
 							<button type="button" class="btn btn-sm btn-primary"
-								(click)="seleccionarFila(item.id,'editar')"  *ngIf="botonEdit">Editar</button>
+								(click)="seleccionarFila(item.id,'editar')" *ngIf="botonEdit">Editar</button>
 							<button type="button" class="btn btn-sm btn-danger"
-								(click)="seleccionarFila(item.id,'eliminar')"  *ngIf="botonDelete">Eliminar</button>
-								<button type="button" class="btn btn-sm btn-info"
-								(click)="seleccionarFila(item.id,'editar')"  *ngIf="botonVer"><fa-icon [icon]="icon3"
-								size="1x" class="text-white"></fa-icon></button>
+								(click)="seleccionarFila(item.id,'eliminar')" *ngIf="botonDelete">Eliminar</button>
+							<button type="button" class="btn btn-sm btn-info"
+								(click)="seleccionarFila(item.id,'editar')" *ngIf="botonVer"><fa-icon [icon]="icon3"
+									size="1x" class="text-white"></fa-icon></button>
 						</div>
 					</td>
 				</ng-container>
@@ -68,17 +70,14 @@
 	<div class="row row-cols-auto justify-content-start align-items-center text-center pb-3">
 		<div class="col align-self-center">
 			<div class="form-check">
-				<input class="form-check-input" id="checkedAll" type="checkbox" [(ngModel)]="isCheckedAll"
-					(change)="toggleAll($event)">
+				<input class="form-check-input" id="checkedAll" type="checkbox" [(ngModel)]="isCheckedAll" (change)="toggleAll($event)">
 				<label for="checkedAll" class="form-check-label"> Seleccionar todos</label>
 			</div>
 		</div>
-		<ng-container *ngIf="isChecked()">
+		<ng-container *ngIf="isChecked() && checksOptions">
 			<div class="col">
-				<button type="button" class="btn link-dark" (click)="actionChecked('desactivar')"><fa-icon [icon]="icon"
-						size="1x"></fa-icon>Desactivar</button>
-				<button type="button" class="btn link-danger" (click)="actionChecked('eliminar')"><fa-icon
-						[icon]="icon2" size="1x"></fa-icon>Eliminar</button>
+				<button type="button" class="btn link-dark" (click)="actionChecked('desactivar')"><fa-icon [icon]="icon" size="1x"></fa-icon>Desactivar</button>
+				<button type="button" class="btn link-danger" (click)="actionChecked('eliminar')"><fa-icon [icon]="icon2" size="1x"></fa-icon>Eliminar</button>
 			</div>
 		</ng-container>
 	</div>

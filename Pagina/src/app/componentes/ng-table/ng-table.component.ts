@@ -20,8 +20,10 @@ export class NgTableComponent {
   @Input() botonera: boolean = true;
   @Input() botonEdit: boolean = true;
   @Input() botonDelete: boolean = true;
+  @Input() botonEstado: boolean = true;
   @Input() botonVer: boolean = false;
   @Input() checks: boolean = true;
+  @Input() checksOptions: boolean = true;
 
   @Output() eliminarAction = new EventEmitter<any>();
   @Output() checkedAction = new EventEmitter<any>();
@@ -35,7 +37,7 @@ export class NgTableComponent {
   icon = faToggleOff;
   icon2 = faTrash;
   icon3 = faEye;
-  
+
   get getHeaders(): string[] {
     if (this.cachedHeaders) {
       return this.cachedHeaders;
@@ -63,6 +65,13 @@ export class NgTableComponent {
     let response = { action, data: checkedIds };
     this.checkedAction.emit(response); // Emitir el evento con el objeto data
   }
+  actionCheck(event: any, item: any) {
+    //const estado = event.target.checked;
+    item.isChecked = !item.isChecked
+    if (!this.checksOptions) {
+      this.actionChecked('checks')
+    }
+  }
 
   seleccionarFila(id: string, option: any) {
     this.filaAction.emit({ id, option })
@@ -76,6 +85,9 @@ export class NgTableComponent {
     // Iterar sobre el rango y actualizar isChecked
     for (let i = ini; i <= end; i++) {
       this.dataAux[i].isChecked = estado;
+    }
+    if (!this.checksOptions) {
+      this.actionChecked('checks')
     }
   }
 

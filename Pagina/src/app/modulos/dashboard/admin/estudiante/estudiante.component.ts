@@ -47,19 +47,19 @@ export class EstudianteComponent {
     EST_NAC_ETN: ['', Validators.required],
     EST_COM_ETN: ['', Validators.required],
     EST_COD_ELE: ['', Validators.required],
-    EST_NEC_ASO_DIS: [false, Validators.required],
-    EST_NEC_NO_ASO_DIS: [false, Validators.required],
-    EST_ENF_CAT: [false, Validators.required],
+    EST_NEC_ASO_DIS: [false],
+    EST_NEC_NO_ASO_DIS: [false],
+    EST_ENF_CAT: [false],
     haveConadis: [false],
-    EST_NUM_CONA: ['', Validators.required],
-    EST_INTE: [false, Validators.required],
-    EST_TV: [false, Validators.required],
-    EST_RAD: [false, Validators.required],
-    EST_PC: [false, Validators.required],
-    EST_CEL: [false, Validators.required],
+    EST_NUM_CONA: [''],
+    EST_INTE: [false],
+    EST_TV: [false],
+    EST_RAD: [false],
+    EST_PC: [false],
+    EST_CEL: [false],
     REPR_ID: ['', Validators.required],
     REL_EST_REP: ['', Validators.required],
-    ESTADO: [false, Validators.required]
+    ESTADO: [false]
   })
 
   ngOnInit(): void {
@@ -291,7 +291,6 @@ export class EstudianteComponent {
   openConfirmationModal() {
     const modalRef = this.ngBootstrap.open(ModalComponent);
     modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
-
     // Usa el operador Elvis para asegurarte de que activeModal y contenido estén definidos
     modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = (!this.modoEdicion) ? '¿Desea guardar?' : '¿Desea editar?');
     modalRef.componentInstance.icon = faInfoCircle;

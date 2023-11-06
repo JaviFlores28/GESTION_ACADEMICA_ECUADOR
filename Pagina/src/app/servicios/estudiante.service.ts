@@ -26,10 +26,6 @@ export class EstudianteService extends ErrorHandlerService {
       catchError(this.handleError));
   }
 
-  getByCurso(id: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}ByCurso/${id}`).pipe(
-      catchError(this.handleError));
-  }
 
   post(estudiante: Estudiante): Observable<any> {
     return this.http.post(this.apiUrl, estudiante).pipe(

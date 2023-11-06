@@ -122,7 +122,7 @@ sqlUpdate(): { query: string; values: any[] } {
 
     
 isValid(): boolean {
-  return !!this.EST_ID && !!this.EST_DNI && !!this.EST_NOM && !!this.EST_NOM2 && !!this.EST_APE && !!this.EST_APE2 && !!this.EST_FECH_NAC && !!this.EST_GEN && !!this.EST_PRV && !!this.EST_CAN && !!this.EST_PARR && !!this.EST_DIR && !!this.EST_NAC && !!this.EST_ETN && !!this.EST_NAC_ETN && !!this.EST_COM_ETN && !!this.EST_COD_ELE && !!this.EST_NEC_ASO_DIS && !!this.EST_NEC_NO_ASO_DIS && !!this.EST_ENF_CAT && !!this.EST_NUM_CONA && !!this.EST_INTE && !!this.EST_TV && !!this.EST_RAD && !!this.EST_PC && !!this.EST_CEL && !!this.REPR_ID && !!this.REL_EST_REP && !!this.CREADOR_ID;
+  return !!this.EST_ID && !!this.EST_DNI && !!this.EST_NOM && !!this.EST_NOM2 && !!this.EST_APE && !!this.EST_APE2 && !!this.EST_FECH_NAC && !!this.EST_GEN && !!this.EST_PRV && !!this.EST_CAN && !!this.EST_PARR && !!this.EST_DIR && !!this.EST_NAC && !!this.EST_ETN && !!this.EST_NAC_ETN && !!this.EST_COM_ETN && !!this.EST_COD_ELE && !!this.REPR_ID && !!this.REL_EST_REP && !!this.CREADOR_ID;
 }
 
     

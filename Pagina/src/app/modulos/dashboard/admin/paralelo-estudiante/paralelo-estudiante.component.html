@@ -13,12 +13,13 @@
                         </div>
                         <div class="col">
                             <label for="PRLL_ID" class="form-label">Paralelo:</label>
-                            <ng-select [items]="paralelos" bindLabel="PRLL_NOM" bindValue="PRLL_ID" formControlName="PRLL_ID"
-                                id="PRLL_ID">
+                            <ng-select [items]="paralelos" bindLabel="PRLL_NOM" bindValue="PRLL_ID"
+                                formControlName="PRLL_ID" id="PRLL_ID">
                             </ng-select>
                         </div>
                         <div class="col">
-                            <button type="submit" class="btn btn-dark">Guardar</button>
+                            <button type="submit" [disabled]="itemsChecks.length<=0 ||!form.valid"
+                                class="btn btn-dark">Guardar</button>
                         </div>
                     </div>
                 </div>
@@ -28,7 +29,37 @@
             <div class="card text-start border border-0 rounded shadow">
                 <div class="card-body">
                     <h4 class="card-title">Estudiantes</h4>
-                    <p class="card-text">{{estudiantes}}</p>
+                    <div *ngIf="estudiantes">
+                        <app-ng-table [data]="estudiantes" [headers]="headers" [botonera]="false"
+                            [checksOptions]="false" [botonEstado]="false"
+                            (checkedAction)="checkedsAction($event)"></app-ng-table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col" *ngIf="form.value.PRLL_ID">
+            <div class="card text-start border border-0 rounded shadow">
+                <div class="card-body">
+                    <h4 class="card-title">Paralelo {{selectedLabel}}</h4>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">CÉDULA</th>
+                                    <th scope="col">NOMBRES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of paraleloEstudiantes; index as i">
+                                    <td scope="row">{{i+1}}</td>
+                                    <td>{{item.EST_DNI}}</td>
+                                    <td>{{item.EST_NOM}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
             </div>
         </div>

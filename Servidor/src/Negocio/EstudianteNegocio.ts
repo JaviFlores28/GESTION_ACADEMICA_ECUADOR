@@ -26,17 +26,6 @@ class EstudianteNegocio {
     }
   }
 
-  static async getEnabledEstudianteByCurso(cursoid: any): Promise<{ data: Estudiante[], message: string }> {
-    try {
-      console.log(cursoid);
-      let sql = `SELECT b.* FROM matricula as a JOIN estudiante as b ON a.EST_ID = b.EST_ID WHERE a.CRS_ID =? AND B.ESTADO=1;`;
-      const [rows] = await baseDatos.execute<any>(sql, [cursoid]);
-      return { data: rows as Estudiante[], message: '' };
-    } catch (error: any) {
-      return { data: [], message: error.message }; // Retorna el mensaje del error
-    }
-  }
-
   static async searchById(id: String): Promise<{ data: Estudiante | null; message: string }> {
     try {
       let sql = 'SELECT * FROM estudiante WHERE EST_ID = ?';

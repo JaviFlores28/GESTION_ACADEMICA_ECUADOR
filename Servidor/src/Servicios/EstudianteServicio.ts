@@ -22,16 +22,6 @@ router.get('/estudianteEnabled', async (req, res) => {
   }
 });
 
-router.get('/estudianteByCurso/:curso', async (req, res) => {
-  try {
-    const curso = req.params.curso;
-    const estudiante = await EstudianteNegocio.getEnabledEstudianteByCurso(curso);
-    res.json(estudiante);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
 router.post('/estudiante', async (req, res) => {
   try {
     const request = req.body;

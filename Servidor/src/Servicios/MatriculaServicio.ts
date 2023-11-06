@@ -22,6 +22,17 @@ router.get('/matriculaEnabled', async (req, res) => {
    }
 });
 
+
+router.get('/matriculaByCurso/:curso', async (req, res) => {
+  try {
+    const curso = req.params.curso;
+    const estudiante = await MatriculaNegocio.getEnabledMatriculaByCurso(curso);
+    res.json(estudiante);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 router.post('/matricula', async (req, res) => {
    try {
     const request = req.body;

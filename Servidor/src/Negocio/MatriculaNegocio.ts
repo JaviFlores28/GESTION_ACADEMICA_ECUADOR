@@ -1,5 +1,6 @@
 
 import baseDatos from '../Datos/BaseDatos';
+import Estudiante from '../Entidades/EstudianteEntidad';
 import Matricula from '../Entidades/MatriculaEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -21,6 +22,17 @@ class MatriculaNegocio {
       let sql = 'SELECT * FROM matricula where Estado=1';
       const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as Matricula[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+
+  static async getEnabledMatriculaByCurso(cursoid: any): Promise<{ data: Estudiante[], message: string }> {
+    try {
+      let sql = `SELECT b.EST_ID AS id, b.EST_DNI, CONCAT(b.EST_NOM,' ', b.EST_NOM2,' ',b.EST_APE,' ',b.EST_APE2) AS EST_NOM FROM matricula as a JOIN estudiante as b ON a.EST_ID = b.EST_ID WHERE a.CRS_ID = ? AND b.ESTADO = 1 AND NOT EXISTS ( SELECT 1 FROM paralelo_estudiante as mp, paralelo as pr, anio_lectivo as al WHERE mp.MTR_ID = a.MTR_ID and mp.PRLL_ID=pr.PRLL_ID and pr.AL_ID=al.AL_ID and al.ESTADO=1 );`;
+      console.log(sql, cursoid);
+      const [rows] = await baseDatos.execute<any>(sql, [cursoid]);
+      return { data: rows as Estudiante[], message: '' };
     } catch (error: any) {
       return { data: [], message: error.message }; // Retorna el mensaje del error
     }

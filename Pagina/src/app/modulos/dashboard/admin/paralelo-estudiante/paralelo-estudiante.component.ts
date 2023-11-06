@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Curso } from 'src/app/modelos/interfaces/Curso.interface';
 import { Estudiante } from 'src/app/modelos/interfaces/Estudiante.interface';
 import { Paralelo } from 'src/app/modelos/interfaces/Paralelo.interface';
 import { CursoService } from 'src/app/servicios/curso.service';
-import { EstudianteService } from 'src/app/servicios/estudiante.service';
+import { MatriculaService } from 'src/app/servicios/matricula.service';
+import { ParaleloEstudianteService } from 'src/app/servicios/paralelo-estudiante.service';
 import { ParaleloService } from 'src/app/servicios/paralelo.service';
 
 @Component({
@@ -16,37 +15,59 @@ import { ParaleloService } from 'src/app/servicios/paralelo.service';
   styleUrls: ['./paralelo-estudiante.component.scss']
 })
 export class ParaleloEstudianteComponent implements OnInit {
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private serviceCurso: CursoService, private serviceParalelo: ParaleloService, private serviceEstudiante: EstudianteService) {// Suscribirse a cambios en CRS_ID
-    this.form.get('CRS_ID')?.valueChanges.subscribe(newValue => {
-      // Aquí puedes ejecutar tu código cuando el valor de CRS_ID cambie
-      return this.loadEstudiantes(newValue);      
-    });
+  constructor(
+    private formBuilder: FormBuilder, 
+    private serviceMatricula: MatriculaService, 
+    private serviceCurso: CursoService, 
+    private serviceParalelo: ParaleloService, 
+    private serviceParaleloestudiante: ParaleloEstudianteService
+  ) {
+    this.subscribeToCRS_IDChanges();
+    this.subscribeToPRLL_IDChanges();
   }
-
+  
   cursos: Curso[] = [];
   paralelos: Paralelo[] = [];
   estudiantes: Estudiante[] = [];
+  paraleloEstudiantes: Estudiante[] = [];
+  itemsChecks: string[] = []
+  headers = ['CÉDULA', 'NOMBRES'];
+
   icon = faInfoCircle;
 
   form = this.formBuilder.group({
-    PRLL_ID: ['', Validators.required],
     CRS_ID: ['', Validators.required],
-    MTR_ID: ['', Validators.required],
-    ESTADO: [false, Validators.required]
+    PRLL_ID: ['', Validators.required]
   })
 
   ngOnInit(): void {
     this.loadCursos()
-    this.loadParalelos()
   }
 
   onSubmit() { }
+
+   subscribeToCRS_IDChanges() {
+    this.form.get('CRS_ID')?.valueChanges.subscribe(newValue => {
+      this.loadEstudiantes(newValue);
+      this.form.get('PRLL_ID')?.setValue('');
+      this.loadParalelos(newValue);
+    });
+  }
+
+   subscribeToPRLL_IDChanges() {
+    this.form.get('PRLL_ID')?.valueChanges.subscribe(newValue => {
+      if (newValue) {
+        this.loadParaleloEstudiante(newValue);
+      }
+    });
+  }
+  
 
   loadCursos() {
     this.serviceCurso.getEnabled().subscribe({
       next: (value) => {
         if (value.data) {
-          this.cursos = value.data
+          this.cursos = value.data;
         } else {
           console.log(value.message);
         }
@@ -57,11 +78,11 @@ export class ParaleloEstudianteComponent implements OnInit {
     });
   }
 
-  loadParalelos() {
-    this.serviceParalelo.getEnabled().subscribe({
+  loadParalelos(cursoId: any) {
+    this.serviceParalelo.getEnabled(cursoId).subscribe({
       next: (value) => {
         if (value.data) {
-          this.paralelos = value.data
+          this.paralelos = value.data;
         } else {
           console.log(value.message);
         }
@@ -72,12 +93,11 @@ export class ParaleloEstudianteComponent implements OnInit {
     });
   }
 
-  loadEstudiantes(cursoid:any) {
-    this.serviceEstudiante.getByCurso(cursoid).subscribe({
+  loadEstudiantes(cursoid: any) {
+    this.serviceMatricula.getByCurso(cursoid).subscribe({
       next: (value) => {
         if (value.data) {
-          this.estudiantes = value.data
-          console.log(value.data);
+          this.estudiantes = value.data;
         } else {
           console.log(value.message);
         }
@@ -86,6 +106,30 @@ export class ParaleloEstudianteComponent implements OnInit {
         console.log(error);
       }
     });
+  }
+
+  loadParaleloEstudiante(paraleloId: any) {
+    this.serviceParaleloestudiante.getEnabled(paraleloId).subscribe({
+      next: (value) => {
+        if (value.message=='') {
+          this.paraleloEstudiantes = value.data;
+        } else {
+          console.error(value.message);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+  }
+
+  get selectedLabel() {
+    return this.paralelos.find(item => item.PRLL_ID === this.form.value.PRLL_ID)?.PRLL_NOM;
+  }
+
+  checkedsAction(event: any) {
+    this.itemsChecks = event.data
+    console.log(this.itemsChecks);
   }
 
 }
