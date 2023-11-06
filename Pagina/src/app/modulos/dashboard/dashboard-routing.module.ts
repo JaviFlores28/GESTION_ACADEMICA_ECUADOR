@@ -12,7 +12,6 @@ import { AsignaturasComponent } from './admin/asignaturas/asignaturas.component'
 import { ProfesoresComponent } from './admin/profesores/profesores.component';
 import { RepresentantesComponent } from './admin/representantes/representantes.component';
 import { EstudiantesComponent } from './admin/estudiantes/estudiantes.component';
-import { MatriculasComponent } from './admin/matriculas/matriculas.component';
 import { UsuariosComponent } from './admin/usuarios/usuarios.component';
 import { UsuarioComponent } from './admin/usuario/usuario.component';
 import { AsignaturaComponent } from './admin/asignatura/asignatura.component';
@@ -80,9 +79,15 @@ const routes: Routes = [
           {
             path: 'profesores',
             children: [
-              { path: '', component: ProfesoresComponent },
-              { path: 'nuevo', component: UsuarioComponent },
-              { path: 'editar/:id', component: UsuarioComponent },
+              {
+                path: 'crear-profesor',
+                children: [
+                  { path: '', component: ProfesoresComponent },
+                  { path: 'nuevo', component: UsuarioComponent },
+                  { path: 'editar/:id', component: UsuarioComponent },
+                ]
+              },
+              { path: 'asignar-profesor', component: ProfesoresComponent },
             ]
           },
           {
