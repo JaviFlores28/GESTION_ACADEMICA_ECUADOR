@@ -1,11 +1,11 @@
--- Desencadenador para la tabla PROFESOR
+-- Desencadenador para la tabla DETALLE-PROFESOR
 DELIMITER $$
-CREATE TRIGGER check_profesor_role BEFORE INSERT ON PROFESOR FOR EACH ROW
+CREATE OR REPLACE TRIGGER check_profesor_role BEFORE INSERT ON detalle_usuario_profesor FOR EACH ROW
 BEGIN
     DECLARE v_role BOOLEAN ;
     -- SELECT ROL
     SELECT
-        IFNULL(ROL_PROFESOR, FALSE)
+        IFNULL(ROL_PRF, FALSE)
     INTO v_role
     FROM
     USUARIO
@@ -21,12 +21,12 @@ DELIMITER ;
 
 -- Desencadenador para la tabla REPRESENTANTE
 DELIMITER //
-CREATE TRIGGER check_representante_role BEFORE INSERT ON ESTUDIANTE FOR EACH ROW
+CREATE OR REPLACE TRIGGER check_representante_role BEFORE INSERT ON ESTUDIANTE FOR EACH ROW
 BEGIN
     DECLARE v_role BOOLEAN ;
     -- SELECT ROL
     SELECT
-        IFNULL(ROL_REPRESENTANTE, FALSE)
+        IFNULL(ROL_REPR, FALSE)
     INTO v_role
     FROM USUARIO
     WHERE USR_ID = NEW.REPR_ID ; 
@@ -39,21 +39,9 @@ END ;
 //
 DELIMITER ;
 
---
-DELIMITER $$
-CREATE TRIGGER evitar_eliminacion
-BEFORE DELETE ON usuarios
-FOR EACH ROW
-BEGIN
-  IF OLD.no_eliminable = 1 THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No puedes eliminar este registro.';
-  END IF;
-END$$
-DELIMITER ;
-
 -- Creacion de periodos y subperiodos
 DELIMITER $$
-CREATE TRIGGER `generar_periodo_subperiodo` AFTER INSERT ON `anio_lectivo` FOR EACH ROW BEGIN
+CREATE OR REPLACE TRIGGER `generar_periodo_subperiodo` AFTER INSERT ON `anio_lectivo` FOR EACH ROW BEGIN
     DECLARE i INT;
     DECLARE j INT;
     DECLARE k INT;
@@ -108,4 +96,16 @@ CREATE TRIGGER `generar_periodo_subperiodo` AFTER INSERT ON `anio_lectivo` FOR E
     END WHILE;
 END
 $$
+DELIMITER ;
+--
+--
+DELIMITER $$
+CREATE TRIGGER evitar_eliminacion
+BEFORE DELETE ON usuarios
+FOR EACH ROW
+BEGIN
+  IF OLD.no_eliminable = 1 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No puedes eliminar este registro.';
+  END IF;
+END$$
 DELIMITER ;
