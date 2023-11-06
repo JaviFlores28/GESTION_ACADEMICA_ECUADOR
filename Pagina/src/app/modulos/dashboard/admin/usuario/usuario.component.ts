@@ -92,7 +92,7 @@ export class UsuarioComponent {
     if (this.form.valid) {
       //const userId = this.service.getUserLoggedId();
 
-      const pswd = { id: this.elementoId, pswdNew: this.formPswd.value.USR_PSWD_NEW, pswdOld: this.formPswd.value.USR_PSWD};
+      const pswd = { id: this.elementoId, pswdNew: this.formPswd.value.USR_PSWD_NEW, pswdOld: this.formPswd.value.USR_PSWD };
       this.service.updatePswd(pswd).subscribe(
         {
           next: (response) => {
@@ -253,10 +253,10 @@ export class UsuarioComponent {
     this.form.get('USR_FECH_NAC')?.setValue(getFormattedDate(data.USR_FECH_NAC));
     this.form.get('USR_GEN')?.setValue(data.USR_GEN);
     this.form.get('USUARIO')?.setValue(data.USUARIO);
-    this.form.get('ESTADO')?.setValue((data.ESTADO === 0) ? false : true); // Asumiendo que 'estado' es un control en tu formulario
-    this.isAdmin = (data.ROL_ADMIN === 0) ? false : true;
-    this.isProf = (data.ROL_PRF === 0) ? false : true;
-    this.isRep = (data.ROL_REPR === 0) ? false : true;
+    this.form.get('ESTADO')?.setValue(data.ESTADO !== 0); // Asumiendo que 'estado' es un control en tu formulario
+    this.isAdmin = (data.ROL_ADMIN !== 0);
+    this.isProf = (data.ROL_PRF !== 0);
+    this.isRep = (data.ROL_REPR !== 0);
   }
 
   loadDetalle() {

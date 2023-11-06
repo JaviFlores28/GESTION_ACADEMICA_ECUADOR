@@ -91,10 +91,6 @@ export const navbarData: NavBarData[] = [
                 label: 'Profesores',
             },
             {
-                routelink: 'paralelos',
-                label: 'Paralelos',
-            },
-            {
                 routelink: 'representantes',
                 label: 'Representantes',
             },
@@ -105,6 +101,18 @@ export const navbarData: NavBarData[] = [
             {
                 routelink: 'matriculas',
                 label: 'Matrículas',
+            },
+            {
+                routelink: 'institucion/paralelos',
+                label: 'Paralelos',
+                items: [
+                    {
+                        routelink: 'crear-paralelo',
+                        label: 'Crear',
+                    }, {
+                        routelink: 'asignar-paralelo',
+                        label: 'Asignar',
+                    }]
             },
             {
                 routelink: 'solicitudes',

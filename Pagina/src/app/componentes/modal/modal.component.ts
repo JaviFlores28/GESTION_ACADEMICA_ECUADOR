@@ -1,10 +1,14 @@
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-modal',
+  standalone: true,
+  imports: [CommonModule, FontAwesomeModule],
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.scss']
 })

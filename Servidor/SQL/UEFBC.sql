@@ -144,7 +144,7 @@ CREATE TABLE `MATRICULA` (
   `CRS_ID` CHAR(36) NOT NULL,
   `EST_ID` CHAR(36) NOT NULL,
   `ESTADO` TINYINT (1) NOT NULL CHECK (ESTADO IN (0, 1)),
-  `PASE` enum ('Aprobado', 'Reprobado','Suspenso') NOT NULL,
+  `PASE` enum ('Aprobado', 'Reprobado','Suspenso','En proceso') NOT NULL,
   `CREADOR_ID` CHAR(36) NOT NULL,
   `FECHA_CREACION` DATETIME NOT NULL DEFAULT current_timestamp(),
   FOREIGN KEY (`CREADOR_ID`) REFERENCES `USUARIO` (`USR_ID`),

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalComponent } from 'src/app/componentes/modal/modal.component';
-import { DetalleUsuarioProfesor } from 'src/app/modelos/interfaces/DetalleUsuarioProfesor.interface';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Usuario } from 'src/app/modelos/interfaces/Usuario.interface';
+import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
   selector: 'app-profesores',
@@ -9,50 +9,49 @@ import { DetalleUsuarioProfesor } from 'src/app/modelos/interfaces/DetalleUsuari
   styleUrls: ['./profesores.component.scss']
 })
 export class ProfesoresComponent {
-  data: DetalleUsuarioProfesor[] = [];
-  headers: string[] = [];
-  icon = [
-    { icono: 'fa-edit', routerLink: 'editar', id: true ,ruta:true },
-    { icono: 'fa-eliminar', click:'', id: true ,ruta:false }
+  constructor(private service: UsuarioService, private router: Router, private route: ActivatedRoute) {}
 
-  ]; 
   routerLink:string='nuevo';
   title:string='Profesores';
-  itemsDelete:any[]=[];
-  constructor(//private docenteService: DocentesService, 
-    private modalService: NgbModal) {
+ 
+  data: Usuario[] = [];
+  headers = ['CÉDULA','NOMBRES','CELULAR','CORREO', 'ESTADO'];
+
+
+  ngOnInit(): void {
+    this.loadData();
   }
 
-  ngOnInit() {
-   /* this.docenteService.getTable().subscribe(data => {
-      this.data = data.data;
-      this.headers = data.headers;
-    });*/
-  }
-
-  capturarCheck (event:any){    
-    this.itemsDelete = event
-    console.log(this.itemsDelete);  
-  }
-
-  
-  eliminarItems(){
-    const modalRef = this.modalService.open(ModalComponent);
-    modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
-    modalRef.componentInstance.contenido = 'Estas seguro eliminar ' +this.itemsDelete.length + ' profesores?';
-
-    modalRef.result.then((result) => {
-      if (result === 'save') {
-        //this.authService.logout();
-        // Redirigir al usuario al login
-        //this.router.navigate(['/login']); // Ajusta la ruta según tu configuración
-        // O recargar la página
-        //window.location.reload();
-        console.log(result);
+  loadData() {
+    this.service.get('P').subscribe({
+      next: response => {
+        if (response.data.length > 0) {
+          this.data = response.data;
+        }
+        else {
+          console.log(response.message);
+        }
+      },
+      error: error => {
+        console.error('Error al cargar los datos:', error);
       }
-    }).catch((error) => {
-      // Lógica para manejar el cierre inesperado del modal
     });
+  }
+
+  eliminar(id: any) {
+    console.log(id);
+  }
+
+  checkedsAction(data: any) {
+    console.log(data);
+  }
+
+  filaAction(data: any) {
+    if (data.option === 'editar') {
+      this.router.navigate(['editar/' + data.id], { relativeTo: this.route });
+    } else if (data.option === 'eliminar') {
+      console.log(data.id);
+    }
   }
 
 }

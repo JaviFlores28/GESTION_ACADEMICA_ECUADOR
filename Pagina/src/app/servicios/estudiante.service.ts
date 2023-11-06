@@ -26,6 +26,7 @@ export class EstudianteService extends ErrorHandlerService {
       catchError(this.handleError));
   }
 
+
   post(estudiante: Estudiante): Observable<any> {
     return this.http.post(this.apiUrl, estudiante).pipe(
       catchError(this.handleError));

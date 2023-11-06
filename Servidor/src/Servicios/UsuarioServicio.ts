@@ -5,18 +5,20 @@ import UsuarioNegocio from '../Negocio/UsuarioNegocio';
 import UsuarioEntidad from '../Entidades/UsuarioEntidad';
 import DetalleUsuarioProfesor from '../Entidades/DetalleUsuarioProfesorEntidad';
 
-router.get('/usuario', async (req, res) => {
+router.get('/usuarios/:tipo', async (req, res) => {
   try {
-    const usuario = await UsuarioNegocio.getUsuario();
+    const tipo = req.params.tipo;
+    const usuario = await UsuarioNegocio.getUsuario(tipo);
     res.json(usuario);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 });
 
-router.get('/usuarioEnabled', async (req, res) => {
+router.get('/usuarioEnabled/:tipo', async (req, res) => {
   try {
-    const usuario = await UsuarioNegocio.getEnabledUsuario();
+    const tipo = req.params.tipo;
+    const usuario = await UsuarioNegocio.getEnabledUsuario(tipo);
     res.json(usuario);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -65,7 +67,7 @@ router.delete('/usuario/:id', async (req, res) => {
 });
 
 router.get('/usuario/:id', async (req, res) => {
-  try {
+  try {    
     const id = req.params.id;
     const response = await UsuarioNegocio.searchById(id);
     res.json(response);

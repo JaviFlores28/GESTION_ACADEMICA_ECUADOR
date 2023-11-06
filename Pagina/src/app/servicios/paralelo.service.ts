@@ -21,8 +21,8 @@ export class ParaleloService extends ErrorHandlerService {
       catchError(this.handleError));
   }
 
-  getEnabled(): Observable<any> {
-    return this.http.get(`${this.apiUrl}Enabled`).pipe(
+  getEnabled(cursoId:string): Observable<any> {
+    return this.http.get(`${this.apiUrl}Enabled/${cursoId}`).pipe(
       catchError(this.handleError));
   }
 

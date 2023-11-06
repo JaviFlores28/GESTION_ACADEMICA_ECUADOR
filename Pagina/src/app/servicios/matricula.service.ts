@@ -25,6 +25,11 @@ export class MatriculaService extends ErrorHandlerService {
     return this.http.get(`${this.apiUrl}Enabled`).pipe(
       catchError(this.handleError));
   }
+  
+  getByCurso(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}ByCurso/${id}`).pipe(
+      catchError(this.handleError));
+  }
 
   post(matricula: Matricula): Observable<any> {
     return this.http.post(this.apiUrl, matricula).pipe(

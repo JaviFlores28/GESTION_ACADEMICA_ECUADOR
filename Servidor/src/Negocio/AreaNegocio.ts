@@ -8,7 +8,7 @@ class AreaNegocio {
   
   static async getArea(): Promise<{ data: Area[], message: string }> {
     try {
-      let sql = 'SELECT * FROM area';
+      let sql = 'SELECT `AREA_ID` as id, `AREA_NOM`, `ESTADO` FROM area ORDER BY `ESTADO` DESC';
       const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as Area[], message: '' };
     } catch (error: any) {

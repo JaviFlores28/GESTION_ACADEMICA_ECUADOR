@@ -8,9 +8,16 @@ import DetalleUsuarioProfesorNegocio from './DetalleUsuarioProfesorNegocio';
 
 class UsuarioNegocio {
 
-  static async getUsuario(): Promise<{ data: Usuario[], message: string }> {
+  static async getUsuario(tipo: string): Promise<{ data: Usuario[], message: string }> {
     try {
-      let sql = 'SELECT * FROM usuario';
+      let sql = 'SELECT  `USR_ID` as id, `USR_DNI`, concat(`USR_NOM`,\' \' , `USR_NOM2`,\' \', `USR_APE`,\' \' , `USR_APE2`) as USR_NOM, `USR_CEL`, `USR_EMAIL`,`ESTADO` FROM usuario';
+      if (tipo === 'R') {
+        sql += ' where ROL_REPR=1'; // Added a space before AND
+      } else if (tipo === 'P') {
+        sql += ' where ROL_PRF=1';
+      } else if (tipo === 'A') {
+        sql += 'where ROL_ADMIN=1';
+      } 
       const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as Usuario[], message: '' };
     } catch (error: any) {
@@ -18,9 +25,16 @@ class UsuarioNegocio {
     }
   }
 
-  static async getEnabledUsuario(): Promise<{ data: Usuario[], message: string }> {
+  static async getEnabledUsuario(tipo: string): Promise<{ data: Usuario[], message: string }> {
     try {
       let sql = 'SELECT * FROM usuario where Estado=1';
+      if (tipo === 'R') {
+        sql += ' AND ROL_REPR=1'; // Added a space before AND
+      } else if (tipo === 'P') {
+        sql += ' AND ROL_PRF=1';
+      } else if (tipo === 'A') {
+        sql += ' AND ROL_ADMIN=1';
+      }
       const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as Usuario[], message: '' };
     } catch (error: any) {
@@ -47,7 +61,7 @@ class UsuarioNegocio {
     try {
       if (!usuario.isValid()) { //validar estructura del objeto
         throw new Error('Objeto de tipo Usuario no tiene la estructura esperada.');
-      }      
+      }
       usuario.USR_ID = uuidv4(); //asigna un identificador unico
       let sql = usuario.sqlInsert();
       const [result] = await baseDatos.execute<any>(sql.query, sql.values);
@@ -56,7 +70,7 @@ class UsuarioNegocio {
       } else {
         if (detalle) {
           detalle.USR_ID = usuario.USR_ID;
-          const response = await DetalleUsuarioProfesorNegocio.addDetalleUsuarioProfesor(detalle);          
+          const response = await DetalleUsuarioProfesorNegocio.addDetalleUsuarioProfesor(detalle);
           if (response.data === null) {
             await this.deleteUsuario(usuario.USR_ID)
             throw new Error(response.message);

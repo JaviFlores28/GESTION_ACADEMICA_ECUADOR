@@ -1,0 +1,101 @@
+<form>
+	<div class="mb-3 row">
+		<div class="col-xs-3 col-sm-auto">
+			<div class="input-group mb-3">
+				<input type="text" class="form-control" id="search-{{tableName}}" class="form-control" type="text"
+					placeholder="Buscar..." [formControl]="filter" />
+				<button *ngIf="filter.value!==''" class="btn btn-danger" type="button"
+					(click)="clear()">X</button>
+			</div>
+		</div>
+	</div>
+</form>
+<div class="table-responsive">
+	<table class="table table-striped table-hover text-center">
+		<thead>
+			<tr>
+				<ng-container *ngIf="checks">
+					<th></th>
+				</ng-container>
+				<th scope="col">#</th>
+				<ng-container *ngFor="let header of headers">
+					<th scope="col">{{header}}</th>
+				</ng-container>
+				<ng-container *ngIf="botonera">
+					<th scope="col">ACCIONES</th>
+				</ng-container>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let item of dataAux | slice: (page-1) * pageSize : page * pageSize; index as i">
+				<ng-container *ngIf="checks">
+					<td>
+						<div class="form-check w-auto">
+							<input class="form-check-input" id="check-{{item.id}}" type="checkbox" [(ngModel)]="item.isChecked" (click)="actionCheck($event,item)">
+						</div>
+					</td>
+				</ng-container>
+				<th scope="row">
+					{{ i + 1 }}
+				</th>
+				<td *ngFor="let propiedad of getHeaders">
+					<ngb-highlight [result]="item[propiedad].toString()" [term]="filter.value"></ngb-highlight>
+				</td>
+				<ng-container *ngIf="botonEstado">
+				<td>
+					<div class="form-switch text-center">
+						<input class="form-check-input" type="checkbox" role="switch" id="estado"
+							[(ngModel)]="item.ESTADO" disabled=>
+					</div>
+				</td>
+				</ng-container>
+				<ng-container *ngIf="botonera">
+					<td>
+						<div class="btn-group" role="group">
+							<button type="button" class="btn btn-sm btn-primary"
+								(click)="seleccionarFila(item.id,'editar')" *ngIf="botonEdit">Editar</button>
+							<button type="button" class="btn btn-sm btn-danger"
+								(click)="seleccionarFila(item.id,'eliminar')" *ngIf="botonDelete">Eliminar</button>
+							<button type="button" class="btn btn-sm btn-info"
+								(click)="seleccionarFila(item.id,'editar')" *ngIf="botonVer"><fa-icon [icon]="icon3"
+									size="1x" class="text-white"></fa-icon></button>
+						</div>
+					</td>
+				</ng-container>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<ng-container *ngIf="checks">
+	<div class="row row-cols-auto justify-content-start align-items-center text-center pb-3">
+		<div class="col align-self-center">
+			<div class="form-check">
+				<input class="form-check-input" id="checkAll-{{tableName}}" type="checkbox" [(ngModel)]="isCheckedAll" (change)="toggleAll($event)">
+				<label for="checkAll-{{tableName}}" class="form-check-label"> Seleccionar todos</label>
+			</div>
+		</div>
+		<ng-container *ngIf="isChecked() && checksOptions">
+			<div class="col">
+				<button type="button" class="btn link-dark" (click)="actionChecked('desactivar')"><fa-icon [icon]="icon" size="1x"></fa-icon>Desactivar</button>
+				<button type="button" class="btn link-danger" (click)="actionChecked('eliminar')"><fa-icon [icon]="icon2" size="1x"></fa-icon>Eliminar</button>
+			</div>
+		</ng-container>
+	</div>
+</ng-container>
+<div class="d-flex justify-content-between p-2">
+	<ngb-pagination [(page)]="page" [pageSize]="pageSize" [collectionSize]="dataAux.length"
+		(pageChange)="onPageChange($event)"></ngb-pagination>
+	<div class="mb-3  w-auto">
+		<select class="form-select" [(ngModel)]="pageSize">
+			<option value="2">2 items por página</option>
+			<option value="4">4 items por página</option>
+			<option value="6">6 items por página</option>
+			<option value="8">8 items por página</option>
+			<option value="10">10 items por página</option>
+			<option value="20">20 items por página</option>
+			<option value="30">30 items por página</option>
+			<option value="40">40 items por página</option>
+
+		</select>
+	</div>
+</div>

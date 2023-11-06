@@ -175,19 +175,19 @@ export class AnioLectivoComponent implements OnInit {
   }
 
   loadForm(data: AnioLectivo) {
-    this.form.get('AL_NOM')?.setValue(data.AL_NOM),
-      this.form.get('AL_INICIO')?.setValue(getFormattedDate(data.AL_INICIO)),
-      this.form.get('AL_FIN')?.setValue(getFormattedDate(data.AL_FIN)),
-      this.form.get('AL_POR_PRD')?.setValue(data.AL_POR_PRD),
-      this.form.get('AL_POR_EXAM')?.setValue(data.AL_POR_EXAM),
-      this.form.get('CLFN_MIN_APR')?.setValue(data.CLFN_MIN_APR),
-      this.form.get('CLFN_MIN_PERD')?.setValue(data.CLFN_MIN_PERD),
-      this.form.get('NUM_PRD')?.setValue(data.NUM_PRD),
-      this.form.get('NUM_EXAM')?.setValue(data.NUM_EXAM),
-      this.form.get('NUM_PRCL')?.setValue(data.NUM_PRCL),
-      this.form.get('NUM_SUSP')?.setValue(data.NUM_SUSP),
-      this.form.get('ESTADO')?.setValue((data.ESTADO === 1) ? true : false)
-  }
+    this.form.get('AL_NOM')?.setValue(data.AL_NOM);
+      this.form.get('AL_INICIO')?.setValue(getFormattedDate(data.AL_INICIO));
+      this.form.get('AL_FIN')?.setValue(getFormattedDate(data.AL_FIN));
+      this.form.get('AL_POR_PRD')?.setValue(data.AL_POR_PRD);
+      this.form.get('AL_POR_EXAM')?.setValue(data.AL_POR_EXAM);
+      this.form.get('CLFN_MIN_APR')?.setValue(data.CLFN_MIN_APR);
+      this.form.get('CLFN_MIN_PERD')?.setValue(data.CLFN_MIN_PERD);
+      this.form.get('NUM_PRD')?.setValue(data.NUM_PRD);
+      this.form.get('NUM_EXAM')?.setValue(data.NUM_EXAM);
+      this.form.get('NUM_PRCL')?.setValue(data.NUM_PRCL);
+      this.form.get('NUM_SUSP')?.setValue(data.NUM_SUSP);
+      this.form.get('ESTADO')?.setValue(data.ESTADO === 1);
+    }
 
   openAlertModal(content: string, alertType: string) {
     const modalRef = this.ngBootstrap.open(ModalComponent);

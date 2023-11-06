@@ -13,9 +13,10 @@ router.get('/paralelo', async (req, res) => {
    }
 });
 
-router.get('/paraleloEnabled', async (req, res) => {
+router.get('/paraleloEnabled/:curso', async (req, res) => {
    try {
-    const paralelo = await ParaleloNegocio.getEnabledParalelo();
+    const cursoId = req.params.curso;
+    const paralelo = await ParaleloNegocio.getEnabledParalelo(cursoId);
     res.json(paralelo);
   } catch (error: any) {
     res.status(500).json({ message: error.message });

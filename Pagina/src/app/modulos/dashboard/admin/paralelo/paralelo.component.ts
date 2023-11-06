@@ -160,7 +160,7 @@ export class ParaleloComponent implements OnInit {
   loadCursos() {
     this.serviceCursos.getEnabled().subscribe({
       next: (value) => {
-        if (value.data) {
+        if (value.data) {          
           this.cursos = value.data
         } else {
           console.log(value.message);
@@ -187,14 +187,11 @@ export class ParaleloComponent implements OnInit {
     });
   }
 
-
-
-
   loadForm(data: Paralelo) {
-    this.form.get('PRLL_NOM')?.setValue(data.PRLL_NOM),
-      this.form.get('CRS_ID')?.setValue(data.CRS_ID),
-      this.form.get('AL_ID')?.setValue(data.AL_ID),
-      this.form.get('ESTADO')?.setValue((data.ESTADO === 1) ? true : false)
+    this.form.get('PRLL_NOM')?.setValue(data.PRLL_NOM);
+      this.form.get('CRS_ID')?.setValue(data.CRS_ID);
+      this.form.get('AL_ID')?.setValue(data.AL_ID);
+      this.form.get('ESTADO')?.setValue(data.ESTADO === 1)
   }
 
   openAlertModal(content: string, alertType: string) {
