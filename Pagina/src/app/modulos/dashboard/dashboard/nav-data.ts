@@ -87,10 +87,6 @@ export const navbarData: NavBarData[] = [
                 label: 'Asignaturas',
             },
             {
-                routelink: 'profesores',
-                label: 'Profesores',
-            },
-            {
                 routelink: 'representantes',
                 label: 'Representantes',
             },
@@ -111,6 +107,18 @@ export const navbarData: NavBarData[] = [
                         label: 'Crear',
                     }, {
                         routelink: 'asignar-paralelo',
+                        label: 'Asignar',
+                    }]
+            },
+            {
+                routelink: 'institucion/profesores',
+                label: 'Profesores',
+                items: [
+                    {
+                        routelink: 'crear-profesor',
+                        label: 'Crear',
+                    }, {
+                        routelink: 'asignar-profesor',
                         label: 'Asignar',
                     }]
             },
