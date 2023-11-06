@@ -16,8 +16,8 @@ import ParametroServicio from './Servicios/ParametroServicio';
 import ParcialServicio from './Servicios/ParcialServicio';
 import PeriodoServicio from './Servicios/PeriodoServicio';
 import ProfesorAsignaturaParaleloServicio from './Servicios/ProfesorAsignaturaParaleloServicio';
-import ProfesorServicio from './Servicios/ProfesorServicio';
 import UsuarioServicio from './Servicios/UsuarioServicio';
+import DetalleUsuarioProfesorServicio from './Servicios/DetalleUsuarioProfesorServicio';
 
 dotenv.config();
 const { SERVER_PORT, SERVER_URL,PAGE_URL} = process.env;
@@ -46,7 +46,7 @@ app.use('/api', ParametroServicio);
 app.use('/api', ParcialServicio);
 app.use('/api', PeriodoServicio);
 app.use('/api', ProfesorAsignaturaParaleloServicio);
-app.use('/api', ProfesorServicio);
+app.use('/api', DetalleUsuarioProfesorServicio);
 app.use('/api', UsuarioServicio);
 
 app.listen(SERVER_PORT, () => {

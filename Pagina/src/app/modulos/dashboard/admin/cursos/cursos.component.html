@@ -1,1 +1,17 @@
-<p>cursos works!</p>
+<div class="container-fluid">
+    <div class="card text-start border border-0 rounded shadow">
+        <div class="card-body">
+            <div class="row row-cols-1">
+                <div class="col align-items-center">
+                    <div class="py-3 ps-3">
+                        <span class="h2 pe-2 card-title">{{title}}</span>
+                        <button [routerLink]="[routerLink]" class="btn btn-primary">Crear</button>
+                    </div>  
+                </div>
+                <div *ngIf="data" class="col">
+                    <app-ng-table [data]="data" [headers]="headers" (eliminarAction)="eliminar($event)" (checkedAction)="checkedsAction($event)" (filaAction)="filaAction($event)"></app-ng-table>
+                  </div>
+            </div>
+        </div>
+    </div>
+</div>

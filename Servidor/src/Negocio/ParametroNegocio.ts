@@ -1,15 +1,25 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import Parametro from '../Entidades/ParametroEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class ParametroNegocio {
   
   static async getParametro(): Promise<{ data: Parametro[], message: string }> {
     try {
-      let data = 'SELECT * FROM parametro';
-      const [rows] = await baseDatos.execute<any>(data);
+      let sql = 'SELECT * FROM parametro';
+      const [rows] = await baseDatos.execute<any>(sql);
+      return { data: rows as Parametro[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
+  static async getEnabledParametro(): Promise<{ data: Parametro[], message: string }> {
+    try {
+      let sql = 'SELECT * FROM parametro where Estado=1';
+      const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as Parametro[], message: '' };
     } catch (error: any) {
       return { data: [], message: error.message }; // Retorna el mensaje del error
@@ -18,9 +28,10 @@ class ParametroNegocio {
   
   static async searchById(id: String): Promise<{ data: Parametro | null; message: string }> {
     try {
-      const [rows] = await baseDatos.execute<any>('SELECT * FROM parametro WHERE PRMT_ID = ?', [id]);
+      let sql = 'SELECT * FROM parametro WHERE PRMT_ID = ?';
+      const [rows] = await baseDatos.execute<any>(sql, [id]);
       if (rows.length <= 0) {
-        throw new Error('Parametro no encontrado');
+        throw new Error('Objeto de tipo Parametro no encontrado');
       }
       let newParametro = rows[0] as Parametro;
       
@@ -36,9 +47,8 @@ class ParametroNegocio {
         throw new Error('Objeto de tipo Parametro no tiene la estructura esperada.');
       }
       parametro.PRMT_ID = uuidv4(); //asigna un identificador unico
-      
-      let data = parametro.sqlInsert();
-      const [result] = await baseDatos.execute<any>(data.query, data.values);
+      let sql = parametro.sqlInsert();
+      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar Parametro');
       }
@@ -50,7 +60,8 @@ class ParametroNegocio {
   
   static async deleteParametro(id: String): Promise<{ data: boolean, message: string }> {
     try {
-      const [result] = await baseDatos.execute<any>('delete FROM parametro WHERE PRMT_ID = ?', [id]);
+      let sql = 'delete FROM parametro WHERE PRMT_ID = ?';
+      const [result] = await baseDatos.execute<any>(sql, [id]);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo eliminar el objeto de tipo Parametro');
       }
@@ -65,8 +76,8 @@ class ParametroNegocio {
       if (!parametro.isValid()){ //validar estructura del objeto
         throw new Error('Objeto de tipo Parametro no tiene la estructura esperada.');
       }
-      let data = parametro.sqlUpdate();
-      const [result] = await baseDatos.execute<any>(data.query, data.values);
+      let sql = parametro.sqlUpdate();
+      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo actualizar Parametro');
       }

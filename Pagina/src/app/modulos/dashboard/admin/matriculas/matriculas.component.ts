@@ -6,5 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./matriculas.component.scss']
 })
 export class MatriculasComponent {
-
+  routerLink:string='nuevo';
+  title:string='Matrículas';
 }

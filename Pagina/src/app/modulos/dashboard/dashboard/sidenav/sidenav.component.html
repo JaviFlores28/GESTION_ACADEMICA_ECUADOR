@@ -6,8 +6,7 @@
         <div class="logo-text" *ngIf="collapsed">{{titulo}}</div>
         <button class="btn-closed" *ngIf="collapsed" (click)="closeSidenav()">
             <fa-icon [icon]="bars"></fa-icon>
-            <i class="fa fa-times close-icon"></i>
-        </button> 
+        </button>
     </div>
     <div class="scrollwrap scrollwrap_delayed">
         <ul class="sidenav-nav">
@@ -20,8 +19,8 @@
                     <span class="sidenav-link-text" @fadeInOut *ngIf="collapsed">{{data.label}}</span>
                 </a>
                 <!-- Enlace con subelementos -->
-                <a class="sidenav-nav-link" *ngIf="(data.visible) && (data.items && data.items.length > 0)" (click)="handleClick(data)"
-                    [ngClass]="getRouteActive(data)">
+                <a class="sidenav-nav-link" *ngIf="(data.visible) && (data.items && data.items.length > 0)"
+                    (click)="handleClick(data)" [ngClass]="getRouteActive(data)">
                     <fa-icon class="sidenav-link-icon" [icon]="data.icon || school"></fa-icon>
                     <span class="sidenav-link-text" @fadeInOut *ngIf="collapsed">{{data.label}}</span>
                     <fa-icon *ngIf="data.items && collapsed" class="menu-collapse-icon"

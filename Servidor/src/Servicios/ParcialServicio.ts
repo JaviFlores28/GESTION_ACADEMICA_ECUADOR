@@ -13,10 +13,19 @@ router.get('/parcial', async (req, res) => {
    }
 });
 
+router.get('/parcialEnabled', async (req, res) => {
+   try {
+    const parcial = await ParcialNegocio.getEnabledParcial();
+    res.json(parcial);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/parcial', async (req, res) => {
    try {
     const request = req.body;
-    const parcial = new ParcialEntidad(request.PRCL_ID, request.PRCL_NOM, request.PRCL_INI, request.PRCL_FIN, request.ESTADO, request.PRCL_TIPO, request.PRD_ID, request.CREADOR_ID, request.FECHA_CREACION);
+    const parcial = new ParcialEntidad(request.PRCL_ID, request.PRCL_NOM, request.PRCL_INI, request.PRCL_FIN, request.ESTADO, request.PRCL_TIPO, request.PRD_ID, request.CREADOR_ID);
     const response = await ParcialNegocio.addParcial(parcial);
     res.json(response);
   } catch (error: any) {
@@ -27,7 +36,7 @@ router.post('/parcial', async (req, res) => {
 router.put('/parcial', async (req, res) => {
   try {
     const request = req.body;
-    const parcial = new ParcialEntidad(request.PRCL_ID, request.PRCL_NOM, request.PRCL_INI, request.PRCL_FIN, request.ESTADO, request.PRCL_TIPO, request.PRD_ID, request.CREADOR_ID, request.FECHA_CREACION);
+    const parcial = new ParcialEntidad(request.PRCL_ID, request.PRCL_NOM, request.PRCL_INI, request.PRCL_FIN, request.ESTADO, request.PRCL_TIPO, request.PRD_ID, request.CREADOR_ID);
     const response = await ParcialNegocio.updateParcial(parcial);
     res.json(response);
   } catch (error: any) {

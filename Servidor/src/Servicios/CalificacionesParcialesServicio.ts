@@ -13,10 +13,19 @@ router.get('/calificacionesparciales', async (req, res) => {
    }
 });
 
+router.get('/calificacionesparcialesEnabled', async (req, res) => {
+   try {
+    const calificaciones_parciales = await CalificacionesParcialesNegocio.getEnabledCalificacionesParciales();
+    res.json(calificaciones_parciales);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/calificacionesparciales', async (req, res) => {
    try {
     const request = req.body;
-    const calificaciones_parciales = new CalificacionesParcialesEntidad(request.CAL_ID, request.PRF_ASG_PRLL_ID, request.PRLL_EST_ID, request.PRCL_ID, request.CALIFICACION, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const calificaciones_parciales = new CalificacionesParcialesEntidad(request.CAL_ID, request.PRF_ASG_PRLL_ID, request.PRLL_EST_ID, request.PRCL_ID, request.CALIFICACION, request.ESTADO, request.CREADOR_ID);
     const response = await CalificacionesParcialesNegocio.addCalificacionesParciales(calificaciones_parciales);
     res.json(response);
   } catch (error: any) {
@@ -27,7 +36,7 @@ router.post('/calificacionesparciales', async (req, res) => {
 router.put('/calificacionesparciales', async (req, res) => {
   try {
     const request = req.body;
-    const calificaciones_parciales = new CalificacionesParcialesEntidad(request.CAL_ID, request.PRF_ASG_PRLL_ID, request.PRLL_EST_ID, request.PRCL_ID, request.CALIFICACION, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const calificaciones_parciales = new CalificacionesParcialesEntidad(request.CAL_ID, request.PRF_ASG_PRLL_ID, request.PRLL_EST_ID, request.PRCL_ID, request.CALIFICACION, request.ESTADO, request.CREADOR_ID);
     const response = await CalificacionesParcialesNegocio.updateCalificacionesParciales(calificaciones_parciales);
     res.json(response);
   } catch (error: any) {

@@ -13,10 +13,19 @@ router.get('/periodo', async (req, res) => {
    }
 });
 
+router.get('/periodoEnabled', async (req, res) => {
+   try {
+    const periodo = await PeriodoNegocio.getEnabledPeriodo();
+    res.json(periodo);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/periodo', async (req, res) => {
    try {
     const request = req.body;
-    const periodo = new PeriodoEntidad(request.PRD_ID, request.PRD_NOM, request.PRD_TIPO, request.AL_ID, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const periodo = new PeriodoEntidad(request.PRD_ID, request.PRD_NOM, request.PRD_TIPO, request.AL_ID, request.ESTADO, request.CREADOR_ID);
     const response = await PeriodoNegocio.addPeriodo(periodo);
     res.json(response);
   } catch (error: any) {
@@ -27,7 +36,7 @@ router.post('/periodo', async (req, res) => {
 router.put('/periodo', async (req, res) => {
   try {
     const request = req.body;
-    const periodo = new PeriodoEntidad(request.PRD_ID, request.PRD_NOM, request.PRD_TIPO, request.AL_ID, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const periodo = new PeriodoEntidad(request.PRD_ID, request.PRD_NOM, request.PRD_TIPO, request.AL_ID, request.ESTADO, request.CREADOR_ID);
     const response = await PeriodoNegocio.updatePeriodo(periodo);
     res.json(response);
   } catch (error: any) {

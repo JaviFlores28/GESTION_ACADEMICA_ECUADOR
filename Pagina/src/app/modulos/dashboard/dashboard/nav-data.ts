@@ -1,5 +1,5 @@
 import { faChalkboardTeacher, faHome, faLaptopFile, faSchool, faUsers } from "@fortawesome/free-solid-svg-icons";
-import { NavBarData } from "src/app/modelos/interfaces/NavBarData.interface";
+import { NavBarData } from "src/app/modelos/interfaces_sistema/NavBarData.interface";
 
 
 export const navbarData: NavBarData[] = [
@@ -26,18 +26,13 @@ export const navbarData: NavBarData[] = [
             {
                 routelink: 'planes-tudios',
                 label: 'Planes de estudio',
-                items: [
-                    {
-                        routelink: 'cursos',
-                        label: 'Mis cursos',
-                    },]
             },
         ]
     },
     {
-        routelink: 'estudiante',
+        routelink: 'Representante',
         icon: faUsers,
-        label: 'Estudiantes',
+        label: 'Representante',
         rol: 'T',
         items: [
             {
@@ -45,8 +40,8 @@ export const navbarData: NavBarData[] = [
                 label: 'Horarios',
             },
             {
-                routelink: 'estudiantes',
-                label: 'Estudiantes',
+                routelink: 'calificaciones',
+                label: 'Calificaciones',
             },
             {
                 routelink: 'planestudios',
@@ -56,10 +51,6 @@ export const navbarData: NavBarData[] = [
                 routelink: 'solicitudes',
                 label: 'Solicitudes',
             },
-            {
-                routelink: 'reportes',
-                label: 'Reportes',
-            },
         ]
 
     },
@@ -67,11 +58,29 @@ export const navbarData: NavBarData[] = [
         routelink: 'institucion',
         icon: faSchool,
         label: 'Institución',
-        rol: 'T',
+        rol: 'A',
         items: [
             {
-                routelink: 'anio-lectivo',
+                routelink: 'institucion/anio-lectivo',
                 label: 'Año lectivo',
+                items: [
+                    {
+                        routelink: 'activo',
+                        label: 'Año actual',
+                    },
+                    {
+                        routelink: 'anios',
+                        label: 'Años lectivos',
+                    }
+                ]
+            },
+            {
+                routelink: 'areas',
+                label: 'Areas',
+            },
+            {
+                routelink: 'cursos',
+                label: 'Cursos',
             },
             {
                 routelink: 'asignaturas',
@@ -80,10 +89,6 @@ export const navbarData: NavBarData[] = [
             {
                 routelink: 'profesores',
                 label: 'Profesores',
-            },
-            {
-                routelink: 'cursos',
-                label: 'Cursos',
             },
             {
                 routelink: 'representantes',
@@ -96,6 +101,18 @@ export const navbarData: NavBarData[] = [
             {
                 routelink: 'matriculas',
                 label: 'Matrículas',
+            },
+            {
+                routelink: 'institucion/paralelos',
+                label: 'Paralelos',
+                items: [
+                    {
+                        routelink: 'crear-paralelo',
+                        label: 'Crear',
+                    }, {
+                        routelink: 'asignar-paralelo',
+                        label: 'Asignar',
+                    }]
             },
             {
                 routelink: 'solicitudes',
@@ -119,12 +136,11 @@ export const navbarData: NavBarData[] = [
             }
         ]
     },
-
     {
         routelink: 'usuarios',
         icon: faUsers,
         label: 'Usuarios',
-        rol: 'T'
+        rol: 'T',
     },
 
 ];

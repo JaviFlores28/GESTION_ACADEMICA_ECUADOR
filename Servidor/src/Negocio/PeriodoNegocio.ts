@@ -1,15 +1,25 @@
 
 import baseDatos from '../Datos/BaseDatos';
-import Funciones from '../Modelos/Funciones';
 import Periodo from '../Entidades/PeriodoEntidad';
 import { v4 as uuidv4 } from 'uuid';
+
 
 class PeriodoNegocio {
   
   static async getPeriodo(): Promise<{ data: Periodo[], message: string }> {
     try {
-      let data = 'SELECT * FROM periodo';
-      const [rows] = await baseDatos.execute<any>(data);
+      let sql = 'SELECT * FROM periodo';
+      const [rows] = await baseDatos.execute<any>(sql);
+      return { data: rows as Periodo[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
+  static async getEnabledPeriodo(): Promise<{ data: Periodo[], message: string }> {
+    try {
+      let sql = 'SELECT * FROM periodo where Estado=1';
+      const [rows] = await baseDatos.execute<any>(sql);
       return { data: rows as Periodo[], message: '' };
     } catch (error: any) {
       return { data: [], message: error.message }; // Retorna el mensaje del error
@@ -18,9 +28,10 @@ class PeriodoNegocio {
   
   static async searchById(id: String): Promise<{ data: Periodo | null; message: string }> {
     try {
-      const [rows] = await baseDatos.execute<any>('SELECT * FROM periodo WHERE PRD_ID = ?', [id]);
+      let sql = 'SELECT * FROM periodo WHERE PRD_ID = ?';
+      const [rows] = await baseDatos.execute<any>(sql, [id]);
       if (rows.length <= 0) {
-        throw new Error('Periodo no encontrado');
+        throw new Error('Objeto de tipo Periodo no encontrado');
       }
       let newPeriodo = rows[0] as Periodo;
       
@@ -36,9 +47,8 @@ class PeriodoNegocio {
         throw new Error('Objeto de tipo Periodo no tiene la estructura esperada.');
       }
       periodo.PRD_ID = uuidv4(); //asigna un identificador unico
-      
-      let data = periodo.sqlInsert();
-      const [result] = await baseDatos.execute<any>(data.query, data.values);
+      let sql = periodo.sqlInsert();
+      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar Periodo');
       }
@@ -50,7 +60,8 @@ class PeriodoNegocio {
   
   static async deletePeriodo(id: String): Promise<{ data: boolean, message: string }> {
     try {
-      const [result] = await baseDatos.execute<any>('delete FROM periodo WHERE PRD_ID = ?', [id]);
+      let sql = 'delete FROM periodo WHERE PRD_ID = ?';
+      const [result] = await baseDatos.execute<any>(sql, [id]);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo eliminar el objeto de tipo Periodo');
       }
@@ -65,8 +76,8 @@ class PeriodoNegocio {
       if (!periodo.isValid()){ //validar estructura del objeto
         throw new Error('Objeto de tipo Periodo no tiene la estructura esperada.');
       }
-      let data = periodo.sqlUpdate();
-      const [result] = await baseDatos.execute<any>(data.query, data.values);
+      let sql = periodo.sqlUpdate();
+      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo actualizar Periodo');
       }

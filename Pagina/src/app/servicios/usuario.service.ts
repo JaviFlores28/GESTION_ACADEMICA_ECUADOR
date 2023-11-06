@@ -1,67 +1,91 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, lastValueFrom } from 'rxjs';
-
-import { UsuarioLogin } from '../modelos/interfaces/usuario-Login.interface';
+import { Observable, catchError, lastValueFrom, of, switchMap } from 'rxjs';
+import { variables } from '../modelos/variables/variables';
+import { ErrorHandlerService } from './error-handler.service';
+import { Respuesta } from '../modelos/interfaces_sistema/respuesta.interface';
+import { UsuarioLogin } from '../modelos/interfaces_sistema/usuario-Login.interface';
+import { DetalleUsuarioProfesor } from '../modelos/interfaces/DetalleUsuarioProfesor.interface';
 import { Usuario } from '../modelos/interfaces/Usuario.interface';
-import { params } from '../modelos/Params/params';
-import { Respuesta } from '../modelos/interfaces/respuesta.interface';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UsuarioService {
-  private apiUrl = ' http://localhost:3000/api'; // Reemplaza con tu URL
+export class UsuarioService extends ErrorHandlerService {
+  private apiUrl = variables.URL_API + '/usuario' // Reemplaza con tu URL
 
-  constructor(private http: HttpClient) { }
-
-  get(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/usuario`);
+  constructor(private http: HttpClient) {
+    super();
   }
 
-  post(usuario: Usuario): Observable<any> {
-    return this.http.post(`${this.apiUrl}/usuario`, usuario);
+  get(tipo:string): Observable<any> {
+    return this.http.get(this.apiUrl+'s/'+tipo).pipe(
+      catchError(this.handleError));
   }
+
+  getEnabled(tipo:string): Observable<any> {
+    return this.http.get(`${this.apiUrl}Enabled/${tipo}`).pipe(
+      catchError(this.handleError));
+  }
+
+
+  post(usuario: Usuario, detalle?: DetalleUsuarioProfesor): Observable<any> {
+    if (detalle) {
+      return this.http.post(this.apiUrl, { usuario, detalle }).pipe(catchError(this.handleError));
+    } else {
+      return this.http.post(this.apiUrl, { usuario }).pipe(catchError(this.handleError));
+    }
+  }
+
 
   put(usuario: Usuario): Observable<any> {
-    return this.http.put(`${this.apiUrl}/usuario`, usuario);
+    return this.http.put(this.apiUrl, usuario).pipe(
+      catchError(this.handleError));
   }
 
   delete(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/usuario${id}`);
+    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
+      catchError(this.handleError));
   }
 
   searchById(id: string): Observable<Respuesta> {
-    return this.http.get<Respuesta>(`${this.apiUrl}/usuario/${id}`);
+    return this.http.get<Respuesta>(`${this.apiUrl}/${id}`).pipe(
+      catchError(this.handleError));
   }
 
-  updatePswd(id: string, pswdNew: string, pswdOld: string): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/usuario/${id}`, { pswdNew, pswdOld });
+  updatePswd(data: any): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${data.id}`, { pswdNew: data.pswdNew, pswdOld: data.pswdOld }).pipe(
+      catchError(this.handleError));
   }
 
   validarUsuario(usuario: UsuarioLogin): Observable<Respuesta> {
-    return this.http.patch<Respuesta>(`${this.apiUrl}/validarUsuario`, usuario);
+    return this.http.patch<Respuesta>(`${this.apiUrl}Validar`, usuario).pipe(
+      catchError(this.handleError));
   }
 
   login(usuario: Usuario): void {
-    localStorage.setItem(params.KEY_NAME, btoa(JSON.stringify(usuario.USR_ID)));
+    localStorage.setItem(variables.KEY_NAME, btoa(JSON.stringify(usuario.USR_ID)));
   }
 
   logout(): void {
-    localStorage.removeItem(params.KEY_NAME);
+    localStorage.removeItem(variables.KEY_NAME);
+  }
+
+
+  getUserLoggedId() {
+    const userId = localStorage.getItem(variables.KEY_NAME);
+    return userId ? JSON.parse(atob(userId)) : '';
   }
 
   isLoggedIn(): boolean {
-    const userString = localStorage.getItem(params.KEY_NAME);
+    const userString = localStorage.getItem(variables.KEY_NAME);
     return !!userString;
   }
 
   async getUserLogged(): Promise<Usuario | null> {
-    const id = localStorage.getItem(params.KEY_NAME);
-    if (!id) { return null; }
-    const parsedId = JSON.parse(atob(id));
+    const id = this.getUserLoggedId()
     try {
-      const response = await lastValueFrom(this.searchById(parsedId));
+      const response = await lastValueFrom(this.searchById(id));
       if (!response) {
         return null;
       }

@@ -5,18 +5,29 @@ import ParaleloEstudianteNegocio from '../Negocio/ParaleloEstudianteNegocio';
 import ParaleloEstudianteEntidad from '../Entidades/ParaleloEstudianteEntidad';
 
 router.get('/paraleloestudiante', async (req, res) => {
-   try {
+  try {
     const paralelo_estudiante = await ParaleloEstudianteNegocio.getParaleloEstudiante();
     res.json(paralelo_estudiante);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
-   }
+  }
 });
 
+router.get('/paraleloestudianteEnabled/:paralelo', async (req, res) => {
+  try {
+    const paraleloId = req.params.paralelo;
+    const matricula = await ParaleloEstudianteNegocio.getEnabledParaleloEstudiante(paraleloId);
+    res.json(matricula);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 router.post('/paraleloestudiante', async (req, res) => {
-   try {
+  try {
     const request = req.body;
-    const paralelo_estudiante = new ParaleloEstudianteEntidad(request.PRLL_EST_ID, request.PRLL_ID, request.MTR_ID, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const paralelo_estudiante = new ParaleloEstudianteEntidad(request.PRLL_EST_ID, request.PRLL_ID, request.MTR_ID, request.ESTADO, request.CREADOR_ID);
     const response = await ParaleloEstudianteNegocio.addParaleloEstudiante(paralelo_estudiante);
     res.json(response);
   } catch (error: any) {
@@ -27,12 +38,12 @@ router.post('/paraleloestudiante', async (req, res) => {
 router.put('/paraleloestudiante', async (req, res) => {
   try {
     const request = req.body;
-    const paralelo_estudiante = new ParaleloEstudianteEntidad(request.PRLL_EST_ID, request.PRLL_ID, request.MTR_ID, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const paralelo_estudiante = new ParaleloEstudianteEntidad(request.PRLL_EST_ID, request.PRLL_ID, request.MTR_ID, request.ESTADO, request.CREADOR_ID);
     const response = await ParaleloEstudianteNegocio.updateParaleloEstudiante(paralelo_estudiante);
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.message });
-   }
+    res.status(500).json({ message: error.message });
+  }
 });
 
 router.delete('/paraleloestudiante/:id', async (req, res) => {

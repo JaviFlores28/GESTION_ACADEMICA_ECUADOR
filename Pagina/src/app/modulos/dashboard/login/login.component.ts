@@ -2,22 +2,22 @@ import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { faUserTie } from '@fortawesome/free-solid-svg-icons';
+import { UsuarioLogin } from 'src/app/modelos/interfaces_sistema/usuario-Login.interface';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
-import { UsuarioLogin } from '../../../modelos/interfaces/usuario-Login.interface';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
   constructor(private router: Router, private formBuilder: FormBuilder, private service: UsuarioService, private renderer: Renderer2, private el: ElementRef) {
   }
 
   icon = faUserTie;
   formulario = this.formBuilder.group({
-    user: ['administrador', [Validators.required, Validators.minLength(8)]],
+    usuario: ['administrador', [Validators.required, Validators.minLength(8)]],
     pswd: ['admin', Validators.required]
   })
 
@@ -25,24 +25,25 @@ export class LoginComponent {
     this.addStyle();
   }
 
-  get user() { return this.formulario.get('user'); }
+  get usuario() { return this.formulario.get('usuario'); }
   get pswd() { return this.formulario.get('pswd'); }
 
   login() {
     if (this.formulario.valid) {
       const usuario: UsuarioLogin = {
-        user: this.formulario.value.user || '', // Si es null o undefined, se asigna una cadena vacía.
+        usuario: this.formulario.value.usuario || '', // Si es null o undefined, se asigna una cadena vacía.
         pswd: this.formulario.value.pswd || '' // Igual aquí para pswd
       };
       this.service.validarUsuario(usuario).subscribe(
         {
           next: (response) => {
-            if (!response.data) {
+            if (response.data === null) {
               console.log(response.message);
+            } else {
+              this.service.login(response.data)
+              this.resetStyle()
+              this.router.navigate(['/home']);
             }
-            this.service.login(response.data)
-            this.resetStyle()
-            this.router.navigate(['/home']);
           },
           error: (error) => {
             console.error(error);

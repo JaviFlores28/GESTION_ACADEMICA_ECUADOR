@@ -5,16 +5,17 @@
         </div>
         <nav class="navbar navbar-expand">
             <div class="container">
-                <div class="btn-group" dropdown>
-                    <button id="button-animated" dropdownToggle type="button" class="btn btn-dark dropdown-toggle"
-                        aria-controls="dropdown-animated">
-                        <fa-icon [icon]="icon"></fa-icon>
-                        <span class="caret"></span>
-                    </button>
-                    <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu"
-                        aria-labelledby="button-animated">
-                        <li role="menuitem"><a class="dropdown-item" [routerLink]="'usuarios/'+userid">Mis datos</a></li>
-                        <li role="menuitem"><a class="dropdown-item" (click)="openModal()">Cerrar sesión</a></li>
+                <div class="collapse navbar-collapse ">
+                    <ul class="navbar-nav">
+                        <div ngbDropdown class="d-inline-block dropdown-center" placement="bottom-start">
+                            <button type="button" class="btn btn-dark dropdown-toggle" id="dropdownBasic1" ngbDropdownToggle>
+                                <fa-icon [icon]="icon"></fa-icon>
+                            </button>
+                            <div ngbDropdownMenu class="dropdown-menu-end" aria-labelledby="dropdownBasic1">
+                                <button ngbDropdownItem [routerLink]="'usuarios/myinfo/'+userid">Mis datos</button>
+                                <button ngbDropdownItem (click)="openModal()">Cerrar sesión </button>
+                            </div>
+                        </div>
                     </ul>
                 </div>
             </div>

@@ -108,6 +108,7 @@
   },
   "exclude": [
     "src/create.ts",
-    "src/test.ts"
+    "src/test.ts",
+    "src/Componentes"
   ]
 }

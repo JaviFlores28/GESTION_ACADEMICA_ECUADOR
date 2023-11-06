@@ -13,10 +13,19 @@ router.get('/parametro', async (req, res) => {
    }
 });
 
+router.get('/parametroEnabled', async (req, res) => {
+   try {
+    const parametro = await ParametroNegocio.getEnabledParametro();
+    res.json(parametro);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+   }
+});
+
 router.post('/parametro', async (req, res) => {
    try {
     const request = req.body;
-    const parametro = new ParametroEntidad(request.PRMT_ID, request.PRMT_NOM, request.PRMT_DESCR, request.PRMT_URL_IMG, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const parametro = new ParametroEntidad(request.PRMT_ID, request.PRMT_NOM, request.PRMT_DESCR, request.PRMT_URL_IMG, request.ESTADO, request.CREADOR_ID);
     const response = await ParametroNegocio.addParametro(parametro);
     res.json(response);
   } catch (error: any) {
@@ -27,7 +36,7 @@ router.post('/parametro', async (req, res) => {
 router.put('/parametro', async (req, res) => {
   try {
     const request = req.body;
-    const parametro = new ParametroEntidad(request.PRMT_ID, request.PRMT_NOM, request.PRMT_DESCR, request.PRMT_URL_IMG, request.ESTADO, request.CREADOR_ID, request.FECHA_CREACION);
+    const parametro = new ParametroEntidad(request.PRMT_ID, request.PRMT_NOM, request.PRMT_DESCR, request.PRMT_URL_IMG, request.ESTADO, request.CREADOR_ID);
     const response = await ParametroNegocio.updateParametro(parametro);
     res.json(response);
   } catch (error: any) {

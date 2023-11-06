@@ -6,7 +6,7 @@
   "scripts": {
     "prestart": "tsc",
     "start": "node build/app.js",
-    "predev": "ts-node-dev src/create.ts",
+    "generate": "ts-node-dev src/create.ts",
     "dev": "ts-node-dev src/app.ts",
     "testdev": "ts-node-dev src/test.ts"
   },
