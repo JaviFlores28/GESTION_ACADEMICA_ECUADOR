@@ -24,6 +24,8 @@ export class NgTableComponent {
   @Input() botonVer: boolean = false;
   @Input() checks: boolean = true;
   @Input() checksOptions: boolean = true;
+  @Input() pageSize = 4;
+  @Input() tableName = "default";
 
   @Output() eliminarAction = new EventEmitter<any>();
   @Output() checkedAction = new EventEmitter<any>();
@@ -31,8 +33,8 @@ export class NgTableComponent {
 
   filter = new FormControl('', { nonNullable: true });
   private cachedHeaders: string[] | null = null;
+  
   page = 1;
-  pageSize = 4;
   isCheckedAll = false;
   icon = faToggleOff;
   icon2 = faTrash;

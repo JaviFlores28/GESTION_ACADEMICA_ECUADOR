@@ -131,5 +131,8 @@ export class ParaleloEstudianteComponent implements OnInit {
     this.itemsChecks = event.data
     console.log(this.itemsChecks);
   }
+  checkedsAction2(event: any) {
+    console.log(this.itemsChecks);
+  }
 
 }

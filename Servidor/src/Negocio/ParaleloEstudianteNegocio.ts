@@ -18,7 +18,7 @@ class ParaleloEstudianteNegocio {
 
   static async getEnabledParaleloEstudiante(paraleloiD:string): Promise<{ data: ParaleloEstudiante[], message: string }> {
     try {
-      let sql = 'SELECT c.EST_ID, c.EST_DNI, concat (c.EST_NOM,\' \', c.EST_NOM2,\' \',c.EST_APE,\' \',c.EST_APE2) AS EST_NOM FROM paralelo_estudiante a JOIN matricula b ON a.MTR_ID = b.MTR_ID JOIN estudiante c ON b.EST_ID = c.EST_ID WHERE a.PRLL_ID = ? AND a.ESTADO = 1;';
+      let sql = 'SELECT a.PRLL_EST_ID as id,  c.EST_ID, c.EST_DNI, concat (c.EST_NOM,\' \', c.EST_NOM2,\' \',c.EST_APE,\' \',c.EST_APE2) AS EST_NOM FROM paralelo_estudiante a JOIN matricula b ON a.MTR_ID = b.MTR_ID JOIN estudiante c ON b.EST_ID = c.EST_ID WHERE a.PRLL_ID = ? AND a.ESTADO = 1;';
       const [rows] = await baseDatos.execute<any>(sql,[paraleloiD]);
       return { data: rows as ParaleloEstudiante[], message: '' };
     } catch (error: any) {
