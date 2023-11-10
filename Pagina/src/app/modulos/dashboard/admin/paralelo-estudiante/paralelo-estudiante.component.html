@@ -43,7 +43,7 @@
                     <h4 class="card-title">Paralelo {{selectedLabel}}</h4>
                     <div *ngIf="estudiantes">
                         <app-ng-table [data]="paraleloEstudiantes" [headers]="headers" [botonera]="false"
-                            [checksOptions]="false" [botonEstado]="false" (checkedAction)="checkedsAction2($event)"
+                            [checkDesactive]="false" [botonEstado]="false" (checkedAction)="checkedsAction2($event)"
                             [pageSize]="40" tableName="default2"></app-ng-table>
                     </div>
                 </div>

@@ -24,6 +24,8 @@ export class NgTableComponent {
   @Input() botonVer: boolean = false;
   @Input() checks: boolean = true;
   @Input() checksOptions: boolean = true;
+  @Input() checkDelete: boolean = true;
+  @Input() checkDesactive: boolean = true;
   @Input() pageSize = 4;
   @Input() tableName = "default";
 

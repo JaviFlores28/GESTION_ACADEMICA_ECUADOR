@@ -4,8 +4,7 @@
 			<div class="input-group mb-3">
 				<input type="text" class="form-control" id="search-{{tableName}}" class="form-control" type="text"
 					placeholder="Buscar..." [formControl]="filter" />
-				<button *ngIf="filter.value!==''" class="btn btn-danger" type="button"
-					(click)="clear()">X</button>
+				<button *ngIf="filter.value!==''" class="btn btn-danger" type="button" (click)="clear()">X</button>
 			</div>
 		</div>
 	</div>
@@ -31,7 +30,8 @@
 				<ng-container *ngIf="checks">
 					<td>
 						<div class="form-check w-auto">
-							<input class="form-check-input" id="check-{{item.id}}" type="checkbox" [(ngModel)]="item.isChecked" (click)="actionCheck($event,item)">
+							<input class="form-check-input" id="check-{{item.id}}" type="checkbox"
+								[(ngModel)]="item.isChecked" (click)="actionCheck($event,item)">
 						</div>
 					</td>
 				</ng-container>
@@ -42,12 +42,12 @@
 					<ngb-highlight [result]="item[propiedad].toString()" [term]="filter.value"></ngb-highlight>
 				</td>
 				<ng-container *ngIf="botonEstado">
-				<td>
-					<div class="form-switch text-center">
-						<input class="form-check-input" type="checkbox" role="switch" id="estado"
-							[(ngModel)]="item.ESTADO" disabled=>
-					</div>
-				</td>
+					<td>
+						<div class="form-switch text-center">
+							<input class="form-check-input" type="checkbox" role="switch" id="estado"
+								[(ngModel)]="item.ESTADO" disabled=>
+						</div>
+					</td>
 				</ng-container>
 				<ng-container *ngIf="botonera">
 					<td>
@@ -70,14 +70,17 @@
 	<div class="row row-cols-auto justify-content-start align-items-center text-center pb-3">
 		<div class="col align-self-center">
 			<div class="form-check">
-				<input class="form-check-input" id="checkAll-{{tableName}}" type="checkbox" [(ngModel)]="isCheckedAll" (change)="toggleAll($event)">
+				<input class="form-check-input" id="checkAll-{{tableName}}" type="checkbox" [(ngModel)]="isCheckedAll"
+					(change)="toggleAll($event)">
 				<label for="checkAll-{{tableName}}" class="form-check-label"> Seleccionar todos</label>
 			</div>
 		</div>
 		<ng-container *ngIf="isChecked() && checksOptions">
 			<div class="col">
-				<button type="button" class="btn link-dark" (click)="actionChecked('desactivar')"><fa-icon [icon]="icon" size="1x"></fa-icon>Desactivar</button>
-				<button type="button" class="btn link-danger" (click)="actionChecked('eliminar')"><fa-icon [icon]="icon2" size="1x"></fa-icon>Eliminar</button>
+				<button *ngIf="checkDesactive" type="button" class="btn link-dark"
+					(click)="actionChecked('desactivar')"><fa-icon [icon]="icon" size="1x"></fa-icon>Desactivar</button>
+				<button *ngIf="checkDelete" type="button" class="btn link-danger"
+					(click)="actionChecked('eliminar')"><fa-icon [icon]="icon2" size="1x"></fa-icon>Eliminar</button>
 			</div>
 		</ng-container>
 	</div>
