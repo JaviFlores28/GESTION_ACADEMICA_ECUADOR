@@ -25,7 +25,7 @@ export class MatriculaService extends ErrorHandlerService {
     return this.http.get(`${this.apiUrl}Enabled`).pipe(
       catchError(this.handleError));
   }
-  
+
   getByCurso(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}ByCurso/${id}`).pipe(
       catchError(this.handleError));
@@ -36,15 +36,18 @@ export class MatriculaService extends ErrorHandlerService {
       catchError(this.handleError));
   }
 
-  put(matricula: Matricula): Observable<any> {
-    return this.http.put(this.apiUrl, matricula).pipe(
+  put(data: { estado: string, ids: string[] }): Observable<any> {
+    return this.http.put(this.apiUrl, data).pipe(
       catchError(this.handleError));
   }
 
-  delete(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
-      catchError(this.handleError));
+  delete(ids: string[]): Observable<any> {
+    const urlWithIds = `${this.apiUrl}?ids=${ids.join(',')}`;
+    return this.http.delete(urlWithIds).pipe(
+      catchError(this.handleError)
+    );
   }
+
 
   searchById(id: string): Observable<Respuesta> {
     return this.http.get<Respuesta>(`${this.apiUrl}/${id}`).pipe(

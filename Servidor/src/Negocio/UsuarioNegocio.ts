@@ -1,5 +1,5 @@
 
-import baseDatos from '../Datos/BaseDatos';
+import pool from '../Datos/BaseDatos';
 import Usuario from '../Entidades/UsuarioEntidad';
 import { v4 as uuidv4 } from 'uuid';
 import Funciones from '../Modelos/Funciones';
@@ -18,7 +18,7 @@ class UsuarioNegocio {
       } else if (tipo === 'A') {
         sql += 'where ROL_ADMIN=1';
       } 
-      const [rows] = await baseDatos.execute<any>(sql);
+      const [rows] = await pool.execute<any>(sql);
       return { data: rows as Usuario[], message: '' };
     } catch (error: any) {
       return { data: [], message: error.message }; // Retorna el mensaje del error
@@ -35,7 +35,7 @@ class UsuarioNegocio {
       } else if (tipo === 'A') {
         sql += ' AND ROL_ADMIN=1';
       }
-      const [rows] = await baseDatos.execute<any>(sql);
+      const [rows] = await pool.execute<any>(sql);
       return { data: rows as Usuario[], message: '' };
     } catch (error: any) {
       return { data: [], message: error.message }; // Retorna el mensaje del error
@@ -45,7 +45,7 @@ class UsuarioNegocio {
   static async searchById(id: String): Promise<{ data: Usuario | null; message: string }> {
     try {
       let sql = 'SELECT * FROM usuario WHERE USR_ID = ?';
-      const [rows] = await baseDatos.execute<any>(sql, [id]);
+      const [rows] = await pool.execute<any>(sql, [id]);
       if (rows.length <= 0) {
         throw new Error('Objeto de tipo Usuario no encontrado');
       }
@@ -64,7 +64,7 @@ class UsuarioNegocio {
       }
       usuario.USR_ID = uuidv4(); //asigna un identificador unico
       let sql = usuario.sqlInsert();
-      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
+      const [result] = await pool.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar Usuario');
       } else {
@@ -86,7 +86,7 @@ class UsuarioNegocio {
   static async deleteUsuario(id: String): Promise<{ data: boolean, message: string }> {
     try {
       let sql = 'delete FROM usuario WHERE USR_ID = ?';
-      const [result] = await baseDatos.execute<any>(sql, [id]);
+      const [result] = await pool.execute<any>(sql, [id]);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo eliminar el objeto de tipo Usuario');
       }
@@ -102,7 +102,7 @@ class UsuarioNegocio {
         throw new Error('Objeto de tipo Usuario no tiene la estructura esperada.');
       }
       let sql = usuario.sqlUpdate();
-      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
+      const [result] = await pool.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo actualizar Usuario');
       }
@@ -127,7 +127,7 @@ class UsuarioNegocio {
       let sql = 'UPDATE usuario SET USR_PSWD=? WHERE USR_ID = ?';
       pswdNew = Funciones.encrypt(pswdNew);
 
-      const [result] = await baseDatos.execute<any>(sql, [pswdNew, id]);
+      const [result] = await pool.execute<any>(sql, [pswdNew, id]);
 
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo actualizar el objeto de tipo Usuario.');
@@ -142,7 +142,7 @@ class UsuarioNegocio {
   static async validarUsuario(usuario: string, pswd: string): Promise<{ data: Usuario | null; message: string }> {
     try {
       let sql = 'SELECT * FROM usuario WHERE USUARIO = ?';
-      const [rows] = await baseDatos.execute<any>(sql, [usuario]);
+      const [rows] = await pool.execute<any>(sql, [usuario]);
 
       if (rows.length <= 0) {
         throw new Error('Usuario no encontrado');

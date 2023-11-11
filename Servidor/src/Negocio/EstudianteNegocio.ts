@@ -26,6 +26,16 @@ class EstudianteNegocio {
     }
   }
 
+  static async getNoMatriculados(): Promise<{ data: Estudiante[], message: string }> {
+    try {
+      let sql = `SELECT e.EST_ID as id, e.EST_DNI, concat(e.EST_NOM,' ',e.EST_NOM2,' ',e.EST_APE,' ',e.EST_APE2) as EST_NOM FROM estudiante e LEFT JOIN matricula m ON e.EST_ID = m.EST_ID WHERE (m.EST_ID IS NULL OR m.estado = 0) AND e.estado = 1;`;
+      const [rows] = await baseDatos.execute<any>(sql);
+      return { data: rows as Estudiante[], message: '' };
+    } catch (error: any) {
+      return { data: [], message: error.message }; // Retorna el mensaje del error
+    }
+  }
+
   static async searchById(id: String): Promise<{ data: Estudiante | null; message: string }> {
     try {
       let sql = 'SELECT * FROM estudiante WHERE EST_ID = ?';

@@ -1,5 +1,5 @@
 
-import baseDatos from '../Datos/BaseDatos';
+import pool from '../Datos/BaseDatos';
 import ProfesorAsignaturaParalelo from '../Entidades/ProfesorAsignaturaParaleloEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -9,7 +9,7 @@ class ProfesorAsignaturaParaleloNegocio {
   static async getProfesorAsignaturaParalelo(): Promise<{ data: ProfesorAsignaturaParalelo[], message: string }> {
     try {
       let sql = 'SELECT * FROM profesor_asignatura_paralelo';
-      const [rows] = await baseDatos.execute<any>(sql);
+      const [rows] = await pool.execute<any>(sql);
       return { data: rows as ProfesorAsignaturaParalelo[], message: '' };
     } catch (error: any) {
       return { data: [], message: error.message }; // Retorna el mensaje del error
@@ -19,7 +19,7 @@ class ProfesorAsignaturaParaleloNegocio {
   static async getEnabledProfesorAsignaturaParalelo(): Promise<{ data: ProfesorAsignaturaParalelo[], message: string }> {
     try {
       let sql = 'SELECT * FROM profesor_asignatura_paralelo where Estado=1';
-      const [rows] = await baseDatos.execute<any>(sql);
+      const [rows] = await pool.execute<any>(sql);
       return { data: rows as ProfesorAsignaturaParalelo[], message: '' };
     } catch (error: any) {
       return { data: [], message: error.message }; // Retorna el mensaje del error
@@ -29,7 +29,7 @@ class ProfesorAsignaturaParaleloNegocio {
   static async searchById(id: String): Promise<{ data: ProfesorAsignaturaParalelo | null; message: string }> {
     try {
       let sql = 'SELECT * FROM profesor_asignatura_paralelo WHERE PRF_ASG_PRLL_ID = ?';
-      const [rows] = await baseDatos.execute<any>(sql, [id]);
+      const [rows] = await pool.execute<any>(sql, [id]);
       if (rows.length <= 0) {
         throw new Error('Objeto de tipo ProfesorAsignaturaParalelo no encontrado');
       }
@@ -48,7 +48,7 @@ class ProfesorAsignaturaParaleloNegocio {
       }
       profesor_asignatura_paralelo.PRF_ASG_PRLL_ID = uuidv4(); //asigna un identificador unico
       let sql = profesor_asignatura_paralelo.sqlInsert();
-      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
+      const [result] = await pool.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar ProfesorAsignaturaParalelo');
       }
@@ -61,7 +61,7 @@ class ProfesorAsignaturaParaleloNegocio {
   static async deleteProfesorAsignaturaParalelo(id: String): Promise<{ data: boolean, message: string }> {
     try {
       let sql = 'delete FROM profesor_asignatura_paralelo WHERE PRF_ASG_PRLL_ID = ?';
-      const [result] = await baseDatos.execute<any>(sql, [id]);
+      const [result] = await pool.execute<any>(sql, [id]);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo eliminar el objeto de tipo ProfesorAsignaturaParalelo');
       }
@@ -77,7 +77,7 @@ class ProfesorAsignaturaParaleloNegocio {
         throw new Error('Objeto de tipo ProfesorAsignaturaParalelo no tiene la estructura esperada.');
       }
       let sql = profesor_asignatura_paralelo.sqlUpdate();
-      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
+      const [result] = await pool.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo actualizar ProfesorAsignaturaParalelo');
       }

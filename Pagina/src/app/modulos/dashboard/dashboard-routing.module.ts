@@ -115,7 +115,7 @@ const routes: Routes = [
             ]
           },
           { path: 'matriculas', component: MatriculaComponent },
-          { path: 'matriculas/:id', component: MatriculaComponent },
+          // { path: 'matriculas/:id', component: MatriculaComponent },
           {
             path: 'paralelos',
             children: [

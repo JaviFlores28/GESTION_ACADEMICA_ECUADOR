@@ -53,11 +53,11 @@
 					<td>
 						<div class="btn-group" role="group">
 							<button type="button" class="btn btn-sm btn-primary"
-								(click)="seleccionarFila(item.id,'editar')" *ngIf="botonEdit">Editar</button>
+								(click)="actionOnRow(item.id,'editar')" *ngIf="botonEdit">Editar</button>
 							<button type="button" class="btn btn-sm btn-danger"
-								(click)="seleccionarFila(item.id,'eliminar')" *ngIf="botonDelete">Eliminar</button>
+								(click)="actionOnRow(item.id,'eliminar')" *ngIf="botonDelete">Eliminar</button>
 							<button type="button" class="btn btn-sm btn-info"
-								(click)="seleccionarFila(item.id,'editar')" *ngIf="botonVer"><fa-icon [icon]="icon3"
+								(click)="actionOnRow(item.id,'editar')" *ngIf="botonVer"><fa-icon [icon]="icon3"
 									size="1x" class="text-white"></fa-icon></button>
 						</div>
 					</td>

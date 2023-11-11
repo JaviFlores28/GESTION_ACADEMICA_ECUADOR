@@ -12,6 +12,14 @@ router.get('/estudiante', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+router.get('/estudiante-no-matriculados', async (_, res) => {
+  try {
+    const estudiante = await EstudianteNegocio.getNoMatriculados();
+    res.json(estudiante);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 router.get('/estudianteEnabled', async (req, res) => {
   try {

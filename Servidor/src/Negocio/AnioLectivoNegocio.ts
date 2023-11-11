@@ -1,5 +1,5 @@
 
-import baseDatos from '../Datos/BaseDatos';
+import pool from '../Datos/BaseDatos';
 import AnioLectivo from '../Entidades/AnioLectivoEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -9,7 +9,7 @@ class AnioLectivoNegocio {
   static async getAnioLectivo(): Promise<{ data: AnioLectivo[], message: string }> {
     try {
       let sql = 'SELECT `AL_ID` as id, `AL_NOM`, DATE_FORMAT(`AL_INICIO`, \'%d-%m-%Y\') as AL_INICIO, DATE_FORMAT(`AL_FIN`, \'%d-%m-%Y\') as AL_FIN, `NUM_PRD`, `NUM_EXAM`, `ESTADO` FROM anio_lectivo;';
-      const [rows] = await baseDatos.execute<any>(sql);
+      const [rows] = await pool.execute<any>(sql);
       return { data: rows as AnioLectivo[], message: '' };
     } catch (error: any) {
       return { data: [], message: error.message }; // Retorna el mensaje del error
@@ -19,7 +19,7 @@ class AnioLectivoNegocio {
   static async getEnabledAnioLectivo(): Promise<{ data: AnioLectivo[], message: string }> {
     try {
       let sql = 'SELECT * FROM anio_lectivo where Estado=1';
-      const [rows] = await baseDatos.execute<any>(sql);
+      const [rows] = await pool.execute<any>(sql);
       return { data: rows as AnioLectivo[], message: '' };
     } catch (error: any) {
       return { data: [], message: error.message }; // Retorna el mensaje del error
@@ -29,7 +29,7 @@ class AnioLectivoNegocio {
   static async searchById(id: String): Promise<{ data: AnioLectivo | null; message: string }> {
     try {
       let sql = 'SELECT * FROM anio_lectivo WHERE AL_ID = ?';
-      const [rows] = await baseDatos.execute<any>(sql, [id]);
+      const [rows] = await pool.execute<any>(sql, [id]);
       if (rows.length <= 0) {
         throw new Error('Objeto de tipo AnioLectivo no encontrado');
       }
@@ -48,7 +48,7 @@ class AnioLectivoNegocio {
       }
       anio_lectivo.AL_ID = uuidv4(); //asigna un identificador unico
       let sql = anio_lectivo.sqlInsert();
-      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
+      const [result] = await pool.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar AnioLectivo');
       }
@@ -61,7 +61,7 @@ class AnioLectivoNegocio {
   static async deleteAnioLectivo(id: String): Promise<{ data: boolean, message: string }> {
     try {
       let sql = 'delete FROM anio_lectivo WHERE AL_ID = ?';
-      const [result] = await baseDatos.execute<any>(sql, [id]);
+      const [result] = await pool.execute<any>(sql, [id]);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo eliminar el objeto de tipo AnioLectivo');
       }
@@ -77,7 +77,7 @@ class AnioLectivoNegocio {
         throw new Error('Objeto de tipo AnioLectivo no tiene la estructura esperada.');
       }
       let sql = anio_lectivo.sqlUpdate();
-      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
+      const [result] = await pool.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo actualizar AnioLectivo');
       }

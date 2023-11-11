@@ -1,5 +1,5 @@
 
-import baseDatos from '../Datos/BaseDatos';
+import pool from '../Datos/BaseDatos';
 import Area from '../Entidades/AreaEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -9,7 +9,7 @@ class AreaNegocio {
   static async getArea(): Promise<{ data: Area[], message: string }> {
     try {
       let sql = 'SELECT `AREA_ID` as id, `AREA_NOM`, `ESTADO` FROM area ORDER BY `ESTADO` DESC';
-      const [rows] = await baseDatos.execute<any>(sql);
+      const [rows] = await pool.execute<any>(sql);
       return { data: rows as Area[], message: '' };
     } catch (error: any) {
       return { data: [], message: error.message }; // Retorna el mensaje del error
@@ -19,7 +19,7 @@ class AreaNegocio {
   static async getEnabledArea(): Promise<{ data: Area[], message: string }> {
     try {
       let sql = 'SELECT * FROM area where Estado=1';
-      const [rows] = await baseDatos.execute<any>(sql);
+      const [rows] = await pool.execute<any>(sql);
       return { data: rows as Area[], message: '' };
     } catch (error: any) {
       return { data: [], message: error.message }; // Retorna el mensaje del error
@@ -29,7 +29,7 @@ class AreaNegocio {
   static async searchById(id: String): Promise<{ data: Area | null; message: string }> {
     try {
       let sql = 'SELECT * FROM area WHERE AREA_ID = ?';
-      const [rows] = await baseDatos.execute<any>(sql, [id]);
+      const [rows] = await pool.execute<any>(sql, [id]);
       if (rows.length <= 0) {
         throw new Error('Objeto de tipo Area no encontrado');
       }
@@ -48,7 +48,7 @@ class AreaNegocio {
       }
       area.AREA_ID = uuidv4(); //asigna un identificador unico
       let sql = area.sqlInsert();
-      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
+      const [result] = await pool.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar Area');
       }
@@ -61,7 +61,7 @@ class AreaNegocio {
   static async deleteArea(id: String): Promise<{ data: boolean, message: string }> {
     try {
       let sql = 'delete FROM area WHERE AREA_ID = ?';
-      const [result] = await baseDatos.execute<any>(sql, [id]);
+      const [result] = await pool.execute<any>(sql, [id]);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo eliminar el objeto de tipo Area');
       }
@@ -77,7 +77,7 @@ class AreaNegocio {
         throw new Error('Objeto de tipo Area no tiene la estructura esperada.');
       }
       let sql = area.sqlUpdate();
-      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
+      const [result] = await pool.execute<any>(sql.query, sql.values);
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo actualizar Area');
       }

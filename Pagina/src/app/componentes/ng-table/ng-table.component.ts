@@ -77,7 +77,7 @@ export class NgTableComponent {
     }
   }
 
-  seleccionarFila(id: string, option: any) {
+  actionOnRow(id: string, option: any) {
     this.filaAction.emit({ id, option })
   }
 

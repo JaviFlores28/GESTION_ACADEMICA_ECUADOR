@@ -24,38 +24,40 @@ export class MatriculaComponent {
   elementoId: string = '';
   icon = faInfoCircle;
   estudiantes: Estudiante[] = [];
+  estudiantesSelecionados: string[] = [];
   cursos: Curso[] = [];
   data: Matricula[] = [];
-  headers = ['CURSO','NOMBRES','PASE', 'ESTADO'];
+  headersNoMatriculados = ['DNI', 'NOMBRES'];
+  headers = ['CURSO', 'NOMBRES', 'PASE', 'ESTADO'];
 
   form = this.formBuilder.group({
     CRS_ID: ['', Validators.required],
-    EST_ID: ['', Validators.required],
-    ESTADO: [true, Validators.required],
-    PASE: ['', Validators.required]
+    /*  EST_ID: ['', Validators.required],
+     ESTADO: [true, Validators.required],
+     PASE: ['', Validators.required] */
   })
 
   ngOnInit(): void {
     this.loadMatriculas();
     this.loadCursos();
     this.loadEstudiantes();
-    this.validarEdicion();
+    //this.validarEdicion();
   }
 
-
-  validarEdicion() {
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
-      if (id) {
-        this.modoEdicion = true;
-        this.elementoId = id;
-        this.loadData();
-      } else {
-        this.modoEdicion = false;
-        this.elementoId = '';
-      }
-    });
-  }
+  /* 
+    validarEdicion() {
+      this.route.paramMap.subscribe(params => {
+        const id = params.get('id');
+        if (id) {
+          this.modoEdicion = true;
+          this.elementoId = id;
+          this.loadEditData();
+        } else {
+          this.modoEdicion = false;
+          this.elementoId = '';
+        }
+      });
+    } */
 
   onSubmit() {
     this.openConfirmationModal();
@@ -63,7 +65,7 @@ export class MatriculaComponent {
 
   crear() {
     if (this.form.valid) {
-      const matricula: Matricula = this.buildObject();
+      const matricula: Matricula = this.buildObject('');
       this.service.post(matricula).subscribe(
         {
           next: (response) => {
@@ -72,24 +74,6 @@ export class MatriculaComponent {
           error: (error) => this.handleErrorResponse(error)
         }
       );
-    } else {
-      this.form.markAllAsTouched();
-    }
-  }
-
-  editar() {
-    if (this.form.valid) {
-      const matricula: Matricula = this.buildObjectEdit();
-
-      this.service.put(matricula).subscribe(
-        {
-          next: (response) => {
-            this.handleResponse(response);
-          },
-          error: (error) => this.handleErrorResponse(error)
-        }
-      );
-
     } else {
       this.form.markAllAsTouched();
     }
@@ -117,61 +101,18 @@ export class MatriculaComponent {
     console.log(error);
   }
 
-  buildObject() {
+  buildObject(EST_ID: string) {
     const userId = this.serviceUsuario.getUserLoggedId();
     const matricula: Matricula = {
       MTR_ID: '0',
       CRS_ID: this.form.value.CRS_ID || '',
-      EST_ID: this.form.value.EST_ID || '',
-      ESTADO: (this.form.value.ESTADO) ? 1 : 0,
-      PASE: this.form.value.PASE || '',
+      EST_ID: EST_ID,
+      ESTADO: 1,
+      PASE: '4',
       CREADOR_ID: userId || ''
 
     };
     return matricula;
-  }
-
-  buildObjectEdit() {
-    const matricula: Matricula = {
-      MTR_ID: this.elementoId,
-      CRS_ID: this.form.value.CRS_ID || '',
-      EST_ID: this.form.value.EST_ID || '',
-      ESTADO: (this.form.value.ESTADO) ? 1 : 0,
-      PASE: this.form.value.PASE || '',
-      CREADOR_ID: '0'
-    };
-    return matricula;
-  }
-
-  loadData() {
-    this.service.searchById(this.elementoId).subscribe({
-      next: (value) => {
-        if (value.data) {
-          this.loadForm(value.data);
-        } else {
-          console.log(value.message);
-        }
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    });
-  }
-
-  loadForm(data: Matricula) {
-    const paseMapping: { [key: string]: string } = {
-      'Aprobado': '1',
-      'Reprobado': '2',
-      'Suspenso': '3',
-      'En proceso': '4'
-    };
-
-    const paseValue = paseMapping[data.PASE] || '';
-    this.form.get('PASE')?.setValue(paseValue);
-
-    this.form.get('CRS_ID')?.setValue(data.CRS_ID);
-    this.form.get('EST_ID')?.setValue(data.EST_ID);
-    this.form.get('ESTADO')?.setValue(data.ESTADO === 1);
   }
 
   loadCursos() {
@@ -190,10 +131,8 @@ export class MatriculaComponent {
   }
 
   loadEstudiantes() {
-    this.serviceEstudiante.getEnabled().subscribe({
+    this.serviceEstudiante.getNoMatriculados().subscribe({
       next: (value) => {
-        console.log(value);
-
         if (value.data) {
           this.estudiantes = value.data
         } else {
@@ -207,7 +146,7 @@ export class MatriculaComponent {
   }
 
   loadMatriculas() {
-    this.service.get().subscribe({
+    this.service.getEnabled().subscribe({
       next: response => {
         if (response.data.length > 0) {
           this.data = response.data;
@@ -226,8 +165,18 @@ export class MatriculaComponent {
     console.log(id);
   }
 
-  checkedsAction(data: any) {
-    console.log(data);
+  estudiantesaction(data: any) {
+    this.estudiantesSelecionados = data;
+  }
+  matriculasAction(data: any) {
+    let action = data.action;
+    let array = data.data;
+    if (action === 'desactivar') {
+      console.log(array);
+    } else if (action === 'eliminar') {
+      console.log(action);
+
+    }
   }
 
   filaAction(data: any) {
@@ -240,10 +189,7 @@ export class MatriculaComponent {
 
   clear() {
     this.router.navigate(['../'], { relativeTo: this.route });
-   }
-
-  changeCurso(data: any) {
-   }
+  }
 
   openAlertModal(content: string, alertType: string) {
     const modalRef = this.ngBootstrap.open(ModalComponent);
@@ -264,11 +210,7 @@ export class MatriculaComponent {
     modalRef.componentInstance.color = 'warning';
     modalRef.result.then((result) => {
       if (result === 'save') {
-        if (this.modoEdicion) {
-          this.editar();
-        } else {
-          this.crear();
-        }
+        this.crear();
       }
     }).catch((error) => {
       console.log(error);
@@ -276,3 +218,65 @@ export class MatriculaComponent {
   }
 
 }
+
+/*  editar() {
+   if (this.form.valid) {
+     const matricula: Matricula = this.buildObjectEdit();
+ 
+     this.service.put(matricula).subscribe(
+       {
+         next: (response) => {
+           this.handleResponse(response);
+         },
+         error: (error) => this.handleErrorResponse(error)
+       }
+     );
+ 
+   } else {
+     this.form.markAllAsTouched();
+   }
+ } */
+/*
+  buildObjectEdit() {
+    const matricula: Matricula = {
+      MTR_ID: this.elementoId,
+      CRS_ID: this.form.value.CRS_ID || '',
+      EST_ID: this.form.value.EST_ID || '',
+      ESTADO: (this.form.value.ESTADO) ? 1 : 0,
+      PASE: this.form.value.PASE || '',
+      CREADOR_ID: '0'
+    };
+    return matricula;
+  }
+ */
+/*  loadEditData() {
+   this.service.searchById(this.elementoId).subscribe({
+     next: (value) => {
+       if (value.data) {
+         this.loadForm(value.data);
+       } else {
+         console.log(value.message);
+       }
+     },
+     error: (error) => {
+       console.log(error);
+     }
+   });
+ } */
+/*
+  loadForm(data: Matricula) {
+    const paseMapping: { [key: string]: string } = {
+      'Aprobado': '1',
+      'Reprobado': '2',
+      'Suspenso': '3',
+      'En proceso': '4'
+    };
+ 
+    const paseValue = paseMapping[data.PASE] || '';
+    this.form.get('PASE')?.setValue(paseValue);
+ 
+    this.form.get('CRS_ID')?.setValue(data.CRS_ID);
+    this.form.get('EST_ID')?.setValue(data.EST_ID);
+    this.form.get('ESTADO')?.setValue(data.ESTADO === 1);
+  }
+ */
