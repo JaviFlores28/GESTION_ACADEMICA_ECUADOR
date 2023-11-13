@@ -20,6 +20,7 @@ export class UsuarioComponent {
   constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: UsuarioService, private serviceDetalle: UsuarioProfesorService) { }
 
   modoEdicion: boolean = false;
+  rutaActual = this.router.url.split('/');
   elementoId: string = '';
   icon = faInfoCircle;
   fauser = faUser;
@@ -58,21 +59,17 @@ export class UsuarioComponent {
   }
 
   determinarRolDesdeRuta() {
-    const rutaActual = this.router.url.split('/');
-    const rol = rutaActual[2];
-
-    if (rol === 'usuarios') {
-      this.isAdmin = true;
-    } else if (rol === 'institucion') {
-      const subrol = rutaActual[3];
-      this.isRep = (subrol === 'representantes');
-      this.isProf = (subrol === 'profesores');
+    if (this.rutaActual[4] === 'nuevo') {
+      const rol = this.rutaActual[3];
+      this.isAdmin = (rol === 'usuarios');
+      this.isRep = (rol === 'representantes');
+      this.isProf = (rol === 'profesores');
     }
   }
 
   validarEdicion() {
     this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
+      const id = (this.rutaActual[2] === "myinfo") ? this.service.getUserLoggedId() : params.get('id');
       if (id) {
         this.modoEdicion = true;
         this.elementoId = id;
@@ -108,7 +105,6 @@ export class UsuarioComponent {
 
   crear() {
     if (this.form.valid) {
-      //const userId = this.service.getUserLoggedId();
       const usuario: Usuario = this.buildObject();
       const detalle = this.isProf ? this.buildUsuarioProfesorObject() : undefined;
 
@@ -129,6 +125,7 @@ export class UsuarioComponent {
   editar() {
     if (this.form.valid) {
       const usuario: Usuario = this.buildObjectEdit();
+      console.log(usuario);
 
       this.service.put(usuario).subscribe(
         {
@@ -207,7 +204,9 @@ export class UsuarioComponent {
       next: (value) => {
         if (value.data) {
           this.llenarForm(value.data);
-          this.loadDetalle()
+          if (this.isProf) {
+            this.loadDetalle()
+          }
         } else {
           console.log(value.message);
         }
@@ -244,7 +243,7 @@ export class UsuarioComponent {
     this.form.get('USR_FECH_NAC')?.setValue(getFormattedDate(data.USR_FECH_NAC));
     this.form.get('USR_GEN')?.setValue(data.USR_GEN);
     this.form.get('USUARIO')?.setValue(data.USUARIO);
-    this.form.get('ESTADO')?.setValue(data.ESTADO !== 0); // Asumiendo que 'estado' es un control en tu formulario
+    this.form.get('ESTADO')?.setValue(data.ESTADO !== 0);
     this.isAdmin = (data.ROL_ADMIN !== 0);
     this.isProf = (data.ROL_PRF !== 0);
     this.isRep = (data.ROL_REPR !== 0);

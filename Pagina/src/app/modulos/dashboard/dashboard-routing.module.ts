@@ -20,6 +20,9 @@ import { AniosLectivosComponent } from './admin/anios-lectivos/anios-lectivos.co
 import { AreasComponent } from './admin/areas/areas.component';
 import { ParalelosComponent } from './admin/paralelos/paralelos.component';
 import { ParaleloComponent } from './admin/paralelo/paralelo.component';
+import { EstudianteCursoComponent } from './admin/estudiante-curso/estudiante-curso.component';
+import { EstudianteParaleloComponent } from './admin/estudiante-paralelo/estudiante-paralelo.component';
+import { ProfesorAsignaturaComponent } from './admin/profesor-asignatura/profesor-asignatura.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent, canActivate: [authGuardLogin] },
@@ -41,19 +44,12 @@ const routes: Routes = [
         }]
       },
       {
-        path: 'institucion', canActivate: [isAdmin],
+        path: 'sistema', canActivate: [isAdmin],
         children: [
           {
-            path: 'anio-lectivo', children: [
-              { path: 'activo', component: AniosLectivosComponent },
-              {
-                path: 'anios',
-                children: [
-                  { path: '', component: AniosLectivosComponent },
-                  { path: 'nuevo', component: AnioLectivoComponent },
-                  { path: 'editar/:id', component: AnioLectivoComponent },
-                ]
-              },
+            path: 'anios', children: [
+              { path: '', component: AniosLectivosComponent },
+              { path: 'editar/:id', component: AnioLectivoComponent },
             ]
           },
           {
@@ -76,15 +72,9 @@ const routes: Routes = [
           {
             path: 'profesores',
             children: [
-              {
-                path: 'crear-profesor',
-                children: [
-                  { path: '', component: ProfesoresComponent },
-                  { path: 'nuevo', component: UsuarioComponent },
-                  { path: 'editar/:id', component: UsuarioComponent },
-                ]
-              },
-              { path: 'asignar-profesor', component: ProfesoresComponent },
+              { path: '', component: ProfesoresComponent },
+              { path: 'nuevo', component: UsuarioComponent },
+              { path: 'editar/:id', component: UsuarioComponent },
             ]
           },
           {
@@ -111,36 +101,34 @@ const routes: Routes = [
               { path: 'editar/:id', component: EstudianteComponent },
             ]
           },
-          { path: 'matriculas', component: EstudiantesComponent },
-          // { path: 'matriculas/:id', component: MatriculaComponent },
           {
             path: 'paralelos',
             children: [
-              {
-                path: 'crear-paralelo',
-                children: [
-                  { path: '', component: ParalelosComponent },
-                  { path: 'nuevo', component: ParaleloComponent },
-                  { path: 'editar/:id', component: ParaleloComponent },
-                ]
-              },
-              { path: 'asignar-paralelo', component: ParaleloComponent },
+              { path: '', component: ParalelosComponent },
+              { path: 'nuevo', component: ParaleloComponent },
+              { path: 'editar/:id', component: ParaleloComponent },
+            ]
+          },
+          {
+            path: 'usuarios',
+            children: [
+              { path: '', component: UsuariosComponent, },
+              { path: 'nuevo', component: UsuarioComponent },
+              { path: 'editar/:id', component: UsuarioComponent},
             ]
           },
         ]
       },
       {
-        path: 'usuarios',
+        path: 'institucion',
         children: [
-          { path: '', component: UsuariosComponent, },
-          { path: 'nuevo', component: UsuarioComponent },
-          { path: 'editar/:id', component: UsuarioComponent },
-          { path: 'myinfo/:id', component: UsuarioComponent },
+          { path: 'iniciar-anio', component: AnioLectivoComponent, },
+          { path: 'matriculas', component: EstudianteCursoComponent },
+          { path: 'asignar-paralelo', component: EstudianteParaleloComponent },
+          { path: 'asignar-profesor', component: ProfesorAsignaturaComponent },
         ]
-
       },
-
-
+      { path: 'myinfo/:id', component: UsuarioComponent},
     ]
   },
   { path: '**', redirectTo: '' }

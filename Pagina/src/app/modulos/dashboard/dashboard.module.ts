@@ -31,6 +31,9 @@ import { LoginComponent } from './login/login.component';
 import { SubLevelMenuComponent } from './dashboard/sub-level-menu/sub-level-menu.component';
 import { InicioComponent } from './inicio/inicio.component';
 import { NgTableComponent } from "../../componentes/ng-table/ng-table.component";
+import { EstudianteParaleloComponent } from './admin/estudiante-paralelo/estudiante-paralelo.component';
+import { EstudianteCursoComponent } from './admin/estudiante-curso/estudiante-curso.component';
+import { ProfesorAsignaturaComponent } from './admin/profesor-asignatura/profesor-asignatura.component';
 
 
 @NgModule({
@@ -58,6 +61,9 @@ import { NgTableComponent } from "../../componentes/ng-table/ng-table.component"
         SidenavComponent,
         SubLevelMenuComponent,
         InicioComponent,
+        EstudianteParaleloComponent,
+        EstudianteCursoComponent,
+        ProfesorAsignaturaComponent,
     ],
     imports: [
         CommonModule,

@@ -72,7 +72,6 @@ export class SidenavComponent implements OnInit {
     item.expanded = !item.expanded;
   }
 
-
   getRouteActive(data: NavBarData): string {    
     let res = this.router.url.includes(data.routelink) ? 'active' : '';
     return res;
