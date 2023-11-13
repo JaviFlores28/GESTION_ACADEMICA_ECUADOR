@@ -153,7 +153,6 @@ class UsuarioDatos {
       }
 
       const pswdDecrypt = Funciones.decrypt(rows[0].USR_PSWD);
-console.log(pswd, pswdDecrypt);
 
       if (!Funciones.pswdValid(pswdDecrypt, pswd)) {
         throw new Error('Contraseña incorrecta');
