@@ -20,7 +20,6 @@ import { AniosLectivosComponent } from './admin/anios-lectivos/anios-lectivos.co
 import { AreasComponent } from './admin/areas/areas.component';
 import { ParalelosComponent } from './admin/paralelos/paralelos.component';
 import { ParaleloComponent } from './admin/paralelo/paralelo.component';
-import { ParaleloEstudianteComponent } from './admin/paralelo-estudiante/paralelo-estudiante.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent, canActivate: [authGuardLogin] },
@@ -125,7 +124,7 @@ const routes: Routes = [
                   { path: 'editar/:id', component: ParaleloComponent },
                 ]
               },
-              { path: 'asignar-paralelo', component: ParaleloEstudianteComponent },
+              { path: 'asignar-paralelo', component: ParaleloComponent },
             ]
           },
         ]

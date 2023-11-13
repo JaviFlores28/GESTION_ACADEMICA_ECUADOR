@@ -17,7 +17,6 @@ import { CursoComponent } from './admin/curso/curso.component';
 import { CursosComponent } from './admin/cursos/cursos.component';
 import { EstudianteComponent } from './admin/estudiante/estudiante.component';
 import { EstudiantesComponent } from './admin/estudiantes/estudiantes.component';
-import { MatriculasComponent } from './admin/matriculas/matriculas.component';
 import { ParaleloComponent } from './admin/paralelo/paralelo.component';
 import { ParalelosComponent } from './admin/paralelos/paralelos.component';
 import { ProfesoresComponent } from './admin/profesores/profesores.component';
@@ -47,7 +46,6 @@ import { NgTableComponent } from "../../componentes/ng-table/ng-table.component"
         CursosComponent,
         EstudianteComponent,
         EstudiantesComponent,
-        MatriculasComponent,
         ParaleloComponent,
         ParalelosComponent,
         HomeComponent,
@@ -60,7 +58,6 @@ import { NgTableComponent } from "../../componentes/ng-table/ng-table.component"
         SidenavComponent,
         SubLevelMenuComponent,
         InicioComponent,
-        
     ],
     imports: [
         CommonModule,
