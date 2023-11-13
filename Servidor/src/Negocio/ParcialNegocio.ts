@@ -1,91 +1,69 @@
 
-import pool from '../Datos/BaseDatos';
-import Parcial from '../Entidades/ParcialEntidad';
-import { v4 as uuidv4 } from 'uuid';
-
+import ParcialDatos from '../Datos/ParcialDatos';
+import ParcialEntidad from '../Entidades/ParcialEntidad';
+import { Respuesta } from '../System/Interfaces/Respuesta';
 
 class ParcialNegocio {
   
-  static async getParcial(): Promise<{ data: Parcial[], message: string }> {
+  static async insert(parcial: ParcialEntidad ): Promise<Respuesta> {
     try {
-      let sql = 'SELECT * FROM parcial';
-      const [rows] = await pool.execute<any>(sql);
-      return { data: rows as Parcial[], message: '' };
+      return ParcialDatos.insert(parcial );
     } catch (error: any) {
-      return { data: [], message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
   
-  static async getEnabledParcial(): Promise<{ data: Parcial[], message: string }> {
+  static async update(parcial: ParcialEntidad): Promise<Respuesta> {
     try {
-      let sql = 'SELECT * FROM parcial where Estado=1';
-      const [rows] = await pool.execute<any>(sql);
-      return { data: rows as Parcial[], message: '' };
+      return ParcialDatos.update(parcial);
     } catch (error: any) {
-      return { data: [], message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
   
-  static async searchById(id: String): Promise<{ data: Parcial | null; message: string }> {
+  static async updateEstado(ids: string[]):Promise<Respuesta> {
     try {
-      let sql = 'SELECT * FROM parcial WHERE PRCL_ID = ?';
-      const [rows] = await pool.execute<any>(sql, [id]);
-      if (rows.length <= 0) {
-        throw new Error('Objeto de tipo Parcial no encontrado');
-      }
-      let newParcial = rows[0] as Parcial;
-      
-      return { data: newParcial, message: 'Encontrado' };
+      return ParcialDatos.updateEstado(ids);
+
     } catch (error: any) {
-      return { data: null, message: error.message }; // Retorna el mensaje del error
-    }
-  } 
-  
-  static async addParcial(parcial: Parcial): Promise<{ data: string | null, message: string }> {
-    try {
-      if (!parcial.isValid()){ //validar estructura del objeto
-        throw new Error('Objeto de tipo Parcial no tiene la estructura esperada.');
-      }
-      parcial.PRCL_ID = uuidv4(); //asigna un identificador unico
-      let sql = parcial.sqlInsert();
-      const [result] = await pool.execute<any>(sql.query, sql.values);
-      if (result.affectedRows !== 1) {
-        throw new Error('No se pudo agregar Parcial');
-      }
-      return { data:parcial.PRCL_ID, message: 'Se creo correctamente' }; // Retorna el ID del Parcial
-    } catch (error: any) {
-      return { data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
   
-  static async deleteParcial(id: String): Promise<{ data: boolean, message: string }> {
+  static async delete(id: String): Promise<Respuesta> {
     try {
-      let sql = 'delete FROM parcial WHERE PRCL_ID = ?';
-      const [result] = await pool.execute<any>(sql, [id]);
-      if (result.affectedRows !== 1) {
-        throw new Error('No se pudo eliminar el objeto de tipo Parcial');
-      }
-      return { data: true, message: 'Objeto eliminado' }
+      return ParcialDatos.delete(id);
     } catch (error: any) {
-      return { data: false, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
   
-  static async updateParcial(parcial: Parcial): Promise<{ data: boolean, message: string }> {
+  static async getAll(): Promise<Respuesta> {
     try {
-      if (!parcial.isValid()){ //validar estructura del objeto
-        throw new Error('Objeto de tipo Parcial no tiene la estructura esperada.');
-      }
-      let sql = parcial.sqlUpdate();
-      const [result] = await pool.execute<any>(sql.query, sql.values);
-      if (result.affectedRows !== 1) {
-        throw new Error('No se pudo actualizar Parcial');
-      }
-      return { data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
+      return ParcialDatos.getAll();
     } catch (error: any) {
-      return { data: false, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
+  static async getEnabled(): Promise<Respuesta> {
+    try {
+      return ParcialDatos.getEnabled();
+
+    } catch (error: any) {
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
+  static async getById(id: String): Promise<Respuesta> {
+    try {
+      return ParcialDatos.getById(id);
+
+    } catch (error: any) {
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
   
 }
+
 export default ParcialNegocio;

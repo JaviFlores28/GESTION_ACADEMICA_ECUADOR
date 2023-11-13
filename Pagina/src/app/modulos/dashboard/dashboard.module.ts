@@ -17,7 +17,6 @@ import { CursoComponent } from './admin/curso/curso.component';
 import { CursosComponent } from './admin/cursos/cursos.component';
 import { EstudianteComponent } from './admin/estudiante/estudiante.component';
 import { EstudiantesComponent } from './admin/estudiantes/estudiantes.component';
-import { MatriculaComponent } from './admin/matricula/matricula.component';
 import { MatriculasComponent } from './admin/matriculas/matriculas.component';
 import { ParaleloComponent } from './admin/paralelo/paralelo.component';
 import { ParalelosComponent } from './admin/paralelos/paralelos.component';
@@ -32,8 +31,6 @@ import { HomeComponent } from './dashboard/home/home.component';
 import { LoginComponent } from './login/login.component';
 import { SubLevelMenuComponent } from './dashboard/sub-level-menu/sub-level-menu.component';
 import { InicioComponent } from './inicio/inicio.component';
-import { AnioActivoComponent } from './admin/anio-activo/anio-activo.component';
-import { ParaleloEstudianteComponent } from './admin/paralelo-estudiante/paralelo-estudiante.component';
 import { NgTableComponent } from "../../componentes/ng-table/ng-table.component";
 
 
@@ -50,7 +47,6 @@ import { NgTableComponent } from "../../componentes/ng-table/ng-table.component"
         CursosComponent,
         EstudianteComponent,
         EstudiantesComponent,
-        MatriculaComponent,
         MatriculasComponent,
         ParaleloComponent,
         ParalelosComponent,
@@ -64,8 +60,7 @@ import { NgTableComponent } from "../../componentes/ng-table/ng-table.component"
         SidenavComponent,
         SubLevelMenuComponent,
         InicioComponent,
-        AnioActivoComponent,
-        ParaleloEstudianteComponent,
+        
     ],
     imports: [
         CommonModule,

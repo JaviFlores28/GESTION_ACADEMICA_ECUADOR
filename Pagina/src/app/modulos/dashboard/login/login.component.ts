@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { faUserTie } from '@fortawesome/free-solid-svg-icons';
-import { UsuarioLogin } from 'src/app/modelos/interfaces_sistema/usuario-Login.interface';
+import { UsuarioLogin } from 'src/app/modelos/interfaces/usuario-Login.interface';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
@@ -34,13 +34,13 @@ export class LoginComponent implements OnInit {
         usuario: this.formulario.value.usuario || '', // Si es null o undefined, se asigna una cadena vacía.
         pswd: this.formulario.value.pswd || '' // Igual aquí para pswd
       };
-      this.service.validarUsuario(usuario).subscribe(
+      this.service.getByUser(usuario).subscribe(
         {
           next: (response) => {
             if (response.data === null) {
               console.log(response.message);
             } else {
-              this.service.login(response.data)
+              this.service.setLocal(response.data)
               this.resetStyle()
               this.router.navigate(['/home']);
             }

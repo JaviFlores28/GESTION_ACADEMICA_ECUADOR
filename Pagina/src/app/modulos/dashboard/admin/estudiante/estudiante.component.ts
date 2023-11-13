@@ -4,8 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { faInfoCircle, faCircleCheck, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from 'src/app/componentes/modal/modal.component';
-import { Estudiante } from 'src/app/modelos/interfaces/Estudiante.interface';
-import { Usuario } from 'src/app/modelos/interfaces/Usuario.interface';
+import { Estudiante } from 'src/app/interfaces/Estudiante.interface';
+import { Usuario } from 'src/app/interfaces/Usuario.interface';
 import { getFormattedDate } from 'src/app/modelos/variables/variables';
 import { EstudianteService } from 'src/app/servicios/estudiante.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
@@ -218,7 +218,7 @@ export class EstudianteComponent {
   }
 
   loadData() {
-    this.service.searchById(this.elementoId).subscribe({
+    this.service.getById(this.elementoId).subscribe({
       next: (value) => {
         if (value.data) {
           this.loadForm(value.data);

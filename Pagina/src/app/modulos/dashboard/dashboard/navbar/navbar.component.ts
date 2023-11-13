@@ -48,7 +48,7 @@ export class NavbarComponent implements OnInit {
     // modalRef.componentInstance.icon = faExclamationTriangle;
     modalRef.result.then((result) => {
       if (result === 'save') {
-        this.servicio.logout();
+        this.servicio.removeLocal();
         // Redirigir al usuario al login
         this.router.navigate(['']); // Ajusta la ruta según tu configuración
         // O recargar la página

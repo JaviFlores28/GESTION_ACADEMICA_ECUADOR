@@ -1,91 +1,69 @@
 
-import pool from '../Datos/BaseDatos';
-import Area from '../Entidades/AreaEntidad';
-import { v4 as uuidv4 } from 'uuid';
-
+import AreaDatos from '../Datos/AreaDatos';
+import AreaEntidad from '../Entidades/AreaEntidad';
+import { Respuesta } from '../System/Interfaces/Respuesta';
 
 class AreaNegocio {
   
-  static async getArea(): Promise<{ data: Area[], message: string }> {
+  static async insert(area: AreaEntidad ): Promise<Respuesta> {
     try {
-      let sql = 'SELECT `AREA_ID` as id, `AREA_NOM`, `ESTADO` FROM area ORDER BY `ESTADO` DESC';
-      const [rows] = await pool.execute<any>(sql);
-      return { data: rows as Area[], message: '' };
+      return AreaDatos.insert(area );
     } catch (error: any) {
-      return { data: [], message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
   
-  static async getEnabledArea(): Promise<{ data: Area[], message: string }> {
+  static async update(area: AreaEntidad): Promise<Respuesta> {
     try {
-      let sql = 'SELECT * FROM area where Estado=1';
-      const [rows] = await pool.execute<any>(sql);
-      return { data: rows as Area[], message: '' };
+      return AreaDatos.update(area);
     } catch (error: any) {
-      return { data: [], message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
   
-  static async searchById(id: String): Promise<{ data: Area | null; message: string }> {
+  static async updateEstado(ids: string[]):Promise<Respuesta> {
     try {
-      let sql = 'SELECT * FROM area WHERE AREA_ID = ?';
-      const [rows] = await pool.execute<any>(sql, [id]);
-      if (rows.length <= 0) {
-        throw new Error('Objeto de tipo Area no encontrado');
-      }
-      let newArea = rows[0] as Area;
-      
-      return { data: newArea, message: 'Encontrado' };
+      return AreaDatos.updateEstado(ids);
+
     } catch (error: any) {
-      return { data: null, message: error.message }; // Retorna el mensaje del error
-    }
-  } 
-  
-  static async addArea(area: Area): Promise<{ data: string | null, message: string }> {
-    try {
-      if (!area.isValid()){ //validar estructura del objeto
-        throw new Error('Objeto de tipo Area no tiene la estructura esperada.');
-      }
-      area.AREA_ID = uuidv4(); //asigna un identificador unico
-      let sql = area.sqlInsert();
-      const [result] = await pool.execute<any>(sql.query, sql.values);
-      if (result.affectedRows !== 1) {
-        throw new Error('No se pudo agregar Area');
-      }
-      return { data:area.AREA_ID, message: 'Se creo correctamente' }; // Retorna el ID del Area
-    } catch (error: any) {
-      return { data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
   
-  static async deleteArea(id: String): Promise<{ data: boolean, message: string }> {
+  static async delete(id: String): Promise<Respuesta> {
     try {
-      let sql = 'delete FROM area WHERE AREA_ID = ?';
-      const [result] = await pool.execute<any>(sql, [id]);
-      if (result.affectedRows !== 1) {
-        throw new Error('No se pudo eliminar el objeto de tipo Area');
-      }
-      return { data: true, message: 'Objeto eliminado' }
+      return AreaDatos.delete(id);
     } catch (error: any) {
-      return { data: false, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
   
-  static async updateArea(area: Area): Promise<{ data: boolean, message: string }> {
+  static async getAll(): Promise<Respuesta> {
     try {
-      if (!area.isValid()){ //validar estructura del objeto
-        throw new Error('Objeto de tipo Area no tiene la estructura esperada.');
-      }
-      let sql = area.sqlUpdate();
-      const [result] = await pool.execute<any>(sql.query, sql.values);
-      if (result.affectedRows !== 1) {
-        throw new Error('No se pudo actualizar Area');
-      }
-      return { data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
+      return AreaDatos.getAll();
     } catch (error: any) {
-      return { data: false, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
+  static async getEnabled(): Promise<Respuesta> {
+    try {
+      return AreaDatos.getEnabled();
+
+    } catch (error: any) {
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
+  static async getById(id: String): Promise<Respuesta> {
+    try {
+      return AreaDatos.getById(id);
+
+    } catch (error: any) {
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
   
 }
+
 export default AreaNegocio;

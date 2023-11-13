@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, lastValueFrom, of, switchMap } from 'rxjs';
+import { Observable, catchError, lastValueFrom } from 'rxjs';
 import { variables } from '../modelos/variables/variables';
 import { ErrorHandlerService } from './error-handler.service';
-import { Respuesta } from '../modelos/interfaces_sistema/respuesta.interface';
-import { UsuarioLogin } from '../modelos/interfaces_sistema/usuario-Login.interface';
-import { DetalleUsuarioProfesor } from '../modelos/interfaces/DetalleUsuarioProfesor.interface';
-import { Usuario } from '../modelos/interfaces/Usuario.interface';
+import { Respuesta } from '../modelos/interfaces/respuesta.interface';
+import { UsuarioLogin } from '../modelos/interfaces/usuario-Login.interface';
+import { UsuarioProfesor } from '../interfaces/UsuarioProfesor.interface';
+import { Usuario } from '../interfaces/Usuario.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -18,25 +18,25 @@ export class UsuarioService extends ErrorHandlerService {
     super();
   }
 
-  get(tipo:string): Observable<any> {
-    return this.http.get(this.apiUrl+'s/'+tipo).pipe(
+  get(tipo: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}?by=all&tipo=${tipo}`).pipe(
       catchError(this.handleError));
   }
 
-  getEnabled(tipo:string): Observable<any> {
-    return this.http.get(`${this.apiUrl}Enabled/${tipo}`).pipe(
+  getById(id: string): Observable<Respuesta> {
+    return this.http.get<Respuesta>(`${this.apiUrl}?by=id&id=${id}`).pipe(
       catchError(this.handleError));
   }
 
-
-  post(usuario: Usuario, detalle?: DetalleUsuarioProfesor): Observable<any> {
-    if (detalle) {
-      return this.http.post(this.apiUrl, { usuario, detalle }).pipe(catchError(this.handleError));
-    } else {
-      return this.http.post(this.apiUrl, { usuario }).pipe(catchError(this.handleError));
-    }
+  getByUser(usuario: UsuarioLogin): Observable<Respuesta> {
+    return this.http.patch<Respuesta>(`${this.apiUrl}?by=usuario`, usuario).pipe(
+      catchError(this.handleError));
   }
 
+  getEnabled(tipo: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}?by=enabled&tipo=${tipo}`).pipe(
+      catchError(this.handleError));
+  }
 
   put(usuario: Usuario): Observable<any> {
     return this.http.put(this.apiUrl, usuario).pipe(
@@ -44,13 +44,16 @@ export class UsuarioService extends ErrorHandlerService {
   }
 
   delete(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
+    return this.http.delete(`${this.apiUrl}?id=${id}`).pipe(
       catchError(this.handleError));
   }
 
-  searchById(id: string): Observable<Respuesta> {
-    return this.http.get<Respuesta>(`${this.apiUrl}/${id}`).pipe(
-      catchError(this.handleError));
+  post(usuario: Usuario, detalle?: UsuarioProfesor): Observable<any> {
+    if (detalle) {
+      return this.http.post(this.apiUrl, { usuario, detalle }).pipe(catchError(this.handleError));
+    } else {
+      return this.http.post(this.apiUrl, { usuario }).pipe(catchError(this.handleError));
+    }
   }
 
   updatePswd(data: any): Observable<any> {
@@ -58,19 +61,14 @@ export class UsuarioService extends ErrorHandlerService {
       catchError(this.handleError));
   }
 
-  validarUsuario(usuario: UsuarioLogin): Observable<Respuesta> {
-    return this.http.patch<Respuesta>(`${this.apiUrl}Validar`, usuario).pipe(
-      catchError(this.handleError));
-  }
 
-  login(usuario: Usuario): void {
+  setLocal(usuario: Usuario): void {
     localStorage.setItem(variables.KEY_NAME, btoa(JSON.stringify(usuario.USR_ID)));
   }
 
-  logout(): void {
+  removeLocal(): void {
     localStorage.removeItem(variables.KEY_NAME);
   }
-
 
   getUserLoggedId() {
     const userId = localStorage.getItem(variables.KEY_NAME);
@@ -85,7 +83,7 @@ export class UsuarioService extends ErrorHandlerService {
   async getUserLogged(): Promise<Usuario | null> {
     const id = this.getUserLoggedId()
     try {
-      const response = await lastValueFrom(this.searchById(id));
+      const response = await lastValueFrom(this.getById(id));
       if (!response) {
         return null;
       }

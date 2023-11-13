@@ -4,29 +4,10 @@ const router = Router();
 import ProfesorAsignaturaParaleloNegocio from '../Negocio/ProfesorAsignaturaParaleloNegocio';
 import ProfesorAsignaturaParaleloEntidad from '../Entidades/ProfesorAsignaturaParaleloEntidad';
 
-router.get('/profesorasignaturaparalelo', async (req, res) => {
-   try {
-    const profesor_asignatura_paralelo = await ProfesorAsignaturaParaleloNegocio.getProfesorAsignaturaParalelo();
-    res.json(profesor_asignatura_paralelo);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
-
-router.get('/profesorasignaturaparaleloEnabled', async (req, res) => {
-   try {
-    const profesor_asignatura_paralelo = await ProfesorAsignaturaParaleloNegocio.getEnabledProfesorAsignaturaParalelo();
-    res.json(profesor_asignatura_paralelo);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
-
 router.post('/profesorasignaturaparalelo', async (req, res) => {
    try {
-    const request = req.body;
-    const profesor_asignatura_paralelo = new ProfesorAsignaturaParaleloEntidad(request.PRF_ASG_PRLL_ID, request.ASG_ID, request.PRF_ID, request.PRLL_ID, request.ESTADO, request.CREADOR_ID);
-    const response = await ProfesorAsignaturaParaleloNegocio.addProfesorAsignaturaParalelo(profesor_asignatura_paralelo);
+const profesor_asignatura_paralelo: ProfesorAsignaturaParaleloEntidad = req.body;
+const response = await ProfesorAsignaturaParaleloNegocio.insert(profesor_asignatura_paralelo);
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -35,33 +16,45 @@ router.post('/profesorasignaturaparalelo', async (req, res) => {
 
 router.put('/profesorasignaturaparalelo', async (req, res) => {
   try {
-    const request = req.body;
-    const profesor_asignatura_paralelo = new ProfesorAsignaturaParaleloEntidad(request.PRF_ASG_PRLL_ID, request.ASG_ID, request.PRF_ID, request.PRLL_ID, request.ESTADO, request.CREADOR_ID);
-    const response = await ProfesorAsignaturaParaleloNegocio.updateProfesorAsignaturaParalelo(profesor_asignatura_paralelo);
+    const  profesor_asignatura_paralelo: ProfesorAsignaturaParaleloEntidad = req.body;
+    const response = await ProfesorAsignaturaParaleloNegocio.update(profesor_asignatura_paralelo);
     res.json(response);
   } catch (error: any) {
      res.status(500).json({ message: error.message });
    }
 });
 
-router.delete('/profesorasignaturaparalelo/:id', async (req, res) => {
+router.delete('/profesorasignaturaparalelo', async (req, res) => {
   try {
-    const id = req.params.id;
-    const response = await ProfesorAsignaturaParaleloNegocio.deleteProfesorAsignaturaParalelo(id);
+    const id = req.query.id as string;
+    const response = await ProfesorAsignaturaParaleloNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 });
 
-router.get('/profesorasignaturaparalelo/:id', async (req, res) => {
-  try {
-    const id = req.params.id;
-    const response = await ProfesorAsignaturaParaleloNegocio.searchById(id);
-    res.json(response);
+router.get('/profesorasignaturaparalelo', async (req, res) => {
+   try {
+    let  profesor_asignatura_paralelo;
+    const by = req.query.by as string;
+    if (!by) {
+      return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
+    }
+    if (by === 'all') {
+      
+      profesor_asignatura_paralelo = await ProfesorAsignaturaParaleloNegocio.getAll();
+    } else if (by === 'enabled') {
+      
+      profesor_asignatura_paralelo = await ProfesorAsignaturaParaleloNegocio.getEnabled();
+    } else if (by === 'id') {
+      const id = req.query.id as string;
+      profesor_asignatura_paralelo = await ProfesorAsignaturaParaleloNegocio.getById(id);
+    } 
+    res.json(profesor_asignatura_paralelo);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
-  }
+   }
 });
 
 export default router;

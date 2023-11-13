@@ -17,13 +17,6 @@
                     </select>
                 </div>
                 <div class="col">
-                    <label for="curso" class="form-label pb-2">Curso:</label>
-                    <select class="form-select" id="curso" formControlName="curso">
-                        <option disabled selected>Selecciona una opción</option>
-                        <option *ngFor="let option of cursos" [value]="option.CRS_ID">{{ option.CRS_NOM }}</option>
-                    </select>
-                </div>
-                <div class="col">
                     <label for="cltv" class="form-label pb-2">Cualitativa:</label>
                     <div class="form-check form-switch">
                         <input class="form-check-input" id="cltv" type="checkbox" role="switch" formControlName="cltv">

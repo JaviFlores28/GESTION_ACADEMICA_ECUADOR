@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { faCircleCheck, faCircleXmark, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from 'src/app/componentes/modal/modal.component';
-import { Area } from 'src/app/modelos/interfaces/Area.interface';
+import { Area } from 'src/app/interfaces/Area.interface';
 import { AreaService } from 'src/app/servicios/area.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 
@@ -115,7 +115,7 @@ export class AreaComponent implements OnInit {
   }
 
   loadData() {
-    this.service.searchById(this.elementoId).subscribe({
+    this.service.getById(this.elementoId).subscribe({
       next: (value) => {
         if (value.data) {
           this.llenarForm(value.data);

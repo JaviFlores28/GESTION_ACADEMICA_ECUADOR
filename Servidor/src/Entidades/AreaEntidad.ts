@@ -1,78 +1,22 @@
 
-class Area {
+class AreaEntidad {
   AREA_ID: string;
     AREA_NOM: string;
     ESTADO: number;
-    CREADOR_ID: string;
-    FECHA_CREACION?: Date | undefined;    
-    constructor(AREA_ID: string, AREA_NOM: string, ESTADO: number, CREADOR_ID: string, FECHA_CREACION?: Date | undefined) {
+    CREADOR_ID: string;    
+    constructor(AREA_ID: string, AREA_NOM: string, ESTADO: number, CREADOR_ID: string) {
        this.AREA_ID = AREA_ID;
       this.AREA_NOM = AREA_NOM;
       this.ESTADO = ESTADO;
       this.CREADOR_ID = CREADOR_ID;
-      this.FECHA_CREACION = FECHA_CREACION;
     }
-    
-sqlInsert(): { query: string; values: any[] } {
-  const propiedades: any[] = [];
-  const valores: any[] = [];
 
-  // Iterar sobre las propiedades del objeto
-  Object.keys(this).forEach(propiedad => {
-      const valor = this[propiedad as keyof this];
-
-      if (valor !== undefined && propiedad !== 'FECHA_CREACION') {
-          propiedades.push(propiedad);
-
-          if (typeof valor === 'string' || valor instanceof Date) {
-              valores.push(valor);
-          } else {
-              valores.push(valor);
-          }
-      }
-  });
-
-  const valoresStr = propiedades.map(() => '?').join(', ');
-  const propiedadesStr = propiedades.join(', ');
-
-  const query = `INSERT INTO area (${propiedadesStr}) VALUES (${valoresStr});`;
-
-  return { query, values: valores };
+    toArrayInsert(): any[] {
+      return [this.AREA_ID,this.AREA_NOM,this.ESTADO,this.CREADOR_ID];
+    } 
+    toArrayUpdate(): any[] {
+      return [this.AREA_NOM,this.ESTADO, this.AREA_ID];
+    }
 }
 
-    
-sqlUpdate(): { query: string; values: any[] } {
-  const valoresStr: string[] = [];
-  const valores: any[] = [];
-
-  // Iterar sobre las propiedades del objeto
-  Object.keys(this).forEach(propiedad => {
-      const valor = this[propiedad as keyof this];
-
-      if (valor !== undefined && propiedad !== 'FECHA_CREACION' && propiedad !== 'AREA_ID' && propiedad !== 'CREADOR_ID' ) {
-          if (typeof valor === 'string') {
-              valoresStr.push(`${propiedad} = ?`);
-              valores.push(valor);
-          } else if (valor instanceof Date) {
-              const fecha = valor.toISOString().slice(0, 10);
-              valoresStr.push(`${propiedad} = ?`);
-              valores.push(fecha);
-          } else {
-              valoresStr.push(`${propiedad} = ?`);
-              valores.push(valor);
-          }
-      }
-  });
-  valores.push(this.AREA_ID);
-  const query = `UPDATE area SET ${valoresStr.join(', ')} WHERE AREA_ID = ?;`;
-  return { query, values: valores };
-}
-
-    
-isValid(): boolean {
-  return !!this.AREA_ID && !!this.AREA_NOM && !!this.CREADOR_ID;
-}
-
-    
-}
-export default Area;
+export default AreaEntidad;

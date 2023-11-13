@@ -4,29 +4,10 @@ const router = Router();
 import ParametroNegocio from '../Negocio/ParametroNegocio';
 import ParametroEntidad from '../Entidades/ParametroEntidad';
 
-router.get('/parametro', async (req, res) => {
-   try {
-    const parametro = await ParametroNegocio.getParametro();
-    res.json(parametro);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
-
-router.get('/parametroEnabled', async (req, res) => {
-   try {
-    const parametro = await ParametroNegocio.getEnabledParametro();
-    res.json(parametro);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
-
 router.post('/parametro', async (req, res) => {
    try {
-    const request = req.body;
-    const parametro = new ParametroEntidad(request.PRMT_ID, request.PRMT_NOM, request.PRMT_DESCR, request.PRMT_URL_IMG, request.ESTADO, request.CREADOR_ID);
-    const response = await ParametroNegocio.addParametro(parametro);
+const parametro: ParametroEntidad = req.body;
+const response = await ParametroNegocio.insert(parametro);
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -35,33 +16,45 @@ router.post('/parametro', async (req, res) => {
 
 router.put('/parametro', async (req, res) => {
   try {
-    const request = req.body;
-    const parametro = new ParametroEntidad(request.PRMT_ID, request.PRMT_NOM, request.PRMT_DESCR, request.PRMT_URL_IMG, request.ESTADO, request.CREADOR_ID);
-    const response = await ParametroNegocio.updateParametro(parametro);
+    const  parametro: ParametroEntidad = req.body;
+    const response = await ParametroNegocio.update(parametro);
     res.json(response);
   } catch (error: any) {
      res.status(500).json({ message: error.message });
    }
 });
 
-router.delete('/parametro/:id', async (req, res) => {
+router.delete('/parametro', async (req, res) => {
   try {
-    const id = req.params.id;
-    const response = await ParametroNegocio.deleteParametro(id);
+    const id = req.query.id as string;
+    const response = await ParametroNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 });
 
-router.get('/parametro/:id', async (req, res) => {
-  try {
-    const id = req.params.id;
-    const response = await ParametroNegocio.searchById(id);
-    res.json(response);
+router.get('/parametro', async (req, res) => {
+   try {
+    let  parametro;
+    const by = req.query.by as string;
+    if (!by) {
+      return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
+    }
+    if (by === 'all') {
+      
+      parametro = await ParametroNegocio.getAll();
+    } else if (by === 'enabled') {
+      
+      parametro = await ParametroNegocio.getEnabled();
+    } else if (by === 'id') {
+      const id = req.query.id as string;
+      parametro = await ParametroNegocio.getById(id);
+    } 
+    res.json(parametro);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
-  }
+   }
 });
 
 export default router;

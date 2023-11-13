@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Usuario } from 'src/app/modelos/interfaces/Usuario.interface';
+import { Usuario } from 'src/app/interfaces/Usuario.interface';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
@@ -15,6 +15,7 @@ export class RepresentantesComponent {
   title:string='Representantes';
   data: Usuario[] = [];
   headers = ['CÉDULA','NOMBRES','CELULAR','CORREO', 'ESTADO'];
+  campos = ['USR_ID','USR_DNI', 'USR_NOM','USR_CEL','USR_EMAIL'];
 
   ngOnInit(): void {
     this.loadData();

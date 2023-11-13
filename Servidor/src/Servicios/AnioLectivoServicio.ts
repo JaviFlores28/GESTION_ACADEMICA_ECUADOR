@@ -4,29 +4,10 @@ const router = Router();
 import AnioLectivoNegocio from '../Negocio/AnioLectivoNegocio';
 import AnioLectivoEntidad from '../Entidades/AnioLectivoEntidad';
 
-router.get('/aniolectivo', async (req, res) => {
-   try {
-    const anio_lectivo = await AnioLectivoNegocio.getAnioLectivo();
-    res.json(anio_lectivo);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
-
-router.get('/aniolectivoEnabled', async (req, res) => {
-   try {
-    const anio_lectivo = await AnioLectivoNegocio.getEnabledAnioLectivo();
-    res.json(anio_lectivo);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
-
 router.post('/aniolectivo', async (req, res) => {
    try {
-    const request = req.body;
-    const anio_lectivo = new AnioLectivoEntidad(request.AL_ID, request.AL_NOM, request.AL_INICIO, request.AL_FIN, request.AL_POR_PRD, request.AL_POR_EXAM, request.CLFN_MIN_APR, request.CLFN_MIN_PERD, request.NUM_PRD, request.NUM_EXAM, request.NUM_PRCL, request.NUM_SUSP, request.ESTADO, request.CREADOR_ID);
-    const response = await AnioLectivoNegocio.addAnioLectivo(anio_lectivo);
+const anio_lectivo: AnioLectivoEntidad = req.body;
+const response = await AnioLectivoNegocio.insert(anio_lectivo);
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -35,33 +16,45 @@ router.post('/aniolectivo', async (req, res) => {
 
 router.put('/aniolectivo', async (req, res) => {
   try {
-    const request = req.body;
-    const anio_lectivo = new AnioLectivoEntidad(request.AL_ID, request.AL_NOM, request.AL_INICIO, request.AL_FIN, request.AL_POR_PRD, request.AL_POR_EXAM, request.CLFN_MIN_APR, request.CLFN_MIN_PERD, request.NUM_PRD, request.NUM_EXAM, request.NUM_PRCL, request.NUM_SUSP, request.ESTADO, request.CREADOR_ID);
-    const response = await AnioLectivoNegocio.updateAnioLectivo(anio_lectivo);
+    const  anio_lectivo: AnioLectivoEntidad = req.body;
+    const response = await AnioLectivoNegocio.update(anio_lectivo);
     res.json(response);
   } catch (error: any) {
      res.status(500).json({ message: error.message });
    }
 });
 
-router.delete('/aniolectivo/:id', async (req, res) => {
+router.delete('/aniolectivo', async (req, res) => {
   try {
-    const id = req.params.id;
-    const response = await AnioLectivoNegocio.deleteAnioLectivo(id);
+    const id = req.query.id as string;
+    const response = await AnioLectivoNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 });
 
-router.get('/aniolectivo/:id', async (req, res) => {
-  try {
-    const id = req.params.id;
-    const response = await AnioLectivoNegocio.searchById(id);
-    res.json(response);
+router.get('/aniolectivo', async (req, res) => {
+   try {
+    let  anio_lectivo;
+    const by = req.query.by as string;
+    if (!by) {
+      return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
+    }
+    if (by === 'all') {
+      
+      anio_lectivo = await AnioLectivoNegocio.getAll();
+    } else if (by === 'enabled') {
+      
+      anio_lectivo = await AnioLectivoNegocio.getEnabled();
+    } else if (by === 'id') {
+      const id = req.query.id as string;
+      anio_lectivo = await AnioLectivoNegocio.getById(id);
+    } 
+    res.json(anio_lectivo);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
-  }
+   }
 });
 
 export default router;

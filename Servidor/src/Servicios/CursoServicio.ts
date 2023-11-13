@@ -4,29 +4,10 @@ const router = Router();
 import CursoNegocio from '../Negocio/CursoNegocio';
 import CursoEntidad from '../Entidades/CursoEntidad';
 
-router.get('/curso', async (req, res) => {
-   try {
-    const curso = await CursoNegocio.getCurso();
-    res.json(curso);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
-
-router.get('/cursoEnabled', async (req, res) => {
-   try {
-    const curso = await CursoNegocio.getEnabledCurso();
-    res.json(curso);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
-
 router.post('/curso', async (req, res) => {
    try {
-    const request = req.body;
-    const curso = new CursoEntidad(request.CRS_ID, request.CRS_NOM, request.CRS_TIPO, request.CRS_ORDEN, request.ESTADO, request.CREADOR_ID);
-    const response = await CursoNegocio.addCurso(curso);
+const curso: CursoEntidad = req.body;
+const response = await CursoNegocio.insert(curso);
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -35,33 +16,45 @@ router.post('/curso', async (req, res) => {
 
 router.put('/curso', async (req, res) => {
   try {
-    const request = req.body;
-    const curso = new CursoEntidad(request.CRS_ID, request.CRS_NOM, request.CRS_TIPO, request.CRS_ORDEN, request.ESTADO, request.CREADOR_ID);
-    const response = await CursoNegocio.updateCurso(curso);
+    const  curso: CursoEntidad = req.body;
+    const response = await CursoNegocio.update(curso);
     res.json(response);
   } catch (error: any) {
      res.status(500).json({ message: error.message });
    }
 });
 
-router.delete('/curso/:id', async (req, res) => {
+router.delete('/curso', async (req, res) => {
   try {
-    const id = req.params.id;
-    const response = await CursoNegocio.deleteCurso(id);
+    const id = req.query.id as string;
+    const response = await CursoNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 });
 
-router.get('/curso/:id', async (req, res) => {
-  try {
-    const id = req.params.id;
-    const response = await CursoNegocio.searchById(id);
-    res.json(response);
+router.get('/curso', async (req, res) => {
+   try {
+    let  curso;
+    const by = req.query.by as string;
+    if (!by) {
+      return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
+    }
+    if (by === 'all') {
+      
+      curso = await CursoNegocio.getAll();
+    } else if (by === 'enabled') {
+      
+      curso = await CursoNegocio.getEnabled();
+    } else if (by === 'id') {
+      const id = req.query.id as string;
+      curso = await CursoNegocio.getById(id);
+    } 
+    res.json(curso);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
-  }
+   }
 });
 
 export default router;

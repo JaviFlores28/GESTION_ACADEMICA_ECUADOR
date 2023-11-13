@@ -6,7 +6,6 @@ import { authGuard, authGuardLogin, isAdmin } from 'src/app/guards/auth.guard';
 import { InicioComponent } from './inicio/inicio.component';
 import { CursoComponent } from './admin/curso/curso.component';
 import { CursosComponent } from './admin/cursos/cursos.component';
-import { AnioActivoComponent } from './admin/anio-activo/anio-activo.component';
 import { AreaComponent } from './admin/area/area.component';
 import { AsignaturasComponent } from './admin/asignaturas/asignaturas.component';
 import { ProfesoresComponent } from './admin/profesores/profesores.component';
@@ -16,7 +15,6 @@ import { UsuariosComponent } from './admin/usuarios/usuarios.component';
 import { UsuarioComponent } from './admin/usuario/usuario.component';
 import { AsignaturaComponent } from './admin/asignatura/asignatura.component';
 import { EstudianteComponent } from './admin/estudiante/estudiante.component';
-import { MatriculaComponent } from './admin/matricula/matricula.component';
 import { AnioLectivoComponent } from './admin/anio-lectivo/anio-lectivo.component';
 import { AniosLectivosComponent } from './admin/anios-lectivos/anios-lectivos.component';
 import { AreasComponent } from './admin/areas/areas.component';
@@ -48,7 +46,7 @@ const routes: Routes = [
         children: [
           {
             path: 'anio-lectivo', children: [
-              { path: 'activo', component: AnioActivoComponent },
+              { path: 'activo', component: AniosLectivosComponent },
               {
                 path: 'anios',
                 children: [
@@ -114,7 +112,7 @@ const routes: Routes = [
               { path: 'editar/:id', component: EstudianteComponent },
             ]
           },
-          { path: 'matriculas', component: MatriculaComponent },
+          { path: 'matriculas', component: EstudiantesComponent },
           // { path: 'matriculas/:id', component: MatriculaComponent },
           {
             path: 'paralelos',

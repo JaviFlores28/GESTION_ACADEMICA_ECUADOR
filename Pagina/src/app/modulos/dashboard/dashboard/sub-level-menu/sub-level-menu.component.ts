@@ -1,7 +1,7 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Component, Input, OnInit } from '@angular/core';
 import { fadeInOut } from '../helper';
-import { NavBarData } from 'src/app/modelos/interfaces_sistema/NavBarData.interface';
+import { NavBarData } from 'src/app/modelos/interfaces/NavBarData.interface';
 import { faAngleDown, faAngleRight, faCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Curso } from 'src/app/modelos/interfaces/Curso.interface';
+import { Curso } from 'src/app/interfaces/Curso.interface';
 import { CursoService } from 'src/app/servicios/curso.service';
 
 @Component({
@@ -15,6 +15,7 @@ export class CursosComponent {
   
   data: Curso[] = [];
   headers = ['NOMBRE','ORDEN', 'ESTADO'];
+  campos = ['CRS_ID', 'CRS_NOM','CRS_ORDEN'];
 
   constructor(private service: CursoService, private router: Router, private route: ActivatedRoute) {
   }

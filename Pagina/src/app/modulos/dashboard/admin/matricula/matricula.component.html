@@ -12,28 +12,10 @@
                                 id="CRS_ID">
                             </ng-select>
                         </div>
-                        <!--     <div class="col">
-                            <label for="EST_ID" class="form-label">Estudiante:</label>
-                            <ng-select [items]="estudiantes" bindLabel="EST_NOM" bindValue="EST_ID"
-                                formControlName="EST_ID" id="EST_ID">
-                            </ng-select>
-                        </div>
- --><!-- 
-                        <div class="col">
-                            <label for="PASE" class="form-label">Pase:</label>
-                            <select class="form-select" formControlName="PASE" id="PASE">
-                                <option disabled selected>Selecciona una opción</option>
-                                <option value='1'>Aprobado</option>
-                                <option value='2'>Reprobado</option>
-                                <option value='3'>Suspenso</option>
-                                <option value='4'>En proceso</option>
-                            </select>
-                        </div> -->
                         <div class="col-2">
                             <div class="btn-group" role="group">
-                                <button type="submit" [disabled]="estudiantesSelecionados.length<=0 ||!form.valid" class="btn btn-dark">Guardar</button>
-                                <button *ngIf="modoEdicion" type="button" class="btn btn-danger"
-                                    (click)="clear()">X</button>
+                                <button type="submit" [disabled]="idEstudiantesSelecionados.length<=0 ||!form.valid"
+                                    class="btn btn-dark">Guardar</button>
                             </div>
                         </div>
                     </form>
@@ -52,10 +34,30 @@
         <div class="col-6">
             <div class="card text-start border border-0 rounded shadow">
                 <div class="card-body">
-                    <app-ng-table tableName="matriculados" [data]="data" [headers]="headers" [botonera]="false"
+                    <app-ng-table tableName="matriculados" [data]="matriculas" [headers]="headers" [botonera]="false"
                         (checkedAction)="matriculasAction($event)"></app-ng-table>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!--     <div class="col">
+                            <label for="EST_ID" class="form-label">Estudiante:</label>
+                            <ng-select [items]="estudiantes" bindLabel="EST_NOM" bindValue="EST_ID"
+                                formControlName="EST_ID" id="EST_ID">
+                            </ng-select>
+                        </div>
+ --><!-- 
+                        <div class="col">
+                            <label for="PASE" class="form-label">Pase:</label>
+                            <select class="form-select" formControlName="PASE" id="PASE">
+                                <option disabled selected>Selecciona una opción</option>
+                                <option value='1'>Aprobado</option>
+                                <option value='2'>Reprobado</option>
+                                <option value='3'>Suspenso</option>
+                                <option value='4'>En proceso</option>
+                            </select>
+                        </div> -->
+<!--  <button *ngIf="modoEdicion" type="button" class="btn btn-danger"
+                                    (click)="clear()">X</button> -->

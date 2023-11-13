@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { AnioLectivo } from 'src/app/modelos/interfaces/AnioLectivo.interface';
+import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 
 @Component({

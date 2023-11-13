@@ -4,9 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { faCircleCheck, faCircleXmark, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from 'src/app/componentes/modal/modal.component';
-import { Area } from 'src/app/modelos/interfaces/Area.interface';
-import { Asignatura } from 'src/app/modelos/interfaces/Asignatura.interface';
-import { Curso } from 'src/app/modelos/interfaces/Curso.interface';
+import { Area } from 'src/app/interfaces/Area.interface';
+import { Asignatura } from 'src/app/interfaces/Asignatura.interface';
+import { Curso } from 'src/app/interfaces/Curso.interface';
 
 import { AreaService } from 'src/app/servicios/area.service';
 import { AsignaturaService } from 'src/app/servicios/asignatura.service';
@@ -26,11 +26,11 @@ export class AsignaturaComponent {
   areas: Area[] = [];
   cursos: Curso[] = [];
   icon = faInfoCircle;
+  userid = this.serviceUsuario.getUserLoggedId();
 
   form = this.formBuilder.group({
     nom: ['', Validators.required],
     cltv: [false, Validators.required],
-    curso: ['', Validators.required],
     area: ['', Validators.required],
     estado: [true, Validators.required]
   });
@@ -39,7 +39,6 @@ export class AsignaturaComponent {
   ngOnInit(): void {
     this.validarEdicion();
     this.loadAreas();
-    this.loadCursos();
   }
 
   validarEdicion() {
@@ -48,7 +47,7 @@ export class AsignaturaComponent {
       if (id) {
         this.modoEdicion = true;
         this.elementoId = id;
-        this.loadData();
+        this.loadDataEdit();
       } else {
         this.modoEdicion = false;
         this.elementoId = '';
@@ -62,16 +61,14 @@ export class AsignaturaComponent {
 
   crear() {
     if (this.form.valid) {
-      let userid = this.serviceUsuario.getUserLoggedId();
-      if (userid !== '') {
+      if (this.userid !== '') {
         const asignatura: Asignatura = {
           ASG_ID: '1',
           ASG_NOM: this.form.value.nom || '',
           ASG_TIPO: (this.form.value.cltv) ? '1' : '2',
           AREA_ID: this.form.value.area || '',
-          CRS_ID: this.form.value.curso || '',
           ESTADO: (this.form.value.estado) ? 1 : 0,
-          CREADOR_ID: userid || ''
+          CREADOR_ID: this.userid || ''
         };
         this.service.post(asignatura).subscribe(
           {
@@ -105,9 +102,8 @@ export class AsignaturaComponent {
         ASG_NOM: this.form.value.nom || '',
         ASG_TIPO: (this.form.value.cltv) ? '1' : '2',
         AREA_ID: this.form.value.area || '',
-        CRS_ID: this.form.value.curso || '',
         ESTADO: (this.form.value.estado) ? 1 : 0,
-        CREADOR_ID: '1'
+        CREADOR_ID: this.userid
       };
       this.service.put(asignatura).subscribe(
         {
@@ -133,8 +129,8 @@ export class AsignaturaComponent {
     }
   }
 
-  loadData() {
-    this.service.searchById(this.elementoId).subscribe({
+  loadDataEdit() {
+    this.service.getById(this.elementoId).subscribe({
       next: (value) => {
         if (value.data) {
           this.llenarForm(value.data);
@@ -163,29 +159,12 @@ export class AsignaturaComponent {
     });
   }
 
-  loadCursos() {
-    this.serviceCursos.getEnabled().subscribe({
-      next: (value) => {
-        if (value.data) {
-          this.cursos = value.data
-        } else {
-          console.log(value.message);
-        }
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    });
-  }
-
   llenarForm(data: Asignatura) {
-    const estado = data.ESTADO
-    const tipo = (data.ASG_TIPO === 'CUALITATIVA');
     this.form.get('nom')?.setValue(data.ASG_NOM); // Asumiendo que 'nom' es un control en tu formulario
-    this.form.get('cltv')?.setValue(tipo); // Asumiendo que 'nom' es un control en tu formulario
+    this.form.get('cltv')?.setValue(data.ASG_TIPO === 'CUALITATIVA'); // Asumiendo que 'nom' es un control en tu formulario
     this.form.get('area')?.setValue(data.AREA_ID); // Asumiendo que 'nom' es un control en tu formulario
-    this.form.get('curso')?.setValue(data.CRS_ID); // Asumiendo que 'nom' es un control en tu formulario
     this.form.get('estado')?.setValue(data.ESTADO === 1); // Asumiendo que 'estado' es un control en tu formulario
+    this.userid = data.CREADOR_ID;
   }
 
   openAlertModal(content: string, alertType: string) {

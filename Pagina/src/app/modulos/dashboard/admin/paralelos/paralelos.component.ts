@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Paralelo } from 'src/app/modelos/interfaces/Paralelo.interface';
+import { Paralelo } from 'src/app/interfaces/Paralelo.interface';
 import { ParaleloService } from 'src/app/servicios/paralelo.service';
 
 @Component({

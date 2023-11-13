@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SidenavToogle } from 'src/app/modelos/interfaces_sistema/sideNav.interface';
+import { SidenavToogle } from 'src/app/modelos/interfaces/sideNav.interface';
 
 @Component({
   selector: 'app-home',

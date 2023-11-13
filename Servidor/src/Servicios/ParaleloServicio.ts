@@ -4,30 +4,10 @@ const router = Router();
 import ParaleloNegocio from '../Negocio/ParaleloNegocio';
 import ParaleloEntidad from '../Entidades/ParaleloEntidad';
 
-router.get('/paralelo', async (req, res) => {
-   try {
-    const paralelo = await ParaleloNegocio.getParalelo();
-    res.json(paralelo);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
-
-router.get('/paraleloEnabled/:curso', async (req, res) => {
-   try {
-    const cursoId = req.params.curso;
-    const paralelo = await ParaleloNegocio.getEnabledParalelo(cursoId);
-    res.json(paralelo);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
-
 router.post('/paralelo', async (req, res) => {
    try {
-    const request = req.body;
-    const paralelo = new ParaleloEntidad(request.PRLL_ID, request.PRLL_NOM, request.CRS_ID, request.AL_ID, request.ESTADO, request.CREADOR_ID);
-    const response = await ParaleloNegocio.addParalelo(paralelo);
+const paralelo: ParaleloEntidad = req.body;
+const response = await ParaleloNegocio.insert(paralelo);
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -36,33 +16,45 @@ router.post('/paralelo', async (req, res) => {
 
 router.put('/paralelo', async (req, res) => {
   try {
-    const request = req.body;
-    const paralelo = new ParaleloEntidad(request.PRLL_ID, request.PRLL_NOM, request.CRS_ID, request.AL_ID, request.ESTADO, request.CREADOR_ID);
-    const response = await ParaleloNegocio.updateParalelo(paralelo);
+    const  paralelo: ParaleloEntidad = req.body;
+    const response = await ParaleloNegocio.update(paralelo);
     res.json(response);
   } catch (error: any) {
      res.status(500).json({ message: error.message });
    }
 });
 
-router.delete('/paralelo/:id', async (req, res) => {
+router.delete('/paralelo', async (req, res) => {
   try {
-    const id = req.params.id;
-    const response = await ParaleloNegocio.deleteParalelo(id);
+    const id = req.query.id as string;
+    const response = await ParaleloNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 });
 
-router.get('/paralelo/:id', async (req, res) => {
-  try {
-    const id = req.params.id;
-    const response = await ParaleloNegocio.searchById(id);
-    res.json(response);
+router.get('/paralelo', async (req, res) => {
+   try {
+    let  paralelo;
+    const by = req.query.by as string;
+    if (!by) {
+      return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
+    }
+    if (by === 'all') {
+      
+      paralelo = await ParaleloNegocio.getAll();
+    } else if (by === 'enabled') {
+      
+      paralelo = await ParaleloNegocio.getEnabled();
+    } else if (by === 'id') {
+      const id = req.query.id as string;
+      paralelo = await ParaleloNegocio.getById(id);
+    } 
+    res.json(paralelo);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
-  }
+   }
 });
 
 export default router;

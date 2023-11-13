@@ -4,115 +4,45 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { faInfoCircle, faCircleCheck, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from 'src/app/componentes/modal/modal.component';
-import { Curso } from 'src/app/modelos/interfaces/Curso.interface';
-import { Estudiante } from 'src/app/modelos/interfaces/Estudiante.interface';
-import { Matricula } from 'src/app/modelos/interfaces/Matricula.interface';
+import { Curso } from 'src/app/interfaces/Curso.interface';
+import { Estudiante } from 'src/app/interfaces/Estudiante.interface';
+import { EstudianteCursoParalelo } from 'src/app/interfaces/EstudianteCursoParalelo.interface';
 import { CursoService } from 'src/app/servicios/curso.service';
+import { EstudianteCursoParaleloService } from 'src/app/servicios/estudiante-curso-paralelo.service';
 import { EstudianteService } from 'src/app/servicios/estudiante.service';
-import { MatriculaService } from 'src/app/servicios/matricula.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
+
 
 @Component({
   selector: 'app-matricula',
   templateUrl: './matricula.component.html',
   styleUrls: ['./matricula.component.scss']
 })
-export class MatriculaComponent {
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private serviceUsuario: UsuarioService, private service: MatriculaService, private serviceCurso: CursoService, private serviceEstudiante: EstudianteService) { }
+export class EstudianteCursoParaleloComponent {
+  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private serviceUsuario: UsuarioService, private service: EstudianteCursoParaleloService, private serviceCurso: CursoService, private serviceEstudiante: EstudianteService) { }
 
+  userId = this.serviceUsuario.getUserLoggedId();
   modoEdicion: boolean = false;
   elementoId: string = '';
   icon = faInfoCircle;
+
   estudiantes: Estudiante[] = [];
-  estudiantesSelecionados: string[] = [];
+  idEstudiantesSelecionados: string[] = [];
   cursos: Curso[] = [];
-  data: Matricula[] = [];
-  headersNoMatriculados = ['DNI', 'NOMBRES'];
+  matriculas: EstudianteCursoParalelo[] = [];
+  idEstudianteCursoParalelosSelecionadas: string[] = [];
+
+  headersNoEstudianteCursoParalelodos = ['DNI', 'NOMBRES'];
   headers = ['CURSO', 'NOMBRES', 'PASE', 'ESTADO'];
 
   form = this.formBuilder.group({
-    CRS_ID: ['', Validators.required],
-    /*  EST_ID: ['', Validators.required],
-     ESTADO: [true, Validators.required],
-     PASE: ['', Validators.required] */
+    CRS_ID: ['', Validators.required]
   })
 
   ngOnInit(): void {
-    this.loadMatriculas();
+    this.loadEstudianteCursoParalelos();
     this.loadCursos();
     this.loadEstudiantes();
-    //this.validarEdicion();
-  }
-
-  /* 
-    validarEdicion() {
-      this.route.paramMap.subscribe(params => {
-        const id = params.get('id');
-        if (id) {
-          this.modoEdicion = true;
-          this.elementoId = id;
-          this.loadEditData();
-        } else {
-          this.modoEdicion = false;
-          this.elementoId = '';
-        }
-      });
-    } */
-
-  onSubmit() {
-    this.openConfirmationModal();
-  }
-
-  crear() {
-    if (this.form.valid) {
-      const matricula: Matricula = this.buildObject('');
-      this.service.post(matricula).subscribe(
-        {
-          next: (response) => {
-            this.handleResponse(response);
-          },
-          error: (error) => this.handleErrorResponse(error)
-        }
-      );
-    } else {
-      this.form.markAllAsTouched();
-    }
-  }
-
-  handleResponse(response: any) {
-    if (!response.data) {
-      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
-      console.log(response.message);
-    } else {
-      if (this.modoEdicion) {
-        this.openAlertModal(response.message, 'success');
-        console.log(response.message);
-      } else {
-        this.openAlertModal(response.message, 'success');
-        this.form.reset();
-        this.router.navigate([response.data], { relativeTo: this.route });
-      }
-
-    }
-  }
-
-  handleErrorResponse(error: any) {
-    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
-    console.log(error);
-  }
-
-  buildObject(EST_ID: string) {
-    const userId = this.serviceUsuario.getUserLoggedId();
-    const matricula: Matricula = {
-      MTR_ID: '0',
-      CRS_ID: this.form.value.CRS_ID || '',
-      EST_ID: EST_ID,
-      ESTADO: 1,
-      PASE: '4',
-      CREADOR_ID: userId || ''
-
-    };
-    return matricula;
   }
 
   loadCursos() {
@@ -145,11 +75,11 @@ export class MatriculaComponent {
     });
   }
 
-  loadMatriculas() {
+  loadEstudianteCursoParalelos() {
     this.service.getEnabled().subscribe({
       next: response => {
         if (response.data.length > 0) {
-          this.data = response.data;
+          this.matriculas = response.data;
         }
         else {
           console.log(response.message);
@@ -161,34 +91,73 @@ export class MatriculaComponent {
     });
   }
 
-  eliminar(id: any) {
-    console.log(id);
+
+  estudiantesaction(result: any) {
+    this.idEstudiantesSelecionados = result.data;
   }
 
-  estudiantesaction(data: any) {
-    this.estudiantesSelecionados = data;
-  }
   matriculasAction(data: any) {
     let action = data.action;
-    let array = data.data;
+    this.idEstudianteCursoParalelosSelecionadas = data.data;
     if (action === 'desactivar') {
-      console.log(array);
+      this.desactivar();
     } else if (action === 'eliminar') {
       console.log(action);
 
     }
   }
 
-  filaAction(data: any) {
-    if (data.option === 'editar') {
-      this.router.navigate([data.id], { relativeTo: this.route });
-    } else if (data.option === 'eliminar') {
-      console.log(data.id);
-    }
+  onSubmit() {
+    this.openConfirmationModal();
+  }
+
+  crear() {
+    const data = { usuario: this.userId, curso: this.form.value.CRS_ID, estudiantes: this.idEstudiantesSelecionados };
+    this.service.post(data).subscribe(
+      {
+        next: (response) => {
+          this.handleResponse(response);
+        },
+        error: (error) => this.handleErrorResponse(error)
+      }
+    );
+  }
+
+  desactivar() {
+    this.service.put(this.idEstudianteCursoParalelosSelecionadas).subscribe(
+      {
+        next: (response) => {
+          this.handleResponse(response);
+        },
+        error: (error) => this.handleErrorResponse(error)
+      }
+    );
   }
 
   clear() {
     this.router.navigate(['../'], { relativeTo: this.route });
+  }
+
+  handleResponse(response: any) {
+    if (!response.data) {
+      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+      console.log(response.message);
+    } else {
+      if (this.modoEdicion) {
+        this.openAlertModal(response.message, 'success');
+        console.log(response.message);
+      } else {
+        this.openAlertModal(response.message, 'success');
+        this.form.reset();
+       // this.router.navigate([response.data], { relativeTo: this.route });
+      }
+
+    }
+  }
+
+  handleErrorResponse(error: any) {
+    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    console.log(error);
   }
 
   openAlertModal(content: string, alertType: string) {
@@ -221,7 +190,7 @@ export class MatriculaComponent {
 
 /*  editar() {
    if (this.form.valid) {
-     const matricula: Matricula = this.buildObjectEdit();
+     const matricula: EstudianteCursoParalelo = this.buildObjectEdit();
  
      this.service.put(matricula).subscribe(
        {
@@ -238,7 +207,7 @@ export class MatriculaComponent {
  } */
 /*
   buildObjectEdit() {
-    const matricula: Matricula = {
+    const matricula: EstudianteCursoParalelo = {
       MTR_ID: this.elementoId,
       CRS_ID: this.form.value.CRS_ID || '',
       EST_ID: this.form.value.EST_ID || '',
@@ -250,7 +219,7 @@ export class MatriculaComponent {
   }
  */
 /*  loadEditData() {
-   this.service.searchById(this.elementoId).subscribe({
+   this.service.getById(this.elementoId).subscribe({
      next: (value) => {
        if (value.data) {
          this.loadForm(value.data);
@@ -264,7 +233,7 @@ export class MatriculaComponent {
    });
  } */
 /*
-  loadForm(data: Matricula) {
+  loadForm(data: EstudianteCursoParalelo) {
     const paseMapping: { [key: string]: string } = {
       'Aprobado': '1',
       'Reprobado': '2',
@@ -280,3 +249,38 @@ export class MatriculaComponent {
     this.form.get('ESTADO')?.setValue(data.ESTADO === 1);
   }
  */
+
+
+/*  crear() {
+   if (this.form.valid) {
+     const matricula: EstudianteCursoParalelo = this.buildObject('');
+     this.service.post(matricula).subscribe(
+       {
+         next: (response) => {
+           this.handleResponse(response);
+         },
+         error: (error) => this.handleErrorResponse(error)
+       }
+     );
+   } else {
+     this.form.markAllAsTouched();
+   }
+ } */
+
+
+/*
+  validarEdicion() {
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.modoEdicion = true;
+        this.elementoId = id;
+        this.loadEditData();
+      } else {
+        this.modoEdicion = false;
+        this.elementoId = '';
+      }
+    });
+  } 
+
+*/

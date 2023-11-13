@@ -4,29 +4,10 @@ const router = Router();
 import AreaNegocio from '../Negocio/AreaNegocio';
 import AreaEntidad from '../Entidades/AreaEntidad';
 
-router.get('/area', async (req, res) => {
-   try {
-    const area = await AreaNegocio.getArea();
-    res.json(area);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
-
-router.get('/areaEnabled', async (req, res) => {
-   try {
-    const area = await AreaNegocio.getEnabledArea();
-    res.json(area);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
-
 router.post('/area', async (req, res) => {
    try {
-    const request = req.body;
-    const area = new AreaEntidad(request.AREA_ID, request.AREA_NOM, request.ESTADO, request.CREADOR_ID);
-    const response = await AreaNegocio.addArea(area);
+const area: AreaEntidad = req.body;
+const response = await AreaNegocio.insert(area);
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -35,33 +16,45 @@ router.post('/area', async (req, res) => {
 
 router.put('/area', async (req, res) => {
   try {
-    const request = req.body;
-    const area = new AreaEntidad(request.AREA_ID, request.AREA_NOM, request.ESTADO, request.CREADOR_ID);
-    const response = await AreaNegocio.updateArea(area);
+    const  area: AreaEntidad = req.body;
+    const response = await AreaNegocio.update(area);
     res.json(response);
   } catch (error: any) {
      res.status(500).json({ message: error.message });
    }
 });
 
-router.delete('/area/:id', async (req, res) => {
+router.delete('/area', async (req, res) => {
   try {
-    const id = req.params.id;
-    const response = await AreaNegocio.deleteArea(id);
+    const id = req.query.id as string;
+    const response = await AreaNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 });
 
-router.get('/area/:id', async (req, res) => {
-  try {
-    const id = req.params.id;
-    const response = await AreaNegocio.searchById(id);
-    res.json(response);
+router.get('/area', async (req, res) => {
+   try {
+    let  area;
+    const by = req.query.by as string;
+    if (!by) {
+      return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
+    }
+    if (by === 'all') {
+      
+      area = await AreaNegocio.getAll();
+    } else if (by === 'enabled') {
+      
+      area = await AreaNegocio.getEnabled();
+    } else if (by === 'id') {
+      const id = req.query.id as string;
+      area = await AreaNegocio.getById(id);
+    } 
+    res.json(area);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
-  }
+   }
 });
 
 export default router;

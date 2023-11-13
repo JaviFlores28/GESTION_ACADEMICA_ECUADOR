@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Estudiante } from 'src/app/modelos/interfaces/Estudiante.interface';
+import { Estudiante } from 'src/app/interfaces/Estudiante.interface';
 import { EstudianteService } from 'src/app/servicios/estudiante.service';
 
 @Component({

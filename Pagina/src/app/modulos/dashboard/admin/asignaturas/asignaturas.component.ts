@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Asignatura } from 'src/app/modelos/interfaces/Asignatura.interface';
+import { Asignatura } from 'src/app/interfaces/Asignatura.interface';
 import { AsignaturaService } from 'src/app/servicios/asignatura.service';
 
 @Component({
@@ -9,16 +9,14 @@ import { AsignaturaService } from 'src/app/servicios/asignatura.service';
   styleUrls: ['./asignaturas.component.scss']
 })
 export class AsignaturasComponent {
-
+  constructor(private service: AsignaturaService, private router: Router, private route: ActivatedRoute) {}
+ 
   routerLink:string='nuevo';
   title:string='Asignaturas';
 
-  
   data: Asignatura[] = [];
-  headers = ['NOMBRE','TIPO','ÁREA','CURSO', 'ESTADO'];
-
-  constructor(private service: AsignaturaService, private router: Router, private route: ActivatedRoute) {
-  }
+  headers = ['NOMBRE','TIPO', 'ESTADO'];
+  campos = ['ASG_ID', 'ASG_NOM', 'ASG_TIPO']
 
   ngOnInit(): void {
     this.loadData();

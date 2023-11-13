@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Area } from 'src/app/modelos/interfaces/Area.interface';
+import { Area } from 'src/app/interfaces/Area.interface';
 import { AreaService } from 'src/app/servicios/area.service';
 
 @Component({
@@ -16,6 +16,7 @@ export class AreasComponent implements OnInit {
 
   data: Area[] = [];
   headers = ['NOMBRE', 'ESTADO'];
+  campos = ['AREA_ID', 'AREA_NOM'];
 
   ngOnInit(): void {
     this.loadData();

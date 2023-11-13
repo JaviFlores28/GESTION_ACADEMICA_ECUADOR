@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { faCircleCheck, faCircleXmark, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from 'src/app/componentes/modal/modal.component';
-import { AnioLectivo } from 'src/app/modelos/interfaces/AnioLectivo.interface';
+import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
 import { getFormattedDate } from 'src/app/modelos/variables/variables';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
@@ -160,7 +160,7 @@ export class AnioLectivoComponent implements OnInit {
   }
 
   loadData() {
-    this.service.searchById(this.elementoId).subscribe({
+    this.service.getById(this.elementoId).subscribe({
       next: (value) => {
         if (value.data) {
           this.loadForm(value.data);

@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { Curso } from 'src/app/modelos/interfaces/Curso.interface';
-import { Estudiante } from 'src/app/modelos/interfaces/Estudiante.interface';
-import { Paralelo } from 'src/app/modelos/interfaces/Paralelo.interface';
+import { Curso } from 'src/app/interfaces/Curso.interface';
+import { Estudiante } from 'src/app/interfaces/Estudiante.interface';
+import { Paralelo } from 'src/app/interfaces/Paralelo.interface';
 import { CursoService } from 'src/app/servicios/curso.service';
-import { MatriculaService } from 'src/app/servicios/matricula.service';
-import { ParaleloEstudianteService } from 'src/app/servicios/paralelo-estudiante.service';
+import { EstudianteCursoParaleloService } from 'src/app/servicios/estudiante-curso-paralelo.service';
 import { ParaleloService } from 'src/app/servicios/paralelo.service';
 
 @Component({
@@ -17,10 +16,9 @@ import { ParaleloService } from 'src/app/servicios/paralelo.service';
 export class ParaleloEstudianteComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder, 
-    private serviceMatricula: MatriculaService, 
     private serviceCurso: CursoService, 
     private serviceParalelo: ParaleloService, 
-    private serviceParaleloestudiante: ParaleloEstudianteService
+    private serviceParaleloestudiante: EstudianteCursoParaleloService
   ) {
     this.subscribeToCRS_IDChanges();
     this.subscribeToPRLL_IDChanges();
@@ -79,7 +77,7 @@ export class ParaleloEstudianteComponent implements OnInit {
   }
 
   loadParalelos(cursoId: any) {
-    this.serviceParalelo.getEnabled(cursoId).subscribe({
+    this.serviceParalelo.getEnabled().subscribe({
       next: (value) => {
         if (value.data) {
           this.paralelos = value.data;
@@ -94,7 +92,7 @@ export class ParaleloEstudianteComponent implements OnInit {
   }
 
   loadEstudiantes(cursoid: any) {
-    this.serviceMatricula.getByCurso(cursoid).subscribe({
+    this.serviceCurso.get().subscribe({
       next: (value) => {
         if (value.data) {
           this.estudiantes = value.data;

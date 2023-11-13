@@ -4,11 +4,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { faCircleCheck, faCircleXmark, faInfoCircle, faKey, faPersonChalkboard, faUser } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from 'src/app/componentes/modal/modal.component';
-import { DetalleUsuarioProfesor } from 'src/app/modelos/interfaces/DetalleUsuarioProfesor.interface';
-import { Usuario } from 'src/app/modelos/interfaces/Usuario.interface';
+import { UsuarioProfesor } from 'src/app/interfaces/UsuarioProfesor.interface';
+import { Usuario } from 'src/app/interfaces/Usuario.interface';
 import { getFormattedDate } from 'src/app/modelos/variables/variables';
-import { DetalleUsuarioProfesorService } from 'src/app/servicios/detalle-usuario-profesor.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
+import { UsuarioProfesorService } from 'src/app/servicios/usuario-profesor.service';
 
 @Component({
   selector: 'app-usuario',
@@ -17,7 +17,7 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 })
 export class UsuarioComponent {
 
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: UsuarioService, private serviceDetalle: DetalleUsuarioProfesorService) { }
+  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: UsuarioService, private serviceDetalle: UsuarioProfesorService) { }
 
   modoEdicion: boolean = false;
   elementoId: string = '';
@@ -43,8 +43,8 @@ export class UsuarioComponent {
     USR_GEN: ['', Validators.required],
     USUARIO: [{ value: '', disabled: true }, Validators.required],
     ESTADO: [true, Validators.required],
-    PRF_FECH_INGR_INST: [getFormattedDate(new Date()), Validators.required],
-    PRF_FECH_INGR_MAG: [getFormattedDate(new Date()), Validators.required]
+    PRF_FECH_INGR_INST: [getFormattedDate(new Date())],
+    PRF_FECH_INGR_MAG: [getFormattedDate(new Date())]
   })
 
   formPswd = this.formBuilder.group({
@@ -76,7 +76,7 @@ export class UsuarioComponent {
       if (id) {
         this.modoEdicion = true;
         this.elementoId = id;
-        this.loadData();
+        this.loadDataEdit();
       } else {
         this.modoEdicion = false;
         this.elementoId = '';
@@ -110,7 +110,7 @@ export class UsuarioComponent {
     if (this.form.valid) {
       //const userId = this.service.getUserLoggedId();
       const usuario: Usuario = this.buildObject();
-      const detalle = this.isProf ? this.buildDetalleUsuarioProfesorObject() : undefined;
+      const detalle = this.isProf ? this.buildUsuarioProfesorObject() : undefined;
 
       this.service.post(usuario, detalle).subscribe(
         {
@@ -142,28 +142,6 @@ export class UsuarioComponent {
     } else {
       this.form.markAllAsTouched();
     }
-  }
-
-  handleResponse(response: any) {
-    if (!response.data) {
-      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
-      console.log(response.message);
-    } else {
-      if (this.modoEdicion) {
-        this.openAlertModal(response.message, 'success');
-        console.log(response.message);
-      } else {
-        this.openAlertModal(response.message, 'success');
-        this.form.reset();
-        this.router.navigate(['../editar/' + response.data], { relativeTo: this.route });
-      }
-
-    }
-  }
-
-  handleErrorResponse(error: any) {
-    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
-    console.log(error);
   }
 
   buildObjectEdit() {
@@ -214,8 +192,8 @@ export class UsuarioComponent {
     return usuario;
   }
 
-  buildDetalleUsuarioProfesorObject() {
-    const detalle: DetalleUsuarioProfesor = {
+  buildUsuarioProfesorObject() {
+    const detalle: UsuarioProfesor = {
       DTLL_PRF_ID: '0',
       PRF_FECH_INGR_INST: this.form.value.PRF_FECH_INGR_INST ? new Date(this.form.value.PRF_FECH_INGR_INST) : new Date(),
       PRF_FECH_INGR_MAG: this.form.value.PRF_FECH_INGR_MAG ? new Date(this.form.value.PRF_FECH_INGR_MAG) : new Date(),
@@ -224,14 +202,27 @@ export class UsuarioComponent {
     return detalle;
   }
 
-  loadData() {
-    this.service.searchById(this.elementoId).subscribe({
+  loadDataEdit() {
+    this.service.getById(this.elementoId).subscribe({
       next: (value) => {
         if (value.data) {
           this.loadForm(value.data);
           this.loadDetalle()
         } else {
           console.log(value.message);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+  }
+
+  loadDetalle() {
+    this.serviceDetalle.getById(this.elementoId).subscribe({
+      next: (value) => {
+        if (value.data) {
+          this.loadFormDetalle(value.data)
         }
       },
       error: (error) => {
@@ -257,19 +248,6 @@ export class UsuarioComponent {
     this.isAdmin = (data.ROL_ADMIN !== 0);
     this.isProf = (data.ROL_PRF !== 0);
     this.isRep = (data.ROL_REPR !== 0);
-  }
-
-  loadDetalle() {
-    this.serviceDetalle.searchById(this.elementoId).subscribe({
-      next: (value) => {
-        if (value.data) {
-          this.loadFormDetalle(value.data)
-        }
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    });
   }
 
   loadFormDetalle(data: any) {
@@ -307,5 +285,28 @@ export class UsuarioComponent {
       console.log(error);
     });
   }
+
+  handleResponse(response: any) {
+    if (!response.data) {
+      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+      console.log(response.message);
+    } else {
+      if (this.modoEdicion) {
+        this.openAlertModal(response.message, 'success');
+        console.log(response.message);
+      } else {
+        this.openAlertModal(response.message, 'success');
+        this.form.reset();
+        this.router.navigate(['../editar/' + response.data], { relativeTo: this.route });
+      }
+
+    }
+  }
+
+  handleErrorResponse(error: any) {
+    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    console.log(error);
+  }
+
 
 }

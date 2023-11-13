@@ -4,9 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { faInfoCircle, faCircleCheck, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from 'src/app/componentes/modal/modal.component';
-import { AnioLectivo } from 'src/app/modelos/interfaces/AnioLectivo.interface';
-import { Curso } from 'src/app/modelos/interfaces/Curso.interface';
-import { Paralelo } from 'src/app/modelos/interfaces/Paralelo.interface';
+import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
+import { Curso } from 'src/app/interfaces/Curso.interface';
+import { Paralelo } from 'src/app/interfaces/Paralelo.interface';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 import { CursoService } from 'src/app/servicios/curso.service';
 import { ParaleloService } from 'src/app/servicios/paralelo.service';
@@ -121,8 +121,6 @@ export class ParaleloComponent implements OnInit {
     const paralelo: Paralelo = {
       PRLL_ID: '0',
       PRLL_NOM: this.form.value.PRLL_NOM || '',
-      CRS_ID: this.form.value.CRS_ID || '',
-      AL_ID: this.form.value.AL_ID || '',
       ESTADO: (this.form.value.ESTADO) ? 1 : 0,
       CREADOR_ID: userId || ''
 
@@ -134,8 +132,6 @@ export class ParaleloComponent implements OnInit {
     const paralelo: Paralelo = {
       PRLL_ID: this.elementoId,
       PRLL_NOM: this.form.value.PRLL_NOM || '',
-      CRS_ID: this.form.value.CRS_ID || '',
-      AL_ID: this.form.value.AL_ID || '',
       ESTADO: (this.form.value.ESTADO) ? 1 : 0,
       CREADOR_ID: '0'
     };
@@ -143,7 +139,7 @@ export class ParaleloComponent implements OnInit {
   }
 
   loadData() {
-    this.service.searchById(this.elementoId).subscribe({
+    this.service.getById(this.elementoId).subscribe({
       next: (value) => {
         if (value.data) {
           this.loadForm(value.data);
@@ -189,8 +185,6 @@ export class ParaleloComponent implements OnInit {
 
   loadForm(data: Paralelo) {
     this.form.get('PRLL_NOM')?.setValue(data.PRLL_NOM);
-      this.form.get('CRS_ID')?.setValue(data.CRS_ID);
-      this.form.get('AL_ID')?.setValue(data.AL_ID);
       this.form.get('ESTADO')?.setValue(data.ESTADO === 1)
   }
 

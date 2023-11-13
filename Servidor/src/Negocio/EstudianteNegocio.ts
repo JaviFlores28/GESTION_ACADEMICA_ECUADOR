@@ -1,101 +1,69 @@
 
-import baseDatos from '../Datos/BaseDatos';
-import Estudiante from '../Entidades/EstudianteEntidad';
-import { v4 as uuidv4 } from 'uuid';
-
+import EstudianteDatos from '../Datos/EstudianteDatos';
+import EstudianteEntidad from '../Entidades/EstudianteEntidad';
+import { Respuesta } from '../System/Interfaces/Respuesta';
 
 class EstudianteNegocio {
-
-  static async getEstudiante(): Promise<{ data: Estudiante[], message: string }> {
+  
+  static async insert(estudiante: EstudianteEntidad ): Promise<Respuesta> {
     try {
-      let sql = 'SELECT `EST_ID` as id , `EST_DNI`, concat (`EST_NOM`,\' \', `EST_NOM2`,\' \',`EST_APE`,\' \',`EST_APE2`) AS EST_NOM, `EST_PRV`, `EST_CAN`,`ESTADO` FROM estudiante';
-      const [rows] = await baseDatos.execute<any>(sql);
-      return { data: rows as Estudiante[], message: '' };
+      return EstudianteDatos.insert(estudiante );
     } catch (error: any) {
-      return { data: [], message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
-
-  static async getEnabledEstudiante(): Promise<{ data: Estudiante[], message: string }> {
+  
+  static async update(estudiante: EstudianteEntidad): Promise<Respuesta> {
     try {
-      let sql = 'SELECT * FROM estudiante where Estado=1';
-      const [rows] = await baseDatos.execute<any>(sql);
-      return { data: rows as Estudiante[], message: '' };
+      return EstudianteDatos.update(estudiante);
     } catch (error: any) {
-      return { data: [], message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
-
-  static async getNoMatriculados(): Promise<{ data: Estudiante[], message: string }> {
+  
+  static async updateEstado(ids: string[]):Promise<Respuesta> {
     try {
-      let sql = `SELECT e.EST_ID as id, e.EST_DNI, concat(e.EST_NOM,' ',e.EST_NOM2,' ',e.EST_APE,' ',e.EST_APE2) as EST_NOM FROM estudiante e LEFT JOIN matricula m ON e.EST_ID = m.EST_ID WHERE (m.EST_ID IS NULL OR m.estado = 0) AND e.estado = 1;`;
-      const [rows] = await baseDatos.execute<any>(sql);
-      return { data: rows as Estudiante[], message: '' };
+      return EstudianteDatos.updateEstado(ids);
+
     } catch (error: any) {
-      return { data: [], message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
-
-  static async searchById(id: String): Promise<{ data: Estudiante | null; message: string }> {
+  
+  static async delete(id: String): Promise<Respuesta> {
     try {
-      let sql = 'SELECT * FROM estudiante WHERE EST_ID = ?';
-      const [rows] = await baseDatos.execute<any>(sql, [id]);
-      if (rows.length <= 0) {
-        throw new Error('Objeto de tipo Estudiante no encontrado');
-      }
-      let newEstudiante = rows[0] as Estudiante;
-
-      return { data: newEstudiante, message: 'Encontrado' };
+      return EstudianteDatos.delete(id);
     } catch (error: any) {
-      return { data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
-
-  static async addEstudiante(estudiante: Estudiante): Promise<{ data: string | null, message: string }> {
+  
+  static async getAll(): Promise<Respuesta> {
     try {
-      if (!estudiante.isValid()) { //validar estructura del objeto
-        throw new Error('Objeto de tipo Estudiante no tiene la estructura esperada.');
-      }
-      estudiante.EST_ID = uuidv4(); //asigna un identificador unico
-      let sql = estudiante.sqlInsert();
-      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
-      if (result.affectedRows !== 1) {
-        throw new Error('No se pudo agregar Estudiante');
-      }
-      return { data: estudiante.EST_ID, message: 'Se creo correctamente' }; // Retorna el ID del Estudiante
+      return EstudianteDatos.getAll();
     } catch (error: any) {
-      return { data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
-
-  static async deleteEstudiante(id: String): Promise<{ data: boolean, message: string }> {
+  
+  static async getEnabled(): Promise<Respuesta> {
     try {
-      let sql = 'delete FROM estudiante WHERE EST_ID = ?';
-      const [result] = await baseDatos.execute<any>(sql, [id]);
-      if (result.affectedRows !== 1) {
-        throw new Error('No se pudo eliminar el objeto de tipo Estudiante');
-      }
-      return { data: true, message: 'Objeto eliminado' }
+      return EstudianteDatos.getEnabled();
+
     } catch (error: any) {
-      return { data: false, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
-
-  static async updateEstudiante(estudiante: Estudiante): Promise<{ data: boolean, message: string }> {
+  
+  static async getById(id: String): Promise<Respuesta> {
     try {
-      if (!estudiante.isValid()) { //validar estructura del objeto
-        throw new Error('Objeto de tipo Estudiante no tiene la estructura esperada.');
-      }
-      let sql = estudiante.sqlUpdate();
-      const [result] = await baseDatos.execute<any>(sql.query, sql.values);
-      if (result.affectedRows !== 1) {
-        throw new Error('No se pudo actualizar Estudiante');
-      }
-      return { data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
+      return EstudianteDatos.getById(id);
+
     } catch (error: any) {
-      return { data: false, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
-
+  
 }
+
 export default EstudianteNegocio;

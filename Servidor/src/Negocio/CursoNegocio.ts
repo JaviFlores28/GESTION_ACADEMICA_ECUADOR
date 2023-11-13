@@ -1,91 +1,69 @@
 
-import pool from '../Datos/BaseDatos';
-import Curso from '../Entidades/CursoEntidad';
-import { v4 as uuidv4 } from 'uuid';
-
+import CursoDatos from '../Datos/CursoDatos';
+import CursoEntidad from '../Entidades/CursoEntidad';
+import { Respuesta } from '../System/Interfaces/Respuesta';
 
 class CursoNegocio {
   
-  static async getCurso(): Promise<{ data: Curso[], message: string }> {
+  static async insert(curso: CursoEntidad ): Promise<Respuesta> {
     try {
-      let sql = 'SELECT `CRS_ID` as id,concat( `CRS_NOM`,\'-\',`CRS_TIPO`) as CRS_NOM, `CRS_ORDEN`, `ESTADO` FROM curso ORDER BY CRS_ORDEN ASC';
-      const [rows] = await pool.execute<any>(sql);
-      return { data: rows as Curso[], message: '' };
+      return CursoDatos.insert(curso );
     } catch (error: any) {
-      return { data: [], message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
   
-  static async getEnabledCurso(): Promise<{ data: Curso[], message: string }> {
+  static async update(curso: CursoEntidad): Promise<Respuesta> {
     try {
-      let sql = 'SELECT `CRS_ID`,concat( `CRS_NOM`,\'-\',`CRS_TIPO`) as CRS_NOM, `CRS_ORDEN`, `ESTADO` FROM curso WHERE Estado=1 ORDER BY CRS_ORDEN ASC';
-      const [rows] = await pool.execute<any>(sql);
-      return { data: rows as Curso[], message: '' };
+      return CursoDatos.update(curso);
     } catch (error: any) {
-      return { data: [], message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
   
-  static async searchById(id: String): Promise<{ data: Curso | null; message: string }> {
+  static async updateEstado(ids: string[]):Promise<Respuesta> {
     try {
-      let sql = 'SELECT * FROM curso WHERE CRS_ID = ?';
-      const [rows] = await pool.execute<any>(sql, [id]);
-      if (rows.length <= 0) {
-        throw new Error('Objeto de tipo Curso no encontrado');
-      }
-      let newCurso = rows[0] as Curso;
-      
-      return { data: newCurso, message: 'Encontrado' };
+      return CursoDatos.updateEstado(ids);
+
     } catch (error: any) {
-      return { data: null, message: error.message }; // Retorna el mensaje del error
-    }
-  } 
-  
-  static async addCurso(curso: Curso): Promise<{ data: string | null, message: string }> {
-    try {
-      if (!curso.isValid()){ //validar estructura del objeto
-        throw new Error('Objeto de tipo Curso no tiene la estructura esperada.');
-      }
-      curso.CRS_ID = uuidv4(); //asigna un identificador unico
-      let sql = curso.sqlInsert();
-      const [result] = await pool.execute<any>(sql.query, sql.values);
-      if (result.affectedRows !== 1) {
-        throw new Error('No se pudo agregar Curso');
-      }
-      return { data:curso.CRS_ID, message: 'Se creo correctamente' }; // Retorna el ID del Curso
-    } catch (error: any) {
-      return { data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
   
-  static async deleteCurso(id: String): Promise<{ data: boolean, message: string }> {
+  static async delete(id: String): Promise<Respuesta> {
     try {
-      let sql = 'delete FROM curso WHERE CRS_ID = ?';
-      const [result] = await pool.execute<any>(sql, [id]);
-      if (result.affectedRows !== 1) {
-        throw new Error('No se pudo eliminar el objeto de tipo Curso');
-      }
-      return { data: true, message: 'Objeto eliminado' }
+      return CursoDatos.delete(id);
     } catch (error: any) {
-      return { data: false, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
   
-  static async updateCurso(curso: Curso): Promise<{ data: boolean, message: string }> {
+  static async getAll(): Promise<Respuesta> {
     try {
-      if (!curso.isValid()){ //validar estructura del objeto
-        throw new Error('Objeto de tipo Curso no tiene la estructura esperada.');
-      }
-      let sql = curso.sqlUpdate();
-      const [result] = await pool.execute<any>(sql.query, sql.values);
-      if (result.affectedRows !== 1) {
-        throw new Error('No se pudo actualizar Curso');
-      }
-      return { data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
+      return CursoDatos.getAll();
     } catch (error: any) {
-      return { data: false, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
+  static async getEnabled(): Promise<Respuesta> {
+    try {
+      return CursoDatos.getEnabled();
+
+    } catch (error: any) {
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+    }
+  }
+  
+  static async getById(id: String): Promise<Respuesta> {
+    try {
+      return CursoDatos.getById(id);
+
+    } catch (error: any) {
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
   
 }
+
 export default CursoNegocio;
