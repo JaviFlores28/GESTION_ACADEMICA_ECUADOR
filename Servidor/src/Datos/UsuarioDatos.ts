@@ -21,7 +21,7 @@ class UsuarioDatos {
     try {
       usuario.USR_ID = uuidv4(); //asigna un identificador unico
       usuario.USUARIO = Funciones.crearUsuario(usuario.USR_DNI, usuario.USR_NOM, usuario.USR_NOM2, usuario.USR_APE);
-  usuario.USR_PSWD = Funciones.encrypt(usuario.USR_PSWD);
+  usuario.USR_PSWD = Funciones.encrypt(usuario.USR_DNI);
   
       const newUsuario = new UsuarioEntidad(usuario.USR_ID, usuario.USR_DNI, usuario.USR_NOM, usuario.USR_NOM2, usuario.USR_APE, usuario.USR_APE2, usuario.USR_DIR, usuario.USR_TEL, usuario.USR_CEL, usuario.USR_EMAIL, usuario.USR_FECH_NAC, usuario.USR_GEN, usuario.USUARIO, usuario.USR_PSWD, usuario.ROL_PRF, usuario.ROL_REPR, usuario.ROL_ADMIN, usuario.ESTADO);
 
@@ -153,6 +153,7 @@ class UsuarioDatos {
       }
 
       const pswdDecrypt = Funciones.decrypt(rows[0].USR_PSWD);
+console.log(pswd, pswdDecrypt);
 
       if (!Funciones.pswdValid(pswdDecrypt, pswd)) {
         throw new Error('Contraseña incorrecta');

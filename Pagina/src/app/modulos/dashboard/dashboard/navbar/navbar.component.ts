@@ -50,9 +50,9 @@ export class NavbarComponent implements OnInit {
       if (result === 'save') {
         this.servicio.removeLocal();
         // Redirigir al usuario al login
-        this.router.navigate(['']); // Ajusta la ruta según tu configuración
+        this.router.navigate(['login']); // Ajusta la ruta según tu configuración
         // O recargar la página
-        window.location.reload();
+        //window.location.reload();
       }
     }).catch((error) => {
       // Lógica para manejar el cierre inesperado del modal

@@ -175,7 +175,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
   const propertiesData = mapProperties(properties);
 
   const usuariodata = `usuario.USUARIO = Funciones.crearUsuario(usuario.USR_DNI, usuario.USR_NOM, usuario.USR_NOM2, usuario.USR_APE);
-  usuario.USR_PSWD = Funciones.encrypt(usuario.USR_PSWD);
+  usuario.USR_PSWD = Funciones.encrypt(usuario.USR_DNI);
   `;
 
   const stringByinsertUser = `else {

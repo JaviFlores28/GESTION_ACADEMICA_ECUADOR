@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
       this.service.getByUser(usuario).subscribe(
         {
           next: (value) => {
-            if (value.response) {
+            if (!value.response) {
               console.log(value.message);
             } else {
               this.service.setLocal(value.data)

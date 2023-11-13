@@ -6,8 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 class CalificacionesCualitativasDatos {
 
-  static sqlInsert: string = `INSERT INTO calificaciones_cualitativas (CAL_ID, PRF_ASG_PRLL_ID, EST_CRS_PRLL_ID, CALIFICACION, PRD_ID, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?, ?);`;
-  static sqlUpdate: string = `UPDATE calificaciones_cualitativas SET PRF_ASG_PRLL_ID=?,EST_CRS_PRLL_ID=?,CALIFICACION=?,PRD_ID=?,ESTADO=? WHERE CAL_ID=?;`;
+  static sqlInsert: string = `INSERT INTO calificaciones_cualitativas (CAL_ID, PRF_ASG_PRLL_ID, EST_CRS_PRLL_ID, PRD_ID, CALIFICACION, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?, ?);`;
+  static sqlUpdate: string = `UPDATE calificaciones_cualitativas SET PRF_ASG_PRLL_ID=?,EST_CRS_PRLL_ID=?,PRD_ID=?,CALIFICACION=?,ESTADO=? WHERE CAL_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE calificaciones_cualitativas SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  CAL_ID IN';
   static sqlDelete: string = `DELETE FROM calificaciones_cualitativas WHERE CAL_ID = ?`;
   static sqlSelect: string = `SELECT * FROM calificaciones_cualitativas`;
@@ -19,7 +19,7 @@ class CalificacionesCualitativasDatos {
     try {
       calificaciones_cualitativas.CAL_ID = uuidv4(); //asigna un identificador unico
       
-      const newCalificacionesCualitativas = new CalificacionesCualitativasEntidad(calificaciones_cualitativas.CAL_ID, calificaciones_cualitativas.PRF_ASG_PRLL_ID, calificaciones_cualitativas.EST_CRS_PRLL_ID, calificaciones_cualitativas.CALIFICACION, calificaciones_cualitativas.PRD_ID, calificaciones_cualitativas.ESTADO, calificaciones_cualitativas.CREADOR_ID);
+      const newCalificacionesCualitativas = new CalificacionesCualitativasEntidad(calificaciones_cualitativas.CAL_ID, calificaciones_cualitativas.PRF_ASG_PRLL_ID, calificaciones_cualitativas.EST_CRS_PRLL_ID, calificaciones_cualitativas.PRD_ID, calificaciones_cualitativas.CALIFICACION, calificaciones_cualitativas.ESTADO, calificaciones_cualitativas.CREADOR_ID);
 
       let sql =this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newCalificacionesCualitativas.toArrayInsert());
@@ -34,7 +34,7 @@ class CalificacionesCualitativasDatos {
   
   static async update(calificaciones_cualitativas: CalificacionesCualitativasEntidad): Promise<Respuesta> {
     try {
-      const newCalificacionesCualitativas = new CalificacionesCualitativasEntidad(calificaciones_cualitativas.CAL_ID, calificaciones_cualitativas.PRF_ASG_PRLL_ID, calificaciones_cualitativas.EST_CRS_PRLL_ID, calificaciones_cualitativas.CALIFICACION, calificaciones_cualitativas.PRD_ID, calificaciones_cualitativas.ESTADO, calificaciones_cualitativas.CREADOR_ID);
+      const newCalificacionesCualitativas = new CalificacionesCualitativasEntidad(calificaciones_cualitativas.CAL_ID, calificaciones_cualitativas.PRF_ASG_PRLL_ID, calificaciones_cualitativas.EST_CRS_PRLL_ID, calificaciones_cualitativas.PRD_ID, calificaciones_cualitativas.CALIFICACION, calificaciones_cualitativas.ESTADO, calificaciones_cualitativas.CREADOR_ID);
       let sql =this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newCalificacionesCualitativas.toArrayUpdate());
       if (result.affectedRows !== 1) {
