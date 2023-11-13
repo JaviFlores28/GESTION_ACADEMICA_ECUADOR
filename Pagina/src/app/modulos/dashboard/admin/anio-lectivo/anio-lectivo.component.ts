@@ -21,6 +21,8 @@ export class AnioLectivoComponent implements OnInit {
 
   modoEdicion: boolean = false;
   elementoId: string = '';
+  userid = this.serviceUsuario.getUserLoggedId();
+
   icon = faInfoCircle;
 
   form = this.formBuilder.group({
@@ -35,7 +37,7 @@ export class AnioLectivoComponent implements OnInit {
     NUM_EXAM: [1, Validators.required],
     NUM_PRCL: [3, Validators.required],
     NUM_SUSP: [1, Validators.required],
-    ESTADO: [false]
+    ESTADO: [true]
   })
 
   ngOnInit(): void {
@@ -48,7 +50,7 @@ export class AnioLectivoComponent implements OnInit {
       if (id) {
         this.modoEdicion = true;
         this.elementoId = id;
-        this.loadData();
+        this.loadDataEdit();
       } else {
         this.modoEdicion = false;
         this.elementoId = '';
@@ -65,8 +67,8 @@ export class AnioLectivoComponent implements OnInit {
       const aniolectivo: AnioLectivo = this.buildObject();
       this.service.post(aniolectivo).subscribe(
         {
-          next: (response) => {
-            this.handleResponse(response);
+          next: (value) => {
+            this.handleResponse(value);
           },
           error: (error) => this.handleErrorResponse(error)
         }
@@ -83,8 +85,8 @@ export class AnioLectivoComponent implements OnInit {
 
       this.service.put(aniolectivo).subscribe(
         {
-          next: (response) => {
-            this.handleResponse(response);
+          next: (value) => {
+            this.handleResponse(value);
           },
           error: (error) => this.handleErrorResponse(error)
         }
@@ -95,30 +97,7 @@ export class AnioLectivoComponent implements OnInit {
     }
   }
 
-  handleResponse(response: any) {
-    if (!response.data) {
-      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
-      console.log(response.message);
-    } else {
-      if (this.modoEdicion) {
-        this.openAlertModal(response.message, 'success');
-        console.log(response.message);
-      } else {
-        this.openAlertModal(response.message, 'success');
-        this.form.reset();
-        this.router.navigate(['../editar/' + response.data], { relativeTo: this.route });
-      }
-
-    }
-  }
-
-  handleErrorResponse(error: any) {
-    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
-    console.log(error);
-  }
-
   buildObject() {
-    const userId = this.serviceUsuario.getUserLoggedId();
     const aniolectivo: AnioLectivo = {
       AL_ID: '0',
       AL_NOM: this.form.value.AL_NOM || '',
@@ -133,7 +112,7 @@ export class AnioLectivoComponent implements OnInit {
       NUM_PRCL: this.form.value.NUM_PRCL || 3,
       NUM_SUSP: this.form.value.NUM_SUSP || 1,
       ESTADO: (this.form.value.ESTADO) ? 1 : 0,
-      CREADOR_ID: userId || ''
+      CREADOR_ID: this.userid || ''
 
     };
     return aniolectivo;
@@ -154,16 +133,16 @@ export class AnioLectivoComponent implements OnInit {
       NUM_PRCL: this.form.value.NUM_PRCL || 3,
       NUM_SUSP: this.form.value.NUM_SUSP || 1,
       ESTADO: (this.form.value.ESTADO) ? 1 : 0,
-      CREADOR_ID: '0'
+      CREADOR_ID: this.userid
     };
     return aniolectivo;
   }
 
-  loadData() {
+  loadDataEdit() {
     this.service.getById(this.elementoId).subscribe({
       next: (value) => {
-        if (value.data) {
-          this.loadForm(value.data);
+        if (value.response) {
+          this.llenarForm(value.data);
         } else {
           console.log(value.message);
         }
@@ -174,20 +153,21 @@ export class AnioLectivoComponent implements OnInit {
     });
   }
 
-  loadForm(data: AnioLectivo) {
+  llenarForm(data: AnioLectivo) {
     this.form.get('AL_NOM')?.setValue(data.AL_NOM);
-      this.form.get('AL_INICIO')?.setValue(getFormattedDate(data.AL_INICIO));
-      this.form.get('AL_FIN')?.setValue(getFormattedDate(data.AL_FIN));
-      this.form.get('AL_POR_PRD')?.setValue(data.AL_POR_PRD);
-      this.form.get('AL_POR_EXAM')?.setValue(data.AL_POR_EXAM);
-      this.form.get('CLFN_MIN_APR')?.setValue(data.CLFN_MIN_APR);
-      this.form.get('CLFN_MIN_PERD')?.setValue(data.CLFN_MIN_PERD);
-      this.form.get('NUM_PRD')?.setValue(data.NUM_PRD);
-      this.form.get('NUM_EXAM')?.setValue(data.NUM_EXAM);
-      this.form.get('NUM_PRCL')?.setValue(data.NUM_PRCL);
-      this.form.get('NUM_SUSP')?.setValue(data.NUM_SUSP);
-      this.form.get('ESTADO')?.setValue(data.ESTADO === 1);
-    }
+    this.form.get('AL_INICIO')?.setValue(getFormattedDate(data.AL_INICIO));
+    this.form.get('AL_FIN')?.setValue(getFormattedDate(data.AL_FIN));
+    this.form.get('AL_POR_PRD')?.setValue(data.AL_POR_PRD);
+    this.form.get('AL_POR_EXAM')?.setValue(data.AL_POR_EXAM);
+    this.form.get('CLFN_MIN_APR')?.setValue(data.CLFN_MIN_APR);
+    this.form.get('CLFN_MIN_PERD')?.setValue(data.CLFN_MIN_PERD);
+    this.form.get('NUM_PRD')?.setValue(data.NUM_PRD);
+    this.form.get('NUM_EXAM')?.setValue(data.NUM_EXAM);
+    this.form.get('NUM_PRCL')?.setValue(data.NUM_PRCL);
+    this.form.get('NUM_SUSP')?.setValue(data.NUM_SUSP);
+    this.form.get('ESTADO')?.setValue(data.ESTADO === 1);
+    this.userid = data.CREADOR_ID;
+  }
 
   openAlertModal(content: string, alertType: string) {
     const modalRef = this.ngBootstrap.open(ModalComponent);
@@ -216,6 +196,28 @@ export class AnioLectivoComponent implements OnInit {
     }).catch((error) => {
       console.log(error);
     });
+  }
+
+  handleResponse(value: any) {
+    if (!value.response) {
+      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+      console.log(value.message);
+    } else {
+      if (this.modoEdicion) {
+        this.openAlertModal(value.message, 'success');
+        console.log(value.message);
+      } else {
+        this.openAlertModal(value.message, 'success');
+        this.form.reset();
+        this.router.navigate(['../'], { relativeTo: this.route });
+      }
+
+    }
+  }
+
+  handleErrorResponse(error: any) {
+    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    console.log(error);
   }
 
 }

@@ -102,7 +102,7 @@ class UsuarioDatos {
   } else if (tipo === 'P') {
     sql += ' where ROL_PRF=1';
   } else if (tipo === 'A') {
-    sql += 'where ROL_ADMIN=1';
+    sql += ' where ROL_ADMIN=1';
   } 
       const [rows] = await pool.execute<any>(sql);
       return { response: true, data: rows as UsuarioEntidad[], message: '' };
@@ -137,7 +137,7 @@ class UsuarioDatos {
   }
 
       const [rows] = await pool.execute<any>(sql);
-      return {response: false, data: rows as UsuarioEntidad[], message: '' };
+      return {response: true, data: rows as UsuarioEntidad[], message: '' };
     } catch (error: any) {
       return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }

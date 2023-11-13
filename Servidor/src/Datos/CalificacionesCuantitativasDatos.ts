@@ -112,7 +112,7 @@ class CalificacionesCuantitativasDatos {
       
 
       const [rows] = await pool.execute<any>(sql);
-      return {response: false, data: rows as CalificacionesCuantitativasEntidad[], message: '' };
+      return {response: true, data: rows as CalificacionesCuantitativasEntidad[], message: '' };
     } catch (error: any) {
       return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }

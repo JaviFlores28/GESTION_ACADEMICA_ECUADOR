@@ -241,7 +241,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
   } else if (tipo === 'P') {
     sql += ' where ROL_PRF=1';
   } else if (tipo === 'A') {
-    sql += 'where ROL_ADMIN=1';
+    sql += ' where ROL_ADMIN=1';
   } `;
 
   const functionGet = `
@@ -286,7 +286,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       ${(tableName === 'usuario' ? stringByGetUserEnabled : '')}
 
       const [rows] = await pool.execute<any>(sql);
-      return {response: false, data: rows as ${capitalizedTableName}Entidad[], message: '' };
+      return {response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
       return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
@@ -896,7 +896,7 @@ async function generateComponentFile(connection: any, tableName: any, primaryKey
     this.service.getById(this.elementoId).subscribe({
       next: (value) => {
         if (value.data) {
-          this.loadForm(value.data);
+          this.llenarForm(value.data);
         } else {
           console.log(value.message);
         }
@@ -908,7 +908,7 @@ async function generateComponentFile(connection: any, tableName: any, primaryKey
   }
 
 
-loadForm(data: ${capitalizedTableName}) {
+llenarForm(data: ${capitalizedTableName}) {
   ${generateFillFormReactive(propertiesData)}
 }
 

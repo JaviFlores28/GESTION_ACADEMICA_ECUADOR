@@ -42,7 +42,7 @@ export class UsuarioComponent {
     USR_FECH_NAC: [getFormattedDate(new Date()), Validators.required],
     USR_GEN: ['', Validators.required],
     USUARIO: [{ value: '', disabled: true }, Validators.required],
-    ESTADO: [true, Validators.required],
+    ESTADO: [true],
     PRF_FECH_INGR_INST: [getFormattedDate(new Date())],
     PRF_FECH_INGR_MAG: [getFormattedDate(new Date())]
   })
@@ -206,7 +206,7 @@ export class UsuarioComponent {
     this.service.getById(this.elementoId).subscribe({
       next: (value) => {
         if (value.data) {
-          this.loadForm(value.data);
+          this.llenarForm(value.data);
           this.loadDetalle()
         } else {
           console.log(value.message);
@@ -222,7 +222,7 @@ export class UsuarioComponent {
     this.serviceDetalle.getById(this.elementoId).subscribe({
       next: (value) => {
         if (value.data) {
-          this.loadFormDetalle(value.data)
+          this.llenarFormDetalle(value.data)
         }
       },
       error: (error) => {
@@ -231,7 +231,7 @@ export class UsuarioComponent {
     });
   }
 
-  loadForm(data: Usuario) {
+  llenarForm(data: Usuario) {
     this.form.get('USR_DNI')?.setValue(data.USR_DNI);
     this.form.get('USR_NOM')?.setValue(data.USR_NOM);
     this.form.get('USR_NOM2')?.setValue(data.USR_NOM2);
@@ -250,7 +250,7 @@ export class UsuarioComponent {
     this.isRep = (data.ROL_REPR !== 0);
   }
 
-  loadFormDetalle(data: any) {
+  llenarFormDetalle(data: any) {
     this.form.get('PRF_FECH_INGR_INST')?.setValue(getFormattedDate(data.PRF_FECH_INGR_INST));
     this.form.get('PRF_FECH_INGR_MAG')?.setValue(getFormattedDate(data.PRF_FECH_INGR_MAG));
   }

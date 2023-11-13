@@ -112,7 +112,7 @@ class ParametroDatos {
       
 
       const [rows] = await pool.execute<any>(sql);
-      return {response: false, data: rows as ParametroEntidad[], message: '' };
+      return {response: true, data: rows as ParametroEntidad[], message: '' };
     } catch (error: any) {
       return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }

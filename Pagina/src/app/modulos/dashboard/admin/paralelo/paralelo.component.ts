@@ -4,8 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { faInfoCircle, faCircleCheck, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from 'src/app/componentes/modal/modal.component';
-import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
-import { Curso } from 'src/app/interfaces/Curso.interface';
 import { Paralelo } from 'src/app/interfaces/Paralelo.interface';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 import { CursoService } from 'src/app/servicios/curso.service';
@@ -24,21 +22,17 @@ export class ParaleloComponent implements OnInit {
 
   modoEdicion: boolean = false;
   elementoId: string = '';
+  userid = this.serviceUsuario.getUserLoggedId();
+
   icon = faInfoCircle;
-  anios: AnioLectivo[] = [];
-  cursos: Curso[] = [];
 
   form = this.formBuilder.group({
     PRLL_NOM: ['', Validators.required],
-    CRS_ID: ['', Validators.required],
-    AL_ID: ['', Validators.required],
-    ESTADO: [false, Validators.required]
+    ESTADO: [true]
   })
 
   ngOnInit(): void {
     this.validarEdicion();
-    this.loadCursos()
-    this.loadanios()
   }
 
   validarEdicion() {
@@ -47,7 +41,7 @@ export class ParaleloComponent implements OnInit {
       if (id) {
         this.modoEdicion = true;
         this.elementoId = id;
-        this.loadData();
+        this.loadataEdit();
       } else {
         this.modoEdicion = false;
         this.elementoId = '';
@@ -64,8 +58,8 @@ export class ParaleloComponent implements OnInit {
       const paralelo: Paralelo = this.buildObject();
       this.service.post(paralelo).subscribe(
         {
-          next: (response) => {
-            this.handleResponse(response);
+          next: (value) => {
+            this.handleResponse(value);
           },
           error: (error) => this.handleErrorResponse(error)
         }
@@ -82,8 +76,8 @@ export class ParaleloComponent implements OnInit {
 
       this.service.put(paralelo).subscribe(
         {
-          next: (response) => {
-            this.handleResponse(response);
+          next: (value) => {
+            this.handleResponse(value);
           },
           error: (error) => this.handleErrorResponse(error)
         }
@@ -94,35 +88,12 @@ export class ParaleloComponent implements OnInit {
     }
   }
 
-  handleResponse(response: any) {
-    if (!response.data) {
-      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
-      console.log(response.message);
-    } else {
-      if (this.modoEdicion) {
-        this.openAlertModal(response.message, 'success');
-        console.log(response.message);
-      } else {
-        this.openAlertModal(response.message, 'success');
-        this.form.reset();
-        this.router.navigate(['../editar/' + response.data], { relativeTo: this.route });
-      }
-
-    }
-  }
-
-  handleErrorResponse(error: any) {
-    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
-    console.log(error);
-  }
-
   buildObject() {
-    const userId = this.serviceUsuario.getUserLoggedId();
     const paralelo: Paralelo = {
       PRLL_ID: '0',
       PRLL_NOM: this.form.value.PRLL_NOM || '',
       ESTADO: (this.form.value.ESTADO) ? 1 : 0,
-      CREADOR_ID: userId || ''
+      CREADOR_ID: this.userid || ''
 
     };
     return paralelo;
@@ -133,16 +104,16 @@ export class ParaleloComponent implements OnInit {
       PRLL_ID: this.elementoId,
       PRLL_NOM: this.form.value.PRLL_NOM || '',
       ESTADO: (this.form.value.ESTADO) ? 1 : 0,
-      CREADOR_ID: '0'
+      CREADOR_ID: this.userid
     };
     return paralelo;
   }
 
-  loadData() {
+  loadataEdit() {
     this.service.getById(this.elementoId).subscribe({
       next: (value) => {
         if (value.data) {
-          this.loadForm(value.data);
+          this.llenarForm(value.data);
         } else {
           console.log(value.message);
         }
@@ -153,39 +124,10 @@ export class ParaleloComponent implements OnInit {
     });
   }
 
-  loadCursos() {
-    this.serviceCursos.getEnabled().subscribe({
-      next: (value) => {
-        if (value.data) {          
-          this.cursos = value.data
-        } else {
-          console.log(value.message);
-        }
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    });
-  }
-
-  loadanios() {
-    this.serviceAnios.getEnabled().subscribe({
-      next: (value) => {
-        if (value.data) {
-          this.anios = value.data
-        } else {
-          console.log(value.message);
-        }
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    });
-  }
-
-  loadForm(data: Paralelo) {
+  llenarForm(data: Paralelo) {
     this.form.get('PRLL_NOM')?.setValue(data.PRLL_NOM);
-      this.form.get('ESTADO')?.setValue(data.ESTADO === 1)
+    this.form.get('ESTADO')?.setValue(data.ESTADO === 1)
+    this.userid = data.CREADOR_ID
   }
 
   openAlertModal(content: string, alertType: string) {
@@ -216,6 +158,28 @@ export class ParaleloComponent implements OnInit {
     }).catch((error) => {
       console.log(error);
     });
+  }
+
+  handleResponse(value: any) {
+    if (!value.response) {
+      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+      console.log(value.message);
+    } else {
+      if (this.modoEdicion) {
+        this.openAlertModal(value.message, 'success');
+        console.log(value.message);
+      } else {
+        this.openAlertModal(value.message, 'success');
+        this.form.reset();
+        this.router.navigate(['../'], { relativeTo: this.route });
+      }
+
+    }
+  }
+
+  handleErrorResponse(error: any) {
+    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    console.log(error);
   }
 
 }

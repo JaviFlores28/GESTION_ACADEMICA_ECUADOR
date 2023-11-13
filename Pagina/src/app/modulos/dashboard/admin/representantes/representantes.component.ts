@@ -13,9 +13,10 @@ export class RepresentantesComponent {
 
   routerLink:string='nuevo';
   title:string='Representantes';
+
   data: Usuario[] = [];
-  headers = ['CÉDULA','NOMBRES','CELULAR','CORREO', 'ESTADO'];
-  campos = ['USR_ID','USR_DNI', 'USR_NOM','USR_CEL','USR_EMAIL'];
+  headers = ['CÉDULA','NOMBRES','USUARIO','CORREO', 'ESTADO'];
+  campos = ['USR_ID','USR_DNI', 'USR_NOM','USUARIO','USR_EMAIL'];
 
   ngOnInit(): void {
     this.loadData();
@@ -23,12 +24,12 @@ export class RepresentantesComponent {
 
   loadData() {
     this.service.get('R').subscribe({
-      next: response => {
-        if (response.data.length > 0) {
-          this.data = response.data;
+      next: value => {
+        if (value.response) {
+          this.data = value.data;
         }
         else {
-          console.log(response.message);
+          console.error(value.message);
         }
       },
       error: error => {

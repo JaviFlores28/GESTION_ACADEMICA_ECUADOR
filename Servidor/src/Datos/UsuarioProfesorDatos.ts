@@ -112,7 +112,7 @@ class UsuarioProfesorDatos {
       
 
       const [rows] = await pool.execute<any>(sql);
-      return {response: false, data: rows as UsuarioProfesorEntidad[], message: '' };
+      return {response: true, data: rows as UsuarioProfesorEntidad[], message: '' };
     } catch (error: any) {
       return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }

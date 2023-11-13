@@ -112,7 +112,7 @@ class PeriodoDatos {
       
 
       const [rows] = await pool.execute<any>(sql);
-      return {response: false, data: rows as PeriodoEntidad[], message: '' };
+      return {response: true, data: rows as PeriodoEntidad[], message: '' };
     } catch (error: any) {
       return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }

@@ -15,7 +15,8 @@ export class ProfesoresComponent {
   title:string='Profesores';
  
   data: Usuario[] = [];
-  headers = ['CÉDULA','NOMBRES','CELULAR','CORREO', 'ESTADO'];
+  headers = ['CÉDULA','NOMBRES','USUARIO','CORREO', 'ESTADO'];
+  campos = ['USR_ID','USR_DNI','USR_NOM','USUARIO','USR_EMAIL'];
 
 
   ngOnInit(): void {
@@ -24,12 +25,12 @@ export class ProfesoresComponent {
 
   loadData() {
     this.service.get('P').subscribe({
-      next: response => {
-        if (response.data.length > 0) {
-          this.data = response.data;
+      next: value => {
+        if (value.response) {
+          this.data = value.data;
         }
         else {
-          console.log(response.message);
+          console.log(value.message);
         }
       },
       error: error => {

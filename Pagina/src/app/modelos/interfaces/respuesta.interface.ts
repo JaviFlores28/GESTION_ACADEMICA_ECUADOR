@@ -1,4 +1,5 @@
-export interface Respuesta { 
-    data: any | null, 
-    message: string 
+export interface Respuesta {
+    response: boolean,
+    data: any | null,
+    message: string
 }

@@ -17,6 +17,7 @@ export class AniosLectivosComponent implements OnInit {
   title: string = 'Años lectivos';
   data: AnioLectivo[] = [];
   headers = ['NOMBRE', 'FECHA INICIO', 'FECHA FIN', 'PERIODOS', 'EXAMENES','ESTADO'];
+  campos = ['AL_ID','AL_NOM', 'AL_INICIO', 'AL_FIN', 'NUM_PRD', 'NUM_EXAM'];
 
   ngOnInit(): void {
     this.loadData();
@@ -24,13 +25,12 @@ export class AniosLectivosComponent implements OnInit {
 
   loadData() {
     this.service.get().subscribe({
-      next: response => {
-        if (response.data.length > 0) {
-          this.data = response.data;
-          console.log(this.data);
+      next: value => {
+        if (value.response) {
+          this.data = value.data;
         }
         else {
-          console.log(response.message);
+          console.log(value.message);
 
         }
       },
@@ -42,7 +42,6 @@ export class AniosLectivosComponent implements OnInit {
 
   eliminar(id: any) {
     console.log(id);
-
   }
 
   checkedsAction(data: any) {
@@ -50,7 +49,7 @@ export class AniosLectivosComponent implements OnInit {
   }
 
   filaAction(data: any) {
-    if (data.option === 'editar') {
+    if (data.option === 'ver') {
       this.router.navigate(['editar/' + data.id], { relativeTo: this.route });
     } else if (data.option === 'eliminar') {
       console.log(data.id);

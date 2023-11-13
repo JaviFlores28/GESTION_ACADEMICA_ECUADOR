@@ -32,7 +32,7 @@ export class AsignaturaComponent {
     nom: ['', Validators.required],
     cltv: [false, Validators.required],
     area: ['', Validators.required],
-    estado: [true, Validators.required]
+    estado: [true]
   });
 
 
@@ -58,81 +58,67 @@ export class AsignaturaComponent {
   onSubmit() {
     this.openConfirmationModal();
   }
-
-  crear() {
-    if (this.form.valid) {
-      if (this.userid !== '') {
-        const asignatura: Asignatura = {
-          ASG_ID: '1',
-          ASG_NOM: this.form.value.nom || '',
-          ASG_TIPO: (this.form.value.cltv) ? '1' : '2',
-          AREA_ID: this.form.value.area || '',
-          ESTADO: (this.form.value.estado) ? 1 : 0,
-          CREADOR_ID: this.userid || ''
-        };
-        this.service.post(asignatura).subscribe(
-          {
-            next: (response) => {
-              if (!response.data) {
-                this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-                console.log(response.message);
-              } else {
-                this.openAlertModal(response.message, 'success')
-                console.log(response.message);
-                this.form.reset();
-                this.router.navigate(['../'], { relativeTo: this.route });
-              }
-            },
-            error: (error) => {
-              this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-              console.log(error);;
-            }
-          }
-        );
+  
+ crear() {
+  if (this.form.valid) {
+    const asignatura: Asignatura = this.buildObject();
+    this.service.post(asignatura).subscribe(
+      {
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error)
       }
-    } else {
-      this.form.markAllAsTouched();
-    }
+    );
+  } else {
+    this.form.markAllAsTouched();
   }
+}
 
-  editar() {
-    if (this.form.valid) {
-      const asignatura: Asignatura = {
-        ASG_ID: this.elementoId,
-        ASG_NOM: this.form.value.nom || '',
-        ASG_TIPO: (this.form.value.cltv) ? '1' : '2',
-        AREA_ID: this.form.value.area || '',
-        ESTADO: (this.form.value.estado) ? 1 : 0,
-        CREADOR_ID: this.userid
-      };
-      this.service.put(asignatura).subscribe(
-        {
-          next: (response) => {
-            if (!response.data) {
-              this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-              console.log(response.message);
-            } else {
-              this.openAlertModal(response.message, 'success')
-              console.log(response.message);
-            }
-
-          },
-          error: (errordata) => {
-            this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-            console.log(errordata);
-          }
-        }
-      );
-      // this.form.reset();
-    } else {
-      this.form.markAllAsTouched();
-    }
+editar() {
+  if (this.form.valid) {
+    const asignatura: Asignatura = this.buildObjectEdit();
+    this.service.put(asignatura).subscribe(
+      {
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error)
+      }
+    );
+  } else {
+    this.form.markAllAsTouched();
   }
+}
+
+buildObject() {
+  const asignatura: Asignatura = {
+    ASG_ID: '1',
+    ASG_NOM: this.form.value.nom || '',
+    ASG_TIPO: (this.form.value.cltv) ? '1' : '2',
+    AREA_ID: this.form.value.area || '',
+    ESTADO: (this.form.value.estado) ? 1 : 0,
+    CREADOR_ID: this.userid || ''
+  };
+  return asignatura;
+}
+
+buildObjectEdit() {
+  const asignatura: Asignatura = {
+    ASG_ID: this.elementoId,
+    ASG_NOM: this.form.value.nom || '',
+    ASG_TIPO: (this.form.value.cltv) ? '1' : '2',
+    AREA_ID: this.form.value.area || '',
+    ESTADO: (this.form.value.estado) ? 1 : 0,
+    CREADOR_ID: this.userid
+  };
+  return asignatura;
+} 
 
   loadDataEdit() {
     this.service.getById(this.elementoId).subscribe({
       next: (value) => {
-        if (value.data) {
+        if (value.response) {
           this.llenarForm(value.data);
         } else {
           console.log(value.message);
@@ -146,8 +132,8 @@ export class AsignaturaComponent {
 
   loadAreas() {
     this.serviceArea.getEnabled().subscribe({
-      next: (value) => {
-        if (value.data) {
+      next: (value) => {        
+        if (value.response) {
           this.areas = value.data
         } else {
           console.log(value.message);
@@ -195,5 +181,27 @@ export class AsignaturaComponent {
     }).catch((error) => {
       console.log(error);
     });
+  }
+
+  handleResponse(value: any) {
+    if (!value.response) {
+      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+      console.log(value.message);
+    } else {
+      if (this.modoEdicion) {
+        this.openAlertModal(value.message, 'success');
+        console.log(value.message);
+      } else {
+        this.openAlertModal(value.message, 'success');
+        this.form.reset();
+        this.router.navigate(['../'], { relativeTo: this.route });
+      }
+
+    }
+  }
+
+  handleErrorResponse(error: any) {
+    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    console.log(error);
   }
 }

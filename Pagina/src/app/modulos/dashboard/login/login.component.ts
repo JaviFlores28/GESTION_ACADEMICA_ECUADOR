@@ -36,11 +36,11 @@ export class LoginComponent implements OnInit {
       };
       this.service.getByUser(usuario).subscribe(
         {
-          next: (response) => {
-            if (response.data === null) {
-              console.log(response.message);
+          next: (value) => {
+            if (value.response) {
+              console.log(value.message);
             } else {
-              this.service.setLocal(response.data)
+              this.service.setLocal(value.data)
               this.resetStyle()
               this.router.navigate(['/home']);
             }

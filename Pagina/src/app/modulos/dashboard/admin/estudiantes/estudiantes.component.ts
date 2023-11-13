@@ -14,6 +14,7 @@ export class EstudiantesComponent {
   
   data: Estudiante[] = [];
   headers = ['CÉDULA','NOMBRES','PROVINCIA','CANTÓN', 'ESTADO'];
+  campos = ['EST_ID','EST_DNI','EST_NOM','EST_PRV','EST_CAN'];
 
   constructor(private service: EstudianteService, private router: Router, private route: ActivatedRoute) {
   }
@@ -24,12 +25,12 @@ export class EstudiantesComponent {
 
   loadData() {
     this.service.get().subscribe({
-      next: response => {
-        if (response.data.length > 0) {
-          this.data = response.data;
+      next: value => {
+        if (value.response) {
+          this.data = value.data;
         }
         else {
-          console.log(response.message);
+          console.log(value.message);
         }
       },
       error: error => {

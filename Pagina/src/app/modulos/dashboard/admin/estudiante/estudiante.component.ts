@@ -22,14 +22,18 @@ export class EstudianteComponent {
 
   modoEdicion: boolean = false;
   elementoId: string = '';
+  userid = this.serviceUsuario.getUserLoggedId();
+
   icon = faInfoCircle;
+  usuarios: Usuario[] = [];
+
   listEquiposE = [
     { id: 'EST_INTE', nombre: 'Internet', value: 5 },
     { id: 'EST_TV', nombre: 'TV', value: 1 },
     { id: 'EST_RAD', nombre: 'Radio', value: 2 },
     { id: 'EST_PC', nombre: 'Computador', value: 3, },
     { id: 'EST_CEL', nombre: 'Celular', value: 4 }]
-  usuarios: Usuario[] = [];
+
   form = this.formBuilder.group({
     EST_DNI: ['', Validators.required],
     EST_NOM: ['', Validators.required],
@@ -59,7 +63,7 @@ export class EstudianteComponent {
     EST_CEL: [false],
     REPR_ID: ['', Validators.required],
     REL_EST_REP: ['', Validators.required],
-    ESTADO: [false]
+    ESTADO: [true]
   })
 
   ngOnInit(): void {
@@ -74,7 +78,7 @@ export class EstudianteComponent {
       if (id) {
         this.modoEdicion = true;
         this.elementoId = id;
-        this.loadData();
+        this.loadDataEdit();
       } else {
         this.modoEdicion = false;
         this.elementoId = '';
@@ -91,8 +95,8 @@ export class EstudianteComponent {
       const estudiante: Estudiante = this.buildObject();
       this.service.post(estudiante).subscribe(
         {
-          next: (response) => {
-            this.handleResponse(response);
+          next: (value) => {
+            this.handleResponse(value);
           },
           error: (error) => this.handleErrorResponse(error)
         }
@@ -106,45 +110,20 @@ export class EstudianteComponent {
   editar() {
     if (this.form.valid) {
       const estudiante: Estudiante = this.buildObjectEdit();
-
       this.service.put(estudiante).subscribe(
         {
-          next: (response) => {
-            this.handleResponse(response);
+          next: (value) => {
+            this.handleResponse(value);
           },
           error: (error) => this.handleErrorResponse(error)
         }
       );
-
     } else {
       this.form.markAllAsTouched();
     }
   }
 
-  handleResponse(response: any) {
-    if (!response.data) {
-      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
-      console.log(response.message);
-    } else {
-      if (this.modoEdicion) {
-        this.openAlertModal(response.message, 'success');
-        console.log(response.message);
-      } else {
-        this.openAlertModal(response.message, 'success');
-        this.form.reset();
-        this.router.navigate(['../editar/' + response.data], { relativeTo: this.route });
-      }
-
-    }
-  }
-
-  handleErrorResponse(error: any) {
-    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
-    console.log(error);
-  }
-
   buildObject() {
-    const userId = this.serviceUsuario.getUserLoggedId();
     const estudiante: Estudiante = {
       EST_ID: '0',
       EST_DNI: this.form.value.EST_DNI || '',
@@ -175,7 +154,7 @@ export class EstudianteComponent {
       REPR_ID: this.form.value.REPR_ID || '',
       REL_EST_REP: this.form.value.REL_EST_REP || '',
       ESTADO: (this.form.value.ESTADO) ? 1 : 0,
-      CREADOR_ID: userId || ''
+      CREADOR_ID: this.userid || ''
 
     };
     return estudiante;
@@ -212,16 +191,16 @@ export class EstudianteComponent {
       REPR_ID: this.form.value.REPR_ID || '',
       REL_EST_REP: this.form.value.REL_EST_REP || '',
       ESTADO: (this.form.value.ESTADO) ? 1 : 0,
-      CREADOR_ID: '0'
+      CREADOR_ID:this.userid
     };
     return estudiante;
   }
 
-  loadData() {
+  loadDataEdit() {
     this.service.getById(this.elementoId).subscribe({
       next: (value) => {
-        if (value.data) {
-          this.loadForm(value.data);
+        if (value.response) {
+          this.llenarForm(value.data);
         } else {
           console.log(value.message);
         }
@@ -235,7 +214,7 @@ export class EstudianteComponent {
   loadUsuarios() {
     this.serviceUsuario.getEnabled('R').subscribe({
       next: (value) => {
-        if (value.data) {
+        if (value.response) {
           this.usuarios = value.data
         } else {
           console.log(value.message);
@@ -247,7 +226,7 @@ export class EstudianteComponent {
     });
   }
 
-  loadForm(data: Estudiante) {
+  llenarForm(data: Estudiante) {
     this.form.get('EST_DNI')?.setValue(data.EST_DNI);
     this.form.get('EST_NOM')?.setValue(data.EST_NOM);
     this.form.get('EST_NOM2')?.setValue(data.EST_NOM2);
@@ -277,6 +256,7 @@ export class EstudianteComponent {
     this.form.get('REPR_ID')?.setValue(data.REPR_ID);
     this.form.get('REL_EST_REP')?.setValue(data.REL_EST_REP);
     this.form.get('ESTADO')?.setValue(data.ESTADO === 1);
+    this.userid=data.CREADOR_ID;
   }
 
   openAlertModal(content: string, alertType: string) {
@@ -306,6 +286,28 @@ export class EstudianteComponent {
     }).catch((error) => {
       console.log(error);
     });
+  }
+
+  handleResponse(value: any) {
+    if (!value.response) {
+      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+      console.log(value.message);
+    } else {
+      if (this.modoEdicion) {
+        this.openAlertModal(value.message, 'success');
+        console.log(value.message);
+      } else {
+        this.openAlertModal(value.message, 'success');
+        this.form.reset();
+        this.router.navigate(['../'], { relativeTo: this.route });
+      }
+
+    }
+  }
+
+  handleErrorResponse(error: any) {
+    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    console.log(error);
   }
 
 }

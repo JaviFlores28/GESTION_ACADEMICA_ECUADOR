@@ -15,7 +15,8 @@ export class ParalelosComponent {
   title:string='Paralelos';
  
   data: Paralelo[] = [];
-  headers = ['NOMBRE','CURSO','AÑO LECTIVO', 'ESTADO'];
+  headers = ['NOMBRE', 'ESTADO'];
+  campos = ['PRLL_ID','PRLL_NOM'];
 
 
   ngOnInit(): void {
@@ -24,12 +25,12 @@ export class ParalelosComponent {
 
   loadData() {
     this.service.get().subscribe({
-      next: response => {
-        if (response.data.length > 0) {
-          this.data = response.data;
+      next: value => {
+        if (value.response) {
+          this.data = value.data;
         }
         else {
-          console.log(response.message);
+          console.log(value.message);
         }
       },
       error: error => {

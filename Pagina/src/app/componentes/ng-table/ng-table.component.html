@@ -59,7 +59,7 @@
 									(click)="actionOnRow(item[campos[0]],'eliminar')"
 									*ngIf="botonDelete">Eliminar</button>
 								<button type="button" class="btn btn-sm btn-info"
-									(click)="actionOnRow(item[campos[0]],'editar')" *ngIf="botonVer"><fa-icon
+									(click)="actionOnRow(item[campos[0]],'ver')" *ngIf="botonVer"><fa-icon
 										[icon]="icon3" size="1x" class="text-white"></fa-icon></button>
 							</div>
 						</td>
@@ -82,8 +82,7 @@
 		<ng-container *ngIf="checksOptions">
 			<div class="col">
 				<button *ngIf="checkDesactive" type="button" class="btn link-dark"
-					(click)="actionChecked('desactivar')"><fa-icon [icon]="icon" size="1x"></fa-icon>Cambiar
-					estado</button>
+					(click)="actionChecked('desactivar')"><fa-icon [icon]="icon" size="1x"></fa-icon>Estado</button>
 				<button *ngIf="checkDelete" type="button" class="btn link-danger"
 					(click)="actionChecked('eliminar')"><fa-icon [icon]="icon2" size="1x"></fa-icon>Eliminar</button>
 			</div>

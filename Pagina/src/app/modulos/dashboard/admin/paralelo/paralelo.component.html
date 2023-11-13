@@ -9,20 +9,6 @@
                     <input type="text" id="PRLL_NOM" formControlName="PRLL_NOM" class="form-control">
                 </div>
                 <div class="col">
-                    <label for="CRS_ID" class="form-label pb-2">Curso:</label>
-                    <select class="form-select" id="CRS_ID" formControlName="CRS_ID">
-                        <option disabled selected>Selecciona una opción</option>
-                        <option *ngFor="let option of cursos" [value]="option.CRS_ID">{{ option.CRS_NOM }}</option>
-                    </select>
-                </div>
-                <div class="col">
-                    <label for="AL_ID" class="form-label pb-2">Año lectivo:</label>
-                    <select class="form-select" id="AL_ID" formControlName="AL_ID">
-                        <option disabled selected>Selecciona una opción</option>
-                        <option *ngFor="let option of anios" [value]="option.AL_ID">{{ option.AL_NOM }}</option>
-                    </select>
-                </div>
-                <div class="col">
                     <label for="ESTADO" class="form-label pb-2">Estado:</label>
                     <div class="form-check form-switch">
                         <input class="form-check-input" id="ESTADO" type="checkbox" role="switch"

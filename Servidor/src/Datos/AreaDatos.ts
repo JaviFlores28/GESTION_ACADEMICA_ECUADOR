@@ -112,7 +112,7 @@ class AreaDatos {
       
 
       const [rows] = await pool.execute<any>(sql);
-      return {response: false, data: rows as AreaEntidad[], message: '' };
+      return {response: true, data: rows as AreaEntidad[], message: '' };
     } catch (error: any) {
       return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }

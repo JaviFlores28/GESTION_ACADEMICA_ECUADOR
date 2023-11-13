@@ -15,17 +15,19 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 })
 export class CursoComponent {
 
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: CursoService, private serviceUsuario:UsuarioService) { }
+  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: CursoService, private serviceUsuario: UsuarioService) { }
 
   modoEdicion: boolean = false;
   elementoId: string = '';
+  userid = this.serviceUsuario.getUserLoggedId();
+
   icon = faInfoCircle;
 
   form = this.formBuilder.group({
     nom: ['', Validators.required],
     tip: ['', Validators.required],
     orden: [1, Validators.required],
-    estado: [true, Validators.required]
+    estado: [true]
   })
 
   ngOnInit(): void {
@@ -38,7 +40,7 @@ export class CursoComponent {
       if (id) {
         this.modoEdicion = true;
         this.elementoId = id;
-        this.loadData();
+        this.loadDataEdit();
       } else {
         this.modoEdicion = false;
         this.elementoId = '';
@@ -52,36 +54,15 @@ export class CursoComponent {
 
   crear() {
     if (this.form.valid) {
-      let userid = this.serviceUsuario.getUserLoggedId();
-      if (userid!=='') {
-        const curso: Curso = {
-          CRS_ID: '0',
-          CRS_NOM: this.form.value.nom || '',
-          CRS_TIPO: this.form.value.tip || '',
-          CRS_ORDEN: this.form.value.orden || 0,
-          ESTADO:(this.form.value.estado) ? 1 : 0,
-          CREADOR_ID: userid || ''
-        };
-        this.service.post(curso).subscribe(
-          {
-            next: (response) => {
-              if (!response.data) {
-                this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-                console.log(response.message);
-              } else {
-                this.openAlertModal(response.message, 'success')
-                console.log(response.message);
-                this.form.reset();
-                this.router.navigate(['../'], { relativeTo: this.route });
-              }
-            },
-            error: (error) => {
-              this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-              console.log(error);;
-            }
-          }
-        );
-      }
+      const curso: Curso = this.buildObject();
+      this.service.post(curso).subscribe(
+        {
+          next: (value) => {
+            this.handleResponse(value);
+          },
+          error: (error) => this.handleErrorResponse(error)
+        }
+      );
     } else {
       this.form.markAllAsTouched();
     }
@@ -89,39 +70,45 @@ export class CursoComponent {
 
   editar() {
     if (this.form.valid) {
-      const curso: Curso = {
-        CRS_ID: this.elementoId,
-        CRS_NOM: this.form.value.nom || '',
-        CRS_TIPO: this.form.value.tip || '',
-        CRS_ORDEN: this.form.value.orden || 0,
-        ESTADO: (this.form.value.estado) ? 1 : 0,
-        CREADOR_ID: '1'
-      };
+      const curso: Curso = this.buildObjectEdit();
       this.service.put(curso).subscribe(
         {
-          next: (response) => {
-            if (!response.data) {
-              this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-              console.log(response.message);
-            } else {
-              this.openAlertModal(response.message, 'success')
-              console.log(response.message);
-            }
-
+          next: (value) => {
+            this.handleResponse(value);
           },
-          error: (errordata) => {
-            this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-            console.log(errordata);
-          }
+          error: (error) => this.handleErrorResponse(error)
         }
       );
-      // this.form.reset();
     } else {
       this.form.markAllAsTouched();
     }
   }
 
-  loadData() {
+  buildObject() {
+    const curso: Curso = {
+      CRS_ID: '0',
+      CRS_NOM: this.form.value.nom || '',
+      CRS_TIPO: this.form.value.tip || '',
+      CRS_ORDEN: this.form.value.orden || 0,
+      ESTADO: (this.form.value.estado) ? 1 : 0,
+      CREADOR_ID: this.userid || ''
+    };
+    return curso;
+  }
+
+  buildObjectEdit() {
+    const curso: Curso = {
+      CRS_ID: this.elementoId,
+      CRS_NOM: this.form.value.nom || '',
+      CRS_TIPO: this.form.value.tip || '',
+      CRS_ORDEN: this.form.value.orden || 0,
+      ESTADO: (this.form.value.estado) ? 1 : 0,
+      CREADOR_ID: this.userid
+    };
+    return curso;
+  }
+
+  loadDataEdit() {
     this.service.getById(this.elementoId).subscribe({
       next: (value) => {
         if (value.data) {
@@ -141,6 +128,7 @@ export class CursoComponent {
     this.form.get('tip')?.setValue(data.CRS_TIPO); // Asumiendo que 'estado' es un control en tu formulario
     this.form.get('orden')?.setValue(data.CRS_ORDEN); // Asumiendo que 'nom' es un control en tu formulario
     this.form.get('estado')?.setValue(data.ESTADO === 1);// Asumiendo que 'estado' es un control en tu formulario
+    this.userid = data.CREADOR_ID;
   }
 
   openAlertModal(content: string, alertType: string) {
@@ -171,6 +159,28 @@ export class CursoComponent {
     }).catch((error) => {
       console.log(error);
     });
+  }
+
+  handleResponse(value: any) {
+    if (!value.response) {
+      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+      console.log(value.message);
+    } else {
+      if (this.modoEdicion) {
+        this.openAlertModal(value.message, 'success');
+        console.log(value.message);
+      } else {
+        this.openAlertModal(value.message, 'success');
+        this.form.reset();
+        this.router.navigate(['../'], { relativeTo: this.route });
+      }
+
+    }
+  }
+
+  handleErrorResponse(error: any) {
+    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    console.log(error);
   }
 
 }
