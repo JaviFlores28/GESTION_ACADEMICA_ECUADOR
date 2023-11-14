@@ -12,7 +12,7 @@ export class EstudiantesComponent {
   routerLink:string='nuevo';
   title:string='Estudiantes';
   
-  data: Estudiante[] = [];
+  table: Estudiante[] = [];
   headers = ['CÉDULA','NOMBRES','PROVINCIA','CANTÓN', 'ESTADO'];
   campos = ['EST_ID','EST_DNI','EST_NOM','EST_PRV','EST_CAN'];
 
@@ -20,14 +20,14 @@ export class EstudiantesComponent {
   }
 
   ngOnInit(): void {
-    this.loadData();
+    this.loadTable();
   }
 
-  loadData() {
+  loadTable() {
     this.service.get().subscribe({
       next: value => {
         if (value.response) {
-          this.data = value.data;
+          this.table = value.data;
         }
         else {
           console.log(value.message);

@@ -8,6 +8,7 @@ import AsignaturaServicio from './Servicios/AsignaturaServicio';
 import CalificacionesCualitativasServicio from './Servicios/CalificacionesCualitativasServicio';
 import CalificacionesCuantitativasServicio from './Servicios/CalificacionesCuantitativasServicio';
 import CursoServicio from './Servicios/CursoServicio';
+import EstudianteCursoServicio from './Servicios/EstudianteCursoServicio';
 import EstudianteCursoParaleloServicio from './Servicios/EstudianteCursoParaleloServicio';
 import EstudianteServicio from './Servicios/EstudianteServicio';
 import ParaleloServicio from './Servicios/ParaleloServicio';
@@ -19,7 +20,7 @@ import UsuarioServicio from './Servicios/UsuarioServicio';
 import UsuarioProfesorServicio from './Servicios/UsuarioProfesorServicio';
 
 dotenv.config();
-const { SERVER_PORT, SERVER_URL,PAGE_URL} = process.env;
+const { SERVER_PORT, SERVER_URL, PAGE_URL } = process.env;
 const app = express();
 app.use(express.json());
 
@@ -39,6 +40,7 @@ app.use('/api', CalificacionesCuantitativasServicio);
 app.use('/api', CursoServicio);
 app.use('/api', EstudianteServicio);
 app.use('/api', EstudianteCursoParaleloServicio);
+app.use('/api', EstudianteCursoServicio);
 app.use('/api', ParaleloServicio);
 app.use('/api', ParametroServicio);
 app.use('/api', ParcialServicio);

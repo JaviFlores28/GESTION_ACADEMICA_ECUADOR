@@ -16,8 +16,6 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
   styleUrls: ['./estudiante.component.scss']
 })
 export class EstudianteComponent {
-
-
   constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private serviceUsuario: UsuarioService, private service: EstudianteService) { }
 
   modoEdicion: boolean = false;
@@ -105,7 +103,6 @@ export class EstudianteComponent {
       this.form.markAllAsTouched();
     }
   }
-
 
   editar() {
     if (this.form.valid) {

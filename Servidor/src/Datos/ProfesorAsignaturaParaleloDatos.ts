@@ -6,8 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 class ProfesorAsignaturaParaleloDatos {
 
-  static sqlInsert: string = `INSERT INTO profesor_asignatura_paralelo (PRF_ASG_PRLL_ID, USR_ID, AL_ID, ASG_ID, CRS_ID, PRLL_ID, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?, ?, ?);`;
-  static sqlUpdate: string = `UPDATE profesor_asignatura_paralelo SET USR_ID=?,AL_ID=?,ASG_ID=?,CRS_ID=?,PRLL_ID=?,ESTADO=? WHERE PRF_ASG_PRLL_ID=?;`;
+  static sqlInsert: string = `INSERT INTO profesor_asignatura_paralelo (PRF_ASG_PRLL_ID, PRF_ID, AL_ID, ASG_ID, CRS_ID, PRLL_ID, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?, ?, ?);`;
+  static sqlUpdate: string = `UPDATE profesor_asignatura_paralelo SET PRF_ID=?,AL_ID=?,ASG_ID=?,CRS_ID=?,PRLL_ID=?,ESTADO=? WHERE PRF_ASG_PRLL_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE profesor_asignatura_paralelo SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  PRF_ASG_PRLL_ID IN';
   static sqlDelete: string = `DELETE FROM profesor_asignatura_paralelo WHERE PRF_ASG_PRLL_ID = ?`;
   static sqlSelect: string = `SELECT * FROM profesor_asignatura_paralelo`;
@@ -19,7 +19,7 @@ class ProfesorAsignaturaParaleloDatos {
     try {
       profesor_asignatura_paralelo.PRF_ASG_PRLL_ID = uuidv4(); //asigna un identificador unico
       
-      const newProfesorAsignaturaParalelo = new ProfesorAsignaturaParaleloEntidad(profesor_asignatura_paralelo.PRF_ASG_PRLL_ID, profesor_asignatura_paralelo.USR_ID, profesor_asignatura_paralelo.AL_ID, profesor_asignatura_paralelo.ASG_ID, profesor_asignatura_paralelo.CRS_ID, profesor_asignatura_paralelo.PRLL_ID, profesor_asignatura_paralelo.ESTADO, profesor_asignatura_paralelo.CREADOR_ID);
+      const newProfesorAsignaturaParalelo = new ProfesorAsignaturaParaleloEntidad(profesor_asignatura_paralelo.PRF_ASG_PRLL_ID, profesor_asignatura_paralelo.PRF_ID, profesor_asignatura_paralelo.AL_ID, profesor_asignatura_paralelo.ASG_ID, profesor_asignatura_paralelo.CRS_ID, profesor_asignatura_paralelo.PRLL_ID, profesor_asignatura_paralelo.ESTADO, profesor_asignatura_paralelo.CREADOR_ID);
 
       let sql =this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newProfesorAsignaturaParalelo.toArrayInsert());
@@ -34,7 +34,7 @@ class ProfesorAsignaturaParaleloDatos {
   
   static async update(profesor_asignatura_paralelo: ProfesorAsignaturaParaleloEntidad): Promise<Respuesta> {
     try {
-      const newProfesorAsignaturaParalelo = new ProfesorAsignaturaParaleloEntidad(profesor_asignatura_paralelo.PRF_ASG_PRLL_ID, profesor_asignatura_paralelo.USR_ID, profesor_asignatura_paralelo.AL_ID, profesor_asignatura_paralelo.ASG_ID, profesor_asignatura_paralelo.CRS_ID, profesor_asignatura_paralelo.PRLL_ID, profesor_asignatura_paralelo.ESTADO, profesor_asignatura_paralelo.CREADOR_ID);
+      const newProfesorAsignaturaParalelo = new ProfesorAsignaturaParaleloEntidad(profesor_asignatura_paralelo.PRF_ASG_PRLL_ID, profesor_asignatura_paralelo.PRF_ID, profesor_asignatura_paralelo.AL_ID, profesor_asignatura_paralelo.ASG_ID, profesor_asignatura_paralelo.CRS_ID, profesor_asignatura_paralelo.PRLL_ID, profesor_asignatura_paralelo.ESTADO, profesor_asignatura_paralelo.CREADOR_ID);
       let sql =this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newProfesorAsignaturaParalelo.toArrayUpdate());
       if (result.affectedRows !== 1) {

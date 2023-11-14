@@ -24,12 +24,12 @@ export class AsignaturasComponent {
 
   loadData() {
     this.service.get().subscribe({
-      next: response => {
-        if (response.data.length > 0) {
-          this.data = response.data;
+      next: value => {
+        if (value.response) {
+          this.data = value.data;
         }
         else {
-          console.log(response.message);
+          console.log(value.message);
         }
       },
       error: error => {

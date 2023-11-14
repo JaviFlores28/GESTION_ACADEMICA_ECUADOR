@@ -20,8 +20,6 @@ import { AniosLectivosComponent } from './admin/anios-lectivos/anios-lectivos.co
 import { AreasComponent } from './admin/areas/areas.component';
 import { ParalelosComponent } from './admin/paralelos/paralelos.component';
 import { ParaleloComponent } from './admin/paralelo/paralelo.component';
-import { EstudianteCursoComponent } from './admin/estudiante-curso/estudiante-curso.component';
-import { EstudianteParaleloComponent } from './admin/estudiante-paralelo/estudiante-paralelo.component';
 import { ProfesorAsignaturaComponent } from './admin/profesor-asignatura/profesor-asignatura.component';
 
 const routes: Routes = [
@@ -123,8 +121,8 @@ const routes: Routes = [
         path: 'institucion',
         children: [
           { path: 'iniciar-anio', component: AnioLectivoComponent, },
-          { path: 'matriculas', component: EstudianteCursoComponent },
-          { path: 'asignar-paralelo', component: EstudianteParaleloComponent },
+          { path: 'matriculas', component: ProfesorAsignaturaComponent },
+          { path: 'asignar-paralelo', component: ProfesorAsignaturaComponent },
           { path: 'asignar-profesor', component: ProfesorAsignaturaComponent },
         ]
       },
