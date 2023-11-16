@@ -112,7 +112,6 @@ function generateObject(propertiesData: MappedProperty[], tableName: string) {
     .join(', ');
 }
 
-
 function generateSqlInsert(propertiesData: MappedProperty[]) {
   const marcadores = propertiesData
     .filter((property) => property.name !== 'FECHA_CREACION')
@@ -236,13 +235,15 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
     }
   }`;
 
-  const stringByGetUser = `if (tipo === 'R') {
-    sql += ' where ROL_REPR=1'; // Added a space before AND
-  } else if (tipo === 'P') {
-    sql += ' where ROL_PRF=1';
-  } else if (tipo === 'A') {
-    sql += ' where ROL_ADMIN=1';
-  } `;
+  const stringByGetUser = `
+    const userMapping = {
+      'R': ' WHERE ROL_REPR=1',
+      'P': ' WHERE ROL_PRF=1',
+      'A': ' WHERE ROL_ADMIN=1'
+    }as { [key: string]: string };
+    const userClause = userMapping[tipo] || '';
+    sql += userClause;
+    `;
 
   const functionGet = `
   static async getAll(${(tableName === 'usuario' ? 'tipo: string' : '')}): Promise<Respuesta> {
@@ -271,27 +272,27 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
     }
   }`;
 
-  const stringByGetUserEnabled = `if (tipo === 'R') {
-    sql += ' AND ROL_REPR=1'; // Added a space before AND
-  } else if (tipo === 'P') {
-    sql += ' AND ROL_PRF=1';
-  } else if (tipo === 'A') {
-    sql += ' AND ROL_ADMIN=1';
-  }`;
+  const stringByGetUserEnabled = `
+  const userMapping = {
+    'R': ' AND ROL_REPR=1',
+    'P': ' AND ROL_PRF=1',
+    'A': ' AND ROL_ADMIN=1'
+  }as { [key: string]: string };
+  const userClause = userMapping[tipo] || '';
+  sql += userClause;
+  `;
 
   const functionGetEnabled = `
   static async getEnabled(${(tableName === 'usuario' ? 'tipo: string' : '')}): Promise<Respuesta> {
     try {
       let sql = this.sqlGetEnabled;
       ${(tableName === 'usuario' ? stringByGetUserEnabled : '')}
-
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
       return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }`;
-
 
   const functionGetByUser = `
   static async getByUser(${tableName}: string, pswd: string): Promise<Respuesta> {
@@ -313,6 +314,17 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       return {response: true, data: new${capitalizedTableName}, message: '${capitalizedTableName} Valido' }
     } catch (error: any) {
       return { response: false, data: null, message: error.message } // Devuelve una Promise rechazada con el error
+    }
+  }`;
+
+  const functionGetNoMatriculados = `
+  static async getNoMatriculados(): Promise<Respuesta> {
+    try {
+      let sql = this.sqlGetNoMatriculados;
+      const [rows] = await pool.execute<any>(sql);
+      return {response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
+    } catch (error: any) {
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }`;
 
@@ -407,6 +419,11 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
   const generarSQLinsert = generateSqlInsert(propertiesData);
   const generarSQLupdate = generarSQLUpdate(propertiesData, tableName);
 
+  const validarVistaTabla = (tableName: string) => {
+    return (tableName === 'estudiante' || tableName === 'usuario') ? `vista_${tableName}` : tableName;
+  }
+
+
   const content = `${tableName === 'usuario' ? `import Funciones from '../System/Funciones/Funciones';\nimport UsuarioProfesorDatos from './UsuarioProfesorDatos';\nimport UsuarioProfesorEntidad from '../Entidades/UsuarioProfesorEntidad';` : ''}
 import pool from '../System/Conexion/BaseDatos';
 import { Respuesta } from '../System/Interfaces/Respuesta';
@@ -414,15 +431,15 @@ import ${capitalizedTableName}Entidad from '../Entidades/${capitalizedTableName}
 import { v4 as uuidv4 } from 'uuid';
 
 class ${capitalizedTableName}Datos {
-
   static sqlInsert: string = \`INSERT INTO ${tableName} (${generarSQLinsert.headers})VALUES(${generarSQLinsert.marcadores});\`;
   static sqlUpdate: string = \`UPDATE ${tableName} SET ${generarSQLupdate} WHERE ${primaryKeyColumn}=?;\`;
   static sqlUpdateEstado: string = 'UPDATE ${tableName} SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  ${primaryKeyColumn} IN';
   static sqlDelete: string = \`DELETE FROM ${tableName} WHERE ${primaryKeyColumn} = ?\`;
-  static sqlSelect: string = \`SELECT * FROM ${tableName}\`;
+  static sqlSelect: string = \`SELECT * FROM ${validarVistaTabla(tableName)} \`;
   static sqlGetById: string = 'SELECT * FROM ${tableName} WHERE ${primaryKeyColumn} = ?';
-  static sqlGetEnabled: string = 'SELECT * FROM ${tableName} WHERE ESTADO = 1';
-  ${(tableName === 'usuario') ? `static sqlGetByUser: string = 'SELECT * FROM ${tableName} WHERE USUARIO = ?';` : ''}
+  static sqlGetEnabled: string = 'SELECT * FROM ${validarVistaTabla(tableName)} WHERE ESTADO = 1';
+  ${(tableName === 'usuario') ? `static sqlGetByUser: string = 'SELECT * FROM ${tableName} WHERE USUARIO = ?'` :
+      (tableName === 'estudiante_curso') ? `static sqlGetNoMatriculados: string = 'SELECT a.* FROM vista_estudiante AS a WHERE NOT EXISTS ( SELECT 1 FROM estudiante_curso AS b WHERE b.EST_ID = a.EST_ID AND b.ESTADO = 1 ) AND a.ESTADO = 1;'` : ''}
   ${functioninsert}
   ${functionUpdate}
   ${functionupdateEstado}
@@ -430,7 +447,7 @@ class ${capitalizedTableName}Datos {
   ${functionGet}
   ${functiongetById}
   ${functionGetEnabled}
-  ${(tableName === 'usuario') ? functionGetByUser : ''}
+  ${(tableName === 'usuario') ? functionGetByUser : (tableName === 'estudiante_curso') ? functionGetNoMatriculados : ''}
 
 
 }
@@ -490,7 +507,6 @@ async function generateNegocioFile(tableName: string) {
   static async getById(id: String): Promise<Respuesta> {
     try {
       return ${capitalizedTableName}Datos.getById(id);
-
     } catch (error: any) {
       return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
@@ -516,6 +532,15 @@ async function generateNegocioFile(tableName: string) {
     }
   }`;
 
+  const functionGetNoMatriculados = `
+  static async getNoMatriculados(): Promise<Respuesta> {
+    try {
+      return ${capitalizedTableName}Datos.getNoMatriculados();
+    } catch (error: any) {
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+    }
+  }`;
+
   const functionupdateEstado = `
   static async updateEstado(ids: string[]):Promise<Respuesta> {
     try {
@@ -525,8 +550,6 @@ async function generateNegocioFile(tableName: string) {
       return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }`;
-
-  // ${(tableName === 'usuario') ? functionUpdatePswdUser + '\n' + validar + '\n' + functionPswdValid : ''}
 
   const content = `${(tableName === 'usuario') ? `import UsuarioProfesorEntidad from '../Entidades/UsuarioProfesorEntidad'; ` : ''}
 import ${capitalizedTableName}Datos from '../Datos/${capitalizedTableName}Datos';
@@ -541,7 +564,7 @@ class ${capitalizedTableName}Negocio {
   ${functionGetAll}
   ${functionGetEnabled}
   ${functiongetById}
-  ${(tableName === 'usuario' ? functionGetByUser : '')}
+  ${(tableName === 'usuario') ? functionGetByUser : (tableName === 'estudiante_curso') ? functionGetNoMatriculados : ''}
 }
 
 export default ${capitalizedTableName}Negocio;`;
@@ -560,6 +583,11 @@ async function generateServiceFile(connection: any, tableName: any) {
   const capitalizedTableName = Funciones.stringToCapitalize(tableName);
   const lowercaseTableName = Funciones.stringToCamelCase(tableName);
 
+  const getNoMatriculados = `else if (by === 'noMatriculados') {
+    const id = req.query.id as string;
+    ${tableName} = await ${capitalizedTableName}Negocio.getNoMatriculados();
+  } `;
+
   const getroute = `
 router.get('/${lowercaseTableName}', async (req, res) => {
    try {
@@ -577,7 +605,7 @@ router.get('/${lowercaseTableName}', async (req, res) => {
     } else if (by === 'id') {
       const id = req.query.id as string;
       ${tableName} = await ${capitalizedTableName}Negocio.getById(id);
-    } 
+    } ${tableName === 'estudiante_curso' ? getNoMatriculados : ''}
     res.json(${tableName});
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -587,7 +615,7 @@ router.get('/${lowercaseTableName}', async (req, res) => {
   const scriptUsuariopost = `const { usuario, detalle } = req.body;
 const response = await ${capitalizedTableName}Negocio.insert(usuario, detalle);
 `;
-const scriptpost=`const ${tableName}: ${capitalizedTableName}Entidad = req.body;
+  const scriptpost = `const ${tableName}: ${capitalizedTableName}Entidad = req.body;
 const response = await ${capitalizedTableName}Negocio.insert(${tableName});`;
 
   const postroute = `
@@ -763,7 +791,7 @@ async function generateInterfaceFile(connection: any, tableName: string) {
   ${generatePropsDefinitions(propertiesData)}
 }`;
 
-  const carpeta = path.join(__dirname, 'Interfaces');
+  const carpeta = path.join(__dirname, 'interfaces');
   const archivo = path.join(carpeta, `${capitalizedTableName}.interface.ts`);
 
   if (!existsSync(carpeta)) {
@@ -970,7 +998,7 @@ async function generateHTMLFile(connection: any, tableName: any) {
 
 async function main() {
   try {
-    const [tables] = await pool.execute<any>('SHOW TABLES');
+    const [tables] = await pool.execute<any>('SHOW FULL TABLES WHERE Table_type = "BASE TABLE"');
 
 
     for (const table of tables) {
@@ -985,7 +1013,7 @@ async function main() {
       await generateEntityFile(pool, tableName, primaryKeyColumn);
       await generateNegocioFile(tableName);
       await generateServiceFile(pool, tableName);
-      //await generateInterfaceFile(pool, tableName);
+      await generateInterfaceFile(pool, tableName);
       //await generateComponentFile(pool, tableName, primaryKeyColumn);
       //await generateHTMLFile(pool, tableName, primaryKeyColumn);
     }

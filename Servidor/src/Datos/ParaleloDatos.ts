@@ -5,12 +5,11 @@ import ParaleloEntidad from '../Entidades/ParaleloEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class ParaleloDatos {
-
   static sqlInsert: string = `INSERT INTO paralelo (PRLL_ID, PRLL_NOM, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE paralelo SET PRLL_NOM=?,ESTADO=? WHERE PRLL_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE paralelo SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  PRLL_ID IN';
   static sqlDelete: string = `DELETE FROM paralelo WHERE PRLL_ID = ?`;
-  static sqlSelect: string = `SELECT * FROM paralelo`;
+  static sqlSelect: string = `SELECT * FROM paralelo `;
   static sqlGetById: string = 'SELECT * FROM paralelo WHERE PRLL_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM paralelo WHERE ESTADO = 1';
   
@@ -110,7 +109,6 @@ class ParaleloDatos {
     try {
       let sql = this.sqlGetEnabled;
       
-
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as ParaleloEntidad[], message: '' };
     } catch (error: any) {

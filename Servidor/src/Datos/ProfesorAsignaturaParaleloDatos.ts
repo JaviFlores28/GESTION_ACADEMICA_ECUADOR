@@ -5,12 +5,11 @@ import ProfesorAsignaturaParaleloEntidad from '../Entidades/ProfesorAsignaturaPa
 import { v4 as uuidv4 } from 'uuid';
 
 class ProfesorAsignaturaParaleloDatos {
-
   static sqlInsert: string = `INSERT INTO profesor_asignatura_paralelo (PRF_ASG_PRLL_ID, PRF_ID, AL_ID, ASG_ID, CRS_ID, PRLL_ID, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE profesor_asignatura_paralelo SET PRF_ID=?,AL_ID=?,ASG_ID=?,CRS_ID=?,PRLL_ID=?,ESTADO=? WHERE PRF_ASG_PRLL_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE profesor_asignatura_paralelo SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  PRF_ASG_PRLL_ID IN';
   static sqlDelete: string = `DELETE FROM profesor_asignatura_paralelo WHERE PRF_ASG_PRLL_ID = ?`;
-  static sqlSelect: string = `SELECT * FROM profesor_asignatura_paralelo`;
+  static sqlSelect: string = `SELECT * FROM profesor_asignatura_paralelo `;
   static sqlGetById: string = 'SELECT * FROM profesor_asignatura_paralelo WHERE PRF_ASG_PRLL_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM profesor_asignatura_paralelo WHERE ESTADO = 1';
   
@@ -110,7 +109,6 @@ class ProfesorAsignaturaParaleloDatos {
     try {
       let sql = this.sqlGetEnabled;
       
-
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as ProfesorAsignaturaParaleloEntidad[], message: '' };
     } catch (error: any) {

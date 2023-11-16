@@ -5,12 +5,11 @@ import EstudianteCursoParaleloEntidad from '../Entidades/EstudianteCursoParalelo
 import { v4 as uuidv4 } from 'uuid';
 
 class EstudianteCursoParaleloDatos {
-
   static sqlInsert: string = `INSERT INTO estudiante_curso_paralelo (EST_CRS_PRLL_ID, EST_CRS_ID, AL_ID, PRLL_ID, PASE, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE estudiante_curso_paralelo SET EST_CRS_ID=?,AL_ID=?,PRLL_ID=?,PASE=?,ESTADO=? WHERE EST_CRS_PRLL_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE estudiante_curso_paralelo SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  EST_CRS_PRLL_ID IN';
   static sqlDelete: string = `DELETE FROM estudiante_curso_paralelo WHERE EST_CRS_PRLL_ID = ?`;
-  static sqlSelect: string = `SELECT * FROM estudiante_curso_paralelo`;
+  static sqlSelect: string = `SELECT * FROM estudiante_curso_paralelo `;
   static sqlGetById: string = 'SELECT * FROM estudiante_curso_paralelo WHERE EST_CRS_PRLL_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM estudiante_curso_paralelo WHERE ESTADO = 1';
   
@@ -110,7 +109,6 @@ class EstudianteCursoParaleloDatos {
     try {
       let sql = this.sqlGetEnabled;
       
-
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as EstudianteCursoParaleloEntidad[], message: '' };
     } catch (error: any) {

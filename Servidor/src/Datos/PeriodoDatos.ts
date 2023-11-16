@@ -5,12 +5,11 @@ import PeriodoEntidad from '../Entidades/PeriodoEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class PeriodoDatos {
-
   static sqlInsert: string = `INSERT INTO periodo (PRD_ID, PRD_NOM, PRD_TIPO, AL_ID, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE periodo SET PRD_NOM=?,PRD_TIPO=?,AL_ID=?,ESTADO=? WHERE PRD_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE periodo SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  PRD_ID IN';
   static sqlDelete: string = `DELETE FROM periodo WHERE PRD_ID = ?`;
-  static sqlSelect: string = `SELECT * FROM periodo`;
+  static sqlSelect: string = `SELECT * FROM periodo `;
   static sqlGetById: string = 'SELECT * FROM periodo WHERE PRD_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM periodo WHERE ESTADO = 1';
   
@@ -110,7 +109,6 @@ class PeriodoDatos {
     try {
       let sql = this.sqlGetEnabled;
       
-
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as PeriodoEntidad[], message: '' };
     } catch (error: any) {

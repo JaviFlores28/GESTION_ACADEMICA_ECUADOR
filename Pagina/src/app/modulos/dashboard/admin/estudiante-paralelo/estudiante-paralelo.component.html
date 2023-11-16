@@ -1,1 +1,43 @@
-<p>estudiante-paralelo works!</p>
+<div class="container-fluid">
+    <div class="row row-cols-1 g-3 justify-content-center align-items-center">
+        <div class="col">
+            <div class="card text-start border border-0 rounded shadow">
+                <div class="card-body">
+                   <!--  <h3 class="card-title">Matrículas</h3>
+                    <hr> -->
+                    <form class="row g-3 justify-content-start align-items-end" [formGroup]="form" (ngSubmit)="onSubmit()">
+                        <div class="col-3">
+                            <label for="CRS_ID" class="form-label">Curso:</label>
+                            <ng-select [items]="cursos" bindLabel="CRS_NOM" bindValue="CRS_ID" formControlName="CRS_ID"
+                                id="CRS_ID">
+                            </ng-select>
+                        </div>
+                        <div class="col-2">
+                            <div class="btn-group" role="group">
+                                <button type="submit" [disabled]="idsEstudiantes.length<=0 ||!form.valid"
+                                    class="btn btn-dark">Guardar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card text-start border border-0 rounded shadow">
+                <div class="card-body">
+                    <app-ng-table tableName="nomatriculados" [data]="estudiantes" [headers]="headersNoMatriculados"
+                        [botonera]="false" [checksOptions]="false" [botonEstado]="false" [pageSize]="30"
+                        (checkedAction)="estudiantesaction($event)"></app-ng-table>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card text-start border border-0 rounded shadow">
+                <div class="card-body">
+                    <app-ng-table tableName="matriculados" [data]="matriculas" [headers]="headersMatriculados" [botonera]="false" [pageSize]="30"
+                        (checkedAction)="matriculasAction($event)"></app-ng-table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

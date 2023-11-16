@@ -5,12 +5,11 @@ import ParametroEntidad from '../Entidades/ParametroEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class ParametroDatos {
-
   static sqlInsert: string = `INSERT INTO parametro (PRMT_ID, PRMT_NOM, PRMT_DESCR, PRMT_URL_IMG, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE parametro SET PRMT_NOM=?,PRMT_DESCR=?,PRMT_URL_IMG=?,ESTADO=? WHERE PRMT_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE parametro SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  PRMT_ID IN';
   static sqlDelete: string = `DELETE FROM parametro WHERE PRMT_ID = ?`;
-  static sqlSelect: string = `SELECT * FROM parametro`;
+  static sqlSelect: string = `SELECT * FROM parametro `;
   static sqlGetById: string = 'SELECT * FROM parametro WHERE PRMT_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM parametro WHERE ESTADO = 1';
   
@@ -110,7 +109,6 @@ class ParametroDatos {
     try {
       let sql = this.sqlGetEnabled;
       
-
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as ParametroEntidad[], message: '' };
     } catch (error: any) {

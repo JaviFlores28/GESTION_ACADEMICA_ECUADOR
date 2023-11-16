@@ -13,8 +13,8 @@ export class EstudiantesComponent {
   title:string='Estudiantes';
   
   table: Estudiante[] = [];
-  headers = ['CÉDULA','NOMBRES','PROVINCIA','CANTÓN', 'ESTADO'];
-  campos = ['EST_ID','EST_DNI','EST_NOM','EST_PRV','EST_CAN'];
+  headers = ['CÉDULA','NOMBRES','REPRESENTANTE', 'ESTADO'];
+  campos = ['EST_ID','EST_DNI','EST_NOM','REPR_ID'];
 
   constructor(private service: EstudianteService, private router: Router, private route: ActivatedRoute) {
   }
@@ -26,7 +26,7 @@ export class EstudiantesComponent {
   loadTable() {
     this.service.get().subscribe({
       next: value => {
-        if (value.response) {
+        if (value.response) {          
           this.table = value.data;
         }
         else {

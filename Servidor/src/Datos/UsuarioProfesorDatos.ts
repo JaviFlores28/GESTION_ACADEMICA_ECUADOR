@@ -5,12 +5,11 @@ import UsuarioProfesorEntidad from '../Entidades/UsuarioProfesorEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class UsuarioProfesorDatos {
-
   static sqlInsert: string = `INSERT INTO usuario_profesor (DTLL_PRF_ID, PRF_FECH_INGR_INST, PRF_FECH_INGR_MAG, USR_ID)VALUES(?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE usuario_profesor SET PRF_FECH_INGR_INST=?,PRF_FECH_INGR_MAG=?,USR_ID=? WHERE DTLL_PRF_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE usuario_profesor SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  DTLL_PRF_ID IN';
   static sqlDelete: string = `DELETE FROM usuario_profesor WHERE DTLL_PRF_ID = ?`;
-  static sqlSelect: string = `SELECT * FROM usuario_profesor`;
+  static sqlSelect: string = `SELECT * FROM usuario_profesor `;
   static sqlGetById: string = 'SELECT * FROM usuario_profesor WHERE DTLL_PRF_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM usuario_profesor WHERE ESTADO = 1';
   
@@ -110,7 +109,6 @@ class UsuarioProfesorDatos {
     try {
       let sql = this.sqlGetEnabled;
       
-
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as UsuarioProfesorEntidad[], message: '' };
     } catch (error: any) {

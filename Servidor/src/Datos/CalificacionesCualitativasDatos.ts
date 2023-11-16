@@ -5,12 +5,11 @@ import CalificacionesCualitativasEntidad from '../Entidades/CalificacionesCualit
 import { v4 as uuidv4 } from 'uuid';
 
 class CalificacionesCualitativasDatos {
-
   static sqlInsert: string = `INSERT INTO calificaciones_cualitativas (CAL_ID, PRF_ASG_PRLL_ID, EST_CRS_PRLL_ID, PRD_ID, CALIFICACION, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE calificaciones_cualitativas SET PRF_ASG_PRLL_ID=?,EST_CRS_PRLL_ID=?,PRD_ID=?,CALIFICACION=?,ESTADO=? WHERE CAL_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE calificaciones_cualitativas SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  CAL_ID IN';
   static sqlDelete: string = `DELETE FROM calificaciones_cualitativas WHERE CAL_ID = ?`;
-  static sqlSelect: string = `SELECT * FROM calificaciones_cualitativas`;
+  static sqlSelect: string = `SELECT * FROM calificaciones_cualitativas `;
   static sqlGetById: string = 'SELECT * FROM calificaciones_cualitativas WHERE CAL_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM calificaciones_cualitativas WHERE ESTADO = 1';
   
@@ -110,7 +109,6 @@ class CalificacionesCualitativasDatos {
     try {
       let sql = this.sqlGetEnabled;
       
-
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as CalificacionesCualitativasEntidad[], message: '' };
     } catch (error: any) {

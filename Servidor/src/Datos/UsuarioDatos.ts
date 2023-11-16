@@ -7,15 +7,14 @@ import UsuarioEntidad from '../Entidades/UsuarioEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class UsuarioDatos {
-
   static sqlInsert: string = `INSERT INTO usuario (USR_ID, USR_DNI, USR_NOM, USR_NOM2, USR_APE, USR_APE2, USR_DIR, USR_TEL, USR_CEL, USR_EMAIL, USR_FECH_NAC, USR_GEN, USUARIO, USR_PSWD, ROL_PRF, ROL_REPR, ROL_ADMIN, ESTADO)VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE usuario SET USR_DNI=?,USR_NOM=?,USR_NOM2=?,USR_APE=?,USR_APE2=?,USR_DIR=?,USR_TEL=?,USR_CEL=?,USR_EMAIL=?,USR_FECH_NAC=?,USR_GEN=?,ROL_PRF=?,ROL_REPR=?,ROL_ADMIN=?,ESTADO=? WHERE USR_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE usuario SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  USR_ID IN';
   static sqlDelete: string = `DELETE FROM usuario WHERE USR_ID = ?`;
-  static sqlSelect: string = `SELECT * FROM usuario`;
+  static sqlSelect: string = `SELECT * FROM vista_usuario `;
   static sqlGetById: string = 'SELECT * FROM usuario WHERE USR_ID = ?';
-  static sqlGetEnabled: string = 'SELECT * FROM usuario WHERE ESTADO = 1';
-  static sqlGetByUser: string = 'SELECT * FROM usuario WHERE USUARIO = ?';
+  static sqlGetEnabled: string = 'SELECT * FROM vista_usuario WHERE ESTADO = 1';
+  static sqlGetByUser: string = 'SELECT * FROM usuario WHERE USUARIO = ?'
   
   static async insert(usuario: UsuarioEntidad , detalle?: UsuarioProfesorEntidad): Promise<Respuesta> {
     try {
@@ -97,13 +96,15 @@ class UsuarioDatos {
   static async getAll(tipo: string): Promise<Respuesta> {
     try {
       let sql = this.sqlSelect;
-      if (tipo === 'R') {
-    sql += ' where ROL_REPR=1'; // Added a space before AND
-  } else if (tipo === 'P') {
-    sql += ' where ROL_PRF=1';
-  } else if (tipo === 'A') {
-    sql += ' where ROL_ADMIN=1';
-  } 
+      
+    const userMapping = {
+      'R': ' WHERE ROL_REPR=1',
+      'P': ' WHERE ROL_PRF=1',
+      'A': ' WHERE ROL_ADMIN=1'
+    }as { [key: string]: string };
+    const userClause = userMapping[tipo] || '';
+    sql += userClause;
+    
       const [rows] = await pool.execute<any>(sql);
       return { response: true, data: rows as UsuarioEntidad[], message: '' };
     } catch (error: any) {
@@ -128,14 +129,15 @@ class UsuarioDatos {
   static async getEnabled(tipo: string): Promise<Respuesta> {
     try {
       let sql = this.sqlGetEnabled;
-      if (tipo === 'R') {
-    sql += ' AND ROL_REPR=1'; // Added a space before AND
-  } else if (tipo === 'P') {
-    sql += ' AND ROL_PRF=1';
-  } else if (tipo === 'A') {
-    sql += ' AND ROL_ADMIN=1';
-  }
-
+      
+  const userMapping = {
+    'R': ' AND ROL_REPR=1',
+    'P': ' AND ROL_PRF=1',
+    'A': ' AND ROL_ADMIN=1'
+  }as { [key: string]: string };
+  const userClause = userMapping[tipo] || '';
+  sql += userClause;
+  
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as UsuarioEntidad[], message: '' };
     } catch (error: any) {

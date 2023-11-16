@@ -5,12 +5,11 @@ import AreaEntidad from '../Entidades/AreaEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class AreaDatos {
-
   static sqlInsert: string = `INSERT INTO area (AREA_ID, AREA_NOM, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE area SET AREA_NOM=?,ESTADO=? WHERE AREA_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE area SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  AREA_ID IN';
   static sqlDelete: string = `DELETE FROM area WHERE AREA_ID = ?`;
-  static sqlSelect: string = `SELECT * FROM area`;
+  static sqlSelect: string = `SELECT * FROM area `;
   static sqlGetById: string = 'SELECT * FROM area WHERE AREA_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM area WHERE ESTADO = 1';
   
@@ -110,7 +109,6 @@ class AreaDatos {
     try {
       let sql = this.sqlGetEnabled;
       
-
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as AreaEntidad[], message: '' };
     } catch (error: any) {

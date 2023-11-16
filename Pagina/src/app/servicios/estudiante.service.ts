@@ -45,9 +45,4 @@ export class EstudianteService extends ErrorHandlerService {
     return this.http.delete(`${this.apiUrl}?id=${id}`).pipe(
       catchError(this.handleError));
   }
-  
-  getNoMatriculados(): Observable<any> {
-    return this.http.get(`${this.apiUrl}-no-matriculados`).pipe(
-      catchError(this.handleError));
-  }
 }

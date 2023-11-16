@@ -5,12 +5,11 @@ import CursoEntidad from '../Entidades/CursoEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class CursoDatos {
-
   static sqlInsert: string = `INSERT INTO curso (CRS_ID, CRS_NOM, CRS_TIPO, CRS_ORDEN, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE curso SET CRS_NOM=?,CRS_TIPO=?,CRS_ORDEN=?,ESTADO=? WHERE CRS_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE curso SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  CRS_ID IN';
   static sqlDelete: string = `DELETE FROM curso WHERE CRS_ID = ?`;
-  static sqlSelect: string = `SELECT * FROM curso`;
+  static sqlSelect: string = `SELECT * FROM curso `;
   static sqlGetById: string = 'SELECT * FROM curso WHERE CRS_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM curso WHERE ESTADO = 1';
   
@@ -110,7 +109,6 @@ class CursoDatos {
     try {
       let sql = this.sqlGetEnabled;
       
-
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as CursoEntidad[], message: '' };
     } catch (error: any) {

@@ -50,7 +50,10 @@ router.get('/estudiantecurso', async (req, res) => {
     } else if (by === 'id') {
       const id = req.query.id as string;
       estudiante_curso = await EstudianteCursoNegocio.getById(id);
-    } 
+    } else if (by === 'noMatriculados') {
+    const id = req.query.id as string;
+    estudiante_curso = await EstudianteCursoNegocio.getNoMatriculados();
+  } 
     res.json(estudiante_curso);
   } catch (error: any) {
     res.status(500).json({ message: error.message });

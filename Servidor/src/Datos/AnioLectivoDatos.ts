@@ -5,12 +5,11 @@ import AnioLectivoEntidad from '../Entidades/AnioLectivoEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class AnioLectivoDatos {
-
   static sqlInsert: string = `INSERT INTO anio_lectivo (AL_ID, AL_NOM, AL_INICIO, AL_FIN, AL_POR_PRD, AL_POR_EXAM, CLFN_MIN_APR, CLFN_MIN_PERD, NUM_PRD, NUM_EXAM, NUM_PRCL, NUM_SUSP, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE anio_lectivo SET AL_NOM=?,AL_INICIO=?,AL_FIN=?,AL_POR_PRD=?,AL_POR_EXAM=?,CLFN_MIN_APR=?,CLFN_MIN_PERD=?,NUM_PRD=?,NUM_EXAM=?,NUM_PRCL=?,NUM_SUSP=?,ESTADO=? WHERE AL_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE anio_lectivo SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  AL_ID IN';
   static sqlDelete: string = `DELETE FROM anio_lectivo WHERE AL_ID = ?`;
-  static sqlSelect: string = `SELECT * FROM anio_lectivo`;
+  static sqlSelect: string = `SELECT * FROM anio_lectivo `;
   static sqlGetById: string = 'SELECT * FROM anio_lectivo WHERE AL_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM anio_lectivo WHERE ESTADO = 1';
   
@@ -110,7 +109,6 @@ class AnioLectivoDatos {
     try {
       let sql = this.sqlGetEnabled;
       
-
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as AnioLectivoEntidad[], message: '' };
     } catch (error: any) {

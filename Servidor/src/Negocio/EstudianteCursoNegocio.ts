@@ -58,12 +58,18 @@ class EstudianteCursoNegocio {
   static async getById(id: String): Promise<Respuesta> {
     try {
       return EstudianteCursoDatos.getById(id);
-
     } catch (error: any) {
       return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
   
+  static async getNoMatriculados(): Promise<Respuesta> {
+    try {
+      return EstudianteCursoDatos.getNoMatriculados();
+    } catch (error: any) {
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+    }
+  }
 }
 
 export default EstudianteCursoNegocio;

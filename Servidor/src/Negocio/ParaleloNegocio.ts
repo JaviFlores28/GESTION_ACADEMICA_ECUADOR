@@ -58,7 +58,6 @@ class ParaleloNegocio {
   static async getById(id: String): Promise<Respuesta> {
     try {
       return ParaleloDatos.getById(id);
-
     } catch (error: any) {
       return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }

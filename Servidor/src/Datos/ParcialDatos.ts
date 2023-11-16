@@ -5,12 +5,11 @@ import ParcialEntidad from '../Entidades/ParcialEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class ParcialDatos {
-
   static sqlInsert: string = `INSERT INTO parcial (PRCL_ID, PRCL_NOM, PRCL_INI, PRCL_FIN, ESTADO, PRCL_TIPO, PRD_ID, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE parcial SET PRCL_NOM=?,PRCL_INI=?,PRCL_FIN=?,ESTADO=?,PRCL_TIPO=?,PRD_ID=? WHERE PRCL_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE parcial SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  PRCL_ID IN';
   static sqlDelete: string = `DELETE FROM parcial WHERE PRCL_ID = ?`;
-  static sqlSelect: string = `SELECT * FROM parcial`;
+  static sqlSelect: string = `SELECT * FROM parcial `;
   static sqlGetById: string = 'SELECT * FROM parcial WHERE PRCL_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM parcial WHERE ESTADO = 1';
   
@@ -110,7 +109,6 @@ class ParcialDatos {
     try {
       let sql = this.sqlGetEnabled;
       
-
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as ParcialEntidad[], message: '' };
     } catch (error: any) {
