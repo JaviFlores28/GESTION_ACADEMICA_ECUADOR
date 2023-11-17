@@ -9,9 +9,9 @@ class EstudianteCursoDatos {
   static sqlUpdate: string = `UPDATE estudiante_curso SET EST_ID=?,CRS_ID=?,ESTADO=? WHERE EST_CRS_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE estudiante_curso SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  EST_CRS_ID IN';
   static sqlDelete: string = `DELETE FROM estudiante_curso WHERE EST_CRS_ID = ?`;
-  static sqlSelect: string = `SELECT * FROM estudiante_curso `;
+  static sqlSelect: string = `SELECT * FROM vista_estudiante_curso `;
   static sqlGetById: string = 'SELECT * FROM estudiante_curso WHERE EST_CRS_ID = ?';
-  static sqlGetEnabled: string = 'SELECT * FROM estudiante_curso WHERE ESTADO = 1';
+  static sqlGetEnabled: string = 'SELECT * FROM vista_estudiante_curso WHERE ESTADO = 1';
   static sqlGetNoMatriculados: string = 'SELECT a.* FROM vista_estudiante AS a WHERE NOT EXISTS ( SELECT 1 FROM estudiante_curso AS b WHERE b.EST_ID = a.EST_ID AND b.ESTADO = 1 ) AND a.ESTADO = 1;'
   
   static async insert(estudiante_curso: EstudianteCursoEntidad ): Promise<Respuesta> {

@@ -44,7 +44,7 @@
             <h3 class="card-title p-3 m-2 shadow rounded text-center bg-primary text-white">Matrículas activas</h3>
             <div class="card text-start border border-0 rounded shadow">
                 <div class="card-body">
-                    <app-ng-table tableName="matriculados" [data]="matriculas" [headers]="headersMatriculados"
+                    <app-ng-table tableName="matriculados" [data]="matriculas" [headers]="headersMatriculados" [campos]="camposMatriculados"
                         [botonera]="false" [pageSize]="30" (checkedAction)="matriculasAction($event)"></app-ng-table>
                 </div>
             </div>

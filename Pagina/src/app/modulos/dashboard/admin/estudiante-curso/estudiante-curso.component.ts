@@ -22,6 +22,7 @@ export class EstudianteCursoComponent implements OnInit {
   ngOnInit(): void {
     this.loadCursos();
     this.loadNoMatriculados();
+    this.loadMatriculados();
   }
 
   userId = this.serviceUsuario.getUserLoggedId();
@@ -36,6 +37,7 @@ export class EstudianteCursoComponent implements OnInit {
   headersNoMatriculados = ['CÉDULA', 'NOMBRES'];
   camposNoMatriculados = ['EST_ID', 'EST_DNI', 'EST_NOM'];
   headersMatriculados = ['CÉDULA', 'NOMBRES', 'CURSO', 'ESTADO'];
+  camposMatriculados = ['EST_CRS_ID', 'EST_DNI', 'EST_ID','CRS_ID'];
 
   form = this.formBuilder.group({
     CRS_ID: ['', Validators.required]
@@ -72,6 +74,21 @@ export class EstudianteCursoComponent implements OnInit {
       }
     });
   }
+  loadMatriculados() {
+    this.service.getEnabled().subscribe({
+      next: (value) => {
+        if (value.response) {
+          this.matriculas = value.data
+        } else {
+          console.log(value.message);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+  }
+
 
   estudiantesaction(value: any) {
     this.idsEstudiantes = value.data;

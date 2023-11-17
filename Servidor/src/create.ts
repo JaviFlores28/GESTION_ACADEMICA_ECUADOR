@@ -420,7 +420,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
   const generarSQLupdate = generarSQLUpdate(propertiesData, tableName);
 
   const validarVistaTabla = (tableName: string) => {
-    return (tableName === 'estudiante' || tableName === 'usuario') ? `vista_${tableName}` : tableName;
+    return (tableName === 'estudiante' || tableName === 'usuario' || tableName === 'estudiante_curso') ? `vista_${tableName}` : tableName;
   }
 
 
