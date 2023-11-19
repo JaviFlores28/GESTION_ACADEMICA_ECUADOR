@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
 import { getFormattedDate } from 'src/app/sistema/variables/variables';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
@@ -28,8 +27,6 @@ export class AnioLectivoComponent implements OnInit {
   elementoId: string = '';
   msg: string = '¿Desea guardar?';
   userid = this.usuarioService.getUserLoggedId();
-
-  icon = faInfoCircle;
 
   form = this.formBuilder.group({
     AL_NOM: ['', Validators.required],

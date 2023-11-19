@@ -35,7 +35,12 @@ export class EstudianteCursoService extends ErrorHandlerService {
   }
 
   post(estudianteCurso: EstudianteCurso): Observable<any> {
-    return this.http.post(this.apiUrl, estudianteCurso).pipe(
+    return this.http.post(this.apiUrl, { masivo: false, data: estudianteCurso }).pipe(
+      catchError(this.handleError));
+  }
+  
+  postMasivo(arrayData: any): Observable<any> {
+    return this.http.post(this.apiUrl, { masivo: true, data: arrayData }).pipe(
       catchError(this.handleError));
   }
 
@@ -48,5 +53,5 @@ export class EstudianteCursoService extends ErrorHandlerService {
     return this.http.delete(`${this.apiUrl}?id=${id}`).pipe(
       catchError(this.handleError));
   }
-  
+
 }

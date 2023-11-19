@@ -70,6 +70,13 @@ class EstudianteCursoNegocio {
       return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }
+  static async insertMasivo(data:any): Promise<Respuesta> {
+    try {
+      return EstudianteCursoDatos.insertMasivo(data);
+    } catch (error: any) {
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+    }
+  }
 }
 
 export default EstudianteCursoNegocio;

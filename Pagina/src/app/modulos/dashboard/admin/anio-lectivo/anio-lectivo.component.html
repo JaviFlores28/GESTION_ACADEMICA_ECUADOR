@@ -1,10 +1,14 @@
 <div class="container-fluid">
+    <div class="row bg-light">
+        <h1 class="fw-custom-semibold">Institución</h1>
+        <ol class="ps-4 py-2 breadcrumb">
+            <li class="breadcrumb-item"> <a class="text-black fw-custom-semibold"  routerLink="../../sistema/anios">Años lectivos</a></li>
+            <li class="breadcrumb-item active">{{ modoEdicion ? 'Editar' : 'Crear' }}</li>
+        </ol>
+    </div>
     <div class="card text-start border border-0 rounded shadow">
         <div class="card-body">
-            <h3 class="card-title"> <fa-icon [icon]="icon" size="1x"></fa-icon> {{ modoEdicion ? 'Editar año lectivo' : 'Crear año lectivo' }}</h3>
-            <hr>
-            <form
-                class="row g-3 justify-content-center justify-content-md-start align-items-center" [formGroup]="form" (ngSubmit)="onSubmit()">
+            <form class="row g-3 justify-content-center justify-content-md-start align-items-center" [formGroup]="form" (ngSubmit)="onSubmit()">
                 <div class="col-md-12">
                     <label for="AL_NOM" class="form-label">Nombre:</label>
                     <input type="text" class="form-control" id="AL_NOM" formControlName="AL_NOM">

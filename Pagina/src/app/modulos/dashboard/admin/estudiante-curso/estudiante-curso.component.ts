@@ -17,13 +17,13 @@ import { UsuarioService } from "src/app/servicios/usuario.service";
 })
 export class EstudianteCursoComponent implements OnInit {
   constructor(
-    private formBuilder: FormBuilder, 
-    private usuarioService: UsuarioService, 
-    private service: EstudianteCursoService, 
-    private cursoService: CursoService, 
+    private formBuilder: FormBuilder,
+    private usuarioService: UsuarioService,
+    private service: EstudianteCursoService,
+    private cursoService: CursoService,
     private modalService: ModalService
-    ) { }
-  
+  ) { }
+
   ngOnInit(): void {
     this.loadCursos();
     this.loadNoMatriculados();
@@ -83,7 +83,6 @@ export class EstudianteCursoComponent implements OnInit {
     });
   }
 
-
   loadMatriculados() {
     this.service.getEnabled().subscribe({
       next: (value) => {
@@ -99,9 +98,29 @@ export class EstudianteCursoComponent implements OnInit {
     });
   }
 
-
   estudiantesaction(value: any) {
     this.idsEstudiantes = value.data;
+  }
+
+
+  crear() {
+    if (this.form.valid) {
+      let estudiantes = {
+        arrayIds: this.idsEstudiantes,
+        CRS_ID: this.form.value.CRS_ID,
+        CREADOR_ID: this.userId
+      };
+      this.service.postMasivo(estudiantes).subscribe(
+        {
+          next: (value) => {
+            this.handleResponse(value);
+          },
+          error: (error) => this.handleErrorResponse(error)
+        }
+      );
+    } else {
+      this.form.markAllAsTouched();
+    }
   }
 
   matriculasAction() { }
@@ -114,11 +133,32 @@ export class EstudianteCursoComponent implements OnInit {
     this.modalService.openConfirmationModal(message)
       .then((result) => {
         if (result === 'save') {
-          
+          this.crear()
         }
       })
       .catch((error) => {
         console.log(error);
       });
   }
+
+  handleResponse(value: any) {
+    if (!value.response) {
+      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+      console.log(value.message);
+    } else {
+      console.log(value.message);
+      this.openAlertModal(value.message, 'success');
+      this.form.reset();
+      this.loadMatriculados()
+      this.loadNoMatriculados()
+      // this.router.navigate(['../'], { relativeTo: this.route });
+    }
+  }
+
+  handleErrorResponse(error: any) {
+    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    console.log(error);
+  }
+
+
 }

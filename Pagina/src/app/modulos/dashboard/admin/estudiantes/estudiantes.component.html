@@ -1,17 +1,17 @@
 <div class="container-fluid">
+    <div class="row bg-light">
+        <h1 class="fw-custom-semibold">Sistema</h1>
+        <ol class="ps-4 py-2 breadcrumb">
+            <li class="breadcrumb-item active pe-2">{{title}}</li>
+            <button [routerLink]="[routerLink]" class=" btn btn-primary btn-sm shadow">Crear</button>
+        </ol>
+    </div>
     <div class="card text-start border border-0 rounded shadow">
         <div class="card-body">
-            <div class="row row-cols-1">
-                <div class="col align-items-center">
-                    <div class="py-3 ps-3">
-                        <span class="h2 pe-2 card-title">{{title}}</span>
-                        <button [routerLink]="[routerLink]" class="btn btn-primary">Crear</button>
-                    </div>  
-                </div>
-                <div *ngIf="table" class="col">
-                    <app-ng-table [data]="table" [headers]="headers" [campos]="campos" (eliminarAction)="eliminar($event)" (checkedAction)="checkedsAction($event)" (filaAction)="filaAction($event)"></app-ng-table>
-                  </div>
-            </div>
+            <ng-container *ngIf="table">
+                <app-ng-table [data]="table" [headers]="headers" [campos]="campos" (eliminarAction)="eliminar($event)"
+                    (checkedAction)="checkedsAction($event)" (filaAction)="filaAction($event)"></app-ng-table>
+            </ng-container>
         </div>
     </div>
 </div>

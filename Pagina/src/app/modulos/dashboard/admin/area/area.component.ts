@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Area } from 'src/app/interfaces/Area.interface';
 import { AreaService } from 'src/app/servicios/area.service';
 import { ModalService } from 'src/app/servicios/modal.service';
@@ -27,8 +26,6 @@ export class AreaComponent implements OnInit {
   elementoId: string = '';
   msg: string = '¿Desea guardar?';
   userid = this.usuarioService.getUserLoggedId();
-
-  icon = faInfoCircle;
 
   form = this.formBuilder.group({
     nom: ['', Validators.required],

@@ -1,16 +1,24 @@
 <div class="container-fluid">
+    <div class="row bg-light">
+        <h1 class="fw-custom-semibold">Sistema</h1>
+        <ol class="ps-4 py-2 breadcrumb">
+            <li class="breadcrumb-item"> <a class="text-black fw-custom-semibold" routerLink="../">Cursos</a></li>
+            <li class="breadcrumb-item active">{{ modoEdicion ? 'Editar' : 'Crear' }}</li>
+        </ol>
+    </div>
     <div class="card text-start border border-0 rounded shadow">
         <div class="card-body">
-            <h3 class="card-title"> <fa-icon [icon]="icon" size="1x"></fa-icon> {{ modoEdicion ? 'Editar Curso' : 'Crear Curso' }}</h3>
-            <hr>
-            <form class="row row-cols-1 row-cols-sm-2 g-3 justify-content-center justify-content-md-start align-items-center" [formGroup]="form" (ngSubmit)="onSubmit()">
+            <form
+                class="row row-cols-1 row-cols-sm-2 g-3 justify-content-center justify-content-md-start align-items-center"
+                [formGroup]="form" (ngSubmit)="onSubmit()">
                 <div class="col">
                     <label for="nom" class="form-label">Nombre</label>
                     <input type="text" id="nom" formControlName="nom" class="form-control">
                 </div>
                 <div class="col">
                     <label for="orden" class="form-label">Orden</label>
-                    <input type="number" id="orden" formControlName="orden" class="form-control" min="1" pattern="^[0-9]+">
+                    <input type="number" id="orden" formControlName="orden" class="form-control" min="1"
+                        pattern="^[0-9]+">
                 </div>
                 <div class="col">
                     <label for="tip" class="form-label pb-2">Tipo</label>
@@ -22,7 +30,8 @@
                 <div class="col">
                     <label for="estado" class="form-label pb-2">Estado</label>
                     <div class="form-check form-switch">
-                        <input class="form-check-input" id="estado" type="checkbox" role="switch" formControlName="estado">
+                        <input class="form-check-input" id="estado" type="checkbox" role="switch"
+                            formControlName="estado">
                     </div>
                 </div>
                 <div class="col-12 col-sm-12 text-center text-md-start">

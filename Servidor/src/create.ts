@@ -72,17 +72,17 @@ function generatePropsValues(propertiesData: MappedProperty[]) {
     }).join('\n      ');
 }
 
-function generateFunctionToarray(propertiesData: MappedProperty[], tipo: string, tableName: string) {
+function generateFunctionToarray(propertiesData: MappedProperty[], tipo: string, tableName: string, ubicacion: string) {
   if (tipo === '1') {
     return propertiesData
       .filter((property) => property.name !== 'FECHA_CREACION')
-      .map((property) => `this.${property.name}`)
+      .map((property) => `${ubicacion}${property.name}`)
       .join(',');
   } else {
     const excludedProperties = (tableName !== 'usuario') ? ['FECHA_CREACION', 'CREADOR_ID'] : ['USUARIO', 'USR_PSWD', 'FECHA_CREACION'];
     return propertiesData
       .filter((property) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
-      .map((property) => `this.${property.name}`)
+      .map((property) => `${ubicacion}${property.name}`)
       .join(',');
   }
 
@@ -104,8 +104,15 @@ function generatePropsIsValid(propertiesData: MappedProperty[]) {
     .join(' && ');
 }
 
-function generateObject(propertiesData: MappedProperty[], tableName: string) {
-  const excludedProperties = ['FECHA_CREACION'];
+function generatePropsToArray(propertiesData: MappedProperty[], excludedProperties: string[]) {
+  return propertiesData
+    .filter((property) => !excludedProperties.includes(property.name))
+    .map((property) => `'${property.name}'`)
+    .join(',');
+}
+
+
+function generateObject(propertiesData: MappedProperty[], tableName: string, excludedProperties: string[]) {
   return propertiesData
     .filter((property) => !excludedProperties.includes(property.name))
     .map((property) => `${tableName}.${property.name}`)
@@ -148,10 +155,10 @@ class ${capitalizedTableName}Entidad {
     }
 
     toArrayInsert(): any[] {
-      return [${generateFunctionToarray(propertiesData, '1', tableName)}];
+      return [${generateFunctionToarray(propertiesData, '1', tableName, 'this.')}];
     } 
     toArrayUpdate(): any[] {
-      return [${generateFunctionToarray(propertiesData, '2', tableName)}, this.${primaryKeyColumn}];
+      return [${generateFunctionToarray(propertiesData, '2', tableName, 'this.')}, this.${primaryKeyColumn}];
     }
 }
 
@@ -193,7 +200,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
     try {
       ${tableName}.${primaryKeyColumn} = uuidv4(); //asigna un identificador unico
       ${tableName === 'usuario' ? usuariodata : ''}
-      const new${capitalizedTableName} = new ${capitalizedTableName}Entidad(${generateObject(propertiesData, tableName)});
+      const new${capitalizedTableName} = new ${capitalizedTableName}Entidad(${generateObject(propertiesData, tableName, ['FECHA_CREACION'])});
 
       let sql =this.sqlInsert;
       const [result] = await pool.execute<any>(sql, new${capitalizedTableName}.toArrayInsert());
@@ -209,7 +216,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
   const functionUpdate = `
   static async update(${tableName}: ${capitalizedTableName}Entidad): Promise<Respuesta> {
     try {
-      const new${capitalizedTableName} = new ${capitalizedTableName}Entidad(${generateObject(propertiesData, tableName)});
+      const new${capitalizedTableName} = new ${capitalizedTableName}Entidad(${generateObject(propertiesData, tableName, ['FECHA_CREACION'])});
       let sql =this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, new${capitalizedTableName}.toArrayUpdate());
       if (result.affectedRows !== 1) {
@@ -329,32 +336,28 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
   }`;
 
   const functioninsertarMasivamente = `
-  static async  insertMasivo(matriculas: any): Promise<{ data: boolean, message: string }> {
+  static async insertMasivo(data:any): Promise<Respuesta> {
     try {
-      const creador_id = matriculas.usuario;
-      const curso_id = matriculas.curso;
-      const estudiantes = matriculas.estudiantes;
-      const pase = '4';
+      const arrayIds = data.arrayIds;
       const estado = 1;
 
       // Crear un array de valores para todos los registros utilizando map
-      const valores = estudiantes.map((estudiante_id: any) => [
-        uuidv4(),  // MTR_ID
-        curso_id,  // CRS_ID
-        estudiante_id,  // EST_ID
-        estado,  // ESTADO
-        pase,  // PASE
-        creador_id  // CREADOR_ID
-      ]);
-
-      console.log(valores);
-      
+      const valores = arrayIds.map((id: any) => [
+        uuidv4(),
+        id,
+        ${generateObject(propertiesData, 'data', ['FECHA_CREACION', primaryKeyColumn, 'EST_ID', 'ESTADO', 'CREADOR_ID'])},
+        estado,
+        data.CREADOR_ID
+      ]);      
       // Crear una cadena de marcadores de posición y una cadena de campos
-      const placeholders = valores.map(() => '(?, ?, ?, ?, ?, ?)').join(',');
-      const campos = ['MTR_ID', 'CRS_ID', 'EST_ID', 'ESTADO', 'PASE', 'CREADOR_ID'].join(',');
+      const placeholders = valores
+        .map((fila: string | any[]) => \`(\${Array.from({ length: fila.length }, () => '?').join(',')})\`)
+        .join(',');
+
+      const campos = [${generatePropsToArray(propertiesData, ['FECHA_CREACION'])}].join(',');
 
       // Consulta SQL con la cláusula INSERT INTO y VALUES
-      const sql = \`INSERT INTO matricula (\${campos}) VALUES \${placeholders};\`;
+      const sql = \`INSERT INTO ${tableName} (\${campos}) VALUES \${placeholders};\`;
 
       // Ejecutar la consulta con el array de valores
       const [result] = await pool.execute<any>(sql, valores.flat());
@@ -364,9 +367,9 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
         throw new Error('No se pudieron insertar las matrículas');
       }
 
-      return { data: true, message: 'Matrículas insertadas correctamente' };
+      return {response: true, data: true, message: 'Matrículas insertadas correctamente' };
     } catch (error: any) {
-      return { data: false, message: error.message };
+      return {response: false, data: false, message: error.message };
     }
   }`;
 
@@ -447,7 +450,7 @@ class ${capitalizedTableName}Datos {
   ${functionGet}
   ${functiongetById}
   ${functionGetEnabled}
-  ${(tableName === 'usuario') ? functionGetByUser : (tableName === 'estudiante_curso') ? functionGetNoMatriculados : ''}
+  ${(tableName === 'usuario') ? functionGetByUser : (tableName === 'estudiante_curso') ? functionGetNoMatriculados + functioninsertarMasivamente : ''}
 
 
 }
@@ -475,6 +478,16 @@ async function generateNegocioFile(tableName: string) {
       return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
     }
   }`;
+
+  const functioninsertarMasivamente = `
+  static async insertMasivo(data:any): Promise<Respuesta> {
+    try {
+      return ${capitalizedTableName}Datos.insertMasivo(data);
+    } catch (error: any) {
+      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+    }
+  }`;
+
 
   const functionUpdate = `
   static async update(${tableName}: ${capitalizedTableName}Entidad): Promise<Respuesta> {
@@ -564,7 +577,7 @@ class ${capitalizedTableName}Negocio {
   ${functionGetAll}
   ${functionGetEnabled}
   ${functiongetById}
-  ${(tableName === 'usuario') ? functionGetByUser : (tableName === 'estudiante_curso') ? functionGetNoMatriculados : ''}
+  ${(tableName === 'usuario') ? functionGetByUser : (tableName === 'estudiante_curso') ? functionGetNoMatriculados + functioninsertarMasivamente : ''}
 }
 
 export default ${capitalizedTableName}Negocio;`;
@@ -612,16 +625,25 @@ router.get('/${lowercaseTableName}', async (req, res) => {
    }
 });`;
 
-  const scriptUsuariopost = `const { usuario, detalle } = req.body;
+  const scriptUsuarioPost = `const { usuario, detalle } = req.body;
 const response = await ${capitalizedTableName}Negocio.insert(usuario, detalle);
 `;
-  const scriptpost = `const ${tableName}: ${capitalizedTableName}Entidad = req.body;
+  const scriptPost = `const ${tableName}: ${capitalizedTableName}Entidad = req.body;
 const response = await ${capitalizedTableName}Negocio.insert(${tableName});`;
+
+  const scriptPostMasivo = `const { masivo, data }: { masivo: boolean, data: any } = req.body;
+  let response;
+  if(!masivo){
+     response = await ${capitalizedTableName}Negocio.insert(data);
+  }else{
+    response = await ${capitalizedTableName}Negocio.insertMasivo(data);
+  }
+`;
 
   const postroute = `
 router.post('/${lowercaseTableName}', async (req, res) => {
    try {
-${(tableName === 'usuario') ? scriptUsuariopost : scriptpost}
+${(tableName === 'usuario') ? scriptUsuarioPost : (tableName === 'estudiante_curso') ? scriptPostMasivo : scriptPost}
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
