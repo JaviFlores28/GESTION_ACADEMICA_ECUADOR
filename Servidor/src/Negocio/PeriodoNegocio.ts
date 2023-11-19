@@ -1,7 +1,7 @@
 
 import PeriodoDatos from '../Datos/PeriodoDatos';
 import PeriodoEntidad from '../Entidades/PeriodoEntidad';
-import { Respuesta } from '../Default/Interfaces/Respuesta';
+import { Respuesta } from '../sistema/Interfaces/Respuesta';
 
 class PeriodoNegocio {
   

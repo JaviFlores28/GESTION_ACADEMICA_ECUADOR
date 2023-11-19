@@ -1,7 +1,7 @@
 
 import AnioLectivoDatos from '../Datos/AnioLectivoDatos';
 import AnioLectivoEntidad from '../Entidades/AnioLectivoEntidad';
-import { Respuesta } from '../Default/Interfaces/Respuesta';
+import { Respuesta } from '../sistema/Interfaces/Respuesta';
 
 class AnioLectivoNegocio {
   

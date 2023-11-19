@@ -1,5 +1,5 @@
 import { faChalkboardTeacher, faGears, faHome, faLaptopFile, faSchool, faUsers } from "@fortawesome/free-solid-svg-icons";
-import { NavBarData } from "src/app/modelos/interfaces/NavBarData.interface";
+import { NavBarData } from "src/app/sistema/interfaces/NavBarData.interface";
 
 
 export const navbarData: NavBarData[] = [

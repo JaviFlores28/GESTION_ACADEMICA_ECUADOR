@@ -5,7 +5,7 @@ import { faCircleCheck, faCircleXmark, faInfoCircle } from '@fortawesome/free-so
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from 'src/app/componentes/modal/modal.component';
 import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
-import { getFormattedDate } from 'src/app/modelos/variables/variables';
+import { getFormattedDate } from 'src/app/sistema/variables/variables';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 

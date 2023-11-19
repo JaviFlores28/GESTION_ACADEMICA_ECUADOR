@@ -1,7 +1,7 @@
 
 import ParametroDatos from '../Datos/ParametroDatos';
 import ParametroEntidad from '../Entidades/ParametroEntidad';
-import { Respuesta } from '../Default/Interfaces/Respuesta';
+import { Respuesta } from '../sistema/Interfaces/Respuesta';
 
 class ParametroNegocio {
   

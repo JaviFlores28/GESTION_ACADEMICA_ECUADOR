@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError } from 'rxjs';
-import { variables } from '../modelos/variables/variables';
+import { variables } from '../sistema/variables/variables';
 import { ErrorHandlerService } from './error-handler.service';
-import { Respuesta } from '../modelos/interfaces/respuesta.interface';
+import { Respuesta } from '../sistema/interfaces/respuesta.interface';
 import { Asignatura } from '../interfaces/Asignatura.interface';
 
 @Injectable({

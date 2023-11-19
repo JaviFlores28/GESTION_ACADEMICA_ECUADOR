@@ -74,6 +74,8 @@ export class EstudianteCursoComponent implements OnInit {
       }
     });
   }
+
+
   loadMatriculados() {
     this.service.getEnabled().subscribe({
       next: (value) => {
@@ -92,8 +94,7 @@ export class EstudianteCursoComponent implements OnInit {
 
   estudiantesaction(value: any) {
     this.idsEstudiantes = value.data;
-    console.log(this.idsEstudiantes);
-
   }
+  
   matriculasAction(value: any) { }
 }

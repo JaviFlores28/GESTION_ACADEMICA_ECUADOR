@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, lastValueFrom } from 'rxjs';
-import { variables } from '../modelos/variables/variables';
+import { variables } from '../sistema/variables/variables';
 import { ErrorHandlerService } from './error-handler.service';
-import { Respuesta } from '../modelos/interfaces/respuesta.interface';
-import { UsuarioLogin } from '../modelos/interfaces/usuario-Login.interface';
+import { Respuesta } from '../sistema/interfaces/respuesta.interface';
+import { UsuarioLogin } from '../sistema/interfaces/usuario-Login.interface';
 import { UsuarioProfesor } from '../interfaces/UsuarioProfesor.interface';
 import { Usuario } from '../interfaces/Usuario.interface';
 

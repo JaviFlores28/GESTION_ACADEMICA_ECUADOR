@@ -1,7 +1,7 @@
 import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { NavBarData } from 'src/app/modelos/interfaces/NavBarData.interface';
-import { SidenavToogle } from 'src/app/modelos/interfaces/sideNav.interface';
+import { NavBarData } from 'src/app/sistema/interfaces/NavBarData.interface';
+import { SidenavToogle } from 'src/app/sistema/interfaces/sideNav.interface';
 import { fadeInOut } from '../helper';
 import { navbarData } from '../nav-data';
 import { faAngleDown, faAngleRight, faBars, faSchoolFlag } from '@fortawesome/free-solid-svg-icons';

@@ -1,7 +1,7 @@
 
 import UsuarioProfesorDatos from '../Datos/UsuarioProfesorDatos';
 import UsuarioProfesorEntidad from '../Entidades/UsuarioProfesorEntidad';
-import { Respuesta } from '../Default/Interfaces/Respuesta';
+import { Respuesta } from '../sistema/Interfaces/Respuesta';
 
 class UsuarioProfesorNegocio {
   

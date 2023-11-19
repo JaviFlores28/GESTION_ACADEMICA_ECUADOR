@@ -1,7 +1,7 @@
 
 import CursoDatos from '../Datos/CursoDatos';
 import CursoEntidad from '../Entidades/CursoEntidad';
-import { Respuesta } from '../Default/Interfaces/Respuesta';
+import { Respuesta } from '../sistema/Interfaces/Respuesta';
 
 class CursoNegocio {
   

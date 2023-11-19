@@ -1,9 +1,9 @@
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import path from 'path';
-import pool from './Default/Conexion/BaseDatos';
-import { ColumnData } from './Default/Interfaces/ColumnData';
-import { MappedProperty } from './Default/Interfaces/MappedProperty';
-import Funciones from './Default/Funciones/Funciones';
+import pool from './sistema/Conexion/BaseDatos';
+import { ColumnData } from './sistema/Interfaces/ColumnData';
+import { MappedProperty } from './sistema/Interfaces/MappedProperty';
+import Funciones from './sistema/Funciones/Funciones';
 
 import * as dotenv from 'dotenv';
 
@@ -424,9 +424,9 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
   }
 
 
-  const content = `${tableName === 'usuario' ? `import Funciones from '../Default/Funciones/Funciones';\nimport UsuarioProfesorDatos from './UsuarioProfesorDatos';\nimport UsuarioProfesorEntidad from '../Entidades/UsuarioProfesorEntidad';` : ''}
-import pool from '../Default/Conexion/BaseDatos';
-import { Respuesta } from '../Default/Interfaces/Respuesta';
+  const content = `${tableName === 'usuario' ? `import Funciones from '../sistema/Funciones/Funciones';\nimport UsuarioProfesorDatos from './UsuarioProfesorDatos';\nimport UsuarioProfesorEntidad from '../Entidades/UsuarioProfesorEntidad';` : ''}
+import pool from '../sistema/Conexion/BaseDatos';
+import { Respuesta } from '../sistema/Interfaces/Respuesta';
 import ${capitalizedTableName}Entidad from '../Entidades/${capitalizedTableName}Entidad';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -554,7 +554,7 @@ async function generateNegocioFile(tableName: string) {
   const content = `${(tableName === 'usuario') ? `import UsuarioProfesorEntidad from '../Entidades/UsuarioProfesorEntidad'; ` : ''}
 import ${capitalizedTableName}Datos from '../Datos/${capitalizedTableName}Datos';
 import ${capitalizedTableName}Entidad from '../Entidades/${capitalizedTableName}Entidad';
-import { Respuesta } from '../Default/Interfaces/Respuesta';
+import { Respuesta } from '../sistema/Interfaces/Respuesta';
 
 class ${capitalizedTableName}Negocio {
   ${functionInsert}

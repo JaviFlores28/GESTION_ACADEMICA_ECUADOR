@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError } from 'rxjs';
 import { UsuarioProfesor } from '../interfaces/UsuarioProfesor.interface';
-import { Respuesta } from '../modelos/interfaces/respuesta.interface';
-import { variables } from '../modelos/variables/variables';
+import { Respuesta } from '../sistema/interfaces/respuesta.interface';
+import { variables } from '../sistema/variables/variables';
 import { ErrorHandlerService } from './error-handler.service';
 
 @Injectable({

@@ -6,7 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from 'src/app/componentes/modal/modal.component';
 import { Estudiante } from 'src/app/interfaces/Estudiante.interface';
 import { Usuario } from 'src/app/interfaces/Usuario.interface';
-import { getFormattedDate } from 'src/app/modelos/variables/variables';
+import { getFormattedDate } from 'src/app/sistema/variables/variables';
 import { EstudianteService } from 'src/app/servicios/estudiante.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 

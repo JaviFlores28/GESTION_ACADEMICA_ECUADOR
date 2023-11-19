@@ -1,7 +1,7 @@
 
 import ParcialDatos from '../Datos/ParcialDatos';
 import ParcialEntidad from '../Entidades/ParcialEntidad';
-import { Respuesta } from '../Default/Interfaces/Respuesta';
+import { Respuesta } from '../sistema/Interfaces/Respuesta';
 
 class ParcialNegocio {
   
