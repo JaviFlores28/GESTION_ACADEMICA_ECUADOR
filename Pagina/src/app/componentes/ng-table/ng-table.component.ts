@@ -48,7 +48,7 @@ export class NgTableComponent {
     const filterValue = this.filter.value.toString().toLowerCase();
     return this.data.filter(objeto =>
       Object.entries(objeto).some(([key, value]: [string, any]) =>
-        key !== 'id' && value.toString().toLowerCase().includes(filterValue)
+        value.toString().toLowerCase().includes(filterValue)
       )
     );
   }
@@ -61,7 +61,6 @@ export class NgTableComponent {
   }
 
   actionCheckRow(item: any) {
-    //const estado = event.target.checked;
     item.isChecked = !item.isChecked;
 
     let checkedData = this.dataAux.filter(item => item.isChecked === true);
