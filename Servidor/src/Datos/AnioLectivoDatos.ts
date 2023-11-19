@@ -22,7 +22,6 @@ class AnioLectivoDatos {
 
       let sql =this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newAnioLectivo.toArrayInsert());
-      
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar AnioLectivo');
       }
