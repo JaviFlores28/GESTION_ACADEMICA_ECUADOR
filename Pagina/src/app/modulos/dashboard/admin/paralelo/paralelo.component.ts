@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faInfoCircle, faCircleCheck, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalComponent } from 'src/app/componentes/modal/modal.component';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Paralelo } from 'src/app/interfaces/Paralelo.interface';
-import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
-import { CursoService } from 'src/app/servicios/curso.service';
+import { ModalService } from 'src/app/servicios/modal.service';
 import { ParaleloService } from 'src/app/servicios/paralelo.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 
@@ -17,14 +14,20 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 })
 export class ParaleloComponent implements OnInit {
 
-
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private serviceUsuario: UsuarioService, private service: ParaleloService, private serviceCursos: CursoService, private serviceAnios: AnioLectivoService) { }
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private formBuilder: FormBuilder, 
+    private usuarioService: UsuarioService, 
+    private service: ParaleloService, 
+    private modalService: ModalService
+    ) { }
 
   modoEdicion: boolean = false;
   elementoId: string = '';
-  userid = this.serviceUsuario.getUserLoggedId();
-
+  msg: string = '¿Desea guardar?';
   icon = faInfoCircle;
+  userid = this.usuarioService.getUserLoggedId();
 
   form = this.formBuilder.group({
     PRLL_NOM: ['', Validators.required],
@@ -41,6 +44,7 @@ export class ParaleloComponent implements OnInit {
       if (id) {
         this.modoEdicion = true;
         this.elementoId = id;
+        this.msg = '¿Desea editar?';
         this.loadataEdit();
       } else {
         this.modoEdicion = false;
@@ -50,7 +54,7 @@ export class ParaleloComponent implements OnInit {
   }
 
   onSubmit() {
-    this.openConfirmationModal();
+    this.openConfirmationModal(this.msg);
   }
 
   crear() {
@@ -131,35 +135,25 @@ export class ParaleloComponent implements OnInit {
   }
 
   openAlertModal(content: string, alertType: string) {
-    const modalRef = this.ngBootstrap.open(ModalComponent);
-    modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
-    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = content);
-    modalRef.componentInstance.icon = (alertType == 'success') ? faCircleCheck : (alertType == 'danger') ? faCircleXmark : faInfoCircle;
-    modalRef.componentInstance.color = alertType;
-    modalRef.componentInstance.modal = false;
+    this.modalService.openAlertModal(content, alertType);
   }
 
-  openConfirmationModal() {
-    const modalRef = this.ngBootstrap.open(ModalComponent);
-    modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
-
-    // Usa el operador Elvis para asegurarte de que activeModal y contenido estén definidos
-    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = (!this.modoEdicion) ? '¿Desea guardar?' : '¿Desea editar?');
-    modalRef.componentInstance.icon = faInfoCircle;
-    modalRef.componentInstance.color = 'warning';
-    modalRef.result.then((result) => {
-      if (result === 'save') {
-        if (this.modoEdicion) {
-          this.editar();
-        } else {
-          this.crear();
+  openConfirmationModal(message: string) {
+    this.modalService.openConfirmationModal(message)
+      .then((result) => {
+        if (result === 'save') {
+          if (this.modoEdicion) {
+            this.editar();
+          } else {
+            this.crear();
+          }
         }
-      }
-    }).catch((error) => {
-      console.log(error);
-    });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
-
+  
   handleResponse(value: any) {
     if (!value.response) {
       this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');

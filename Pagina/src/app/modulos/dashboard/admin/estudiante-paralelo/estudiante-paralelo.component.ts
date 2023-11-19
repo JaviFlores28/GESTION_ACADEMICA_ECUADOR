@@ -8,6 +8,7 @@ import { EstudianteCursoParalelo } from 'src/app/interfaces/EstudianteCursoParal
 import { CursoService } from 'src/app/servicios/curso.service';
 import { EstudianteCursoParaleloService } from 'src/app/servicios/estudiante-curso-paralelo.service';
 import { EstudianteService } from 'src/app/servicios/estudiante.service';
+import { ModalService } from 'src/app/servicios/modal.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
@@ -16,7 +17,17 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
   styleUrls: ['./estudiante-paralelo.component.scss']
 })
 export class EstudianteParaleloComponent implements OnInit{
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private serviceUsuario: UsuarioService, private service: EstudianteCursoParaleloService, private serviceCurso: CursoService, private serviceEstudiante: EstudianteService) { }
+  constructor(
+    private ngBootstrap: NgbModal, 
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private formBuilder: FormBuilder, 
+    private usuarioService: UsuarioService, 
+    private service: EstudianteCursoParaleloService, 
+    private cursoService: CursoService, 
+    private serviceEstudiante: EstudianteService,
+    private modalService: ModalService
+    ) { }
 
   ngOnInit(): void {
 

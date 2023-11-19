@@ -1,16 +1,14 @@
 import { Component } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faCircleCheck, faCircleXmark, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalComponent } from 'src/app/componentes/modal/modal.component';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Area } from 'src/app/interfaces/Area.interface';
 import { Asignatura } from 'src/app/interfaces/Asignatura.interface';
 import { Curso } from 'src/app/interfaces/Curso.interface';
 
 import { AreaService } from 'src/app/servicios/area.service';
 import { AsignaturaService } from 'src/app/servicios/asignatura.service';
-import { CursoService } from 'src/app/servicios/curso.service';
+import { ModalService } from 'src/app/servicios/modal.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
@@ -19,14 +17,25 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
   styleUrls: ['./asignatura.component.scss']
 })
 export class AsignaturaComponent {
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: AsignaturaService, private serviceArea: AreaService, private serviceCursos: CursoService, private serviceUsuario: UsuarioService) { }
+  
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router,
+    private formBuilder: FormBuilder, 
+    private service: AsignaturaService, 
+    private areaService: AreaService, 
+    private modalService: ModalService, 
+    private usuarioService: UsuarioService
+    ) { }
 
   modoEdicion: boolean = false;
   elementoId: string = '';
+  icon = faInfoCircle;
+  msg: string = '¿Desea guardar?';
+  userid = this.usuarioService.getUserLoggedId();
+
   areas: Area[] = [];
   cursos: Curso[] = [];
-  icon = faInfoCircle;
-  userid = this.serviceUsuario.getUserLoggedId();
 
   form = this.formBuilder.group({
     nom: ['', Validators.required],
@@ -34,7 +43,6 @@ export class AsignaturaComponent {
     area: ['', Validators.required],
     estado: [true]
   });
-
 
   ngOnInit(): void {
     this.validarEdicion();
@@ -47,6 +55,7 @@ export class AsignaturaComponent {
       if (id) {
         this.modoEdicion = true;
         this.elementoId = id;
+        this.msg = '¿Desea editar?';
         this.loadDataEdit();
       } else {
         this.modoEdicion = false;
@@ -54,11 +63,11 @@ export class AsignaturaComponent {
       }
     });
   }
-
-  onSubmit() {
-    this.openConfirmationModal();
-  }
   
+  onSubmit() {
+    this.openConfirmationModal(this.msg);
+  }
+
  crear() {
   if (this.form.valid) {
     const asignatura: Asignatura = this.buildObject();
@@ -131,7 +140,7 @@ buildObjectEdit() {
   }
 
   loadAreas() {
-    this.serviceArea.getEnabled().subscribe({
+    this.areaService.getEnabled().subscribe({
       next: (value) => {        
         if (value.response) {
           this.areas = value.data
@@ -146,41 +155,31 @@ buildObjectEdit() {
   }
 
   llenarForm(data: Asignatura) {
-    this.form.get('nom')?.setValue(data.ASG_NOM); // Asumiendo que 'nom' es un control en tu formulario
-    this.form.get('cltv')?.setValue(data.ASG_TIPO === 'CUALITATIVA'); // Asumiendo que 'nom' es un control en tu formulario
-    this.form.get('area')?.setValue(data.AREA_ID); // Asumiendo que 'nom' es un control en tu formulario
-    this.form.get('estado')?.setValue(data.ESTADO === 1); // Asumiendo que 'estado' es un control en tu formulario
+    this.form.get('nom')?.setValue(data.ASG_NOM); 
+    this.form.get('cltv')?.setValue(data.ASG_TIPO === 'CUALITATIVA'); 
+    this.form.get('area')?.setValue(data.AREA_ID); 
+    this.form.get('estado')?.setValue(data.ESTADO === 1);
     this.userid = data.CREADOR_ID;
   }
 
   openAlertModal(content: string, alertType: string) {
-    const modalRef = this.ngBootstrap.open(ModalComponent);
-    modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
-    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = content);
-    modalRef.componentInstance.icon = (alertType == 'success') ? faCircleCheck : (alertType == 'danger') ? faCircleXmark : faInfoCircle;
-    modalRef.componentInstance.color = alertType;
-    modalRef.componentInstance.modal = false;
+    this.modalService.openAlertModal(content, alertType);
   }
 
-  openConfirmationModal() {
-    const modalRef = this.ngBootstrap.open(ModalComponent);
-    modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
-
-    // Usa el operador Elvis para asegurarte de que activeModal y contenido estén definidos
-    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = (!this.modoEdicion) ? '¿Desea guardar la asignatura?' : '¿Desea editar la asignatura?');
-    modalRef.componentInstance.icon = faInfoCircle;
-    modalRef.componentInstance.color = 'warning';
-    modalRef.result.then((result) => {
-      if (result === 'save') {
-        if (this.modoEdicion) {
-          this.editar();
-        } else {
-          this.crear();
+  openConfirmationModal(message: string) {
+    this.modalService.openConfirmationModal(message)
+      .then((result) => {
+        if (result === 'save') {
+          if (this.modoEdicion) {
+            this.editar();
+          } else {
+            this.crear();
+          }
         }
-      }
-    }).catch((error) => {
-      console.log(error);
-    });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   handleResponse(value: any) {

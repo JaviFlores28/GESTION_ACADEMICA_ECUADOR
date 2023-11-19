@@ -810,7 +810,7 @@ async function generateComponentFile(connection: any, tableName: any, primaryKey
 
   const content = `
   
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private serviceUsuario: UsuarioService, private service: ${capitalizedTableName}Service) { }
+  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private usuarioService: UsuarioService, private service: ${capitalizedTableName}Service) { }
 
   modoEdicion: boolean = false;
   elementoId: string = '';
@@ -901,7 +901,7 @@ async function generateComponentFile(connection: any, tableName: any, primaryKey
   }
 
   buildObject() {
-    const userId = this.serviceUsuario.getUserLoggedId();
+    const userId = this.usuarioService.getUserLoggedId();
     const ${lowercaseTableName}: ${capitalizedTableName} = {
       ${primaryKeyColumn}: '0',
       ${generateObjectComponet(propertiesData)},

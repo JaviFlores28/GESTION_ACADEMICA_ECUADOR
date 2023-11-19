@@ -6,6 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from 'src/app/componentes/modal/modal.component';
 import { Curso } from 'src/app/interfaces/Curso.interface';
 import { CursoService } from 'src/app/servicios/curso.service';
+import { ModalService } from 'src/app/servicios/modal.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
@@ -15,11 +16,20 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 })
 export class CursoComponent {
 
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: CursoService, private serviceUsuario: UsuarioService) { }
+  constructor(
+    private ngBootstrap: NgbModal, 
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private formBuilder: FormBuilder, 
+    private service: CursoService, 
+    private usuarioService: UsuarioService,
+    private modalService: ModalService
+    ) { }
 
   modoEdicion: boolean = false;
   elementoId: string = '';
-  userid = this.serviceUsuario.getUserLoggedId();
+  msg: string = '¿Desea guardar?';
+  userid = this.usuarioService.getUserLoggedId();
 
   icon = faInfoCircle;
 
@@ -40,6 +50,7 @@ export class CursoComponent {
       if (id) {
         this.modoEdicion = true;
         this.elementoId = id;
+        this.msg = '¿Desea editar?';
         this.loadDataEdit();
       } else {
         this.modoEdicion = false;
@@ -49,7 +60,7 @@ export class CursoComponent {
   }
 
   onSubmit() {
-    this.openConfirmationModal();
+    this.openConfirmationModal(this.msg);
   }
 
   crear() {
@@ -124,41 +135,31 @@ export class CursoComponent {
   }
 
   llenarForm(data: Curso) {
-    this.form.get('nom')?.setValue(data.CRS_NOM); // Asumiendo que 'nom' es un control en tu formulario
-    this.form.get('tip')?.setValue(data.CRS_TIPO); // Asumiendo que 'estado' es un control en tu formulario
-    this.form.get('orden')?.setValue(data.CRS_ORDEN); // Asumiendo que 'nom' es un control en tu formulario
-    this.form.get('estado')?.setValue(data.ESTADO === 1);// Asumiendo que 'estado' es un control en tu formulario
+    this.form.get('nom')?.setValue(data.CRS_NOM); 
+    this.form.get('tip')?.setValue(data.CRS_TIPO); 
+    this.form.get('orden')?.setValue(data.CRS_ORDEN); 
+    this.form.get('estado')?.setValue(data.ESTADO === 1);
     this.userid = data.CREADOR_ID;
   }
 
   openAlertModal(content: string, alertType: string) {
-    const modalRef = this.ngBootstrap.open(ModalComponent);
-    modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
-    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = content);
-    modalRef.componentInstance.icon = (alertType == 'success') ? faCircleCheck : (alertType == 'danger') ? faCircleXmark : faInfoCircle;
-    modalRef.componentInstance.color = alertType;
-    modalRef.componentInstance.modal = false;
+    this.modalService.openAlertModal(content, alertType);
   }
 
-  openConfirmationModal() {
-    const modalRef = this.ngBootstrap.open(ModalComponent);
-    modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
-
-    // Usa el operador Elvis para asegurarte de que activeModal y contenido estén definidos
-    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = (!this.modoEdicion) ? '¿Desea guardar curso?' : '¿Desea editar curso?');
-    modalRef.componentInstance.icon = faInfoCircle;
-    modalRef.componentInstance.color = 'warning';
-    modalRef.result.then((result) => {
-      if (result === 'save') {
-        if (this.modoEdicion) {
-          this.editar();
-        } else {
-          this.crear();
+  openConfirmationModal(message: string) {
+    this.modalService.openConfirmationModal(message)
+      .then((result) => {
+        if (result === 'save') {
+          if (this.modoEdicion) {
+            this.editar();
+          } else {
+            this.crear();
+          }
         }
-      }
-    }).catch((error) => {
-      console.log(error);
-    });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   handleResponse(value: any) {

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { faUserTie } from '@fortawesome/free-solid-svg-icons';
 import { UsuarioLogin } from 'src/app/sistema/interfaces/usuario-Login.interface';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
+import { ModalService } from 'src/app/servicios/modal.service';
 
 @Component({
   selector: 'app-login',
@@ -12,10 +13,17 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private router: Router, private formBuilder: FormBuilder, private service: UsuarioService, private renderer: Renderer2, private el: ElementRef) {
-  }
+  constructor(
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private service: UsuarioService,
+    private renderer: Renderer2,
+    private el: ElementRef,
+    private modalService: ModalService
+  ) { }
 
   icon = faUserTie;
+
   formulario = this.formBuilder.group({
     usuario: ['administrador', [Validators.required, Validators.minLength(8)]],
     pswd: ['admin', Validators.required]
@@ -38,7 +46,7 @@ export class LoginComponent implements OnInit {
         {
           next: (value) => {
             if (!value.response) {
-              console.log(value.message);
+              this.openAlertModal('Contraseña o usuario incorrecto.', 'danger');
             } else {
               this.service.setLocal(value.data)
               this.resetStyle()
@@ -83,6 +91,8 @@ export class LoginComponent implements OnInit {
     this.renderer.removeStyle(appRootElement, 'justify-content');
   }
 
-
+  openAlertModal(content: string, alertType: string) {
+    this.modalService.openAlertModal(content, alertType);
+  }
 
 }

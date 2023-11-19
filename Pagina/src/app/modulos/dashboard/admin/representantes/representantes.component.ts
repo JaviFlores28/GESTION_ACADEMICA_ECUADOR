@@ -9,7 +9,11 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
   styleUrls: ['./representantes.component.scss']
 })
 export class RepresentantesComponent {
-  constructor(private service: UsuarioService, private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private service: UsuarioService, 
+    private router: Router, 
+    private route: ActivatedRoute
+    ) {}
 
   routerLink:string='nuevo';
   title:string='Representantes';

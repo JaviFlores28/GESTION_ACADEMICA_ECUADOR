@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faCircleCheck, faCircleXmark, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalComponent } from 'src/app/componentes/modal/modal.component';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
 import { getFormattedDate } from 'src/app/sistema/variables/variables';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
+import { ModalService } from 'src/app/servicios/modal.service';
 
 @Component({
   selector: 'app-anio-lectivo',
@@ -15,13 +14,20 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
   styleUrls: ['./anio-lectivo.component.scss']
 })
 export class AnioLectivoComponent implements OnInit {
-
-
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private serviceUsuario: UsuarioService, private service: AnioLectivoService) { }
+  
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private usuarioService: UsuarioService,
+    private service: AnioLectivoService,
+    private modalService: ModalService
+  ) { }
 
   modoEdicion: boolean = false;
   elementoId: string = '';
-  userid = this.serviceUsuario.getUserLoggedId();
+  msg: string = '¿Desea guardar?';
+  userid = this.usuarioService.getUserLoggedId();
 
   icon = faInfoCircle;
 
@@ -50,6 +56,7 @@ export class AnioLectivoComponent implements OnInit {
       if (id) {
         this.modoEdicion = true;
         this.elementoId = id;
+        this.msg = '¿Desea editar?';
         this.loadDataEdit();
       } else {
         this.modoEdicion = false;
@@ -59,7 +66,7 @@ export class AnioLectivoComponent implements OnInit {
   }
 
   onSubmit() {
-    this.openConfirmationModal();
+    this.openConfirmationModal(this.msg);
   }
 
   crear() {
@@ -169,33 +176,25 @@ export class AnioLectivoComponent implements OnInit {
     this.userid = data.CREADOR_ID;
   }
 
+
   openAlertModal(content: string, alertType: string) {
-    const modalRef = this.ngBootstrap.open(ModalComponent);
-    modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
-    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = content);
-    modalRef.componentInstance.icon = (alertType == 'success') ? faCircleCheck : (alertType == 'danger') ? faCircleXmark : faInfoCircle;
-    modalRef.componentInstance.color = alertType;
-    modalRef.componentInstance.modal = false;
+    this.modalService.openAlertModal(content, alertType);
   }
 
-  openConfirmationModal() {
-    const modalRef = this.ngBootstrap.open(ModalComponent);
-    modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
-    // Usa el operador Elvis para asegurarte de que activeModal y contenido estén definidos
-    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = (!this.modoEdicion) ? '¿Desea guardar?' : '¿Desea editar?');
-    modalRef.componentInstance.icon = faInfoCircle;
-    modalRef.componentInstance.color = 'warning';
-    modalRef.result.then((result) => {
-      if (result === 'save') {
-        if (this.modoEdicion) {
-          this.editar();
-        } else {
-          this.crear();
+  openConfirmationModal(message: string) {
+    this.modalService.openConfirmationModal(message)
+      .then((result) => {
+        if (result === 'save') {
+          if (this.modoEdicion) {
+            this.editar();
+          } else {
+            this.crear();
+          }
         }
-      }
-    }).catch((error) => {
-      console.log(error);
-    });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   handleResponse(value: any) {

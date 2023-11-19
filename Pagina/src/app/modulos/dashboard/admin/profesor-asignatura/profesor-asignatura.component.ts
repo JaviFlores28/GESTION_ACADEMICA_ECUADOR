@@ -10,6 +10,7 @@ import { ProfesorAsignaturaParalelo } from 'src/app/interfaces/ProfesorAsignatur
 import { Usuario } from 'src/app/interfaces/Usuario.interface';
 import { AsignaturaService } from 'src/app/servicios/asignatura.service';
 import { CursoService } from 'src/app/servicios/curso.service';
+import { ModalService } from 'src/app/servicios/modal.service';
 import { ParaleloService } from 'src/app/servicios/paralelo.service';
 import { ProfesorAsignaturaService } from 'src/app/servicios/profesor-asignatura.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
@@ -20,21 +21,25 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
   styleUrls: ['./profesor-asignatura.component.scss']
 })
 export class ProfesorAsignaturaComponent implements OnInit {
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: ProfesorAsignaturaService, private serviceUsuario: UsuarioService, private serviceCurso: CursoService, private serviceParalelo: ParaleloService, private serviceAsignatura: AsignaturaService) { }
 
-  ngOnInit(): void {
-    this.loadTable();
-    this.loadUsuarios();
-    this.loadCursos();
-    this.loadParalelos();
-    this.loadAsignaturas();
-  }
+  constructor(
+    private ngBootstrap: NgbModal,
+    private route: ActivatedRoute,
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private service: ProfesorAsignaturaService,
+    private usuarioService: UsuarioService,
+    private cursoService: CursoService,
+    private paraleloService: ParaleloService,
+    private asignaturaService: AsignaturaService,
+    private modalService: ModalService
+  ) { }
 
   icon = faInfoCircle;
-
   modoEdicion: boolean = false;
   elementoId: string = '';
-  userid = this.serviceUsuario.getUserLoggedId();
+  msg: string = '¿Desea guardar?';
+  userid = this.usuarioService.getUserLoggedId();
 
   profesores: Usuario[] = [];
   cursos: Curso[] = [];
@@ -52,8 +57,16 @@ export class ProfesorAsignaturaComponent implements OnInit {
     ASG_ID: ['', Validators.required],
   });
 
+  ngOnInit(): void {
+    this.loadTable();
+    this.loadUsuarios();
+    this.loadCursos();
+    this.loadParalelos();
+    this.loadAsignaturas();
+  }
+
   onSubmit() {
-    console.log(this.form.value);
+    this.openConfirmationModal(this.msg);
   }
 
   loadTable() {
@@ -72,7 +85,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
   }
 
   loadUsuarios() {
-    this.serviceUsuario.getEnabled('P').subscribe({
+    this.usuarioService.getEnabled('P').subscribe({
       next: (value) => {
         if (value.response) {
           this.profesores = value.data
@@ -87,7 +100,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
   }
 
   loadCursos() {
-    this.serviceCurso.getEnabled().subscribe({
+    this.cursoService.getEnabled().subscribe({
       next: (value) => {
         if (value.response) {
           this.cursos = value.data
@@ -102,7 +115,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
   }
 
   loadParalelos() {
-    this.serviceParalelo.getEnabled().subscribe({
+    this.paraleloService.getEnabled().subscribe({
       next: (value) => {
         if (value.response) {
           this.paralelos = value.data
@@ -117,7 +130,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
   }
 
   loadAsignaturas() {
-    this.serviceAsignatura.getEnabled().subscribe({
+    this.asignaturaService.getEnabled().subscribe({
       next: (value) => {
         if (value.response) {
           this.asignaturas = value.data
@@ -131,8 +144,25 @@ export class ProfesorAsignaturaComponent implements OnInit {
     });
   }
 
-  eliminar(data: any) { }
+  openAlertModal(content: string, alertType: string) {
+    this.modalService.openAlertModal(content, alertType);
+  }
 
+  openConfirmationModal(message: string) {
+    this.modalService.openConfirmationModal(message)
+      .then((result) => {
+        if (result === 'save') {
+          if (this.modoEdicion) {
+          } else {
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  eliminar(data: any) { }
   checkedsAction(data: any) { }
   filaAction(data: any) { }
 }

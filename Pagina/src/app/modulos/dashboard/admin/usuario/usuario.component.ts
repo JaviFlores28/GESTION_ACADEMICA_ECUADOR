@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faCircleCheck, faCircleXmark, faInfoCircle, faKey, faPersonChalkboard, faUser } from '@fortawesome/free-solid-svg-icons';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalComponent } from 'src/app/componentes/modal/modal.component';
+import { faInfoCircle, faKey, faPersonChalkboard, faUser } from '@fortawesome/free-solid-svg-icons';
 import { UsuarioProfesor } from 'src/app/interfaces/UsuarioProfesor.interface';
 import { Usuario } from 'src/app/interfaces/Usuario.interface';
 import { getFormattedDate } from 'src/app/sistema/variables/variables';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 import { UsuarioProfesorService } from 'src/app/servicios/usuario-profesor.service';
+import { ModalService } from 'src/app/servicios/modal.service';
 
 @Component({
   selector: 'app-usuario',
@@ -17,10 +16,18 @@ import { UsuarioProfesorService } from 'src/app/servicios/usuario-profesor.servi
 })
 export class UsuarioComponent {
 
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: UsuarioService, private serviceDetalle: UsuarioProfesorService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private service: UsuarioService,
+    private detalleService: UsuarioProfesorService,
+    private modalService: ModalService
+  ) { }
 
   modoEdicion: boolean = false;
   rutaActual = this.router.url.split('/');
+  msg: string = '¿Desea guardar?';
   elementoId: string = '';
   icon = faInfoCircle;
   fauser = faUser;
@@ -73,6 +80,7 @@ export class UsuarioComponent {
       if (id) {
         this.modoEdicion = true;
         this.elementoId = id;
+        this.msg = '¿Desea editar?';
         this.loadDataEdit();
       } else {
         this.modoEdicion = false;
@@ -82,13 +90,11 @@ export class UsuarioComponent {
   }
 
   onSubmit() {
-    this.openConfirmationModal();
+    this.openConfirmationModal(this.msg);
   }
 
   onSubmitPswd() {
     if (this.form.valid) {
-      //const userId = this.service.getUserLoggedId();
-
       const pswd = { id: this.elementoId, pswdNew: this.formPswd.value.USR_PSWD_NEW, pswdOld: this.formPswd.value.USR_PSWD };
       this.service.updatePswd(pswd).subscribe(
         {
@@ -218,7 +224,7 @@ export class UsuarioComponent {
   }
 
   loadDetalle() {
-    this.serviceDetalle.getById(this.elementoId).subscribe({
+    this.detalleService.getById(this.elementoId).subscribe({
       next: (value) => {
         if (value.data) {
           this.llenarFormDetalle(value.data)
@@ -255,34 +261,23 @@ export class UsuarioComponent {
   }
 
   openAlertModal(content: string, alertType: string) {
-    const modalRef = this.ngBootstrap.open(ModalComponent);
-    modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
-    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = content);
-    modalRef.componentInstance.icon = (alertType == 'success') ? faCircleCheck : (alertType == 'danger') ? faCircleXmark : faInfoCircle;
-    modalRef.componentInstance.color = alertType;
-    modalRef.componentInstance.modal = false;
+    this.modalService.openAlertModal(content, alertType);
   }
 
-  openConfirmationModal() {
-    const modalRef = this.ngBootstrap.open(ModalComponent);
-    modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
-
-    // Usa el operador Elvis para asegurarte de que activeModal y contenido estén definidos
-    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = (!this.modoEdicion) ? '¿Desea guardar?' : '¿Desea editar?');
-    modalRef.componentInstance.icon = faInfoCircle;
-    modalRef.componentInstance.color = 'warning';
-    modalRef.result.then((result) => {
-      if (result === 'save') {
-        if (this.modoEdicion) {
-          this.editar();
-
-        } else {
-          this.crear();
+  openConfirmationModal(message: string) {
+    this.modalService.openConfirmationModal(message)
+      .then((result) => {
+        if (result === 'save') {
+          if (this.modoEdicion) {
+            this.editar();
+          } else {
+            this.crear();
+          }
         }
-      }
-    }).catch((error) => {
-      console.log(error);
-    });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   handleResponse(response: any) {
