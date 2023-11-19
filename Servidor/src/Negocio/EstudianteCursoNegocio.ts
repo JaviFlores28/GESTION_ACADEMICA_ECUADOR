@@ -1,7 +1,7 @@
 
 import EstudianteCursoDatos from '../Datos/EstudianteCursoDatos';
 import EstudianteCursoEntidad from '../Entidades/EstudianteCursoEntidad';
-import { Respuesta } from '../System/Interfaces/Respuesta';
+import { Respuesta } from '../Default/Interfaces/Respuesta';
 
 class EstudianteCursoNegocio {
   

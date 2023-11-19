@@ -1,8 +1,8 @@
-import Funciones from '../System/Funciones/Funciones';
+import Funciones from '../Default/Funciones/Funciones';
 import UsuarioProfesorDatos from './UsuarioProfesorDatos';
 import UsuarioProfesorEntidad from '../Entidades/UsuarioProfesorEntidad';
-import pool from '../System/Conexion/BaseDatos';
-import { Respuesta } from '../System/Interfaces/Respuesta';
+import pool from '../Default/Conexion/BaseDatos';
+import { Respuesta } from '../Default/Interfaces/Respuesta';
 import UsuarioEntidad from '../Entidades/UsuarioEntidad';
 import { v4 as uuidv4 } from 'uuid';
 

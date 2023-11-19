@@ -1,6 +1,6 @@
 
-import pool from '../System/Conexion/BaseDatos';
-import { Respuesta } from '../System/Interfaces/Respuesta';
+import pool from '../Default/Conexion/BaseDatos';
+import { Respuesta } from '../Default/Interfaces/Respuesta';
 import ParametroEntidad from '../Entidades/ParametroEntidad';
 import { v4 as uuidv4 } from 'uuid';
 

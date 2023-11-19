@@ -1,7 +1,7 @@
 
 import ParaleloDatos from '../Datos/ParaleloDatos';
 import ParaleloEntidad from '../Entidades/ParaleloEntidad';
-import { Respuesta } from '../System/Interfaces/Respuesta';
+import { Respuesta } from '../Default/Interfaces/Respuesta';
 
 class ParaleloNegocio {
   

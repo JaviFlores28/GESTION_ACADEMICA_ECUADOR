@@ -1,7 +1,7 @@
 
 import AsignaturaDatos from '../Datos/AsignaturaDatos';
 import AsignaturaEntidad from '../Entidades/AsignaturaEntidad';
-import { Respuesta } from '../System/Interfaces/Respuesta';
+import { Respuesta } from '../Default/Interfaces/Respuesta';
 
 class AsignaturaNegocio {
   

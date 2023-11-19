@@ -1,7 +1,7 @@
 
 import AreaDatos from '../Datos/AreaDatos';
 import AreaEntidad from '../Entidades/AreaEntidad';
-import { Respuesta } from '../System/Interfaces/Respuesta';
+import { Respuesta } from '../Default/Interfaces/Respuesta';
 
 class AreaNegocio {
   

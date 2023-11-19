@@ -1,7 +1,7 @@
 
 import CalificacionesCuantitativasDatos from '../Datos/CalificacionesCuantitativasDatos';
 import CalificacionesCuantitativasEntidad from '../Entidades/CalificacionesCuantitativasEntidad';
-import { Respuesta } from '../System/Interfaces/Respuesta';
+import { Respuesta } from '../Default/Interfaces/Respuesta';
 
 class CalificacionesCuantitativasNegocio {
   

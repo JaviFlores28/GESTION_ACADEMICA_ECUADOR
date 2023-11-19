@@ -1,6 +1,6 @@
 
-import pool from '../System/Conexion/BaseDatos';
-import { Respuesta } from '../System/Interfaces/Respuesta';
+import pool from '../Default/Conexion/BaseDatos';
+import { Respuesta } from '../Default/Interfaces/Respuesta';
 import AnioLectivoEntidad from '../Entidades/AnioLectivoEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -22,6 +22,7 @@ class AnioLectivoDatos {
 
       let sql =this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newAnioLectivo.toArrayInsert());
+      
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar AnioLectivo');
       }
