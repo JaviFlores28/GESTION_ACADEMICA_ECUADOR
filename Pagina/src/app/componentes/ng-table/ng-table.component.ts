@@ -43,7 +43,6 @@ export class NgTableComponent {
   icon2 = faTrash;
   icon3 = faEye;
 
-
   get dataAux(): any[] {
     const filterValue = this.filter.value.toString().toLowerCase();
     return this.data.filter(objeto =>
@@ -54,47 +53,43 @@ export class NgTableComponent {
   }
 
   actionChecked(action: any) {
-    let checkedData = this.dataAux.filter(item => item.isChecked === true);
-    let checkedIds = checkedData.map(item => item[this.campos[0]]);
-    let response = { action, data: checkedIds };
+    const checkedData = this.dataAux.filter(item => item.isChecked === true);
+    const checkedIds = checkedData.map(item => item[this.campos[0]]);
+    const response = { action, data: checkedIds };
     this.checkedAction.emit(response); // Emitir el evento con el objeto data
   }
 
   actionCheckRow(item: any) {
     item.isChecked = !item.isChecked;
 
-    let checkedData = this.dataAux.filter(item => item.isChecked === true);
-    if (checkedData.length === this.dataAux.length) {
-      this.isCheckedAll = true;
-    } else {
-      this.isCheckedAll = false;
-    }
+    const checkedData = this.dataAux.filter(item => item.isChecked === true);
+    this.isCheckedAll = checkedData.length === this.dataAux.length;
 
     if (!this.checksOptions) {
-      this.actionChecked('checks')
+      this.actionChecked('checks');
     }
   }
 
   actionOnRow(id: string, option: any) {
-    this.filaAction.emit({ id, option })
+    this.filaAction.emit({ id, option });
   }
 
   toggleAll(event: any) {
     const estado = event.target.checked;
-    // Calcular el índice de inicio y fin en base a la página actual y el tamaño de la página
     const ini = (this.page - 1) * this.pageSize;
     const end = Math.min(this.page * this.pageSize - 1, this.dataAux.length - 1);
-    // Iterar sobre el rango y actualizar isChecked
+
     for (let i = ini; i <= end; i++) {
       this.dataAux[i].isChecked = estado;
     }
+
     if (!this.checksOptions) {
-      this.actionChecked('checks')
+      this.actionChecked('checks');
     }
   }
 
   isChecked() {
-    return this.dataAux.some(item => item.isChecked)
+    return this.dataAux.some(item => item.isChecked);
   }
 
   onPageChange(event: any) {
