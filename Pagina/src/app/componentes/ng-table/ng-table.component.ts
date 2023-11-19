@@ -36,7 +36,7 @@ export class NgTableComponent {
   @Output() filaAction = new EventEmitter<any>();
 
   filter = new FormControl('', { nonNullable: true });
-  
+
   page = 1;
   isCheckedAll = false;
   icon = faToggleOff;
@@ -60,9 +60,17 @@ export class NgTableComponent {
     this.checkedAction.emit(response); // Emitir el evento con el objeto data
   }
 
-  actionCheckRow(event: any, item: any) {
+  actionCheckRow(item: any) {
     //const estado = event.target.checked;
-    item.isChecked = !item.isChecked
+    item.isChecked = !item.isChecked;
+
+    let checkedData = this.dataAux.filter(item => item.isChecked === true);
+    if (checkedData.length === this.dataAux.length) {
+      this.isCheckedAll = true;
+    } else {
+      this.isCheckedAll = false;
+    }
+
     if (!this.checksOptions) {
       this.actionChecked('checks')
     }

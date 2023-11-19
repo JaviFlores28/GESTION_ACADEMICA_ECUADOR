@@ -27,7 +27,7 @@
 		</thead>
 		<tbody>
 			<ng-container *ngFor="let item of dataAux | slice: (page-1) * pageSize : page * pageSize; index as i">
-				<tr (click)="actionCheckRow($event,item)">
+				<tr (click)="actionCheckRow(item)">
 					<ng-container *ngIf="checks">
 						<td>
 							<div class="form-check w-auto">

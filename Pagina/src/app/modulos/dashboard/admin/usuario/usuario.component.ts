@@ -27,6 +27,7 @@ export class UsuarioComponent {
 
   modoEdicion: boolean = false;
   rutaActual = this.router.url.split('/');
+  titulo: string = this.rutaActual[3];
   msg: string = '¿Desea guardar?';
   elementoId: string = '';
   icon = faInfoCircle;
@@ -36,6 +37,7 @@ export class UsuarioComponent {
   isRep = false;
   isAdmin = false;
   isProf = false;
+  myinfo = false;
 
   form = this.formBuilder.group({
     USR_DNI: ['', Validators.required],
@@ -77,6 +79,8 @@ export class UsuarioComponent {
   validarEdicion() {
     this.route.paramMap.subscribe(params => {
       const id = (this.rutaActual[2] === "myinfo") ? this.service.getUserLoggedId() : params.get('id');
+      this.myinfo = (this.rutaActual[2] === "myinfo") ? true : false;
+      this.titulo = (this.rutaActual[2] === "myinfo") ? this.rutaActual[2] : this.rutaActual[3];
       if (id) {
         this.modoEdicion = true;
         this.elementoId = id;

@@ -1,12 +1,17 @@
 <div class="container-fluid">
+    <div class="row bg-light">
+        <h1 class="fw-custom-semibold">Institución</h1>
+        <ol class="ps-4 py-2 breadcrumb">
+            <li class="breadcrumb-item"> <a class="text-black fw-custom-semibold" routerLink="../../sistema/profesores">Profesores</a></li>
+            <li class="breadcrumb-item active">Asignaturas</li>
+        </ol>
+    </div>
     <form class="row g-3"
         class="row row-cols-1 g-3 justify-content-center justify-content-md-start align-items-md-start align-items-center"
         [formGroup]="form" (ngSubmit)="onSubmit()">
         <div class="col-12">
             <div class="card text-start shadow border-0">
                 <div class="card-body">
-                  <!--   <h3 class="card-title"> <fa-icon [icon]="icon" size="1x"></fa-icon> Asignar Profesores</h3>
-                    <hr> -->
                     <div class="row row-cols-6 justify-content-start align-items-end pt-2">
                         <div class="col">
                             <label for="PRF_ID" class="form-label">Profesor:</label>
