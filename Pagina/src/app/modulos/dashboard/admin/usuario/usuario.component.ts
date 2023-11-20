@@ -26,8 +26,8 @@ export class UsuarioComponent {
   ) { }
 
   modoEdicion: boolean = false;
-  rutaActual = this.router.url.split('/');
-  titulo: string = this.rutaActual[3];
+  rutaActual: string[] = [];
+  titulo: string = '';
   msg: string = '¿Desea guardar?';
   elementoId: string = '';
   icon = faInfoCircle;
@@ -67,7 +67,10 @@ export class UsuarioComponent {
     this.validarEdicion();
   }
 
-  determinarRolDesdeRuta() {
+  determinarRolDesdeRuta() {   
+    this.rutaActual = this.router.url.split('/');
+    this.titulo = this.rutaActual[3].charAt(0).toUpperCase() + this.rutaActual[3].slice(1);
+
     if (this.rutaActual[4] === 'nuevo') {
       const rol = this.rutaActual[3];
       this.isAdmin = (rol === 'usuarios');
@@ -80,7 +83,6 @@ export class UsuarioComponent {
     this.route.paramMap.subscribe(params => {
       const id = (this.rutaActual[2] === "myinfo") ? this.service.getUserLoggedId() : params.get('id');
       this.myinfo = (this.rutaActual[2] === "myinfo") ? true : false;
-      this.titulo = (this.rutaActual[2] === "myinfo") ? this.rutaActual[2] : this.rutaActual[3];
       if (id) {
         this.modoEdicion = true;
         this.elementoId = id;
