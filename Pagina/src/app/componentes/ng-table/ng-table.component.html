@@ -53,12 +53,12 @@
 						<td>
 							<div class="btn-group" role="group">
 								<button type="button" class="btn btn-sm btn-primary"
-									(click)="actionOnRow(item[campos[0]],'editar')" *ngIf="botonEdit">Editar</button>
+									(click)="actionButtonRow(item[campos[0]],'editar')" *ngIf="botonEdit">Editar</button>
 								<button type="button" class="btn btn-sm btn-danger"
-									(click)="actionOnRow(item[campos[0]],'eliminar')"
+									(click)="actionButtonRow(item[campos[0]],'eliminar')"
 									*ngIf="botonDelete">Eliminar</button>
 								<button type="button" class="btn btn-sm btn-info"
-									(click)="actionOnRow(item[campos[0]],'ver')" *ngIf="botonVer"><fa-icon
+									(click)="actionButtonRow(item[campos[0]],'ver')" *ngIf="botonVer"><fa-icon
 										[icon]="icon3" size="1x" class="text-white"></fa-icon></button>
 							</div>
 						</td>
@@ -81,16 +81,16 @@
 		<ng-container *ngIf="checksOptions">
 			<div class="col">
 				<button *ngIf="checkDesactive" type="button" class="btn link-dark"
-					(click)="actionChecked('desactivar')"><fa-icon [icon]="icon" size="1x"></fa-icon>Estado</button>
+					(click)="emitDataChecked('desactivar')"><fa-icon [icon]="icon" size="1x"></fa-icon>Estado</button>
 				<button *ngIf="checkDelete" type="button" class="btn link-danger"
-					(click)="actionChecked('eliminar')"><fa-icon [icon]="icon2" size="1x"></fa-icon>Eliminar</button>
+					(click)="emitDataChecked('eliminar')"><fa-icon [icon]="icon2" size="1x"></fa-icon>Eliminar</button>
 			</div>
 		</ng-container>
 	</div>
 </ng-container>
 <div class="d-flex justify-content-between p-2">
 	<ngb-pagination [(page)]="page" [pageSize]="pageSize" [collectionSize]="dataAux.length"
-		(pageChange)="onPageChange($event)"></ngb-pagination>
+		(pageChange)="onPageChange()"></ngb-pagination>
 	<div class="mb-3  w-auto">
 		<select class="form-select" [(ngModel)]="pageSize">
 			<option value="2">2 items por página</option>
