@@ -2,8 +2,10 @@
 	<div class="row align-items-center">
 		<div class="col-xs-3 col-sm-auto">
 			<div class="input-group mb-3">
-				<input type="text" class="form-control" id="search-{{tableName}}" class="form-control" type="text" placeholder="Buscar..." [formControl]="filter" />
-				<button *ngIf="filter.value!==''" class="btn btn-danger" type="button" (click)="clear()" aria-label="Limpiar búsqueda">X</button>
+				<input type="text" class="form-control" id="search-{{tableName}}" class="form-control" type="text"
+					placeholder="Buscar..." [formControl]="filter" />
+				<button *ngIf="filter.value!==''" class="btn btn-danger" type="button" (click)="clear()"
+					aria-label="Limpiar búsqueda">X</button>
 			</div>
 		</div>
 	</div>
@@ -26,21 +28,23 @@
 		</thead>
 		<tbody>
 			<ng-container *ngFor="let item of dataAux | slice: (page-1) * pageSize : page * pageSize; index as i">
-				<tr (click)="actionCheckRow(item)">
+				<tr>
 					<ng-container *ngIf="checks">
-						<td>
+						<td (click)="actionCheckRow(item)">
 							<div class="form-check w-auto">
 								<input class="form-check-input" id="check-{{item[campos[0]]}}" type="checkbox"
 									[(ngModel)]="item.isChecked">
 							</div>
 						</td>
 					</ng-container>
-					<th scope="row">
+					<th scope="row" (click)="actionCheckRow(item)">
 						{{ i + 1 }}
 					</th>
-					<td *ngFor="let campo of campos.slice(1)">
-						<ngb-highlight [result]="item[campo]" [term]="filter.value"></ngb-highlight>
-					</td>
+					<ng-container *ngFor="let campo of campos.slice(1)">
+						<td (click)="actionCheckRow(item)">
+							<ngb-highlight [result]="item[campo]" [term]="filter.value"></ngb-highlight>
+						</td>
+					</ng-container>
 					<ng-container *ngIf="botonEstado">
 						<td>
 							<div class="form-switch text-center">
@@ -53,7 +57,8 @@
 						<td>
 							<div class="btn-group" role="group">
 								<button type="button" class="btn btn-sm btn-primary"
-									(click)="actionButtonRow(item[campos[0]],'editar')" *ngIf="botonEdit">Editar</button>
+									(click)="actionButtonRow(item[campos[0]],'editar')"
+									*ngIf="botonEdit">Editar</button>
 								<button type="button" class="btn btn-sm btn-danger"
 									(click)="actionButtonRow(item[campos[0]],'eliminar')"
 									*ngIf="botonDelete">Eliminar</button>
@@ -65,7 +70,6 @@
 					</ng-container>
 				</tr>
 			</ng-container>
-
 		</tbody>
 	</table>
 </div>

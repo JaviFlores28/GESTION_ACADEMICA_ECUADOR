@@ -9,13 +9,32 @@ import { EstudianteCursoService } from "src/app/servicios/estudiante-curso.servi
 import { ModalService } from "src/app/servicios/modal.service";
 import { UsuarioService } from "src/app/servicios/usuario.service";
 
-
 @Component({
   selector: 'app-estudiante-curso',
   templateUrl: './estudiante-curso.component.html',
   styleUrls: ['./estudiante-curso.component.scss']
 })
 export class EstudianteCursoComponent implements OnInit {
+  userId = this.usuarioService.getUserLoggedId();
+  modoEdicion: boolean = false;
+  elementoId: string = '';
+  msg: string = '¿Desea guardar?';
+  icon = faInfoCircle;
+
+  cursos: Curso[] = [];
+  noMatriculados: Estudiante[] = [];
+  matriculas: EstudianteCursoParalelo[] = [];
+  idsEstudiantes: string[] = [];
+
+  headersNoMatriculados = ['CÉDULA', 'NOMBRES'];
+  camposNoMatriculados = ['EST_ID', 'EST_DNI', 'EST_NOM'];
+  headersMatriculados = ['CÉDULA', 'NOMBRES', 'CURSO', 'ESTADO'];
+  camposMatriculados = ['EST_CRS_ID', 'EST_DNI', 'EST_ID', 'CRS_ID'];
+
+  form = this.formBuilder.group({
+    CRS_ID: ['', Validators.required]
+  })
+
   constructor(
     private formBuilder: FormBuilder,
     private usuarioService: UsuarioService,
@@ -30,27 +49,8 @@ export class EstudianteCursoComponent implements OnInit {
     this.loadMatriculados();
   }
 
-  userId = this.usuarioService.getUserLoggedId();
-  modoEdicion: boolean = false;
-  elementoId: string = '';
-  msg: string = '¿Desea guardar?';
-  icon = faInfoCircle;
-
-  cursos: Curso[] = [];
-  noMatriculados: Estudiante[] = [];
-  matriculas: EstudianteCursoParalelo[] = [];
-  idsEstudiantes: string[] = [];
-  headersNoMatriculados = ['CÉDULA', 'NOMBRES'];
-  camposNoMatriculados = ['EST_ID', 'EST_DNI', 'EST_NOM'];
-  headersMatriculados = ['CÉDULA', 'NOMBRES', 'CURSO', 'ESTADO'];
-  camposMatriculados = ['EST_CRS_ID', 'EST_DNI', 'EST_ID', 'CRS_ID'];
-
-  form = this.formBuilder.group({
-    CRS_ID: ['', Validators.required]
-  })
-
   onSubmit() {
-    this.openConfirmationModal(this.msg);
+    this.openConfirmationModal(this.msg, 'create');
   }
 
   loadCursos() {
@@ -102,6 +102,12 @@ export class EstudianteCursoComponent implements OnInit {
     this.idsEstudiantes = value.data;
   }
 
+  matriculasAction(value: any) {
+    this.idsEstudiantes = value.data;
+    if (value.action === 'desactivar') {
+      this.openConfirmationModal('¿Desea desactivar los items seleccionados?', value.action);
+    }
+  }
 
   crear() {
     if (this.form.valid) {
@@ -123,17 +129,35 @@ export class EstudianteCursoComponent implements OnInit {
     }
   }
 
-  matriculasAction() { }
+  desactivar() {
+
+    if (this.idsEstudiantes.length === 0) {
+      this.openAlertModal('Debe seleccionar al menos un item.', 'danger');
+      return
+    }
+    this.service.patchUpdateEstado(this.idsEstudiantes).subscribe(
+      {
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error)
+      }
+    );
+  }
 
   openAlertModal(content: string, alertType: string) {
     this.modalService.openAlertModal(content, alertType);
   }
 
-  openConfirmationModal(message: string) {
+  openConfirmationModal(message: string, action: string) {
     this.modalService.openConfirmationModal(message)
       .then((result) => {
         if (result === 'save') {
-          this.crear()
+          if (action === 'create') {
+            this.crear()
+          } else {
+            this.desactivar();
+          }
         }
       })
       .catch((error) => {
@@ -159,6 +183,4 @@ export class EstudianteCursoComponent implements OnInit {
     this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
     console.log(error);
   }
-
-
 }

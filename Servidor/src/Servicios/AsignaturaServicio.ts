@@ -24,6 +24,22 @@ router.put('/asignatura', async (req, res) => {
    }
 });
 
+router.patch('/asignatura', async (req, res) => {
+   try {
+    const { masivo, data }: { masivo: boolean, data: any } = req.body;
+    let response;
+    if(!masivo){
+      //response = await AsignaturaNegocio.updateEstado(data);
+    }else{
+      response = await AsignaturaNegocio.updateEstado(data);
+    }    
+    res.json(response);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 router.delete('/asignatura', async (req, res) => {
   try {
     const id = req.query.id as string;

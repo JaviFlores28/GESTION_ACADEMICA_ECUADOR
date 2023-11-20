@@ -213,6 +213,7 @@ export class NgTableComponent implements OnInit {
    */
   actionCheckRow(item: any) {
     item.isChecked = !item.isChecked;
+    this.emitDataChecked('checks');  
   }
 
   /**

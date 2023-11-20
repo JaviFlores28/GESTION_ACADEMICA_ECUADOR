@@ -43,7 +43,7 @@
             <div class="card text-start border border-0 rounded shadow">
                 <div class="card-body">
                     <app-ng-table tableName="matriculados" [data]="matriculas" [headers]="headersMatriculados" [campos]="camposMatriculados"
-                        [botonera]="false" [pageSize]="30" (checkedAction)="matriculasAction()"></app-ng-table>
+                        [botonera]="false" [pageSize]="30" (checkedAction)="matriculasAction($event)"></app-ng-table>
                 </div>
             </div>
         </div>

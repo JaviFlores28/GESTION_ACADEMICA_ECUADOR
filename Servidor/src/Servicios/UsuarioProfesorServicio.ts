@@ -24,6 +24,22 @@ router.put('/usuarioprofesor', async (req, res) => {
    }
 });
 
+router.patch('/usuarioprofesor', async (req, res) => {
+   try {
+    const { masivo, data }: { masivo: boolean, data: any } = req.body;
+    let response;
+    if(!masivo){
+      //response = await UsuarioProfesorNegocio.updateEstado(data);
+    }else{
+      response = await UsuarioProfesorNegocio.updateEstado(data);
+    }    
+    res.json(response);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 router.delete('/usuarioprofesor', async (req, res) => {
   try {
     const id = req.query.id as string;

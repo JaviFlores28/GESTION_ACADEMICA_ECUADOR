@@ -24,6 +24,22 @@ router.put('/aniolectivo', async (req, res) => {
    }
 });
 
+router.patch('/aniolectivo', async (req, res) => {
+   try {
+    const { masivo, data }: { masivo: boolean, data: any } = req.body;
+    let response;
+    if(!masivo){
+      //response = await AnioLectivoNegocio.updateEstado(data);
+    }else{
+      response = await AnioLectivoNegocio.updateEstado(data);
+    }    
+    res.json(response);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 router.delete('/aniolectivo', async (req, res) => {
   try {
     const id = req.query.id as string;

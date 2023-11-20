@@ -24,6 +24,22 @@ router.put('/paralelo', async (req, res) => {
    }
 });
 
+router.patch('/paralelo', async (req, res) => {
+   try {
+    const { masivo, data }: { masivo: boolean, data: any } = req.body;
+    let response;
+    if(!masivo){
+      //response = await ParaleloNegocio.updateEstado(data);
+    }else{
+      response = await ParaleloNegocio.updateEstado(data);
+    }    
+    res.json(response);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 router.delete('/paralelo', async (req, res) => {
   try {
     const id = req.query.id as string;

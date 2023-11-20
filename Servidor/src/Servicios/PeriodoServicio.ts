@@ -24,6 +24,22 @@ router.put('/periodo', async (req, res) => {
    }
 });
 
+router.patch('/periodo', async (req, res) => {
+   try {
+    const { masivo, data }: { masivo: boolean, data: any } = req.body;
+    let response;
+    if(!masivo){
+      //response = await PeriodoNegocio.updateEstado(data);
+    }else{
+      response = await PeriodoNegocio.updateEstado(data);
+    }    
+    res.json(response);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 router.delete('/periodo', async (req, res) => {
   try {
     const id = req.query.id as string;

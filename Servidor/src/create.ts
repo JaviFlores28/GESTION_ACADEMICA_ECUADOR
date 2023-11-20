@@ -111,7 +111,6 @@ function generatePropsToArray(propertiesData: MappedProperty[], excludedProperti
     .join(',');
 }
 
-
 function generateObject(propertiesData: MappedProperty[], tableName: string, excludedProperties: string[]) {
   return propertiesData
     .filter((property) => !excludedProperties.includes(property.name))
@@ -442,7 +441,7 @@ class ${capitalizedTableName}Datos {
   static sqlGetById: string = 'SELECT * FROM ${tableName} WHERE ${primaryKeyColumn} = ?';
   static sqlGetEnabled: string = 'SELECT * FROM ${validarVistaTabla(tableName)} WHERE ESTADO = 1';
   ${(tableName === 'usuario') ? `static sqlGetByUser: string = 'SELECT * FROM ${tableName} WHERE USUARIO = ?'` :
-      (tableName === 'estudiante_curso') ? `static sqlGetNoMatriculados: string = 'SELECT a.* FROM vista_estudiante AS a WHERE NOT EXISTS ( SELECT 1 FROM estudiante_curso AS b WHERE b.EST_ID = a.EST_ID AND b.ESTADO = 1 ) AND a.ESTADO = 1;'` : ''}
+      (tableName === 'estudiante_curso') ? `static sqlGetNoMatriculados: string = 'SELECT a.* FROM vista_estudiante AS a WHERE NOT EXISTS ( SELECT 1 FROM estudiante_curso AS b WHERE b.EST_ID = a.EST_ID AND (b.ESTADO = 1 OR b.CRS_ID = (SELECT CRS_ID FROM curso ORDER BY CRS_ORDEN DESC LIMIT 1)) ) AND a.ESTADO = 1;'` : ''}
   ${functioninsert}
   ${functionUpdate}
   ${functionupdateEstado}
@@ -592,7 +591,7 @@ export default ${capitalizedTableName}Negocio;`;
 
 }
 
-async function generateServiceFile(connection: any, tableName: any) {
+async function generateServiceFile(tableName: any) {
   const capitalizedTableName = Funciones.stringToCapitalize(tableName);
   const lowercaseTableName = Funciones.stringToCamelCase(tableName);
 
@@ -650,6 +649,23 @@ ${(tableName === 'usuario') ? scriptUsuarioPost : (tableName === 'estudiante_cur
   }
 });`;
 
+  const patchRoute = `
+router.patch('/${lowercaseTableName}', async (req, res) => {
+   try {
+    const { masivo, data }: { masivo: boolean, data: any } = req.body;
+    let response;
+    if(!masivo){
+      //response = await ${capitalizedTableName}Negocio.updateEstado(data);
+    }else{
+      response = await ${capitalizedTableName}Negocio.updateEstado(data);
+    }    
+    res.json(response);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+});
+`;
+
   const putroute = `
 router.put('/${lowercaseTableName}', async (req, res) => {
   try {
@@ -702,6 +718,7 @@ import ${capitalizedTableName}Negocio from '../Negocio/${capitalizedTableName}Ne
 import ${capitalizedTableName}Entidad from '../Entidades/${capitalizedTableName}Entidad';
 ${postroute}
 ${putroute}
+${patchRoute}
 ${deleteroute}
 ${getroute}
 ${(tableName === 'usuario') ? getByUser : ''}
@@ -1034,7 +1051,7 @@ async function main() {
       await generateDataFile(pool, tableName, primaryKeyColumn);
       await generateEntityFile(pool, tableName, primaryKeyColumn);
       await generateNegocioFile(tableName);
-      await generateServiceFile(pool, tableName);
+      await generateServiceFile(tableName);
       await generateInterfaceFile(pool, tableName);
       //await generateComponentFile(pool, tableName, primaryKeyColumn);
       //await generateHTMLFile(pool, tableName, primaryKeyColumn);

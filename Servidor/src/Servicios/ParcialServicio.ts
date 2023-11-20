@@ -24,6 +24,22 @@ router.put('/parcial', async (req, res) => {
    }
 });
 
+router.patch('/parcial', async (req, res) => {
+   try {
+    const { masivo, data }: { masivo: boolean, data: any } = req.body;
+    let response;
+    if(!masivo){
+      //response = await ParcialNegocio.updateEstado(data);
+    }else{
+      response = await ParcialNegocio.updateEstado(data);
+    }    
+    res.json(response);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 router.delete('/parcial', async (req, res) => {
   try {
     const id = req.query.id as string;

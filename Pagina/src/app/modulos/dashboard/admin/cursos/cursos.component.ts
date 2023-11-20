@@ -9,13 +9,13 @@ import { CursoService } from 'src/app/servicios/curso.service';
   styleUrls: ['./cursos.component.scss']
 })
 export class CursosComponent {
-  routerLink:string='nuevo';
-  title:string='Cursos';
+  routerLink: string = 'nuevo';
+  title: string = 'Cursos';
 
-  
+
   data: Curso[] = [];
-  headers = ['NOMBRE','ORDEN', 'ESTADO'];
-  campos = ['CRS_ID', 'CRS_NOM','CRS_ORDEN'];
+  headers = ['NOMBRE', 'TIPO', 'ORDEN', 'ESTADO'];
+  campos = ['CRS_ID', 'CRS_NOM', 'CRS_TIPO', 'CRS_ORDEN'];
 
   constructor(private service: CursoService, private router: Router, private route: ActivatedRoute) {
   }

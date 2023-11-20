@@ -24,6 +24,22 @@ router.put('/profesorasignaturaparalelo', async (req, res) => {
    }
 });
 
+router.patch('/profesorasignaturaparalelo', async (req, res) => {
+   try {
+    const { masivo, data }: { masivo: boolean, data: any } = req.body;
+    let response;
+    if(!masivo){
+      //response = await ProfesorAsignaturaParaleloNegocio.updateEstado(data);
+    }else{
+      response = await ProfesorAsignaturaParaleloNegocio.updateEstado(data);
+    }    
+    res.json(response);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 router.delete('/profesorasignaturaparalelo', async (req, res) => {
   try {
     const id = req.query.id as string;

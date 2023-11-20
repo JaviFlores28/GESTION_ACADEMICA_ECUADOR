@@ -24,6 +24,22 @@ router.put('/estudiantecursoparalelo', async (req, res) => {
    }
 });
 
+router.patch('/estudiantecursoparalelo', async (req, res) => {
+   try {
+    const { masivo, data }: { masivo: boolean, data: any } = req.body;
+    let response;
+    if(!masivo){
+      //response = await EstudianteCursoParaleloNegocio.updateEstado(data);
+    }else{
+      response = await EstudianteCursoParaleloNegocio.updateEstado(data);
+    }    
+    res.json(response);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 router.delete('/estudiantecursoparalelo', async (req, res) => {
   try {
     const id = req.query.id as string;

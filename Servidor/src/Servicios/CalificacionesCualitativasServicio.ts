@@ -24,6 +24,22 @@ router.put('/calificacionescualitativas', async (req, res) => {
    }
 });
 
+router.patch('/calificacionescualitativas', async (req, res) => {
+   try {
+    const { masivo, data }: { masivo: boolean, data: any } = req.body;
+    let response;
+    if(!masivo){
+      //response = await CalificacionesCualitativasNegocio.updateEstado(data);
+    }else{
+      response = await CalificacionesCualitativasNegocio.updateEstado(data);
+    }    
+    res.json(response);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 router.delete('/calificacionescualitativas', async (req, res) => {
   try {
     const id = req.query.id as string;

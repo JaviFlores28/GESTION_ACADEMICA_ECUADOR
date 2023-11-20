@@ -43,6 +43,11 @@ export class EstudianteCursoService extends ErrorHandlerService {
     return this.http.post(this.apiUrl, { masivo: true, data: arrayData }).pipe(
       catchError(this.handleError));
   }
+  
+  patchUpdateEstado(arrayData: any): Observable<any> {
+    return this.http.patch(this.apiUrl, { masivo: true, data: arrayData }).pipe(
+      catchError(this.handleError));
+  }
 
   put(estudianteCurso: EstudianteCurso): Observable<any> {
     return this.http.put(this.apiUrl, estudianteCurso).pipe(

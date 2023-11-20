@@ -97,4 +97,41 @@ CREATE OR REPLACE TRIGGER `generar_periodo_subperiodo` AFTER INSERT ON `anio_lec
 END
 $$
 DELIMITER ;
---
+
+-- Modificar la estructura de la tabla ESTUDIANTE_CURSO
+DELIMITER //
+
+CREATE OR REPLACE TRIGGER trg_validar_estudiante_curso
+BEFORE INSERT OR UPDATE ON ESTUDIANTE_CURSO
+FOR EACH ROW
+BEGIN
+  DECLARE estudiante_count INT;
+  DECLARE curso_orden INT;
+  DECLARE curso_orden_old INT;
+
+  -- Verificar si el estudiante ya existe en ESTUDIANTE_CURSO
+  SELECT COUNT(*) INTO estudiante_count
+  FROM ESTUDIANTE_CURSO
+  WHERE EST_ID = NEW.EST_ID;
+
+  IF estudiante_count > 0 THEN
+    -- Obtener el orden del curso a ingresar
+    SELECT CRS_ORDEN INTO curso_orden
+    FROM CURSO
+    WHERE CRS_ID = NEW.CRS_ID;
+
+    -- Obtener el orden del curso del ultimo curso ingresado
+    SELECT MAX(CRS_ORDEN) INTO curso_orden_old
+    FROM ESTUDIANTE_CURSO AS EC
+    JOIN CURSO AS C ON EC.CRS_ID = C.CRS_ID
+    WHERE EC.EST_ID = NEW.EST_ID;
+
+    -- Verificar si el curso a ingresar sigue el orden de curso
+    IF curso_orden <= curso_orden_old OR curso_orden != (curso_orden_old+1) THEN
+      SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'El curso a ingresar no sigue el orden de curso.';
+    END IF;
+  END IF;
+END //
+
+DELIMITER ;
