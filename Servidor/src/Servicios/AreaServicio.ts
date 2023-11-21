@@ -3,6 +3,7 @@ import { Router } from 'express';
 const router = Router();
 import AreaNegocio from '../Negocio/AreaNegocio';
 import AreaEntidad from '../Entidades/AreaEntidad';
+import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
 
 router.post('/area', async (req, res) => {
    try {
@@ -26,13 +27,14 @@ router.put('/area', async (req, res) => {
 
 router.patch('/area', async (req, res) => {
    try {
-    const { masivo, data }: { masivo: boolean, data: any } = req.body;
+    const { masivo, type, data}: TypeRequest = req.body;
     let response;
-    if(!masivo){
-      //response = await AreaNegocio.updateEstado(data);
-    }else{
+    if(masivo && type === 'updateEstado'){
       response = await AreaNegocio.updateEstado(data);
-    }    
+    }else if(masivo && type === 'delete'){
+      //response = await AreaNegocio.updateEstado(data);
+    }
+      
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.code });
@@ -79,5 +81,4 @@ router.delete('/area', async (req, res) => {
     }
   });
   
-
 export default router;

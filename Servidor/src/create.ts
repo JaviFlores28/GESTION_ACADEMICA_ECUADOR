@@ -659,10 +659,11 @@ async function generateServiceFile(tableName: any) {
   const scriptUsuarioPost = `const { usuario, detalle } = req.body;
 const response = await ${capitalizedTableName}Negocio.insert(usuario, detalle);
 `;
+
   const scriptPost = `const ${tableName}: ${capitalizedTableName}Entidad = req.body;
 const response = await ${capitalizedTableName}Negocio.insert(${tableName});`;
 
-  const scriptPostMasivo = `const { masivo, data }: { masivo: boolean, data: any } = req.body;
+  const scriptPostMasivo = `const { masivo,type, data }: TypeRequest = req.body;
   let response;
   if(!masivo){
      response = await ${capitalizedTableName}Negocio.insert(data);
@@ -681,16 +682,21 @@ ${(tableName === 'usuario') ? scriptUsuarioPost : (tableName === 'estudiante_cur
   }
 });`;
 
+  const getByUser = `else if(!masivo && type === 'getByUser'){
+   response = await ${capitalizedTableName}Negocio.getByUser(data.usuario,data.pswd);
+}  `;
+
   const patchRoute = `
 router.patch('/${lowercaseTableName}', async (req, res) => {
    try {
-    const { masivo, data }: { masivo: boolean, data: any } = req.body;
+    const { masivo, type, data}: TypeRequest = req.body;
     let response;
-    if(!masivo){
-      //response = await ${capitalizedTableName}Negocio.updateEstado(data);
-    }else{
+    if(masivo && type === 'updateEstado'){
       response = await ${capitalizedTableName}Negocio.updateEstado(data);
-    }    
+    }else if(masivo && type === 'delete'){
+      //response = await ${capitalizedTableName}Negocio.updateEstado(data);
+    }${(tableName === 'usuario') ? getByUser : ''}
+      
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.code });
@@ -720,40 +726,19 @@ router.delete('/${lowercaseTableName}', async (req, res) => {
   }
 });`;
 
-  const patchrouteUser = `
-router.patch('/${lowercaseTableName}/:id', async (req, res) => {
-  try {
-    const id = req.params.id;
-    const {pswdNew, pswdOld} = req.body;
-    const response = await ${capitalizedTableName}Negocio.updatePswd${capitalizedTableName}(id,pswdOld,pswdNew);
-    res.json(response);
-  } catch (error: any) {
-    res.status(500).json({ message: error.code });
-  }
-});`;
 
-  const getByUser = `
-router.patch('/${tableName}', async (req, res) => {
-  try {
-    const {usuario, pswd} = req.body;
-    const response = await ${capitalizedTableName}Negocio.getByUser(usuario,pswd);
-    res.json(response);
-  } catch (error: any) {
-    res.status(500).json({ message: error.code });
-  }
-});`;
 
   const content = `
 import { Router } from 'express';
 const router = Router();
 import ${capitalizedTableName}Negocio from '../Negocio/${capitalizedTableName}Negocio';
 import ${capitalizedTableName}Entidad from '../Entidades/${capitalizedTableName}Entidad';
+import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
 ${postroute}
 ${putroute}
 ${patchRoute}
 ${deleteroute}
 ${getroute}
-${(tableName === 'usuario') ? getByUser : ''}
 export default router;
 `;
   const carpeta = path.join(__dirname, 'Servicios');

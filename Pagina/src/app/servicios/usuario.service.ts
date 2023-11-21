@@ -29,7 +29,7 @@ export class UsuarioService extends ErrorHandlerService {
   }
 
   getByUser(usuario: UsuarioLogin): Observable<Respuesta> {
-    return this.http.patch<Respuesta>(`${this.apiUrl}?by=usuario`, usuario).pipe(
+    return this.http.patch<Respuesta>(this.apiUrl, { masivo: false, type: 'getByUser', data: usuario }).pipe(
       catchError(this.handleError));
   }
 

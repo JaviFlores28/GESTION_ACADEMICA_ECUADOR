@@ -3,6 +3,7 @@ import { Router } from 'express';
 const router = Router();
 import CalificacionesCuantitativasNegocio from '../Negocio/CalificacionesCuantitativasNegocio';
 import CalificacionesCuantitativasEntidad from '../Entidades/CalificacionesCuantitativasEntidad';
+import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
 
 router.post('/calificacionescuantitativas', async (req, res) => {
    try {
@@ -26,13 +27,14 @@ router.put('/calificacionescuantitativas', async (req, res) => {
 
 router.patch('/calificacionescuantitativas', async (req, res) => {
    try {
-    const { masivo, data }: { masivo: boolean, data: any } = req.body;
+    const { masivo, type, data}: TypeRequest = req.body;
     let response;
-    if(!masivo){
-      //response = await CalificacionesCuantitativasNegocio.updateEstado(data);
-    }else{
+    if(masivo && type === 'updateEstado'){
       response = await CalificacionesCuantitativasNegocio.updateEstado(data);
-    }    
+    }else if(masivo && type === 'delete'){
+      //response = await CalificacionesCuantitativasNegocio.updateEstado(data);
+    }
+      
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.code });
@@ -79,5 +81,4 @@ router.delete('/calificacionescuantitativas', async (req, res) => {
     }
   });
   
-
 export default router;

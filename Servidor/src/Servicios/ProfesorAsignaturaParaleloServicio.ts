@@ -3,6 +3,7 @@ import { Router } from 'express';
 const router = Router();
 import ProfesorAsignaturaParaleloNegocio from '../Negocio/ProfesorAsignaturaParaleloNegocio';
 import ProfesorAsignaturaParaleloEntidad from '../Entidades/ProfesorAsignaturaParaleloEntidad';
+import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
 
 router.post('/profesorasignaturaparalelo', async (req, res) => {
    try {
@@ -26,13 +27,14 @@ router.put('/profesorasignaturaparalelo', async (req, res) => {
 
 router.patch('/profesorasignaturaparalelo', async (req, res) => {
    try {
-    const { masivo, data }: { masivo: boolean, data: any } = req.body;
+    const { masivo, type, data}: TypeRequest = req.body;
     let response;
-    if(!masivo){
-      //response = await ProfesorAsignaturaParaleloNegocio.updateEstado(data);
-    }else{
+    if(masivo && type === 'updateEstado'){
       response = await ProfesorAsignaturaParaleloNegocio.updateEstado(data);
-    }    
+    }else if(masivo && type === 'delete'){
+      //response = await ProfesorAsignaturaParaleloNegocio.updateEstado(data);
+    }
+      
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.code });
@@ -79,5 +81,4 @@ router.delete('/profesorasignaturaparalelo', async (req, res) => {
     }
   });
   
-
 export default router;

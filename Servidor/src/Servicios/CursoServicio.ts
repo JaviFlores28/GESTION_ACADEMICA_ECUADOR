@@ -3,6 +3,7 @@ import { Router } from 'express';
 const router = Router();
 import CursoNegocio from '../Negocio/CursoNegocio';
 import CursoEntidad from '../Entidades/CursoEntidad';
+import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
 
 router.post('/curso', async (req, res) => {
    try {
@@ -26,13 +27,14 @@ router.put('/curso', async (req, res) => {
 
 router.patch('/curso', async (req, res) => {
    try {
-    const { masivo, data }: { masivo: boolean, data: any } = req.body;
+    const { masivo, type, data}: TypeRequest = req.body;
     let response;
-    if(!masivo){
-      //response = await CursoNegocio.updateEstado(data);
-    }else{
+    if(masivo && type === 'updateEstado'){
       response = await CursoNegocio.updateEstado(data);
-    }    
+    }else if(masivo && type === 'delete'){
+      //response = await CursoNegocio.updateEstado(data);
+    }
+      
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.code });
@@ -79,5 +81,4 @@ router.delete('/curso', async (req, res) => {
     }
   });
   
-
 export default router;

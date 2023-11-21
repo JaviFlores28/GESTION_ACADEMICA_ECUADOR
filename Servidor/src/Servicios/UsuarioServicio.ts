@@ -3,6 +3,7 @@ import { Router } from 'express';
 const router = Router();
 import UsuarioNegocio from '../Negocio/UsuarioNegocio';
 import UsuarioEntidad from '../Entidades/UsuarioEntidad';
+import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
 
 router.post('/usuario', async (req, res) => {
    try {
@@ -27,13 +28,16 @@ router.put('/usuario', async (req, res) => {
 
 router.patch('/usuario', async (req, res) => {
    try {
-    const { masivo, data }: { masivo: boolean, data: any } = req.body;
+    const { masivo, type, data}: TypeRequest = req.body;
     let response;
-    if(!masivo){
-      //response = await UsuarioNegocio.updateEstado(data);
-    }else{
+    if(masivo && type === 'updateEstado'){
       response = await UsuarioNegocio.updateEstado(data);
-    }    
+    }else if(masivo && type === 'delete'){
+      //response = await UsuarioNegocio.updateEstado(data);
+    }else if(!masivo && type === 'getByUser'){
+   response = await UsuarioNegocio.getByUser(data.usuario,data.pswd);
+}  
+      
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.code });
@@ -80,14 +84,4 @@ router.delete('/usuario', async (req, res) => {
     }
   });
   
-
-router.patch('/usuario', async (req, res) => {
-  try {
-    const {usuario, pswd} = req.body;
-    const response = await UsuarioNegocio.getByUser(usuario,pswd);
-    res.json(response);
-  } catch (error: any) {
-    res.status(500).json({ message: error.code });
-  }
-});
 export default router;

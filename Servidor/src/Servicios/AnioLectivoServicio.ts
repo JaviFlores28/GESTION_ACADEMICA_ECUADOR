@@ -3,6 +3,7 @@ import { Router } from 'express';
 const router = Router();
 import AnioLectivoNegocio from '../Negocio/AnioLectivoNegocio';
 import AnioLectivoEntidad from '../Entidades/AnioLectivoEntidad';
+import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
 
 router.post('/aniolectivo', async (req, res) => {
    try {
@@ -26,13 +27,14 @@ router.put('/aniolectivo', async (req, res) => {
 
 router.patch('/aniolectivo', async (req, res) => {
    try {
-    const { masivo, data }: { masivo: boolean, data: any } = req.body;
+    const { masivo, type, data}: TypeRequest = req.body;
     let response;
-    if(!masivo){
-      //response = await AnioLectivoNegocio.updateEstado(data);
-    }else{
+    if(masivo && type === 'updateEstado'){
       response = await AnioLectivoNegocio.updateEstado(data);
-    }    
+    }else if(masivo && type === 'delete'){
+      //response = await AnioLectivoNegocio.updateEstado(data);
+    }
+      
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.code });
@@ -79,5 +81,4 @@ router.delete('/aniolectivo', async (req, res) => {
     }
   });
   
-
 export default router;

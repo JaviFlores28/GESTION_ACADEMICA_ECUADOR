@@ -3,6 +3,7 @@ import { Router } from 'express';
 const router = Router();
 import ParaleloNegocio from '../Negocio/ParaleloNegocio';
 import ParaleloEntidad from '../Entidades/ParaleloEntidad';
+import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
 
 router.post('/paralelo', async (req, res) => {
    try {
@@ -26,13 +27,14 @@ router.put('/paralelo', async (req, res) => {
 
 router.patch('/paralelo', async (req, res) => {
    try {
-    const { masivo, data }: { masivo: boolean, data: any } = req.body;
+    const { masivo, type, data}: TypeRequest = req.body;
     let response;
-    if(!masivo){
-      //response = await ParaleloNegocio.updateEstado(data);
-    }else{
+    if(masivo && type === 'updateEstado'){
       response = await ParaleloNegocio.updateEstado(data);
-    }    
+    }else if(masivo && type === 'delete'){
+      //response = await ParaleloNegocio.updateEstado(data);
+    }
+      
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.code });
@@ -79,5 +81,4 @@ router.delete('/paralelo', async (req, res) => {
     }
   });
   
-
 export default router;
