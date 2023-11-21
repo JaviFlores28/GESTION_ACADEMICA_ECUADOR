@@ -27,7 +27,7 @@ class UsuarioProfesorDatos {
       }
       return {response: true, data:newUsuarioProfesor.DTLL_PRF_ID, message: 'Se creo correctamente' }; // Retorna el ID del UsuarioProfesor
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -41,7 +41,7 @@ class UsuarioProfesorDatos {
       }
       return {response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
     
@@ -63,7 +63,7 @@ class UsuarioProfesorDatos {
 
       return {response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message };
+      return {response: false, data: null, message: error.code };
     }
   }
   
@@ -76,7 +76,7 @@ class UsuarioProfesorDatos {
       }
       return { response: true, data: true, message: 'Objeto eliminado' }
     } catch (error: any) {
-      return { response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -87,7 +87,7 @@ class UsuarioProfesorDatos {
       const [rows] = await pool.execute<any>(sql);
       return { response: true, data: rows as UsuarioProfesorEntidad[], message: '' };
     } catch (error: any) {
-      return { response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -101,7 +101,7 @@ class UsuarioProfesorDatos {
       let newUsuarioProfesor = rows[0] as UsuarioProfesorEntidad;
       return {response: true, data: newUsuarioProfesor, message: 'Encontrado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -112,7 +112,7 @@ class UsuarioProfesorDatos {
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as UsuarioProfesorEntidad[], message: '' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   

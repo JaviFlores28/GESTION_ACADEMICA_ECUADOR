@@ -10,7 +10,7 @@ const profesor_asignatura_paralelo: ProfesorAsignaturaParaleloEntidad = req.body
 const response = await ProfesorAsignaturaParaleloNegocio.insert(profesor_asignatura_paralelo);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -20,7 +20,7 @@ router.put('/profesorasignaturaparalelo', async (req, res) => {
     const response = await ProfesorAsignaturaParaleloNegocio.update(profesor_asignatura_paralelo);
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.message });
+     res.status(500).json({ message: error.code });
    }
 });
 
@@ -35,7 +35,7 @@ router.patch('/profesorasignaturaparalelo', async (req, res) => {
     }    
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -46,31 +46,38 @@ router.delete('/profesorasignaturaparalelo', async (req, res) => {
     const response = await ProfesorAsignaturaParaleloNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
-router.get('/profesorasignaturaparalelo', async (req, res) => {
-   try {
-    let  profesor_asignatura_paralelo;
-    const by = req.query.by as string;
-    if (!by) {
-      return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
-    }
-    if (by === 'all') {
-      
-      profesor_asignatura_paralelo = await ProfesorAsignaturaParaleloNegocio.getAll();
-    } else if (by === 'enabled') {
-      
-      profesor_asignatura_paralelo = await ProfesorAsignaturaParaleloNegocio.getEnabled();
-    } else if (by === 'id') {
+  router.get('/profesorasignaturaparalelo', async (req, res) => {
+    try {
+      let profesor_asignatura_paralelo;
+      const by = req.query.by as string;
+      if (!by) {
+        return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
+      }
       const id = req.query.id as string;
-      profesor_asignatura_paralelo = await ProfesorAsignaturaParaleloNegocio.getById(id);
-    } 
-    res.json(profesor_asignatura_paralelo);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
+      
+      switch (by) {
+        case 'all':
+          profesor_asignatura_paralelo = await ProfesorAsignaturaParaleloNegocio.getAll();
+          break;
+        case 'enabled':
+          profesor_asignatura_paralelo = await ProfesorAsignaturaParaleloNegocio.getEnabled();
+          break;
+        case 'id':
+          profesor_asignatura_paralelo = await ProfesorAsignaturaParaleloNegocio.getById(id);
+          break;
+          
+        default:
+          return res.status(400).json({ message: 'Parámetro inválido en la consulta.' });
+      }
+      res.json(profesor_asignatura_paralelo);
+    } catch (error: any) {
+      res.status(500).json({ message: error.code });
+    }
+  });
+  
 
 export default router;

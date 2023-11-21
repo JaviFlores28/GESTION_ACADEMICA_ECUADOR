@@ -27,7 +27,7 @@ class CursoDatos {
       }
       return {response: true, data:newCurso.CRS_ID, message: 'Se creo correctamente' }; // Retorna el ID del Curso
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -41,7 +41,7 @@ class CursoDatos {
       }
       return {response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
     
@@ -63,7 +63,7 @@ class CursoDatos {
 
       return {response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message };
+      return {response: false, data: null, message: error.code };
     }
   }
   
@@ -76,7 +76,7 @@ class CursoDatos {
       }
       return { response: true, data: true, message: 'Objeto eliminado' }
     } catch (error: any) {
-      return { response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -87,7 +87,7 @@ class CursoDatos {
       const [rows] = await pool.execute<any>(sql);
       return { response: true, data: rows as CursoEntidad[], message: '' };
     } catch (error: any) {
-      return { response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -101,7 +101,7 @@ class CursoDatos {
       let newCurso = rows[0] as CursoEntidad;
       return {response: true, data: newCurso, message: 'Encontrado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -112,7 +112,7 @@ class CursoDatos {
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as CursoEntidad[], message: '' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   

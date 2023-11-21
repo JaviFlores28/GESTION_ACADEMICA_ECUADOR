@@ -27,7 +27,7 @@ class ParametroDatos {
       }
       return {response: true, data:newParametro.PRMT_ID, message: 'Se creo correctamente' }; // Retorna el ID del Parametro
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -41,7 +41,7 @@ class ParametroDatos {
       }
       return {response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
     
@@ -63,7 +63,7 @@ class ParametroDatos {
 
       return {response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message };
+      return {response: false, data: null, message: error.code };
     }
   }
   
@@ -76,7 +76,7 @@ class ParametroDatos {
       }
       return { response: true, data: true, message: 'Objeto eliminado' }
     } catch (error: any) {
-      return { response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -87,7 +87,7 @@ class ParametroDatos {
       const [rows] = await pool.execute<any>(sql);
       return { response: true, data: rows as ParametroEntidad[], message: '' };
     } catch (error: any) {
-      return { response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -101,7 +101,7 @@ class ParametroDatos {
       let newParametro = rows[0] as ParametroEntidad;
       return {response: true, data: newParametro, message: 'Encontrado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -112,7 +112,7 @@ class ParametroDatos {
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as ParametroEntidad[], message: '' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   

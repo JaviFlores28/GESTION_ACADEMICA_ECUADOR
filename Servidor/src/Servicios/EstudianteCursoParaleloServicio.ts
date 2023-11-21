@@ -10,7 +10,7 @@ const estudiante_curso_paralelo: EstudianteCursoParaleloEntidad = req.body;
 const response = await EstudianteCursoParaleloNegocio.insert(estudiante_curso_paralelo);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -20,7 +20,7 @@ router.put('/estudiantecursoparalelo', async (req, res) => {
     const response = await EstudianteCursoParaleloNegocio.update(estudiante_curso_paralelo);
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.message });
+     res.status(500).json({ message: error.code });
    }
 });
 
@@ -35,7 +35,7 @@ router.patch('/estudiantecursoparalelo', async (req, res) => {
     }    
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -46,31 +46,38 @@ router.delete('/estudiantecursoparalelo', async (req, res) => {
     const response = await EstudianteCursoParaleloNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
-router.get('/estudiantecursoparalelo', async (req, res) => {
-   try {
-    let  estudiante_curso_paralelo;
-    const by = req.query.by as string;
-    if (!by) {
-      return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
-    }
-    if (by === 'all') {
-      
-      estudiante_curso_paralelo = await EstudianteCursoParaleloNegocio.getAll();
-    } else if (by === 'enabled') {
-      
-      estudiante_curso_paralelo = await EstudianteCursoParaleloNegocio.getEnabled();
-    } else if (by === 'id') {
+  router.get('/estudiantecursoparalelo', async (req, res) => {
+    try {
+      let estudiante_curso_paralelo;
+      const by = req.query.by as string;
+      if (!by) {
+        return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
+      }
       const id = req.query.id as string;
-      estudiante_curso_paralelo = await EstudianteCursoParaleloNegocio.getById(id);
-    } 
-    res.json(estudiante_curso_paralelo);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
+      
+      switch (by) {
+        case 'all':
+          estudiante_curso_paralelo = await EstudianteCursoParaleloNegocio.getAll();
+          break;
+        case 'enabled':
+          estudiante_curso_paralelo = await EstudianteCursoParaleloNegocio.getEnabled();
+          break;
+        case 'id':
+          estudiante_curso_paralelo = await EstudianteCursoParaleloNegocio.getById(id);
+          break;
+          
+        default:
+          return res.status(400).json({ message: 'Parámetro inválido en la consulta.' });
+      }
+      res.json(estudiante_curso_paralelo);
+    } catch (error: any) {
+      res.status(500).json({ message: error.code });
+    }
+  });
+  
 
 export default router;

@@ -9,7 +9,7 @@ class AreaNegocio {
     try {
       return AreaDatos.insert(area );
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -17,7 +17,7 @@ class AreaNegocio {
     try {
       return AreaDatos.update(area);
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -26,7 +26,7 @@ class AreaNegocio {
       return AreaDatos.updateEstado(ids);
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -34,7 +34,7 @@ class AreaNegocio {
     try {
       return AreaDatos.delete(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -42,7 +42,7 @@ class AreaNegocio {
     try {
       return AreaDatos.getAll();
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -51,7 +51,7 @@ class AreaNegocio {
       return AreaDatos.getEnabled();
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -59,7 +59,7 @@ class AreaNegocio {
     try {
       return AreaDatos.getById(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   

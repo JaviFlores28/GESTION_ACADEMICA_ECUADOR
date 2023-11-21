@@ -16,7 +16,7 @@ const { masivo, data }: { masivo: boolean, data: any } = req.body;
 
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -26,7 +26,7 @@ router.put('/estudiantecurso', async (req, res) => {
     const response = await EstudianteCursoNegocio.update(estudiante_curso);
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.message });
+     res.status(500).json({ message: error.code });
    }
 });
 
@@ -41,7 +41,7 @@ router.patch('/estudiantecurso', async (req, res) => {
     }    
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -52,34 +52,43 @@ router.delete('/estudiantecurso', async (req, res) => {
     const response = await EstudianteCursoNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
-router.get('/estudiantecurso', async (req, res) => {
-   try {
-    let  estudiante_curso;
-    const by = req.query.by as string;
-    if (!by) {
-      return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
-    }
-    if (by === 'all') {
-      
-      estudiante_curso = await EstudianteCursoNegocio.getAll();
-    } else if (by === 'enabled') {
-      
-      estudiante_curso = await EstudianteCursoNegocio.getEnabled();
-    } else if (by === 'id') {
+  router.get('/estudiantecurso', async (req, res) => {
+    try {
+      let estudiante_curso;
+      const by = req.query.by as string;
+      if (!by) {
+        return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
+      }
       const id = req.query.id as string;
-      estudiante_curso = await EstudianteCursoNegocio.getById(id);
-    } else if (by === 'noMatriculados') {
-    const id = req.query.id as string;
+      
+      switch (by) {
+        case 'all':
+          estudiante_curso = await EstudianteCursoNegocio.getAll();
+          break;
+        case 'enabled':
+          estudiante_curso = await EstudianteCursoNegocio.getEnabled();
+          break;
+        case 'id':
+          estudiante_curso = await EstudianteCursoNegocio.getById(id);
+          break;
+          case 'noMatriculados':
     estudiante_curso = await EstudianteCursoNegocio.getNoMatriculados();
-  } 
-    res.json(estudiante_curso);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
+    break;
+  case 'curso':
+    estudiante_curso = await EstudianteCursoNegocio.getByCurso(id);
+    break;
+        default:
+          return res.status(400).json({ message: 'Parámetro inválido en la consulta.' });
+      }
+      res.json(estudiante_curso);
+    } catch (error: any) {
+      res.status(500).json({ message: error.code });
+    }
+  });
+  
 
 export default router;

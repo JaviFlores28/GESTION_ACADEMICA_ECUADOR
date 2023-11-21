@@ -19,15 +19,16 @@ export class EstudianteCursoParaleloService extends ErrorHandlerService {
     return this.http.get(`${this.apiUrl}?by=all`).pipe(catchError(this.handleError));
   }
 
-  getEnabled(string:string): Observable<any> {
+  getEnabled(): Observable<any> {
     return this.http.get(`${this.apiUrl}?by=enabled`).pipe(
       catchError(this.handleError));
   }
 
-  getByCurso(id: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}?by=curso&id=${id}`).pipe(
+  getByParalelo(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}?by=paralelo&id=${id}`).pipe(
       catchError(this.handleError));
   }
+
   getById(id: string): Observable<Respuesta> {
     return this.http.get<Respuesta>(`${this.apiUrl}?by=id&id=${id}`).pipe(
       catchError(this.handleError));

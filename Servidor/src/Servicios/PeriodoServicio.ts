@@ -10,7 +10,7 @@ const periodo: PeriodoEntidad = req.body;
 const response = await PeriodoNegocio.insert(periodo);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -20,7 +20,7 @@ router.put('/periodo', async (req, res) => {
     const response = await PeriodoNegocio.update(periodo);
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.message });
+     res.status(500).json({ message: error.code });
    }
 });
 
@@ -35,7 +35,7 @@ router.patch('/periodo', async (req, res) => {
     }    
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -46,31 +46,38 @@ router.delete('/periodo', async (req, res) => {
     const response = await PeriodoNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
-router.get('/periodo', async (req, res) => {
-   try {
-    let  periodo;
-    const by = req.query.by as string;
-    if (!by) {
-      return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
-    }
-    if (by === 'all') {
-      
-      periodo = await PeriodoNegocio.getAll();
-    } else if (by === 'enabled') {
-      
-      periodo = await PeriodoNegocio.getEnabled();
-    } else if (by === 'id') {
+  router.get('/periodo', async (req, res) => {
+    try {
+      let periodo;
+      const by = req.query.by as string;
+      if (!by) {
+        return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
+      }
       const id = req.query.id as string;
-      periodo = await PeriodoNegocio.getById(id);
-    } 
-    res.json(periodo);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
+      
+      switch (by) {
+        case 'all':
+          periodo = await PeriodoNegocio.getAll();
+          break;
+        case 'enabled':
+          periodo = await PeriodoNegocio.getEnabled();
+          break;
+        case 'id':
+          periodo = await PeriodoNegocio.getById(id);
+          break;
+          
+        default:
+          return res.status(400).json({ message: 'Parámetro inválido en la consulta.' });
+      }
+      res.json(periodo);
+    } catch (error: any) {
+      res.status(500).json({ message: error.code });
+    }
+  });
+  
 
 export default router;

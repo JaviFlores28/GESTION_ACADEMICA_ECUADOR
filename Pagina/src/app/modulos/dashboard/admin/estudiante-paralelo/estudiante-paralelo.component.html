@@ -2,49 +2,59 @@
     <div class="row bg-light">
         <h1 class="fw-custom-semibold">Institución</h1>
         <ol class="ps-4 py-2 breadcrumb">
-            <li class="breadcrumb-item"> <a class="text-black fw-custom-semibold" routerLink="../matriculas">Matrículas</a></li>
+            <li class="breadcrumb-item"> <a class="text-black fw-custom-semibold"
+                    routerLink="../matriculas">Matrículas</a></li>
             <li class="breadcrumb-item active">Paralelos</li>
         </ol>
     </div>
-    <div class="row row-cols-1 g-3 justify-content-center align-items-center">
-        <div class="col">
+    <form class="row g-3" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="col-6">
             <div class="card text-start border border-0 rounded shadow">
-                <div class="card-body">
-                   <!--  <h3 class="card-title">Matrículas</h3>
-                    <hr> -->
-                    <form class="row g-3 justify-content-start align-items-end" [formGroup]="form" (ngSubmit)="onSubmit()">
-                        <div class="col-3">
-                            <label for="CRS_ID" class="form-label">Curso:</label>
-                            <ng-select [items]="cursos" bindLabel="CRS_NOM" bindValue="CRS_ID" formControlName="CRS_ID"
-                                id="CRS_ID">
-                            </ng-select>
-                        </div>
-                        <div class="col-2">
-                            <div class="btn-group" role="group">
-                                <button type="submit" [disabled]="idsEstudiantes.length<=0 ||!form.valid"
-                                    class="btn btn-dark">Guardar</button>
-                            </div>
-                        </div>
-                    </form>
+                <div class="card-body row">
+                    <div class="col">
+                        <label for="CRS_ID" class="form-label">Curso:</label>
+                        <ng-select [items]="cursos" bindLabel="CRS_NOM" bindValue="CRS_ID" formControlName="CRS_ID"
+                            id="CRS_ID">
+                        </ng-select>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-6">
             <div class="card text-start border border-0 rounded shadow">
-                <div class="card-body">
-                    <app-ng-table tableName="nomatriculados" [data]="estudiantes" [headers]="headersNoMatriculados"
-                        [botonera]="false" [checksOptions]="false" [botonEstado]="false" [pageSize]="30"
-                        (checkedAction)="estudiantesaction($event)"></app-ng-table>
+                <div class="card-body row align-items-end">
+                    <div class="col-3">
+                        <label for="PRLL_ID" class="form-label">Paralelo:</label>
+                        <ng-select [items]="paralelos" bindLabel="PRLL_NOM" bindValue="PRLL_ID"
+                            formControlName="PRLL_ID" id="PRLL_ID">
+                        </ng-select>
+                    </div>
+                    <div class="col-2">
+                        <div class="btn-group" role="group">
+                            <button type="submit" [disabled]="idsMatriculas.length<=0 ||!form.valid"
+                                class="btn btn-dark">Guardar</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-6">
+        <div class="col" *ngIf="matriculas.length>0">
             <div class="card text-start border border-0 rounded shadow">
                 <div class="card-body">
-                    <app-ng-table tableName="matriculados" [data]="matriculas" [headers]="headersMatriculados" [botonera]="false" [pageSize]="30"
-                        (checkedAction)="matriculasAction($event)"></app-ng-table>
+                    <app-ng-table tableName="matriculas" [data]="matriculas" [headers]="headersMatriculas"
+                        [campos]="camposMatriculados" [botonera]="false" [checksOptions]="false" [botonEstado]="false"
+                        [pageSize]="30" (checkedAction)="estudiantesaction($event)"></app-ng-table>
                 </div>
             </div>
         </div>
-    </div>
+        <div class="col" *ngIf="estudiantesParalelos.length>0">
+            <div class="card text-start border border-0 rounded shadow">
+                <div class="card-body">
+                    <app-ng-table tableName="estudiantesParalelos" [data]="estudiantesParalelos"
+                        [headers]="headersEstudiantesParalelos" [campos]="camposestudiantesParalelos" [botonera]="false"
+                        [pageSize]="30" (checkedAction)="matriculasAction($event)"></app-ng-table>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>

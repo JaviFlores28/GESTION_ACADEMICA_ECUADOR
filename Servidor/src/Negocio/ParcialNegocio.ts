@@ -9,7 +9,7 @@ class ParcialNegocio {
     try {
       return ParcialDatos.insert(parcial );
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -17,7 +17,7 @@ class ParcialNegocio {
     try {
       return ParcialDatos.update(parcial);
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -26,7 +26,7 @@ class ParcialNegocio {
       return ParcialDatos.updateEstado(ids);
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -34,7 +34,7 @@ class ParcialNegocio {
     try {
       return ParcialDatos.delete(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -42,7 +42,7 @@ class ParcialNegocio {
     try {
       return ParcialDatos.getAll();
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -51,7 +51,7 @@ class ParcialNegocio {
       return ParcialDatos.getEnabled();
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -59,7 +59,7 @@ class ParcialNegocio {
     try {
       return ParcialDatos.getById(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   

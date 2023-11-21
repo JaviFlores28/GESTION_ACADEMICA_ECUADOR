@@ -168,7 +168,7 @@ export class NgTableComponent implements OnInit {
    * @param changes - Objeto que contiene los cambios detectados en las propiedades de entrada.
    */
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['data'] && changes['data'].currentValue) {
+    if (changes['data'] && Array.isArray(changes['data'].currentValue)) {
       this.dataAux = [...changes['data'].currentValue];
     }
   }

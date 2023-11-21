@@ -40,7 +40,7 @@ class UsuarioDatos {
   }
       return {response: true, data:newUsuario.USR_ID, message: 'Se creo correctamente' }; // Retorna el ID del Usuario
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -54,7 +54,7 @@ class UsuarioDatos {
       }
       return {response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
     
@@ -76,7 +76,7 @@ class UsuarioDatos {
 
       return {response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message };
+      return {response: false, data: null, message: error.code };
     }
   }
   
@@ -89,7 +89,7 @@ class UsuarioDatos {
       }
       return { response: true, data: true, message: 'Objeto eliminado' }
     } catch (error: any) {
-      return { response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -108,7 +108,7 @@ class UsuarioDatos {
       const [rows] = await pool.execute<any>(sql);
       return { response: true, data: rows as UsuarioEntidad[], message: '' };
     } catch (error: any) {
-      return { response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -122,7 +122,7 @@ class UsuarioDatos {
       let newUsuario = rows[0] as UsuarioEntidad;
       return {response: true, data: newUsuario, message: 'Encontrado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -141,7 +141,7 @@ class UsuarioDatos {
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as UsuarioEntidad[], message: '' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -163,7 +163,7 @@ class UsuarioDatos {
       newUsuario.USR_PSWD = 'pswd';
       return {response: true, data: newUsuario, message: 'Usuario Valido' }
     } catch (error: any) {
-      return { response: false, data: null, message: error.message } // Devuelve una Promise rechazada con el error
+      return { response: false, data: null, message: error.code } // Devuelve una Promise rechazada con el error
     }
   }
 

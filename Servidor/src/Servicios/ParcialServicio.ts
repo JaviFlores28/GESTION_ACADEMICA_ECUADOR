@@ -10,7 +10,7 @@ const parcial: ParcialEntidad = req.body;
 const response = await ParcialNegocio.insert(parcial);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -20,7 +20,7 @@ router.put('/parcial', async (req, res) => {
     const response = await ParcialNegocio.update(parcial);
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.message });
+     res.status(500).json({ message: error.code });
    }
 });
 
@@ -35,7 +35,7 @@ router.patch('/parcial', async (req, res) => {
     }    
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -46,31 +46,38 @@ router.delete('/parcial', async (req, res) => {
     const response = await ParcialNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
-router.get('/parcial', async (req, res) => {
-   try {
-    let  parcial;
-    const by = req.query.by as string;
-    if (!by) {
-      return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
-    }
-    if (by === 'all') {
-      
-      parcial = await ParcialNegocio.getAll();
-    } else if (by === 'enabled') {
-      
-      parcial = await ParcialNegocio.getEnabled();
-    } else if (by === 'id') {
+  router.get('/parcial', async (req, res) => {
+    try {
+      let parcial;
+      const by = req.query.by as string;
+      if (!by) {
+        return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
+      }
       const id = req.query.id as string;
-      parcial = await ParcialNegocio.getById(id);
-    } 
-    res.json(parcial);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
+      
+      switch (by) {
+        case 'all':
+          parcial = await ParcialNegocio.getAll();
+          break;
+        case 'enabled':
+          parcial = await ParcialNegocio.getEnabled();
+          break;
+        case 'id':
+          parcial = await ParcialNegocio.getById(id);
+          break;
+          
+        default:
+          return res.status(400).json({ message: 'Parámetro inválido en la consulta.' });
+      }
+      res.json(parcial);
+    } catch (error: any) {
+      res.status(500).json({ message: error.code });
+    }
+  });
+  
 
 export default router;

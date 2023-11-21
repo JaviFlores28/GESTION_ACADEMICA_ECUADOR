@@ -10,7 +10,7 @@ const curso: CursoEntidad = req.body;
 const response = await CursoNegocio.insert(curso);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -20,7 +20,7 @@ router.put('/curso', async (req, res) => {
     const response = await CursoNegocio.update(curso);
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.message });
+     res.status(500).json({ message: error.code });
    }
 });
 
@@ -35,7 +35,7 @@ router.patch('/curso', async (req, res) => {
     }    
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -46,31 +46,38 @@ router.delete('/curso', async (req, res) => {
     const response = await CursoNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
-router.get('/curso', async (req, res) => {
-   try {
-    let  curso;
-    const by = req.query.by as string;
-    if (!by) {
-      return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
-    }
-    if (by === 'all') {
-      
-      curso = await CursoNegocio.getAll();
-    } else if (by === 'enabled') {
-      
-      curso = await CursoNegocio.getEnabled();
-    } else if (by === 'id') {
+  router.get('/curso', async (req, res) => {
+    try {
+      let curso;
+      const by = req.query.by as string;
+      if (!by) {
+        return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
+      }
       const id = req.query.id as string;
-      curso = await CursoNegocio.getById(id);
-    } 
-    res.json(curso);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
+      
+      switch (by) {
+        case 'all':
+          curso = await CursoNegocio.getAll();
+          break;
+        case 'enabled':
+          curso = await CursoNegocio.getEnabled();
+          break;
+        case 'id':
+          curso = await CursoNegocio.getById(id);
+          break;
+          
+        default:
+          return res.status(400).json({ message: 'Parámetro inválido en la consulta.' });
+      }
+      res.json(curso);
+    } catch (error: any) {
+      res.status(500).json({ message: error.code });
+    }
+  });
+  
 
 export default router;

@@ -9,7 +9,7 @@ class ParaleloNegocio {
     try {
       return ParaleloDatos.insert(paralelo );
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -17,7 +17,7 @@ class ParaleloNegocio {
     try {
       return ParaleloDatos.update(paralelo);
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -26,7 +26,7 @@ class ParaleloNegocio {
       return ParaleloDatos.updateEstado(ids);
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -34,7 +34,7 @@ class ParaleloNegocio {
     try {
       return ParaleloDatos.delete(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -42,7 +42,7 @@ class ParaleloNegocio {
     try {
       return ParaleloDatos.getAll();
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -51,7 +51,7 @@ class ParaleloNegocio {
       return ParaleloDatos.getEnabled();
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -59,7 +59,7 @@ class ParaleloNegocio {
     try {
       return ParaleloDatos.getById(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   

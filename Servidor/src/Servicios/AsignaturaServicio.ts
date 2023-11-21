@@ -10,7 +10,7 @@ const asignatura: AsignaturaEntidad = req.body;
 const response = await AsignaturaNegocio.insert(asignatura);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -20,7 +20,7 @@ router.put('/asignatura', async (req, res) => {
     const response = await AsignaturaNegocio.update(asignatura);
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.message });
+     res.status(500).json({ message: error.code });
    }
 });
 
@@ -35,7 +35,7 @@ router.patch('/asignatura', async (req, res) => {
     }    
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -46,31 +46,38 @@ router.delete('/asignatura', async (req, res) => {
     const response = await AsignaturaNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
-router.get('/asignatura', async (req, res) => {
-   try {
-    let  asignatura;
-    const by = req.query.by as string;
-    if (!by) {
-      return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
-    }
-    if (by === 'all') {
-      
-      asignatura = await AsignaturaNegocio.getAll();
-    } else if (by === 'enabled') {
-      
-      asignatura = await AsignaturaNegocio.getEnabled();
-    } else if (by === 'id') {
+  router.get('/asignatura', async (req, res) => {
+    try {
+      let asignatura;
+      const by = req.query.by as string;
+      if (!by) {
+        return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
+      }
       const id = req.query.id as string;
-      asignatura = await AsignaturaNegocio.getById(id);
-    } 
-    res.json(asignatura);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
+      
+      switch (by) {
+        case 'all':
+          asignatura = await AsignaturaNegocio.getAll();
+          break;
+        case 'enabled':
+          asignatura = await AsignaturaNegocio.getEnabled();
+          break;
+        case 'id':
+          asignatura = await AsignaturaNegocio.getById(id);
+          break;
+          
+        default:
+          return res.status(400).json({ message: 'Parámetro inválido en la consulta.' });
+      }
+      res.json(asignatura);
+    } catch (error: any) {
+      res.status(500).json({ message: error.code });
+    }
+  });
+  
 
 export default router;

@@ -208,7 +208,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       }${(tableName === 'usuario') ? stringByinsertUser : ''}
       return {response: true, data:new${capitalizedTableName}.${primaryKeyColumn}, message: 'Se creo correctamente' }; // Retorna el ID del ${capitalizedTableName}
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }`;
 
@@ -223,7 +223,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       }
       return {response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }`;
 
@@ -237,7 +237,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       }
       return { response: true, data: true, message: 'Objeto eliminado' }
     } catch (error: any) {
-      return { response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }`;
 
@@ -259,7 +259,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       const [rows] = await pool.execute<any>(sql);
       return { response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
-      return { response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }`;
 
@@ -274,7 +274,18 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       let new${capitalizedTableName} = rows[0] as ${capitalizedTableName}Entidad;
       return {response: true, data: new${capitalizedTableName}, message: 'Encontrado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+    }
+  }`;
+
+  const functiongetByCurso = `
+  static async getByCurso(id: String): Promise<Respuesta> {
+    try {
+      let sql = this.sqlGetMatriculas;
+      const [rows] = await pool.execute<any>(sql, [id]);
+      return { response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
+    } catch (error: any) {
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }`;
 
@@ -296,7 +307,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }`;
 
@@ -319,7 +330,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       new${capitalizedTableName}.USR_PSWD = 'pswd';
       return {response: true, data: new${capitalizedTableName}, message: '${capitalizedTableName} Valido' }
     } catch (error: any) {
-      return { response: false, data: null, message: error.message } // Devuelve una Promise rechazada con el error
+      return { response: false, data: null, message: error.code } // Devuelve una Promise rechazada con el error
     }
   }`;
 
@@ -330,7 +341,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }`;
 
@@ -368,7 +379,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
 
       return {response: true, data: true, message: 'Matrículas insertadas correctamente' };
     } catch (error: any) {
-      return {response: false, data: false, message: error.message };
+      return {response: false, data: false, message: error.code };
     }
   }`;
 
@@ -391,7 +402,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
 
       return { data: true, message: 'Matrículas eliminadas' };
     } catch (error: any) {
-      return { data: false, message: error.message };
+      return { data: false, message: error.code };
     }
   }`;
 
@@ -414,7 +425,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
 
       return {response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message };
+      return {response: false, data: null, message: error.code };
     }
   }`;
 
@@ -425,6 +436,9 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
     return (tableName === 'estudiante' || tableName === 'usuario' || tableName === 'estudiante_curso') ? `vista_${tableName}` : tableName;
   }
 
+
+  const sqlgetmatriculas = `static sqlGetMatriculas: string = 'SELECT E.*, ec.EST_CRS_ID FROM vista_estudiante E JOIN ESTUDIANTE_CURSO EC ON E.EST_ID = EC.EST_ID JOIN CURSO C ON EC.CRS_ID = C.CRS_ID WHERE EC.ESTADO = 1 AND C.CRS_ID = ?;'`;
+  const sqlGetNoMatriculados = `static sqlGetNoMatriculados: string = 'SELECT a.* FROM vista_estudiante AS a WHERE NOT EXISTS ( SELECT 1 FROM estudiante_curso AS b WHERE b.EST_ID = a.EST_ID AND (b.ESTADO = 1 OR b.CRS_ID = (SELECT CRS_ID FROM curso ORDER BY CRS_ORDEN DESC LIMIT 1)) ) AND a.ESTADO = 1;'`
 
   const content = `${tableName === 'usuario' ? `import Funciones from '../sistema/Funciones/Funciones';\nimport UsuarioProfesorDatos from './UsuarioProfesorDatos';\nimport UsuarioProfesorEntidad from '../Entidades/UsuarioProfesorEntidad';` : ''}
 import pool from '../sistema/Conexion/BaseDatos';
@@ -441,7 +455,7 @@ class ${capitalizedTableName}Datos {
   static sqlGetById: string = 'SELECT * FROM ${tableName} WHERE ${primaryKeyColumn} = ?';
   static sqlGetEnabled: string = 'SELECT * FROM ${validarVistaTabla(tableName)} WHERE ESTADO = 1';
   ${(tableName === 'usuario') ? `static sqlGetByUser: string = 'SELECT * FROM ${tableName} WHERE USUARIO = ?'` :
-      (tableName === 'estudiante_curso') ? `static sqlGetNoMatriculados: string = 'SELECT a.* FROM vista_estudiante AS a WHERE NOT EXISTS ( SELECT 1 FROM estudiante_curso AS b WHERE b.EST_ID = a.EST_ID AND (b.ESTADO = 1 OR b.CRS_ID = (SELECT CRS_ID FROM curso ORDER BY CRS_ORDEN DESC LIMIT 1)) ) AND a.ESTADO = 1;'` : ''}
+      (tableName === 'estudiante_curso') ? sqlGetNoMatriculados + '\n' + sqlgetmatriculas : ''}
   ${functioninsert}
   ${functionUpdate}
   ${functionupdateEstado}
@@ -449,7 +463,7 @@ class ${capitalizedTableName}Datos {
   ${functionGet}
   ${functiongetById}
   ${functionGetEnabled}
-  ${(tableName === 'usuario') ? functionGetByUser : (tableName === 'estudiante_curso') ? functionGetNoMatriculados + functioninsertarMasivamente : ''}
+  ${(tableName === 'usuario') ? functionGetByUser : (tableName === 'estudiante_curso') ? functionGetNoMatriculados + functiongetByCurso + functioninsertarMasivamente : ''}
 
 
 }
@@ -474,7 +488,7 @@ async function generateNegocioFile(tableName: string) {
     try {
       return ${capitalizedTableName}Datos.insert(${tableName} ${(tableName === 'usuario') ? ', detalle' : ''});
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }`;
 
@@ -483,7 +497,7 @@ async function generateNegocioFile(tableName: string) {
     try {
       return ${capitalizedTableName}Datos.insertMasivo(data);
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }`;
 
@@ -493,7 +507,7 @@ async function generateNegocioFile(tableName: string) {
     try {
       return ${capitalizedTableName}Datos.update(${tableName});
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }`;
 
@@ -502,7 +516,7 @@ async function generateNegocioFile(tableName: string) {
     try {
       return ${capitalizedTableName}Datos.delete(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }`;
 
@@ -511,7 +525,7 @@ async function generateNegocioFile(tableName: string) {
     try {
       return ${capitalizedTableName}Datos.getAll(${(tableName === 'usuario') ? `tipo` : ''});
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }`;
 
@@ -520,7 +534,16 @@ async function generateNegocioFile(tableName: string) {
     try {
       return ${capitalizedTableName}Datos.getById(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+    }
+  }`;
+
+  const functiongetByCurso = `
+  static async getByCurso(id: String): Promise<Respuesta> {
+    try {
+      return ${capitalizedTableName}Datos.getByCurso(id);
+    } catch (error: any) {
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }`;
 
@@ -530,7 +553,7 @@ async function generateNegocioFile(tableName: string) {
       return ${capitalizedTableName}Datos.getEnabled(${(tableName === 'usuario') ? `tipo` : ''});
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }`;
 
@@ -540,7 +563,7 @@ async function generateNegocioFile(tableName: string) {
       return ${capitalizedTableName}Datos.getByUser(${tableName}, pswd);
 
     } catch (error: any) {
-      return { response: false, data: null, message: error.message } // Devuelve una Promise rechazada con el error
+      return { response: false, data: null, message: error.code } // Devuelve una Promise rechazada con el error
     }
   }`;
 
@@ -549,7 +572,7 @@ async function generateNegocioFile(tableName: string) {
     try {
       return ${capitalizedTableName}Datos.getNoMatriculados();
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }`;
 
@@ -559,7 +582,7 @@ async function generateNegocioFile(tableName: string) {
       return ${capitalizedTableName}Datos.updateEstado(ids);
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }`;
 
@@ -576,7 +599,7 @@ class ${capitalizedTableName}Negocio {
   ${functionGetAll}
   ${functionGetEnabled}
   ${functiongetById}
-  ${(tableName === 'usuario') ? functionGetByUser : (tableName === 'estudiante_curso') ? functionGetNoMatriculados + functioninsertarMasivamente : ''}
+  ${(tableName === 'usuario') ? functionGetByUser : (tableName === 'estudiante_curso') ? functionGetNoMatriculados + functiongetByCurso + functioninsertarMasivamente : ''}
 }
 
 export default ${capitalizedTableName}Negocio;`;
@@ -595,34 +618,43 @@ async function generateServiceFile(tableName: any) {
   const capitalizedTableName = Funciones.stringToCapitalize(tableName);
   const lowercaseTableName = Funciones.stringToCamelCase(tableName);
 
-  const getNoMatriculados = `else if (by === 'noMatriculados') {
-    const id = req.query.id as string;
+  const estudiante_curso = `case 'noMatriculados':
     ${tableName} = await ${capitalizedTableName}Negocio.getNoMatriculados();
-  } `;
+    break;
+  case 'curso':
+    ${tableName} = await ${capitalizedTableName}Negocio.getByCurso(id);
+    break;`;
 
   const getroute = `
-router.get('/${lowercaseTableName}', async (req, res) => {
-   try {
-    let  ${tableName};
-    const by = req.query.by as string;
-    if (!by) {
-      return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
-    }
-    if (by === 'all') {
-      ${(tableName === 'usuario') ? ` const tipo = req.query.tipo as string;` : ''}
-      ${tableName} = await ${capitalizedTableName}Negocio.getAll(${(tableName === 'usuario') ? `tipo` : ''});
-    } else if (by === 'enabled') {
-      ${(tableName === 'usuario') ? `  const tipo = req.query.tipo as string;` : ''}
-      ${tableName} = await ${capitalizedTableName}Negocio.getEnabled(${(tableName === 'usuario') ? `tipo` : ''});
-    } else if (by === 'id') {
+  router.get('/${lowercaseTableName}', async (req, res) => {
+    try {
+      let ${tableName};
+      const by = req.query.by as string;
+      if (!by) {
+        return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
+      }
       const id = req.query.id as string;
-      ${tableName} = await ${capitalizedTableName}Negocio.getById(id);
-    } ${tableName === 'estudiante_curso' ? getNoMatriculados : ''}
-    res.json(${tableName});
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});`;
+      ${(tableName === 'usuario') ? `  const tipo = req.query.tipo as string;` : ''}
+      switch (by) {
+        case 'all':
+          ${tableName} = await ${capitalizedTableName}Negocio.getAll(${(tableName === 'usuario') ? `tipo` : ''});
+          break;
+        case 'enabled':
+          ${tableName} = await ${capitalizedTableName}Negocio.getEnabled(${(tableName === 'usuario') ? `tipo` : ''});
+          break;
+        case 'id':
+          ${tableName} = await ${capitalizedTableName}Negocio.getById(id);
+          break;
+          ${tableName === 'estudiante_curso' ? estudiante_curso : ''}
+        default:
+          return res.status(400).json({ message: 'Parámetro inválido en la consulta.' });
+      }
+      res.json(${tableName});
+    } catch (error: any) {
+      res.status(500).json({ message: error.code });
+    }
+  });
+  `;
 
   const scriptUsuarioPost = `const { usuario, detalle } = req.body;
 const response = await ${capitalizedTableName}Negocio.insert(usuario, detalle);
@@ -645,7 +677,7 @@ router.post('/${lowercaseTableName}', async (req, res) => {
 ${(tableName === 'usuario') ? scriptUsuarioPost : (tableName === 'estudiante_curso') ? scriptPostMasivo : scriptPost}
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });`;
 
@@ -661,7 +693,7 @@ router.patch('/${lowercaseTableName}', async (req, res) => {
     }    
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 `;
@@ -673,7 +705,7 @@ router.put('/${lowercaseTableName}', async (req, res) => {
     const response = await ${capitalizedTableName}Negocio.update(${tableName});
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.message });
+     res.status(500).json({ message: error.code });
    }
 });`;
 
@@ -684,7 +716,7 @@ router.delete('/${lowercaseTableName}', async (req, res) => {
     const response = await ${capitalizedTableName}Negocio.delete(id);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });`;
 
@@ -696,7 +728,7 @@ router.patch('/${lowercaseTableName}/:id', async (req, res) => {
     const response = await ${capitalizedTableName}Negocio.updatePswd${capitalizedTableName}(id,pswdOld,pswdNew);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });`;
 
@@ -707,7 +739,7 @@ router.patch('/${tableName}', async (req, res) => {
     const response = await ${capitalizedTableName}Negocio.getByUser(usuario,pswd);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });`;
 
@@ -1058,7 +1090,7 @@ async function main() {
     }
     console.info('Archivos creados correctamente');
   } catch (error: any) {
-    console.error('Error: ' + error.message);
+    console.error('Error: ' + error.code);
   } finally {
     process.exit(); // Esto cerrará el programa después de que se complete la ejecución
   }

@@ -10,7 +10,7 @@ const calificaciones_cualitativas: CalificacionesCualitativasEntidad = req.body;
 const response = await CalificacionesCualitativasNegocio.insert(calificaciones_cualitativas);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -20,7 +20,7 @@ router.put('/calificacionescualitativas', async (req, res) => {
     const response = await CalificacionesCualitativasNegocio.update(calificaciones_cualitativas);
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.message });
+     res.status(500).json({ message: error.code });
    }
 });
 
@@ -35,7 +35,7 @@ router.patch('/calificacionescualitativas', async (req, res) => {
     }    
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -46,31 +46,38 @@ router.delete('/calificacionescualitativas', async (req, res) => {
     const response = await CalificacionesCualitativasNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
-router.get('/calificacionescualitativas', async (req, res) => {
-   try {
-    let  calificaciones_cualitativas;
-    const by = req.query.by as string;
-    if (!by) {
-      return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
-    }
-    if (by === 'all') {
-      
-      calificaciones_cualitativas = await CalificacionesCualitativasNegocio.getAll();
-    } else if (by === 'enabled') {
-      
-      calificaciones_cualitativas = await CalificacionesCualitativasNegocio.getEnabled();
-    } else if (by === 'id') {
+  router.get('/calificacionescualitativas', async (req, res) => {
+    try {
+      let calificaciones_cualitativas;
+      const by = req.query.by as string;
+      if (!by) {
+        return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
+      }
       const id = req.query.id as string;
-      calificaciones_cualitativas = await CalificacionesCualitativasNegocio.getById(id);
-    } 
-    res.json(calificaciones_cualitativas);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
+      
+      switch (by) {
+        case 'all':
+          calificaciones_cualitativas = await CalificacionesCualitativasNegocio.getAll();
+          break;
+        case 'enabled':
+          calificaciones_cualitativas = await CalificacionesCualitativasNegocio.getEnabled();
+          break;
+        case 'id':
+          calificaciones_cualitativas = await CalificacionesCualitativasNegocio.getById(id);
+          break;
+          
+        default:
+          return res.status(400).json({ message: 'Parámetro inválido en la consulta.' });
+      }
+      res.json(calificaciones_cualitativas);
+    } catch (error: any) {
+      res.status(500).json({ message: error.code });
+    }
+  });
+  
 
 export default router;

@@ -13,6 +13,7 @@ class EstudianteCursoDatos {
   static sqlGetById: string = 'SELECT * FROM estudiante_curso WHERE EST_CRS_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM vista_estudiante_curso WHERE ESTADO = 1';
   static sqlGetNoMatriculados: string = 'SELECT a.* FROM vista_estudiante AS a WHERE NOT EXISTS ( SELECT 1 FROM estudiante_curso AS b WHERE b.EST_ID = a.EST_ID AND (b.ESTADO = 1 OR b.CRS_ID = (SELECT CRS_ID FROM curso ORDER BY CRS_ORDEN DESC LIMIT 1)) ) AND a.ESTADO = 1;'
+static sqlGetMatriculas: string = 'SELECT E.*, ec.EST_CRS_ID FROM vista_estudiante E JOIN ESTUDIANTE_CURSO EC ON E.EST_ID = EC.EST_ID JOIN CURSO C ON EC.CRS_ID = C.CRS_ID WHERE EC.ESTADO = 1 AND C.CRS_ID = ?;'
   
   static async insert(estudiante_curso: EstudianteCursoEntidad ): Promise<Respuesta> {
     try {
@@ -27,7 +28,7 @@ class EstudianteCursoDatos {
       }
       return {response: true, data:newEstudianteCurso.EST_CRS_ID, message: 'Se creo correctamente' }; // Retorna el ID del EstudianteCurso
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -41,7 +42,7 @@ class EstudianteCursoDatos {
       }
       return {response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
     
@@ -63,7 +64,7 @@ class EstudianteCursoDatos {
 
       return {response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message };
+      return {response: false, data: null, message: error.code };
     }
   }
   
@@ -76,7 +77,7 @@ class EstudianteCursoDatos {
       }
       return { response: true, data: true, message: 'Objeto eliminado' }
     } catch (error: any) {
-      return { response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -87,7 +88,7 @@ class EstudianteCursoDatos {
       const [rows] = await pool.execute<any>(sql);
       return { response: true, data: rows as EstudianteCursoEntidad[], message: '' };
     } catch (error: any) {
-      return { response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -101,7 +102,7 @@ class EstudianteCursoDatos {
       let newEstudianteCurso = rows[0] as EstudianteCursoEntidad;
       return {response: true, data: newEstudianteCurso, message: 'Encontrado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -112,7 +113,7 @@ class EstudianteCursoDatos {
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as EstudianteCursoEntidad[], message: '' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -122,7 +123,16 @@ class EstudianteCursoDatos {
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as EstudianteCursoEntidad[], message: '' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+    }
+  }
+  static async getByCurso(id: String): Promise<Respuesta> {
+    try {
+      let sql = this.sqlGetMatriculas;
+      const [rows] = await pool.execute<any>(sql, [id]);
+      return { response: true, data: rows as EstudianteCursoEntidad[], message: '' };
+    } catch (error: any) {
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   static async insertMasivo(data:any): Promise<Respuesta> {
@@ -158,7 +168,7 @@ class EstudianteCursoDatos {
 
       return {response: true, data: true, message: 'Matrículas insertadas correctamente' };
     } catch (error: any) {
-      return {response: false, data: false, message: error.message };
+      return {response: false, data: false, message: error.code };
     }
   }
 

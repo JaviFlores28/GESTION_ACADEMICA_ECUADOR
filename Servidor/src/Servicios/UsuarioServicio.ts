@@ -11,7 +11,7 @@ const response = await UsuarioNegocio.insert(usuario, detalle);
 
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -21,7 +21,7 @@ router.put('/usuario', async (req, res) => {
     const response = await UsuarioNegocio.update(usuario);
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.message });
+     res.status(500).json({ message: error.code });
    }
 });
 
@@ -36,7 +36,7 @@ router.patch('/usuario', async (req, res) => {
     }    
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -47,32 +47,39 @@ router.delete('/usuario', async (req, res) => {
     const response = await UsuarioNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
-router.get('/usuario', async (req, res) => {
-   try {
-    let  usuario;
-    const by = req.query.by as string;
-    if (!by) {
-      return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
-    }
-    if (by === 'all') {
-       const tipo = req.query.tipo as string;
-      usuario = await UsuarioNegocio.getAll(tipo);
-    } else if (by === 'enabled') {
-        const tipo = req.query.tipo as string;
-      usuario = await UsuarioNegocio.getEnabled(tipo);
-    } else if (by === 'id') {
+  router.get('/usuario', async (req, res) => {
+    try {
+      let usuario;
+      const by = req.query.by as string;
+      if (!by) {
+        return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
+      }
       const id = req.query.id as string;
-      usuario = await UsuarioNegocio.getById(id);
-    } 
-    res.json(usuario);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
+        const tipo = req.query.tipo as string;
+      switch (by) {
+        case 'all':
+          usuario = await UsuarioNegocio.getAll(tipo);
+          break;
+        case 'enabled':
+          usuario = await UsuarioNegocio.getEnabled(tipo);
+          break;
+        case 'id':
+          usuario = await UsuarioNegocio.getById(id);
+          break;
+          
+        default:
+          return res.status(400).json({ message: 'Parámetro inválido en la consulta.' });
+      }
+      res.json(usuario);
+    } catch (error: any) {
+      res.status(500).json({ message: error.code });
+    }
+  });
+  
 
 router.patch('/usuario', async (req, res) => {
   try {
@@ -80,7 +87,7 @@ router.patch('/usuario', async (req, res) => {
     const response = await UsuarioNegocio.getByUser(usuario,pswd);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 export default router;

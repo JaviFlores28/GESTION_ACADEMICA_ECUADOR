@@ -10,7 +10,7 @@ const usuario_profesor: UsuarioProfesorEntidad = req.body;
 const response = await UsuarioProfesorNegocio.insert(usuario_profesor);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -20,7 +20,7 @@ router.put('/usuarioprofesor', async (req, res) => {
     const response = await UsuarioProfesorNegocio.update(usuario_profesor);
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.message });
+     res.status(500).json({ message: error.code });
    }
 });
 
@@ -35,7 +35,7 @@ router.patch('/usuarioprofesor', async (req, res) => {
     }    
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -46,31 +46,38 @@ router.delete('/usuarioprofesor', async (req, res) => {
     const response = await UsuarioProfesorNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
-router.get('/usuarioprofesor', async (req, res) => {
-   try {
-    let  usuario_profesor;
-    const by = req.query.by as string;
-    if (!by) {
-      return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
-    }
-    if (by === 'all') {
-      
-      usuario_profesor = await UsuarioProfesorNegocio.getAll();
-    } else if (by === 'enabled') {
-      
-      usuario_profesor = await UsuarioProfesorNegocio.getEnabled();
-    } else if (by === 'id') {
+  router.get('/usuarioprofesor', async (req, res) => {
+    try {
+      let usuario_profesor;
+      const by = req.query.by as string;
+      if (!by) {
+        return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
+      }
       const id = req.query.id as string;
-      usuario_profesor = await UsuarioProfesorNegocio.getById(id);
-    } 
-    res.json(usuario_profesor);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
+      
+      switch (by) {
+        case 'all':
+          usuario_profesor = await UsuarioProfesorNegocio.getAll();
+          break;
+        case 'enabled':
+          usuario_profesor = await UsuarioProfesorNegocio.getEnabled();
+          break;
+        case 'id':
+          usuario_profesor = await UsuarioProfesorNegocio.getById(id);
+          break;
+          
+        default:
+          return res.status(400).json({ message: 'Parámetro inválido en la consulta.' });
+      }
+      res.json(usuario_profesor);
+    } catch (error: any) {
+      res.status(500).json({ message: error.code });
+    }
+  });
+  
 
 export default router;

@@ -10,7 +10,7 @@ const area: AreaEntidad = req.body;
 const response = await AreaNegocio.insert(area);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -20,7 +20,7 @@ router.put('/area', async (req, res) => {
     const response = await AreaNegocio.update(area);
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.message });
+     res.status(500).json({ message: error.code });
    }
 });
 
@@ -35,7 +35,7 @@ router.patch('/area', async (req, res) => {
     }    
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
@@ -46,31 +46,38 @@ router.delete('/area', async (req, res) => {
     const response = await AreaNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.code });
   }
 });
 
-router.get('/area', async (req, res) => {
-   try {
-    let  area;
-    const by = req.query.by as string;
-    if (!by) {
-      return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
-    }
-    if (by === 'all') {
-      
-      area = await AreaNegocio.getAll();
-    } else if (by === 'enabled') {
-      
-      area = await AreaNegocio.getEnabled();
-    } else if (by === 'id') {
+  router.get('/area', async (req, res) => {
+    try {
+      let area;
+      const by = req.query.by as string;
+      if (!by) {
+        return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
+      }
       const id = req.query.id as string;
-      area = await AreaNegocio.getById(id);
-    } 
-    res.json(area);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-   }
-});
+      
+      switch (by) {
+        case 'all':
+          area = await AreaNegocio.getAll();
+          break;
+        case 'enabled':
+          area = await AreaNegocio.getEnabled();
+          break;
+        case 'id':
+          area = await AreaNegocio.getById(id);
+          break;
+          
+        default:
+          return res.status(400).json({ message: 'Parámetro inválido en la consulta.' });
+      }
+      res.json(area);
+    } catch (error: any) {
+      res.status(500).json({ message: error.code });
+    }
+  });
+  
 
 export default router;

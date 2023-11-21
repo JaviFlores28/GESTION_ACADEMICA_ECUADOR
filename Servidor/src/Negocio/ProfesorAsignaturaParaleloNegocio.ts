@@ -9,7 +9,7 @@ class ProfesorAsignaturaParaleloNegocio {
     try {
       return ProfesorAsignaturaParaleloDatos.insert(profesor_asignatura_paralelo );
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -17,7 +17,7 @@ class ProfesorAsignaturaParaleloNegocio {
     try {
       return ProfesorAsignaturaParaleloDatos.update(profesor_asignatura_paralelo);
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -26,7 +26,7 @@ class ProfesorAsignaturaParaleloNegocio {
       return ProfesorAsignaturaParaleloDatos.updateEstado(ids);
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -34,7 +34,7 @@ class ProfesorAsignaturaParaleloNegocio {
     try {
       return ProfesorAsignaturaParaleloDatos.delete(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -42,7 +42,7 @@ class ProfesorAsignaturaParaleloNegocio {
     try {
       return ProfesorAsignaturaParaleloDatos.getAll();
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -51,7 +51,7 @@ class ProfesorAsignaturaParaleloNegocio {
       return ProfesorAsignaturaParaleloDatos.getEnabled();
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
@@ -59,7 +59,7 @@ class ProfesorAsignaturaParaleloNegocio {
     try {
       return ProfesorAsignaturaParaleloDatos.getById(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.message }; // Retorna el mensaje del error
+      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
   
