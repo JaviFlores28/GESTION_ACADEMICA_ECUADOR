@@ -23,7 +23,6 @@ async function createDatabase() {
 
     // Crear la base de datos si no existe
     await connectionWithoutDB.query(`CREATE DATABASE IF NOT EXISTS ${DB_DATABASE}`);
-    console.log('Base de datos creada o ya existente');
 
     // Liberar la conexión de vuelta al pool
     connectionWithoutDB.release();
@@ -52,7 +51,6 @@ async function createTables() {
         }
       }
 
-      console.log('Tablas creadas según el script SQL');
     } finally {
       // Liberar la conexión de vuelta a la piscina
       connection.release();
@@ -84,7 +82,6 @@ async function insertOnTables() {
         }
       }
 
-      console.log('Inserciones creadas según el script SQL');
     } finally {
       // Liberar la conexión de vuelta a la piscina
       connection.release();
@@ -101,7 +98,6 @@ async function runDatabaseSetup() {
     await createDatabase();
     await createTables();
     await insertOnTables();
-    console.log('Database setup completed successfully.');
   } catch (error) {
     console.error('Error during database setup:', error);
   }
