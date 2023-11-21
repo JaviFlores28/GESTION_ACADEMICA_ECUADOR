@@ -1,4 +1,3 @@
-
 import pool from '../sistema/Conexion/BaseDatos';
 import { Respuesta } from '../sistema/Interfaces/Respuesta';
 import ProfesorAsignaturaParaleloEntidad from '../Entidades/ProfesorAsignaturaParaleloEntidad';
@@ -12,39 +11,38 @@ class ProfesorAsignaturaParaleloDatos {
   static sqlSelect: string = `SELECT * FROM profesor_asignatura_paralelo `;
   static sqlGetById: string = 'SELECT * FROM profesor_asignatura_paralelo WHERE PRF_ASG_PRLL_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM profesor_asignatura_paralelo WHERE ESTADO = 1';
-  
-  
-  static async insert(profesor_asignatura_paralelo: ProfesorAsignaturaParaleloEntidad ): Promise<Respuesta> {
+
+  static async insert(profesor_asignatura_paralelo: ProfesorAsignaturaParaleloEntidad): Promise<Respuesta> {
     try {
       profesor_asignatura_paralelo.PRF_ASG_PRLL_ID = uuidv4(); //asigna un identificador unico
-      
+
       const newProfesorAsignaturaParalelo = new ProfesorAsignaturaParaleloEntidad(profesor_asignatura_paralelo.PRF_ASG_PRLL_ID, profesor_asignatura_paralelo.PRF_ID, profesor_asignatura_paralelo.AL_ID, profesor_asignatura_paralelo.ASG_ID, profesor_asignatura_paralelo.CRS_ID, profesor_asignatura_paralelo.PRLL_ID, profesor_asignatura_paralelo.ESTADO, profesor_asignatura_paralelo.CREADOR_ID);
 
-      let sql =this.sqlInsert;
+      let sql = this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newProfesorAsignaturaParalelo.toArrayInsert());
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar ProfesorAsignaturaParalelo');
       }
-      return {response: true, data:newProfesorAsignaturaParalelo.PRF_ASG_PRLL_ID, message: 'Se creo correctamente' }; // Retorna el ID del ProfesorAsignaturaParalelo
+      return { response: true, data: newProfesorAsignaturaParalelo.PRF_ASG_PRLL_ID, message: 'Se creo correctamente' }; // Retorna el ID del ProfesorAsignaturaParalelo
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async update(profesor_asignatura_paralelo: ProfesorAsignaturaParaleloEntidad): Promise<Respuesta> {
     try {
       const newProfesorAsignaturaParalelo = new ProfesorAsignaturaParaleloEntidad(profesor_asignatura_paralelo.PRF_ASG_PRLL_ID, profesor_asignatura_paralelo.PRF_ID, profesor_asignatura_paralelo.AL_ID, profesor_asignatura_paralelo.ASG_ID, profesor_asignatura_paralelo.CRS_ID, profesor_asignatura_paralelo.PRLL_ID, profesor_asignatura_paralelo.ESTADO, profesor_asignatura_paralelo.CREADOR_ID);
-      let sql =this.sqlUpdate;
+      let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newProfesorAsignaturaParalelo.toArrayUpdate());
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo actualizar ProfesorAsignaturaParalelo');
       }
-      return {response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
+      return { response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-    
+
   static async updateEstado(ids: string[]): Promise<Respuesta> {
     try {
       // Crear una cadena de marcadores de posición para la cantidad de IDs en el array
@@ -61,12 +59,12 @@ class ProfesorAsignaturaParaleloDatos {
         throw new Error('No se pudo actualizar el estado');
       }
 
-      return {response: true, data: true, message: 'Estado actualizado' };
+      return { response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.code };
+      return { response: false, data: null, message: error.code };
     }
   }
-  
+
   static async delete(id: String): Promise<Respuesta> {
     try {
       let sql = this.sqlDelete;
@@ -74,23 +72,23 @@ class ProfesorAsignaturaParaleloDatos {
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo eliminar el objeto de tipo ProfesorAsignaturaParalelo');
       }
-      return { response: true, data: true, message: 'Objeto eliminado' }
+      return { response: true, data: true, message: 'Objeto eliminado' };
     } catch (error: any) {
       return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async getAll(): Promise<Respuesta> {
     try {
       let sql = this.sqlSelect;
-      
+
       const [rows] = await pool.execute<any>(sql);
       return { response: true, data: rows as ProfesorAsignaturaParaleloEntidad[], message: '' };
     } catch (error: any) {
       return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async getById(id: String): Promise<Respuesta> {
     try {
       let sql = this.sqlGetById;
@@ -99,24 +97,21 @@ class ProfesorAsignaturaParaleloDatos {
         throw new Error('Objeto de tipo ProfesorAsignaturaParalelo no encontrado');
       }
       let newProfesorAsignaturaParalelo = rows[0] as ProfesorAsignaturaParaleloEntidad;
-      return {response: true, data: newProfesorAsignaturaParalelo, message: 'Encontrado' };
+      return { response: true, data: newProfesorAsignaturaParalelo, message: 'Encontrado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async getEnabled(): Promise<Respuesta> {
     try {
       let sql = this.sqlGetEnabled;
-      
+
       const [rows] = await pool.execute<any>(sql);
-      return {response: true, data: rows as ProfesorAsignaturaParaleloEntidad[], message: '' };
+      return { response: true, data: rows as ProfesorAsignaturaParaleloEntidad[], message: '' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
-
-
 }
 export default ProfesorAsignaturaParaleloDatos;

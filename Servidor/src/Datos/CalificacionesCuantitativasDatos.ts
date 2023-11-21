@@ -1,4 +1,3 @@
-
 import pool from '../sistema/Conexion/BaseDatos';
 import { Respuesta } from '../sistema/Interfaces/Respuesta';
 import CalificacionesCuantitativasEntidad from '../Entidades/CalificacionesCuantitativasEntidad';
@@ -12,39 +11,38 @@ class CalificacionesCuantitativasDatos {
   static sqlSelect: string = `SELECT * FROM calificaciones_cuantitativas `;
   static sqlGetById: string = 'SELECT * FROM calificaciones_cuantitativas WHERE CAL_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM calificaciones_cuantitativas WHERE ESTADO = 1';
-  
-  
-  static async insert(calificaciones_cuantitativas: CalificacionesCuantitativasEntidad ): Promise<Respuesta> {
+
+  static async insert(calificaciones_cuantitativas: CalificacionesCuantitativasEntidad): Promise<Respuesta> {
     try {
       calificaciones_cuantitativas.CAL_ID = uuidv4(); //asigna un identificador unico
-      
+
       const newCalificacionesCuantitativas = new CalificacionesCuantitativasEntidad(calificaciones_cuantitativas.CAL_ID, calificaciones_cuantitativas.PRF_ASG_PRLL_ID, calificaciones_cuantitativas.EST_CRS_PRLL_ID, calificaciones_cuantitativas.PRCL_ID, calificaciones_cuantitativas.CALIFICACION, calificaciones_cuantitativas.CREADOR_ID);
 
-      let sql =this.sqlInsert;
+      let sql = this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newCalificacionesCuantitativas.toArrayInsert());
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar CalificacionesCuantitativas');
       }
-      return {response: true, data:newCalificacionesCuantitativas.CAL_ID, message: 'Se creo correctamente' }; // Retorna el ID del CalificacionesCuantitativas
+      return { response: true, data: newCalificacionesCuantitativas.CAL_ID, message: 'Se creo correctamente' }; // Retorna el ID del CalificacionesCuantitativas
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async update(calificaciones_cuantitativas: CalificacionesCuantitativasEntidad): Promise<Respuesta> {
     try {
       const newCalificacionesCuantitativas = new CalificacionesCuantitativasEntidad(calificaciones_cuantitativas.CAL_ID, calificaciones_cuantitativas.PRF_ASG_PRLL_ID, calificaciones_cuantitativas.EST_CRS_PRLL_ID, calificaciones_cuantitativas.PRCL_ID, calificaciones_cuantitativas.CALIFICACION, calificaciones_cuantitativas.CREADOR_ID);
-      let sql =this.sqlUpdate;
+      let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newCalificacionesCuantitativas.toArrayUpdate());
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo actualizar CalificacionesCuantitativas');
       }
-      return {response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
+      return { response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-    
+
   static async updateEstado(ids: string[]): Promise<Respuesta> {
     try {
       // Crear una cadena de marcadores de posición para la cantidad de IDs en el array
@@ -61,12 +59,12 @@ class CalificacionesCuantitativasDatos {
         throw new Error('No se pudo actualizar el estado');
       }
 
-      return {response: true, data: true, message: 'Estado actualizado' };
+      return { response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.code };
+      return { response: false, data: null, message: error.code };
     }
   }
-  
+
   static async delete(id: String): Promise<Respuesta> {
     try {
       let sql = this.sqlDelete;
@@ -74,23 +72,23 @@ class CalificacionesCuantitativasDatos {
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo eliminar el objeto de tipo CalificacionesCuantitativas');
       }
-      return { response: true, data: true, message: 'Objeto eliminado' }
+      return { response: true, data: true, message: 'Objeto eliminado' };
     } catch (error: any) {
       return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async getAll(): Promise<Respuesta> {
     try {
       let sql = this.sqlSelect;
-      
+
       const [rows] = await pool.execute<any>(sql);
       return { response: true, data: rows as CalificacionesCuantitativasEntidad[], message: '' };
     } catch (error: any) {
       return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async getById(id: String): Promise<Respuesta> {
     try {
       let sql = this.sqlGetById;
@@ -99,24 +97,21 @@ class CalificacionesCuantitativasDatos {
         throw new Error('Objeto de tipo CalificacionesCuantitativas no encontrado');
       }
       let newCalificacionesCuantitativas = rows[0] as CalificacionesCuantitativasEntidad;
-      return {response: true, data: newCalificacionesCuantitativas, message: 'Encontrado' };
+      return { response: true, data: newCalificacionesCuantitativas, message: 'Encontrado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async getEnabled(): Promise<Respuesta> {
     try {
       let sql = this.sqlGetEnabled;
-      
+
       const [rows] = await pool.execute<any>(sql);
-      return {response: true, data: rows as CalificacionesCuantitativasEntidad[], message: '' };
+      return { response: true, data: rows as CalificacionesCuantitativasEntidad[], message: '' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
-
-
 }
 export default CalificacionesCuantitativasDatos;

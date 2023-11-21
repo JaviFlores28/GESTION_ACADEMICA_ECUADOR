@@ -1,163 +1,44 @@
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import path from 'path';
 import pool from './sistema/Conexion/BaseDatos';
-import { ColumnData } from './sistema/Interfaces/ColumnData';
 import { MappedProperty } from './sistema/Interfaces/MappedProperty';
 import Funciones from './sistema/Funciones/Funciones';
-
 import * as dotenv from 'dotenv';
+import { execSync } from 'child_process';
 
 dotenv.config();
 const { DB_DATABASE } = process.env;
 
-
-//obtiene el tipo de mapeo a convertir
-function getMappedType(fieldType: string | string[], propertyName: string) {
-  if (fieldType.includes('tinyint')) {
-    return 'number';
-  } else if (fieldType.includes('char') || fieldType.includes('varchar') || fieldType.includes('enum')) {
-    return 'string';
-  } else if (fieldType.includes('date') || fieldType.includes('datetime')) {
-    return `${propertyName === 'FECHA_CREACION' ? 'Date | undefined' : 'Date'}`;
-  } else if (fieldType.includes('int') || fieldType.includes('float') || fieldType.includes('double') || fieldType.includes('decimal')) {
-    return 'number';
-  } else {
-    return 'any';
-  }
-}
-
-//mapea el tipo
-function mapProperties(properties: ColumnData[]): MappedProperty[] {
-  return properties.map((column: ColumnData) => {
-    const fieldType = column.Type.toLowerCase();
-    const propertyName = column.Field;
-    const mappedType = getMappedType(fieldType, propertyName);
-    const key = column.Key;
-
-    return { name: propertyName, type: mappedType, key: key, type_old: fieldType };
-  });
-}
-
-async function getTableInfo(connection: any, tableName: any) {
-  const [results] = await connection.execute(`DESCRIBE ${tableName}`);
-  return results;
-}
-
-async function getPrimaryKey(connection: any, tableName: any) {
-  const [results] = await connection.execute(`SHOW KEYS FROM ${tableName} WHERE Key_name = 'PRIMARY'`);
-  return results;
-}
-
-function generatePropsDefinitions(propertiesData: MappedProperty[]) {
-  return propertiesData
-    .filter((property) => property.name !== 'FECHA_CREACION')
-    .map((property) => `${property.name}: ${property.type};`)
-    .join('\n    ');
-}
-
-function generatePropsConstruct(propertiesData: MappedProperty[]) {
-  return propertiesData
-    .filter((property) => property.name !== 'FECHA_CREACION')
-    .map((property) => {
-      return `${property.name}: ${property.type}`;
-    })
-    .join(', ');
-}
-
-function generatePropsValues(propertiesData: MappedProperty[]) {
-  return propertiesData
-    .filter((property) => property.name !== 'FECHA_CREACION')
-    .map((property) => {
-      return `this.${property.name} = ${property.name};`;
-    }).join('\n      ');
-}
-
-function generateFunctionToarray(propertiesData: MappedProperty[], tipo: string, tableName: string, ubicacion: string) {
-  if (tipo === '1') {
-    return propertiesData
-      .filter((property) => property.name !== 'FECHA_CREACION')
-      .map((property) => `${ubicacion}${property.name}`)
-      .join(',');
-  } else {
-    const excludedProperties = (tableName !== 'usuario') ? ['FECHA_CREACION', 'CREADOR_ID'] : ['USUARIO', 'USR_PSWD', 'FECHA_CREACION'];
-    return propertiesData
-      .filter((property) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
-      .map((property) => `${ubicacion}${property.name}`)
-      .join(',');
-  }
-
-}
-
-function generatePropsIsValid(propertiesData: MappedProperty[]) {
-  const excludedProperties = [
-    'FECHA_CREACION',
-    'ROL_PRF',
-    'ROL_REPR',
-    'ROL_ADMIN',
-    'USUARIO',
-    'USR_PSWD',
-    'ESTADO'
-  ];
-  return propertiesData
-    .filter((property) => !excludedProperties.includes(property.name))
-    .map((property) => `!!this.${property.name}`)
-    .join(' && ');
-}
-
-function generatePropsToArray(propertiesData: MappedProperty[], excludedProperties: string[]) {
-  return propertiesData
-    .filter((property) => !excludedProperties.includes(property.name))
-    .map((property) => `'${property.name}'`)
-    .join(',');
-}
-
-function generateObject(propertiesData: MappedProperty[], tableName: string, excludedProperties: string[]) {
-  return propertiesData
-    .filter((property) => !excludedProperties.includes(property.name))
-    .map((property) => `${tableName}.${property.name}`)
-    .join(', ');
-}
-
-function generateSqlInsert(propertiesData: MappedProperty[]) {
-  const marcadores = propertiesData
-    .filter((property) => property.name !== 'FECHA_CREACION')
-    .map(() => '?').join(', ');
-  const headers = propertiesData
-    .filter((property) => property.name !== 'FECHA_CREACION')
-    .map((property) => property.name).join(', ');
-  return { headers, marcadores };
-}
-
-function generarSQLUpdate(propertiesData: MappedProperty[], tableName: string) {
-  const excludedProperties = (tableName !== 'usuario') ? ['FECHA_CREACION', 'CREADOR_ID'] : ['USUARIO', 'USR_PSWD', 'FECHA_CREACION'];
-  return propertiesData
-    .filter((property) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
-    .map((property) => `${property.name}=?`).join(',');
-}
-
-async function generateEntityFile(connection: any, tableName: string, primaryKeyColumn: string) {
+/**
+ * Generates an entity file based on the provided table name and primary key column.
+ *
+ * @param connection - The database connection object.
+ * @param tableName - The name of the table.
+ * @param primaryKeyColumn - The name of the primary key column.
+ * @returns {Promise<void>} - A promise that resolves when the entity file is generated.
+ */
+async function generateEntityFile(connection: any, tableName: string, primaryKeyColumn: string): Promise<void> {
   const capitalizedTableName = Funciones.stringToCapitalize(tableName);
-  const properties = await getTableInfo(connection, tableName);
-  const propertiesData = mapProperties(properties);
+  const properties = await Funciones.getTableInfo(connection, tableName);
+  const propertiesData = Funciones.mapProperties(properties);
 
-  const isValid = `
-isValid(): boolean {
-  return ${generatePropsIsValid(propertiesData)};
-}
-`;
+  const excludedPropertiesInsert = ['FECHA_CREACION'];
+  const excludedPropertiesUpdate = ['USUARIO', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID', primaryKeyColumn];
 
   const content = `
 class ${capitalizedTableName}Entidad {
-  ${generatePropsDefinitions(propertiesData)}    
-    constructor(${generatePropsConstruct(propertiesData)}) {
-       ${generatePropsValues(propertiesData)}
+  ${Funciones.generatePropsDefinitions(propertiesData)} 
+     
+    constructor(${Funciones.generatePropsConstruct(propertiesData)}) {
+       ${Funciones.generatePropsValues(propertiesData)}
     }
 
     toArrayInsert(): any[] {
-      return [${generateFunctionToarray(propertiesData, '1', tableName, 'this.')}];
-    } 
+      return [${Funciones.generateFunctionToarray(propertiesData, excludedPropertiesInsert)}];
+    }
+
     toArrayUpdate(): any[] {
-      return [${generateFunctionToarray(propertiesData, '2', tableName, 'this.')}, this.${primaryKeyColumn}];
+      return [${Funciones.generateFunctionToarray(propertiesData, excludedPropertiesUpdate)}, this.${primaryKeyColumn}];
     }
 }
 
@@ -176,8 +57,8 @@ export default ${capitalizedTableName}Entidad;
 
 async function generateDataFile(connection: any, tableName: string, primaryKeyColumn: string) {
   const capitalizedTableName = Funciones.stringToCapitalize(tableName);
-  const properties = await getTableInfo(connection, tableName);
-  const propertiesData = mapProperties(properties);
+  const properties = await Funciones.getTableInfo(connection, tableName);
+  const propertiesData = Funciones.mapProperties(properties);
 
   const usuariodata = `usuario.USUARIO = Funciones.crearUsuario(usuario.USR_DNI, usuario.USR_NOM, usuario.USR_NOM2, usuario.USR_APE);
   usuario.USR_PSWD = Funciones.encrypt(usuario.USR_DNI);
@@ -195,17 +76,17 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
   }`;
 
   const functioninsert = `
-  static async insert(${tableName}: ${capitalizedTableName}Entidad ${(tableName === 'usuario') ? ', detalle?: UsuarioProfesorEntidad' : ''}): Promise<Respuesta> {
+  static async insert(${tableName}: ${capitalizedTableName}Entidad ${tableName === 'usuario' ? ', detalle?: UsuarioProfesorEntidad' : ''}): Promise<Respuesta> {
     try {
       ${tableName}.${primaryKeyColumn} = uuidv4(); //asigna un identificador unico
       ${tableName === 'usuario' ? usuariodata : ''}
-      const new${capitalizedTableName} = new ${capitalizedTableName}Entidad(${generateObject(propertiesData, tableName, ['FECHA_CREACION'])});
+      const new${capitalizedTableName} = new ${capitalizedTableName}Entidad(${Funciones.generateObject(propertiesData, tableName, ['FECHA_CREACION'])});
 
       let sql =this.sqlInsert;
       const [result] = await pool.execute<any>(sql, new${capitalizedTableName}.toArrayInsert());
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar ${capitalizedTableName}');
-      }${(tableName === 'usuario') ? stringByinsertUser : ''}
+      }${tableName === 'usuario' ? stringByinsertUser : ''}
       return {response: true, data:new${capitalizedTableName}.${primaryKeyColumn}, message: 'Se creo correctamente' }; // Retorna el ID del ${capitalizedTableName}
     } catch (error: any) {
       return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
@@ -215,7 +96,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
   const functionUpdate = `
   static async update(${tableName}: ${capitalizedTableName}Entidad): Promise<Respuesta> {
     try {
-      const new${capitalizedTableName} = new ${capitalizedTableName}Entidad(${generateObject(propertiesData, tableName, ['FECHA_CREACION'])});
+      const new${capitalizedTableName} = new ${capitalizedTableName}Entidad(${Funciones.generateObject(propertiesData, tableName, ['FECHA_CREACION'])});
       let sql =this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, new${capitalizedTableName}.toArrayUpdate());
       if (result.affectedRows !== 1) {
@@ -252,10 +133,10 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
     `;
 
   const functionGet = `
-  static async getAll(${(tableName === 'usuario' ? 'tipo: string' : '')}): Promise<Respuesta> {
+  static async getAll(${tableName === 'usuario' ? 'tipo: string' : ''}): Promise<Respuesta> {
     try {
       let sql = this.sqlSelect;
-      ${(tableName === 'usuario' ? stringByGetUser : '')}
+      ${tableName === 'usuario' ? stringByGetUser : ''}
       const [rows] = await pool.execute<any>(sql);
       return { response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
@@ -300,10 +181,10 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
   `;
 
   const functionGetEnabled = `
-  static async getEnabled(${(tableName === 'usuario' ? 'tipo: string' : '')}): Promise<Respuesta> {
+  static async getEnabled(${tableName === 'usuario' ? 'tipo: string' : ''}): Promise<Respuesta> {
     try {
       let sql = this.sqlGetEnabled;
-      ${(tableName === 'usuario' ? stringByGetUserEnabled : '')}
+      ${tableName === 'usuario' ? stringByGetUserEnabled : ''}
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
@@ -355,7 +236,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       const valores = arrayIds.map((id: any) => [
         uuidv4(),
         id,
-        ${generateObject(propertiesData, 'data', ['FECHA_CREACION', primaryKeyColumn, 'EST_ID', 'ESTADO', 'CREADOR_ID'])},
+        ${Funciones.generateObject(propertiesData, 'data', ['FECHA_CREACION', primaryKeyColumn, 'EST_ID', 'ESTADO', 'CREADOR_ID'])},
         estado,
         data.CREADOR_ID
       ]);      
@@ -364,7 +245,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
         .map((fila: string | any[]) => \`(\${Array.from({ length: fila.length }, () => '?').join(',')})\`)
         .join(',');
 
-      const campos = [${generatePropsToArray(propertiesData, ['FECHA_CREACION'])}].join(',');
+      const campos = [${Funciones.generatePropsToArray(propertiesData, ['FECHA_CREACION'])}].join(',');
 
       // Consulta SQL con la cláusula INSERT INTO y VALUES
       const sql = \`INSERT INTO ${tableName} (\${campos}) VALUES \${placeholders};\`;
@@ -429,16 +310,15 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
     }
   }`;
 
-  const generarSQLinsert = generateSqlInsert(propertiesData);
-  const generarSQLupdate = generarSQLUpdate(propertiesData, tableName);
+  const generarSQLinsert = Funciones.generateSqlInsert(propertiesData);
+  const generarSQLupdate = Funciones.generarSQLUpdate(propertiesData, tableName);
 
   const validarVistaTabla = (tableName: string) => {
-    return (tableName === 'estudiante' || tableName === 'usuario' || tableName === 'estudiante_curso') ? `vista_${tableName}` : tableName;
-  }
-
+    return tableName === 'estudiante' || tableName === 'usuario' || tableName === 'estudiante_curso' ? `vista_${tableName}` : tableName;
+  };
 
   const sqlgetmatriculas = `static sqlGetMatriculas: string = 'SELECT E.*, ec.EST_CRS_ID FROM vista_estudiante E JOIN ESTUDIANTE_CURSO EC ON E.EST_ID = EC.EST_ID JOIN CURSO C ON EC.CRS_ID = C.CRS_ID WHERE EC.ESTADO = 1 AND C.CRS_ID = ?;'`;
-  const sqlGetNoMatriculados = `static sqlGetNoMatriculados: string = 'SELECT a.* FROM vista_estudiante AS a WHERE NOT EXISTS ( SELECT 1 FROM estudiante_curso AS b WHERE b.EST_ID = a.EST_ID AND (b.ESTADO = 1 OR b.CRS_ID = (SELECT CRS_ID FROM curso ORDER BY CRS_ORDEN DESC LIMIT 1)) ) AND a.ESTADO = 1;'`
+  const sqlGetNoMatriculados = `static sqlGetNoMatriculados: string = 'SELECT a.* FROM vista_estudiante AS a WHERE NOT EXISTS ( SELECT 1 FROM estudiante_curso AS b WHERE b.EST_ID = a.EST_ID AND (b.ESTADO = 1 OR b.CRS_ID = (SELECT CRS_ID FROM curso ORDER BY CRS_ORDEN DESC LIMIT 1)) ) AND a.ESTADO = 1;'`;
 
   const content = `${tableName === 'usuario' ? `import Funciones from '../sistema/Funciones/Funciones';\nimport UsuarioProfesorDatos from './UsuarioProfesorDatos';\nimport UsuarioProfesorEntidad from '../Entidades/UsuarioProfesorEntidad';` : ''}
 import pool from '../sistema/Conexion/BaseDatos';
@@ -454,8 +334,7 @@ class ${capitalizedTableName}Datos {
   static sqlSelect: string = \`SELECT * FROM ${validarVistaTabla(tableName)} \`;
   static sqlGetById: string = 'SELECT * FROM ${tableName} WHERE ${primaryKeyColumn} = ?';
   static sqlGetEnabled: string = 'SELECT * FROM ${validarVistaTabla(tableName)} WHERE ESTADO = 1';
-  ${(tableName === 'usuario') ? `static sqlGetByUser: string = 'SELECT * FROM ${tableName} WHERE USUARIO = ?'` :
-      (tableName === 'estudiante_curso') ? sqlGetNoMatriculados + '\n' + sqlgetmatriculas : ''}
+  ${tableName === 'usuario' ? `static sqlGetByUser: string = 'SELECT * FROM ${tableName} WHERE USUARIO = ?'` : tableName === 'estudiante_curso' ? sqlGetNoMatriculados + '\n' + sqlgetmatriculas : ''}
   ${functioninsert}
   ${functionUpdate}
   ${functionupdateEstado}
@@ -463,7 +342,7 @@ class ${capitalizedTableName}Datos {
   ${functionGet}
   ${functiongetById}
   ${functionGetEnabled}
-  ${(tableName === 'usuario') ? functionGetByUser : (tableName === 'estudiante_curso') ? functionGetNoMatriculados + functiongetByCurso + functioninsertarMasivamente : ''}
+  ${tableName === 'usuario' ? functionGetByUser : tableName === 'estudiante_curso' ? functionGetNoMatriculados + functiongetByCurso + functioninsertarMasivamente : ''}
 
 
 }
@@ -484,9 +363,9 @@ async function generateNegocioFile(tableName: string) {
   const capitalizedTableName = Funciones.stringToCapitalize(tableName);
 
   const functionInsert = `
-  static async insert(${tableName}: ${capitalizedTableName}Entidad ${(tableName === 'usuario') ? ', detalle?: UsuarioProfesorEntidad' : ''}): Promise<Respuesta> {
+  static async insert(${tableName}: ${capitalizedTableName}Entidad ${tableName === 'usuario' ? ', detalle?: UsuarioProfesorEntidad' : ''}): Promise<Respuesta> {
     try {
-      return ${capitalizedTableName}Datos.insert(${tableName} ${(tableName === 'usuario') ? ', detalle' : ''});
+      return ${capitalizedTableName}Datos.insert(${tableName} ${tableName === 'usuario' ? ', detalle' : ''});
     } catch (error: any) {
       return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
@@ -500,7 +379,6 @@ async function generateNegocioFile(tableName: string) {
       return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }`;
-
 
   const functionUpdate = `
   static async update(${tableName}: ${capitalizedTableName}Entidad): Promise<Respuesta> {
@@ -521,9 +399,9 @@ async function generateNegocioFile(tableName: string) {
   }`;
 
   const functionGetAll = `
-  static async getAll(${(tableName === 'usuario') ? `tipo: string` : ''}): Promise<Respuesta> {
+  static async getAll(${tableName === 'usuario' ? `tipo: string` : ''}): Promise<Respuesta> {
     try {
-      return ${capitalizedTableName}Datos.getAll(${(tableName === 'usuario') ? `tipo` : ''});
+      return ${capitalizedTableName}Datos.getAll(${tableName === 'usuario' ? `tipo` : ''});
     } catch (error: any) {
       return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
@@ -548,9 +426,9 @@ async function generateNegocioFile(tableName: string) {
   }`;
 
   const functionGetEnabled = `
-  static async getEnabled(${(tableName === 'usuario') ? `tipo: string` : ''}): Promise<Respuesta> {
+  static async getEnabled(${tableName === 'usuario' ? `tipo: string` : ''}): Promise<Respuesta> {
     try {
-      return ${capitalizedTableName}Datos.getEnabled(${(tableName === 'usuario') ? `tipo` : ''});
+      return ${capitalizedTableName}Datos.getEnabled(${tableName === 'usuario' ? `tipo` : ''});
 
     } catch (error: any) {
       return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
@@ -586,7 +464,7 @@ async function generateNegocioFile(tableName: string) {
     }
   }`;
 
-  const content = `${(tableName === 'usuario') ? `import UsuarioProfesorEntidad from '../Entidades/UsuarioProfesorEntidad'; ` : ''}
+  const content = `${tableName === 'usuario' ? `import UsuarioProfesorEntidad from '../Entidades/UsuarioProfesorEntidad'; ` : ''}
 import ${capitalizedTableName}Datos from '../Datos/${capitalizedTableName}Datos';
 import ${capitalizedTableName}Entidad from '../Entidades/${capitalizedTableName}Entidad';
 import { Respuesta } from '../sistema/Interfaces/Respuesta';
@@ -599,7 +477,7 @@ class ${capitalizedTableName}Negocio {
   ${functionGetAll}
   ${functionGetEnabled}
   ${functiongetById}
-  ${(tableName === 'usuario') ? functionGetByUser : (tableName === 'estudiante_curso') ? functionGetNoMatriculados + functiongetByCurso + functioninsertarMasivamente : ''}
+  ${tableName === 'usuario' ? functionGetByUser : tableName === 'estudiante_curso' ? functionGetNoMatriculados + functiongetByCurso + functioninsertarMasivamente : ''}
 }
 
 export default ${capitalizedTableName}Negocio;`;
@@ -611,7 +489,6 @@ export default ${capitalizedTableName}Negocio;`;
     mkdirSync(carpeta, { recursive: true });
   }
   writeFileSync(archivo, content, 'utf8');
-
 }
 
 async function generateServiceFile(tableName: any) {
@@ -634,13 +511,13 @@ async function generateServiceFile(tableName: any) {
         return res.status(400).json({ message: 'Faltan parámetros en la consulta.' });
       }
       const id = req.query.id as string;
-      ${(tableName === 'usuario') ? `  const tipo = req.query.tipo as string;` : ''}
+      ${tableName === 'usuario' ? `  const tipo = req.query.tipo as string;` : ''}
       switch (by) {
         case 'all':
-          ${tableName} = await ${capitalizedTableName}Negocio.getAll(${(tableName === 'usuario') ? `tipo` : ''});
+          ${tableName} = await ${capitalizedTableName}Negocio.getAll(${tableName === 'usuario' ? `tipo` : ''});
           break;
         case 'enabled':
-          ${tableName} = await ${capitalizedTableName}Negocio.getEnabled(${(tableName === 'usuario') ? `tipo` : ''});
+          ${tableName} = await ${capitalizedTableName}Negocio.getEnabled(${tableName === 'usuario' ? `tipo` : ''});
           break;
         case 'id':
           ${tableName} = await ${capitalizedTableName}Negocio.getById(id);
@@ -675,7 +552,7 @@ const response = await ${capitalizedTableName}Negocio.insert(${tableName});`;
   const postroute = `
 router.post('/${lowercaseTableName}', async (req, res) => {
    try {
-${(tableName === 'usuario') ? scriptUsuarioPost : (tableName === 'estudiante_curso') ? scriptPostMasivo : scriptPost}
+${tableName === 'usuario' ? scriptUsuarioPost : tableName === 'estudiante_curso' ? scriptPostMasivo : scriptPost}
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.code });
@@ -695,7 +572,7 @@ router.patch('/${lowercaseTableName}', async (req, res) => {
       response = await ${capitalizedTableName}Negocio.updateEstado(data);
     }else if(masivo && type === 'delete'){
       //response = await ${capitalizedTableName}Negocio.updateEstado(data);
-    }${(tableName === 'usuario') ? getByUser : ''}
+    }${tableName === 'usuario' ? getByUser : ''}
       
     res.json(response);
   } catch (error: any) {
@@ -726,8 +603,6 @@ router.delete('/${lowercaseTableName}', async (req, res) => {
   }
 });`;
 
-
-
   const content = `
 import { Router } from 'express';
 const router = Router();
@@ -757,16 +632,15 @@ function generateFormReactive(propertiesData: MappedProperty[]) {
     .filter((property) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
     .map((property) => {
       if (property.type === 'Date') {
-        return `${property.name}: [getFormattedDate(new Date()),Validators.required]`
+        return `${property.name}: [getFormattedDate(new Date()),Validators.required]`;
       } else if (property.type_old.includes('tinyint')) {
-        return `${property.name}: [false,Validators.required]`
+        return `${property.name}: [false,Validators.required]`;
       } else if (property.type === 'number') {
-        return `${property.name}: [0,Validators.required]`
+        return `${property.name}: [0,Validators.required]`;
       } else {
-        return `${property.name}: ['',Validators.required]`
+        return `${property.name}: ['',Validators.required]`;
       }
-    }
-    )
+    })
     .join(',\n ');
 }
 
@@ -787,20 +661,19 @@ function generateFormHTML(propertiesData: MappedProperty[]) {
             <input class="form-check-input" id="${property.name}" type="checkbox" role="switch"
                 formControlName="${property.name}">
         </div>
-    </div>`
+    </div>`;
       } else if (property.type === 'number') {
         return `<div class="col">
         <label for="${property.name}" class="form-label">${property.name}</label>
         <input type="numvber" id="${property.name}" formControlName="${property.name}" class="form-control">
-    </div>`
+    </div>`;
       } else {
         return `<div class="col">
         <label for="${property.name}" class="form-label">${property.name}</label>
         <input type="text" id="${property.name}" formControlName="${property.name}" class="form-control">
-    </div>`
+    </div>`;
       }
-    }
-    )
+    })
     .join('\n ');
 }
 
@@ -810,13 +683,13 @@ function generateObjectComponet(propertiesData: MappedProperty[]) {
     .filter((property) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
     .map((property) => {
       if (property.type === 'Date') {
-        return `${property.name}:this.form.value.${property.name} ? new Date(this.form.value.${property.name}) : new Date()`
+        return `${property.name}:this.form.value.${property.name} ? new Date(this.form.value.${property.name}) : new Date()`;
       } else if (property.type_old.includes('tinyint')) {
-        return `${property.name}: (this.form.value.${property.name}) ? 1 : 0`
+        return `${property.name}: (this.form.value.${property.name}) ? 1 : 0`;
       } else if (property.type === 'number') {
-        return `${property.name}:this.form.value.${property.name}|| 0`
+        return `${property.name}:this.form.value.${property.name}|| 0`;
       } else {
-        return `${property.name}:this.form.value.${property.name}|| ''`
+        return `${property.name}:this.form.value.${property.name}|| ''`;
       }
     })
     .join(',\n ');
@@ -828,11 +701,11 @@ function generateFillFormReactive(propertiesData: MappedProperty[]) {
     .filter((property: { name: string; key: string }) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
     .map((property) => {
       if (property.type === 'Date') {
-        return `this.form.get('${property.name}')?.setValue(getFormattedDate(data.${property.name}))`
+        return `this.form.get('${property.name}')?.setValue(getFormattedDate(data.${property.name}))`;
       } else if (property.type_old.includes('tinyint')) {
-        return `this.form.get('${property.name}')?.setValue((data.${property.name} === 1) ? true : false)`
+        return `this.form.get('${property.name}')?.setValue((data.${property.name} === 1) ? true : false)`;
       } else {
-        return `this.form.get('${property.name}')?.setValue(data.${property.name})`
+        return `this.form.get('${property.name}')?.setValue(data.${property.name})`;
       }
     })
     .join(',\n ');
@@ -840,11 +713,11 @@ function generateFillFormReactive(propertiesData: MappedProperty[]) {
 
 async function generateInterfaceFile(connection: any, tableName: string) {
   const capitalizedTableName = Funciones.stringToCapitalize(tableName);
-  const properties = await getTableInfo(connection, tableName);
-  const propertiesData = mapProperties(properties);
+  const properties = await Funciones.getTableInfo(connection, tableName);
+  const propertiesData = Funciones.mapProperties(properties);
 
   const content = `export interface ${capitalizedTableName} {
-  ${generatePropsDefinitions(propertiesData)}
+  ${Funciones.generatePropsDefinitions(propertiesData)}
 }`;
 
   const carpeta = path.join(__dirname, 'interfaces');
@@ -855,14 +728,13 @@ async function generateInterfaceFile(connection: any, tableName: string) {
   }
 
   writeFileSync(archivo, content, 'utf8');
-
 }
 
 async function generateComponentFile(connection: any, tableName: any, primaryKeyColumn: string) {
   const capitalizedTableName = Funciones.stringToCapitalize(tableName);
   const lowercaseTableName = Funciones.stringToCamelCase(tableName);
-  const properties = await getTableInfo(connection, tableName);
-  const propertiesData = mapProperties(properties);
+  const properties = await Funciones.getTableInfo(connection, tableName);
+  const propertiesData = Funciones.mapProperties(properties);
 
   const content = `
   
@@ -962,7 +834,7 @@ async function generateComponentFile(connection: any, tableName: any, primaryKey
       ${primaryKeyColumn}: '0',
       ${generateObjectComponet(propertiesData)},
       CREADOR_ID: userId || ''
-     ${(tableName === 'usuario') ? ' ROL_PRF: 0,\nROL_REPR: 0,\nROL_ADMIN: 1,' : ''}
+     ${tableName === 'usuario' ? ' ROL_PRF: 0,\nROL_REPR: 0,\nROL_ADMIN: 1,' : ''}
     };
     return ${lowercaseTableName};
   }
@@ -1039,8 +911,8 @@ openConfirmationModal() {
 async function generateHTMLFile(connection: any, tableName: any) {
   const capitalizedTableName = Funciones.stringToCapitalize(tableName);
   const lowercaseTableName = Funciones.stringToCamelCase(tableName);
-  const properties = await getTableInfo(connection, tableName);
-  const propertiesData = mapProperties(properties);
+  const properties = await Funciones.getTableInfo(connection, tableName);
+  const propertiesData = Funciones.mapProperties(properties);
 
   const content = `${generateFormHTML(propertiesData)}`;
   const carpeta = path.join(__dirname, 'html');
@@ -1056,10 +928,9 @@ async function main() {
   try {
     const [tables] = await pool.execute<any>('SHOW FULL TABLES WHERE Table_type = "BASE TABLE"');
 
-
     for (const table of tables) {
       const tableName = table[`Tables_in_${DB_DATABASE}`];
-      const primaryKeyResult = await getPrimaryKey(pool, tableName);
+      const primaryKeyResult = await Funciones.getPrimaryKey(pool, tableName);
       let primaryKeyColumn = 'ID'; // Valor predeterminado
 
       if (primaryKeyResult && primaryKeyResult.length > 0) {
@@ -1072,6 +943,12 @@ async function main() {
       await generateInterfaceFile(pool, tableName);
       //await generateComponentFile(pool, tableName, primaryKeyColumn);
       //await generateHTMLFile(pool, tableName, primaryKeyColumn);
+    }
+    try {
+      execSync(` npx prettier src/ --write --print-width 1000 --single-quote`);
+      console.log('Archivo formateado correctamente con Prettier.');
+    } catch (error: any) {
+      console.error('Error al formatear el archivo con Prettier:', error.message);
     }
     console.info('Archivos creados correctamente');
   } catch (error: any) {

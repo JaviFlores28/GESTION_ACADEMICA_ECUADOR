@@ -1,4 +1,3 @@
-
 import pool from '../sistema/Conexion/BaseDatos';
 import { Respuesta } from '../sistema/Interfaces/Respuesta';
 import AnioLectivoEntidad from '../Entidades/AnioLectivoEntidad';
@@ -12,39 +11,38 @@ class AnioLectivoDatos {
   static sqlSelect: string = `SELECT * FROM anio_lectivo `;
   static sqlGetById: string = 'SELECT * FROM anio_lectivo WHERE AL_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM anio_lectivo WHERE ESTADO = 1';
-  
-  
-  static async insert(anio_lectivo: AnioLectivoEntidad ): Promise<Respuesta> {
+
+  static async insert(anio_lectivo: AnioLectivoEntidad): Promise<Respuesta> {
     try {
       anio_lectivo.AL_ID = uuidv4(); //asigna un identificador unico
-      
+
       const newAnioLectivo = new AnioLectivoEntidad(anio_lectivo.AL_ID, anio_lectivo.AL_NOM, anio_lectivo.AL_INICIO, anio_lectivo.AL_FIN, anio_lectivo.AL_POR_PRD, anio_lectivo.AL_POR_EXAM, anio_lectivo.CLFN_MIN_APR, anio_lectivo.CLFN_MIN_PERD, anio_lectivo.NUM_PRD, anio_lectivo.NUM_EXAM, anio_lectivo.NUM_PRCL, anio_lectivo.NUM_SUSP, anio_lectivo.ESTADO, anio_lectivo.CREADOR_ID);
 
-      let sql =this.sqlInsert;
+      let sql = this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newAnioLectivo.toArrayInsert());
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar AnioLectivo');
       }
-      return {response: true, data:newAnioLectivo.AL_ID, message: 'Se creo correctamente' }; // Retorna el ID del AnioLectivo
+      return { response: true, data: newAnioLectivo.AL_ID, message: 'Se creo correctamente' }; // Retorna el ID del AnioLectivo
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async update(anio_lectivo: AnioLectivoEntidad): Promise<Respuesta> {
     try {
       const newAnioLectivo = new AnioLectivoEntidad(anio_lectivo.AL_ID, anio_lectivo.AL_NOM, anio_lectivo.AL_INICIO, anio_lectivo.AL_FIN, anio_lectivo.AL_POR_PRD, anio_lectivo.AL_POR_EXAM, anio_lectivo.CLFN_MIN_APR, anio_lectivo.CLFN_MIN_PERD, anio_lectivo.NUM_PRD, anio_lectivo.NUM_EXAM, anio_lectivo.NUM_PRCL, anio_lectivo.NUM_SUSP, anio_lectivo.ESTADO, anio_lectivo.CREADOR_ID);
-      let sql =this.sqlUpdate;
+      let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newAnioLectivo.toArrayUpdate());
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo actualizar AnioLectivo');
       }
-      return {response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
+      return { response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-    
+
   static async updateEstado(ids: string[]): Promise<Respuesta> {
     try {
       // Crear una cadena de marcadores de posición para la cantidad de IDs en el array
@@ -61,12 +59,12 @@ class AnioLectivoDatos {
         throw new Error('No se pudo actualizar el estado');
       }
 
-      return {response: true, data: true, message: 'Estado actualizado' };
+      return { response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.code };
+      return { response: false, data: null, message: error.code };
     }
   }
-  
+
   static async delete(id: String): Promise<Respuesta> {
     try {
       let sql = this.sqlDelete;
@@ -74,23 +72,23 @@ class AnioLectivoDatos {
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo eliminar el objeto de tipo AnioLectivo');
       }
-      return { response: true, data: true, message: 'Objeto eliminado' }
+      return { response: true, data: true, message: 'Objeto eliminado' };
     } catch (error: any) {
       return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async getAll(): Promise<Respuesta> {
     try {
       let sql = this.sqlSelect;
-      
+
       const [rows] = await pool.execute<any>(sql);
       return { response: true, data: rows as AnioLectivoEntidad[], message: '' };
     } catch (error: any) {
       return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async getById(id: String): Promise<Respuesta> {
     try {
       let sql = this.sqlGetById;
@@ -99,24 +97,21 @@ class AnioLectivoDatos {
         throw new Error('Objeto de tipo AnioLectivo no encontrado');
       }
       let newAnioLectivo = rows[0] as AnioLectivoEntidad;
-      return {response: true, data: newAnioLectivo, message: 'Encontrado' };
+      return { response: true, data: newAnioLectivo, message: 'Encontrado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async getEnabled(): Promise<Respuesta> {
     try {
       let sql = this.sqlGetEnabled;
-      
+
       const [rows] = await pool.execute<any>(sql);
-      return {response: true, data: rows as AnioLectivoEntidad[], message: '' };
+      return { response: true, data: rows as AnioLectivoEntidad[], message: '' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
-
-
 }
 export default AnioLectivoDatos;

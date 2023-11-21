@@ -1,4 +1,3 @@
-
 import pool from '../sistema/Conexion/BaseDatos';
 import { Respuesta } from '../sistema/Interfaces/Respuesta';
 import CursoEntidad from '../Entidades/CursoEntidad';
@@ -12,39 +11,38 @@ class CursoDatos {
   static sqlSelect: string = `SELECT * FROM curso `;
   static sqlGetById: string = 'SELECT * FROM curso WHERE CRS_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM curso WHERE ESTADO = 1';
-  
-  
-  static async insert(curso: CursoEntidad ): Promise<Respuesta> {
+
+  static async insert(curso: CursoEntidad): Promise<Respuesta> {
     try {
       curso.CRS_ID = uuidv4(); //asigna un identificador unico
-      
+
       const newCurso = new CursoEntidad(curso.CRS_ID, curso.CRS_NOM, curso.CRS_TIPO, curso.CRS_ORDEN, curso.ESTADO, curso.CREADOR_ID);
 
-      let sql =this.sqlInsert;
+      let sql = this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newCurso.toArrayInsert());
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar Curso');
       }
-      return {response: true, data:newCurso.CRS_ID, message: 'Se creo correctamente' }; // Retorna el ID del Curso
+      return { response: true, data: newCurso.CRS_ID, message: 'Se creo correctamente' }; // Retorna el ID del Curso
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async update(curso: CursoEntidad): Promise<Respuesta> {
     try {
       const newCurso = new CursoEntidad(curso.CRS_ID, curso.CRS_NOM, curso.CRS_TIPO, curso.CRS_ORDEN, curso.ESTADO, curso.CREADOR_ID);
-      let sql =this.sqlUpdate;
+      let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newCurso.toArrayUpdate());
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo actualizar Curso');
       }
-      return {response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
+      return { response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-    
+
   static async updateEstado(ids: string[]): Promise<Respuesta> {
     try {
       // Crear una cadena de marcadores de posición para la cantidad de IDs en el array
@@ -61,12 +59,12 @@ class CursoDatos {
         throw new Error('No se pudo actualizar el estado');
       }
 
-      return {response: true, data: true, message: 'Estado actualizado' };
+      return { response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.code };
+      return { response: false, data: null, message: error.code };
     }
   }
-  
+
   static async delete(id: String): Promise<Respuesta> {
     try {
       let sql = this.sqlDelete;
@@ -74,23 +72,23 @@ class CursoDatos {
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo eliminar el objeto de tipo Curso');
       }
-      return { response: true, data: true, message: 'Objeto eliminado' }
+      return { response: true, data: true, message: 'Objeto eliminado' };
     } catch (error: any) {
       return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async getAll(): Promise<Respuesta> {
     try {
       let sql = this.sqlSelect;
-      
+
       const [rows] = await pool.execute<any>(sql);
       return { response: true, data: rows as CursoEntidad[], message: '' };
     } catch (error: any) {
       return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async getById(id: String): Promise<Respuesta> {
     try {
       let sql = this.sqlGetById;
@@ -99,24 +97,21 @@ class CursoDatos {
         throw new Error('Objeto de tipo Curso no encontrado');
       }
       let newCurso = rows[0] as CursoEntidad;
-      return {response: true, data: newCurso, message: 'Encontrado' };
+      return { response: true, data: newCurso, message: 'Encontrado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async getEnabled(): Promise<Respuesta> {
     try {
       let sql = this.sqlGetEnabled;
-      
+
       const [rows] = await pool.execute<any>(sql);
-      return {response: true, data: rows as CursoEntidad[], message: '' };
+      return { response: true, data: rows as CursoEntidad[], message: '' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
-
-
 }
 export default CursoDatos;

@@ -1,4 +1,3 @@
-
 import { Router } from 'express';
 const router = Router();
 import EstudianteCursoNegocio from '../Negocio/EstudianteCursoNegocio';
@@ -46,7 +45,6 @@ router.patch('/estudiantecurso', async (req, res) => {
     res.status(500).json({ message: error.code });
   }
 });
-
 
 router.delete('/estudiantecurso', async (req, res) => {
   try {

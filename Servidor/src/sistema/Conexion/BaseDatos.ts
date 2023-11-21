@@ -5,12 +5,11 @@ import * as fs from 'fs/promises'; // Utilizando fs/promises para trabajar con p
 dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE } = process.env;
 
-
 const pool = createPool({
   host: DB_HOST,
   user: DB_USER,
   password: DB_PASSWORD,
-  database: DB_DATABASE
+  database: DB_DATABASE,
 });
 
 async function createDatabase() {
@@ -35,7 +34,6 @@ async function createDatabase() {
 
 async function createTables() {
   try {
-
     // Leer el contenido del archivo SQL
     const sqlScript = await fs.readFile('SQL/UEFBC.sql', 'utf-8');
 
@@ -44,7 +42,7 @@ async function createTables() {
 
     try {
       // Dividir el script en consultas individuales
-      const queries = sqlScript.split(';').filter(query => query.trim() !== '');
+      const queries = sqlScript.split(';').filter((query) => query.trim() !== '');
 
       // Ejecutar cada consulta por separado
       for (const query of queries) {
@@ -68,7 +66,6 @@ async function createTables() {
 
 async function insertOnTables() {
   try {
-
     // Leer el contenido del archivo SQL
     const sqlScript = await fs.readFile('SQL/Datos.sql', 'utf-8');
 
@@ -77,7 +74,7 @@ async function insertOnTables() {
 
     try {
       // Dividir el script en consultas individuales
-      const queries = sqlScript.split(';').filter(query => query.trim() !== '');
+      const queries = sqlScript.split(';').filter((query) => query.trim() !== '');
 
       // Ejecutar cada consulta por separado
       for (const query of queries) {

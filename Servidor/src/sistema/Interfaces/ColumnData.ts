@@ -3,4 +3,3 @@ export interface ColumnData {
   Field: any;
   Key: any;
 }
-

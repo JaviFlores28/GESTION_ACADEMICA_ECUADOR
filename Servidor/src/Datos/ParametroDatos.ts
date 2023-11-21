@@ -1,4 +1,3 @@
-
 import pool from '../sistema/Conexion/BaseDatos';
 import { Respuesta } from '../sistema/Interfaces/Respuesta';
 import ParametroEntidad from '../Entidades/ParametroEntidad';
@@ -12,39 +11,38 @@ class ParametroDatos {
   static sqlSelect: string = `SELECT * FROM parametro `;
   static sqlGetById: string = 'SELECT * FROM parametro WHERE PRMT_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM parametro WHERE ESTADO = 1';
-  
-  
-  static async insert(parametro: ParametroEntidad ): Promise<Respuesta> {
+
+  static async insert(parametro: ParametroEntidad): Promise<Respuesta> {
     try {
       parametro.PRMT_ID = uuidv4(); //asigna un identificador unico
-      
+
       const newParametro = new ParametroEntidad(parametro.PRMT_ID, parametro.PRMT_NOM, parametro.PRMT_DESCR, parametro.PRMT_URL_IMG, parametro.ESTADO, parametro.CREADOR_ID);
 
-      let sql =this.sqlInsert;
+      let sql = this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newParametro.toArrayInsert());
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar Parametro');
       }
-      return {response: true, data:newParametro.PRMT_ID, message: 'Se creo correctamente' }; // Retorna el ID del Parametro
+      return { response: true, data: newParametro.PRMT_ID, message: 'Se creo correctamente' }; // Retorna el ID del Parametro
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async update(parametro: ParametroEntidad): Promise<Respuesta> {
     try {
       const newParametro = new ParametroEntidad(parametro.PRMT_ID, parametro.PRMT_NOM, parametro.PRMT_DESCR, parametro.PRMT_URL_IMG, parametro.ESTADO, parametro.CREADOR_ID);
-      let sql =this.sqlUpdate;
+      let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newParametro.toArrayUpdate());
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo actualizar Parametro');
       }
-      return {response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
+      return { response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-    
+
   static async updateEstado(ids: string[]): Promise<Respuesta> {
     try {
       // Crear una cadena de marcadores de posición para la cantidad de IDs en el array
@@ -61,12 +59,12 @@ class ParametroDatos {
         throw new Error('No se pudo actualizar el estado');
       }
 
-      return {response: true, data: true, message: 'Estado actualizado' };
+      return { response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.code };
+      return { response: false, data: null, message: error.code };
     }
   }
-  
+
   static async delete(id: String): Promise<Respuesta> {
     try {
       let sql = this.sqlDelete;
@@ -74,23 +72,23 @@ class ParametroDatos {
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo eliminar el objeto de tipo Parametro');
       }
-      return { response: true, data: true, message: 'Objeto eliminado' }
+      return { response: true, data: true, message: 'Objeto eliminado' };
     } catch (error: any) {
       return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async getAll(): Promise<Respuesta> {
     try {
       let sql = this.sqlSelect;
-      
+
       const [rows] = await pool.execute<any>(sql);
       return { response: true, data: rows as ParametroEntidad[], message: '' };
     } catch (error: any) {
       return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async getById(id: String): Promise<Respuesta> {
     try {
       let sql = this.sqlGetById;
@@ -99,24 +97,21 @@ class ParametroDatos {
         throw new Error('Objeto de tipo Parametro no encontrado');
       }
       let newParametro = rows[0] as ParametroEntidad;
-      return {response: true, data: newParametro, message: 'Encontrado' };
+      return { response: true, data: newParametro, message: 'Encontrado' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
+
   static async getEnabled(): Promise<Respuesta> {
     try {
       let sql = this.sqlGetEnabled;
-      
+
       const [rows] = await pool.execute<any>(sql);
-      return {response: true, data: rows as ParametroEntidad[], message: '' };
+      return { response: true, data: rows as ParametroEntidad[], message: '' };
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; // Retorna el mensaje del error
+      return { response: false, data: null, message: error.code }; // Retorna el mensaje del error
     }
   }
-  
-
-
 }
 export default ParametroDatos;

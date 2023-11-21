@@ -9,13 +9,13 @@
 # Node
 /node_modules
 /build
-/src/componentes
-/src/interfaces
-/src/entidades
-/src/datos
-/src/negocio
-/src/servicios
-/src/html
+# /src/componentes
+# /src/interfaces
+# /src/entidades
+# /src/datos
+# /src/negocio
+# /src/servicios
+# /src/html
 
 npm-debug.log
 yarn-error.log
