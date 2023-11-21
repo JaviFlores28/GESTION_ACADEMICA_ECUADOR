@@ -17,6 +17,7 @@ class Funciones {
         const plaintext = bytes.toString(CryptoJS.enc.Utf8);
         return plaintext;
     }
+    
     static crearUsuario(dni: string, nom: string, nom2: string, ape: string) {
         let usr = '';
         usr += nom[0] || ''; // Agregamos el primer carácter de nom1 si existe
@@ -115,16 +116,17 @@ class Funciones {
             .join(',');
     }
 
-    static generatePropsIsValid(propertiesData: MappedProperty[]) {
-        const excludedProperties = [
-            'FECHA_CREACION',
-            'ROL_PRF',
-            'ROL_REPR',
-            'ROL_ADMIN',
-            'USUARIO',
-            'USR_PSWD',
-            'ESTADO'
-        ];
+    /* const excludedProperties = [
+                'FECHA_CREACION',
+                'ROL_PRF',
+                'ROL_REPR',
+                'ROL_ADMIN',
+                'USUARIO',
+                'USR_PSWD',
+                'ESTADO'
+            ]; 
+    */
+    static generatePropsIsValid(propertiesData: MappedProperty[], excludedProperties: string[]) {
         return propertiesData
             .filter((property) => !excludedProperties.includes(property.name))
             .map((property) => `!!this.${property.name}`)
@@ -146,17 +148,15 @@ class Funciones {
     }
 
     static generateSqlInsert(propertiesData: MappedProperty[]) {
-        const marcadores = propertiesData
-            .filter((property) => property.name !== 'FECHA_CREACION')
-            .map(() => '?').join(', ');
-        const headers = propertiesData
-            .filter((property) => property.name !== 'FECHA_CREACION')
-            .map((property) => property.name).join(', ');
+        const excludedProperties = ['FECHA_CREACION'];
+        const filteredProperties = propertiesData.filter((property) => !excludedProperties.includes(property.name));
+        const marcadores = filteredProperties.map(() => '?').join(', ');
+        const headers = filteredProperties.map((property) => property.name).join(', ');
         return { headers, marcadores };
     }
 
-    static generarSQLUpdate(propertiesData: MappedProperty[], tableName: string) {
-        const excludedProperties = (tableName !== 'usuario') ? ['FECHA_CREACION', 'CREADOR_ID'] : ['USUARIO', 'USR_PSWD', 'FECHA_CREACION'];
+    static generarSQLUpdate(propertiesData: MappedProperty[]) {
+        const excludedProperties = ['USUARIO', 'USR_PSWD', 'FECHA_CREACION','CREADOR_ID'];
         return propertiesData
             .filter((property) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
             .map((property) => `${property.name}=?`).join(',');
