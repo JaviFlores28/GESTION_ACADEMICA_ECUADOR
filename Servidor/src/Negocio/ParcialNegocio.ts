@@ -1,6 +1,6 @@
-import ParcialDatos from '../Datos/ParcialDatos';
-import ParcialEntidad from '../Entidades/ParcialEntidad';
-import { Respuesta } from '../sistema/Interfaces/Respuesta';
+import ParcialDatos from '../datos/ParcialDatos';
+import ParcialEntidad from '../entidades/ParcialEntidad';
+import { Respuesta } from '../sistema/interfaces/Respuesta';
 
 class ParcialNegocio {
   static async insert(parcial: ParcialEntidad): Promise<Respuesta> {

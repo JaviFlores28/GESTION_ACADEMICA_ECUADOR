@@ -1,6 +1,6 @@
-import PeriodoDatos from '../Datos/PeriodoDatos';
-import PeriodoEntidad from '../Entidades/PeriodoEntidad';
-import { Respuesta } from '../sistema/Interfaces/Respuesta';
+import PeriodoDatos from '../datos/PeriodoDatos';
+import PeriodoEntidad from '../entidades/PeriodoEntidad';
+import { Respuesta } from '../sistema/interfaces/Respuesta';
 
 class PeriodoNegocio {
   static async insert(periodo: PeriodoEntidad): Promise<Respuesta> {

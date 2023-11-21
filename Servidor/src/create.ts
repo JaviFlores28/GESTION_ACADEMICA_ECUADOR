@@ -1,8 +1,8 @@
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import path from 'path';
-import pool from './sistema/Conexion/BaseDatos';
-import { MappedProperty } from './sistema/Interfaces/MappedProperty';
-import Funciones from './sistema/Funciones/Funciones';
+import pool from './sistema/conexion/BaseDatos';
+import { MappedProperty } from './sistema/interfaces/MappedProperty';
+import Funciones from './sistema/funciones/Funciones';
 import * as dotenv from 'dotenv';
 import { execSync } from 'child_process';
 
@@ -45,7 +45,7 @@ class ${capitalizedTableName}Entidad {
 export default ${capitalizedTableName}Entidad;
 `;
 
-  const carpetaEntidades = path.join(__dirname, 'Entidades');
+  const carpetaEntidades = path.join(__dirname, 'entidades');
   const archivoEntidad = path.join(carpetaEntidades, `${capitalizedTableName}Entidad.ts`);
 
   if (!existsSync(carpetaEntidades)) {
@@ -320,10 +320,10 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
   const sqlgetmatriculas = `static sqlGetMatriculas: string = 'SELECT E.*, ec.EST_CRS_ID FROM vista_estudiante E JOIN ESTUDIANTE_CURSO EC ON E.EST_ID = EC.EST_ID JOIN CURSO C ON EC.CRS_ID = C.CRS_ID WHERE EC.ESTADO = 1 AND C.CRS_ID = ?;'`;
   const sqlGetNoMatriculados = `static sqlGetNoMatriculados: string = 'SELECT a.* FROM vista_estudiante AS a WHERE NOT EXISTS ( SELECT 1 FROM estudiante_curso AS b WHERE b.EST_ID = a.EST_ID AND (b.ESTADO = 1 OR b.CRS_ID = (SELECT CRS_ID FROM curso ORDER BY CRS_ORDEN DESC LIMIT 1)) ) AND a.ESTADO = 1;'`;
 
-  const content = `${tableName === 'usuario' ? `import Funciones from '../sistema/Funciones/Funciones';\nimport UsuarioProfesorDatos from './UsuarioProfesorDatos';\nimport UsuarioProfesorEntidad from '../Entidades/UsuarioProfesorEntidad';` : ''}
-import pool from '../sistema/Conexion/BaseDatos';
-import { Respuesta } from '../sistema/Interfaces/Respuesta';
-import ${capitalizedTableName}Entidad from '../Entidades/${capitalizedTableName}Entidad';
+  const content = `${tableName === 'usuario' ? `import Funciones from '../sistema/funciones/Funciones';\nimport UsuarioProfesorDatos from './UsuarioProfesorDatos';\nimport UsuarioProfesorEntidad from '../entidades/UsuarioProfesorEntidad';` : ''}
+import pool from '../sistema/conexion/BaseDatos';
+import { Respuesta } from '../sistema/interfaces/Respuesta';
+import ${capitalizedTableName}Entidad from '../entidades/${capitalizedTableName}Entidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class ${capitalizedTableName}Datos {
@@ -349,7 +349,7 @@ class ${capitalizedTableName}Datos {
 export default ${capitalizedTableName}Datos;
 `;
 
-  const carpetaEntidades = path.join(__dirname, 'Datos');
+  const carpetaEntidades = path.join(__dirname, 'datos');
   const archivoEntidad = path.join(carpetaEntidades, `${capitalizedTableName}Datos.ts`);
 
   if (!existsSync(carpetaEntidades)) {
@@ -464,10 +464,10 @@ async function generateNegocioFile(tableName: string) {
     }
   }`;
 
-  const content = `${tableName === 'usuario' ? `import UsuarioProfesorEntidad from '../Entidades/UsuarioProfesorEntidad'; ` : ''}
-import ${capitalizedTableName}Datos from '../Datos/${capitalizedTableName}Datos';
-import ${capitalizedTableName}Entidad from '../Entidades/${capitalizedTableName}Entidad';
-import { Respuesta } from '../sistema/Interfaces/Respuesta';
+  const content = `${tableName === 'usuario' ? `import UsuarioProfesorEntidad from '../entidades/UsuarioProfesorEntidad'; ` : ''}
+import ${capitalizedTableName}Datos from '../datos/${capitalizedTableName}Datos';
+import ${capitalizedTableName}Entidad from '../entidades/${capitalizedTableName}Entidad';
+import { Respuesta } from '../sistema/interfaces/Respuesta';
 
 class ${capitalizedTableName}Negocio {
   ${functionInsert}
@@ -482,7 +482,7 @@ class ${capitalizedTableName}Negocio {
 
 export default ${capitalizedTableName}Negocio;`;
 
-  const carpeta = path.join(__dirname, 'Negocio');
+  const carpeta = path.join(__dirname, 'negocio');
   const archivo = path.join(carpeta, `${capitalizedTableName}Negocio.ts`);
 
   if (!existsSync(carpeta)) {
@@ -606,9 +606,9 @@ router.delete('/${lowercaseTableName}', async (req, res) => {
   const content = `
 import { Router } from 'express';
 const router = Router();
-import ${capitalizedTableName}Negocio from '../Negocio/${capitalizedTableName}Negocio';
-import ${capitalizedTableName}Entidad from '../Entidades/${capitalizedTableName}Entidad';
-import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
+import ${capitalizedTableName}Negocio from '../negocio/${capitalizedTableName}Negocio';
+import ${capitalizedTableName}Entidad from '../entidades/${capitalizedTableName}Entidad';
+import { TypeRequest } from '../sistema/interfaces/TypeRequest';
 ${postroute}
 ${putroute}
 ${patchRoute}
@@ -616,7 +616,7 @@ ${deleteroute}
 ${getroute}
 export default router;
 `;
-  const carpeta = path.join(__dirname, 'Servicios');
+  const carpeta = path.join(__dirname, 'servicios');
   const archivo = path.join(carpeta, `${capitalizedTableName}Servicio.ts`);
 
   if (!existsSync(carpeta)) {

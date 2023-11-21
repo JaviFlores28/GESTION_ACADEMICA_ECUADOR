@@ -1,8 +1,8 @@
 import { Router } from 'express';
 const router = Router();
-import ParametroNegocio from '../Negocio/ParametroNegocio';
-import ParametroEntidad from '../Entidades/ParametroEntidad';
-import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
+import ParametroNegocio from '../negocio/ParametroNegocio';
+import ParametroEntidad from '../entidades/ParametroEntidad';
+import { TypeRequest } from '../sistema/interfaces/TypeRequest';
 
 router.post('/parametro', async (req, res) => {
   try {

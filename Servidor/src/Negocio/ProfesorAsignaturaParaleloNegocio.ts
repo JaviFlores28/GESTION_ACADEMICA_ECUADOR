@@ -1,6 +1,6 @@
-import ProfesorAsignaturaParaleloDatos from '../Datos/ProfesorAsignaturaParaleloDatos';
-import ProfesorAsignaturaParaleloEntidad from '../Entidades/ProfesorAsignaturaParaleloEntidad';
-import { Respuesta } from '../sistema/Interfaces/Respuesta';
+import ProfesorAsignaturaParaleloDatos from '../datos/ProfesorAsignaturaParaleloDatos';
+import ProfesorAsignaturaParaleloEntidad from '../entidades/ProfesorAsignaturaParaleloEntidad';
+import { Respuesta } from '../sistema/interfaces/Respuesta';
 
 class ProfesorAsignaturaParaleloNegocio {
   static async insert(profesor_asignatura_paralelo: ProfesorAsignaturaParaleloEntidad): Promise<Respuesta> {

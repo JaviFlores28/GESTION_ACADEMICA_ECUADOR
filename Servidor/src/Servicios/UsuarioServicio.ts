@@ -1,8 +1,8 @@
 import { Router } from 'express';
 const router = Router();
-import UsuarioNegocio from '../Negocio/UsuarioNegocio';
-import UsuarioEntidad from '../Entidades/UsuarioEntidad';
-import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
+import UsuarioNegocio from '../negocio/UsuarioNegocio';
+import UsuarioEntidad from '../entidades/UsuarioEntidad';
+import { TypeRequest } from '../sistema/interfaces/TypeRequest';
 
 router.post('/usuario', async (req, res) => {
   try {

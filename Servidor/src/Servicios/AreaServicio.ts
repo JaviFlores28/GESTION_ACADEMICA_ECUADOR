@@ -1,8 +1,8 @@
 import { Router } from 'express';
 const router = Router();
-import AreaNegocio from '../Negocio/AreaNegocio';
-import AreaEntidad from '../Entidades/AreaEntidad';
-import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
+import AreaNegocio from '../negocio/AreaNegocio';
+import AreaEntidad from '../entidades/AreaEntidad';
+import { TypeRequest } from '../sistema/interfaces/TypeRequest';
 
 router.post('/area', async (req, res) => {
   try {

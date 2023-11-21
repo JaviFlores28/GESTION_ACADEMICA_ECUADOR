@@ -1,6 +1,6 @@
-import AreaDatos from '../Datos/AreaDatos';
-import AreaEntidad from '../Entidades/AreaEntidad';
-import { Respuesta } from '../sistema/Interfaces/Respuesta';
+import AreaDatos from '../datos/AreaDatos';
+import AreaEntidad from '../entidades/AreaEntidad';
+import { Respuesta } from '../sistema/interfaces/Respuesta';
 
 class AreaNegocio {
   static async insert(area: AreaEntidad): Promise<Respuesta> {

@@ -1,6 +1,6 @@
-import pool from '../sistema/Conexion/BaseDatos';
-import { Respuesta } from '../sistema/Interfaces/Respuesta';
-import AsignaturaEntidad from '../Entidades/AsignaturaEntidad';
+import pool from '../sistema/conexion/BaseDatos';
+import { Respuesta } from '../sistema/interfaces/Respuesta';
+import AsignaturaEntidad from '../entidades/AsignaturaEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class AsignaturaDatos {

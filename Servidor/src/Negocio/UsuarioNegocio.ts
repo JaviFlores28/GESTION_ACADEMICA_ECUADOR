@@ -1,7 +1,7 @@
-import UsuarioProfesorEntidad from '../Entidades/UsuarioProfesorEntidad';
-import UsuarioDatos from '../Datos/UsuarioDatos';
-import UsuarioEntidad from '../Entidades/UsuarioEntidad';
-import { Respuesta } from '../sistema/Interfaces/Respuesta';
+import UsuarioProfesorEntidad from '../entidades/UsuarioProfesorEntidad';
+import UsuarioDatos from '../datos/UsuarioDatos';
+import UsuarioEntidad from '../entidades/UsuarioEntidad';
+import { Respuesta } from '../sistema/interfaces/Respuesta';
 
 class UsuarioNegocio {
   static async insert(usuario: UsuarioEntidad, detalle?: UsuarioProfesorEntidad): Promise<Respuesta> {

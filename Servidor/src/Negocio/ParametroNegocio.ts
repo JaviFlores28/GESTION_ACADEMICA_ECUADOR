@@ -1,6 +1,6 @@
-import ParametroDatos from '../Datos/ParametroDatos';
-import ParametroEntidad from '../Entidades/ParametroEntidad';
-import { Respuesta } from '../sistema/Interfaces/Respuesta';
+import ParametroDatos from '../datos/ParametroDatos';
+import ParametroEntidad from '../entidades/ParametroEntidad';
+import { Respuesta } from '../sistema/interfaces/Respuesta';
 
 class ParametroNegocio {
   static async insert(parametro: ParametroEntidad): Promise<Respuesta> {

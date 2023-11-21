@@ -1,8 +1,8 @@
 import { Router } from 'express';
 const router = Router();
-import CalificacionesCualitativasNegocio from '../Negocio/CalificacionesCualitativasNegocio';
-import CalificacionesCualitativasEntidad from '../Entidades/CalificacionesCualitativasEntidad';
-import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
+import CalificacionesCualitativasNegocio from '../negocio/CalificacionesCualitativasNegocio';
+import CalificacionesCualitativasEntidad from '../entidades/CalificacionesCualitativasEntidad';
+import { TypeRequest } from '../sistema/interfaces/TypeRequest';
 
 router.post('/calificacionescualitativas', async (req, res) => {
   try {

@@ -1,9 +1,9 @@
-import Funciones from '../sistema/Funciones/Funciones';
+import Funciones from '../sistema/funciones/Funciones';
 import UsuarioProfesorDatos from './UsuarioProfesorDatos';
-import UsuarioProfesorEntidad from '../Entidades/UsuarioProfesorEntidad';
-import pool from '../sistema/Conexion/BaseDatos';
-import { Respuesta } from '../sistema/Interfaces/Respuesta';
-import UsuarioEntidad from '../Entidades/UsuarioEntidad';
+import UsuarioProfesorEntidad from '../entidades/UsuarioProfesorEntidad';
+import pool from '../sistema/conexion/BaseDatos';
+import { Respuesta } from '../sistema/interfaces/Respuesta';
+import UsuarioEntidad from '../entidades/UsuarioEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class UsuarioDatos {

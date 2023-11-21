@@ -1,6 +1,6 @@
-import pool from '../sistema/Conexion/BaseDatos';
-import { Respuesta } from '../sistema/Interfaces/Respuesta';
-import AnioLectivoEntidad from '../Entidades/AnioLectivoEntidad';
+import pool from '../sistema/conexion/BaseDatos';
+import { Respuesta } from '../sistema/interfaces/Respuesta';
+import AnioLectivoEntidad from '../entidades/AnioLectivoEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class AnioLectivoDatos {

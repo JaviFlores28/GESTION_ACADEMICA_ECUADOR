@@ -1,8 +1,8 @@
 import CryptoJS from 'crypto-js';
-
 import * as dotenv from 'dotenv';
-import { ColumnData } from '../Interfaces/ColumnData';
-import { MappedProperty } from '../Interfaces/MappedProperty';
+import { ColumnData } from '../interfaces/ColumnData';
+import { MappedProperty } from '../interfaces/MappedProperty';
+
 dotenv.config();
 const { KEY_ENCRYPT } = process.env;
 

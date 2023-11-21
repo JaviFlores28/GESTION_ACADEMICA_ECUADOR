@@ -1,8 +1,8 @@
 import { Router } from 'express';
 const router = Router();
-import PeriodoNegocio from '../Negocio/PeriodoNegocio';
-import PeriodoEntidad from '../Entidades/PeriodoEntidad';
-import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
+import PeriodoNegocio from '../negocio/PeriodoNegocio';
+import PeriodoEntidad from '../entidades/PeriodoEntidad';
+import { TypeRequest } from '../sistema/interfaces/TypeRequest';
 
 router.post('/periodo', async (req, res) => {
   try {
