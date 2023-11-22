@@ -150,6 +150,7 @@ class Funciones {
     static generateSqlInsert(propertiesData: MappedProperty[]) {
         const excludedProperties = ['FECHA_CREACION'];
         const filteredProperties = propertiesData.filter((property) => !excludedProperties.includes(property.name));
+        
         const marcadores = filteredProperties.map(() => '?').join(', ');
         const headers = filteredProperties.map((property) => property.name).join(', ');
         return { headers, marcadores };

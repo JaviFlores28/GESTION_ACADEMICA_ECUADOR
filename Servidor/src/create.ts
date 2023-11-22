@@ -71,7 +71,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
   usuario.USR_PSWD = Funciones.encrypt(usuario.USR_DNI);
   `;
 
-  const stringByinsertUser = `else {
+  const conditionToInsertUser = `else {
     if (detalle) {
       detalle.USR_ID = usuario.USR_ID;
       const response = await UsuarioProfesorDatos.insert(detalle);
@@ -93,7 +93,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       const [result] = await pool.execute<any>(sql, new${capitalizedTableName}.toArrayInsert());
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar ${capitalizedTableName}');
-      }${tableName === 'usuario' ? stringByinsertUser : ''}
+      }${tableName === 'usuario' ? conditionToInsertUser : ''}
       return {response: true, data:new${capitalizedTableName}.${primaryKeyColumn}, message: 'Se creo correctamente' };
     } catch (error: any) {
       return {response: false, data: null, message: error.code }; 
@@ -115,6 +115,29 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
     }
   }`;
 
+  const functionupdateEstado = `  
+  static async updateEstado(ids: string[]): Promise<Respuesta> {
+    try {
+      // Crear una cadena de marcadores de posición para la cantidad de IDs en el array
+      const placeholders = ids.map(() => '?').join(',');
+
+      // Consulta SQL con cláusula IN y actualización del estado
+      let sql = \`\${this.sqlUpdateEstado}(\${placeholders});\`;
+
+      // Ejecutar la consulta con el array de valores
+      const [result] = await pool.execute<any>(sql, ids);
+
+      // Verificar si se afectaron filas
+      if (result.affectedRows < 1) {
+        throw new Error('No se pudo actualizar el estado');
+      }
+
+      return {response: true, data: true, message: 'Estado actualizado' };
+    } catch (error: any) {
+      return {response: false, data: null, message: error.code };
+    }
+  }`;
+
   const functionDelete = `
   static async delete(id: String): Promise<Respuesta> {
     try {
@@ -129,7 +152,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
     }
   }`;
 
-  const stringByGetUser = `
+  const sqlToUser = `
     const userMapping = {
       'R': ' WHERE ROL_REPR=1',
       'P': ' WHERE ROL_PRF=1',
@@ -143,7 +166,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
   static async getAll(${tableName === 'usuario' ? 'tipo: string' : ''}): Promise<Respuesta> {
     try {
       let sql = this.sqlSelect;
-      ${tableName === 'usuario' ? stringByGetUser : ''}
+      ${tableName === 'usuario' ? sqlToUser : ''}
       const [rows] = await pool.execute<any>(sql);
       return { response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
@@ -151,33 +174,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
     }
   }`;
 
-  const functiongetById = `
-  static async getById(id: String): Promise<Respuesta> {
-    try {
-      let sql = this.sqlGetById;
-      const [rows] = await pool.execute<any>(sql, [id]);
-      if (rows.length <= 0) {
-        throw new Error('Objeto de tipo ${capitalizedTableName} no encontrado');
-      }
-      let new${capitalizedTableName} = rows[0] as ${capitalizedTableName}Entidad;
-      return {response: true, data: new${capitalizedTableName}, message: 'Encontrado' };
-    } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
-    }
-  }`;
-
-  const functiongetByCurso = `
-  static async getByCurso(id: String): Promise<Respuesta> {
-    try {
-      let sql = this.sqlGetMatriculas;
-      const [rows] = await pool.execute<any>(sql, [id]);
-      return { response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
-    } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
-    }
-  }`;
-
-  const stringByGetUserEnabled = `
+  const mapToUserEnabled = `
   const userMapping = {
     'R': ' AND ROL_REPR=1',
     'P': ' AND ROL_PRF=1',
@@ -191,9 +188,24 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
   static async getEnabled(${tableName === 'usuario' ? 'tipo: string' : ''}): Promise<Respuesta> {
     try {
       let sql = this.sqlGetEnabled;
-      ${tableName === 'usuario' ? stringByGetUserEnabled : ''}
+      ${tableName === 'usuario' ? mapToUserEnabled : ''}
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
+    } catch (error: any) {
+      return {response: false, data: null, message: error.code }; 
+    }
+  }`;
+
+  const functiongetById = `
+  static async getById(id: String): Promise<Respuesta> {
+    try {
+      let sql = this.sqlGetById;
+      const [rows] = await pool.execute<any>(sql, [id]);
+      if (rows.length <= 0) {
+        throw new Error('Objeto de tipo ${capitalizedTableName} no encontrado');
+      }
+      let new${capitalizedTableName} = rows[0] as ${capitalizedTableName}Entidad;
+      return {response: true, data: new${capitalizedTableName}, message: 'Encontrado' };
     } catch (error: any) {
       return {response: false, data: null, message: error.code }; 
     }
@@ -222,6 +234,28 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
     }
   }`;
 
+  const functiongetByCurso = `
+  static async getByCurso(id: String): Promise<Respuesta> {
+    try {
+      let sql = this.sqlGetByCurso;
+      const [rows] = await pool.execute<any>(sql, [id]);
+      return { response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
+    } catch (error: any) {
+      return {response: false, data: null, message: error.code }; 
+    }
+  }`;
+
+  const functiongetByParalelo = `
+  static async getByParalelo(id: String): Promise<Respuesta> {
+    try {
+      let sql = this.sqlGetByParalelo;
+      const [rows] = await pool.execute<any>(sql, [id]);
+      return { response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
+    } catch (error: any) {
+      return {response: false, data: null, message: error.code }; 
+    }
+  }`;
+
   const functionGetNoMatriculados = `
   static async getNoMatriculados(): Promise<Respuesta> {
     try {
@@ -233,17 +267,22 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
     }
   }`;
 
+  const excludedProperties = ['FECHA_CREACION', primaryKeyColumn, 'EST_ID', 'ESTADO', 'CREADOR_ID', 'EST_CRS_ID', 'PASE', 'AL_ID'];
+
   const functioninsertarMasivamente = `
   static async insertMasivo(data:any): Promise<Respuesta> {
     try {
       const arrayIds = data.arrayIds;
       const estado = 1;
+      ${tableName === 'estudiante_curso_paralelo' ? `const anio =(await AnioLectivoDatos.getEnabled()).data[0].AL_ID;` : ''}
 
       // Crear un array de valores para todos los registros utilizando map
       const valores = arrayIds.map((id: any) => [
         uuidv4(),
         id,
-        ${Funciones.generateObject(propertiesData, 'data', ['FECHA_CREACION', primaryKeyColumn, 'EST_ID', 'ESTADO', 'CREADOR_ID'])},
+        ${tableName === 'estudiante_curso_paralelo' ? `anio,` : ''}
+        ${Funciones.generateObject(propertiesData, 'data', excludedProperties)},
+        ${tableName === 'estudiante_curso_paralelo' ? `4,` : ''}
         estado,
         data.CREADOR_ID
       ]);      
@@ -294,54 +333,71 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
     }
   }`;
 
-  const functionupdateEstado = `  
-  static async updateEstado(ids: string[]): Promise<Respuesta> {
-    try {
-      // Crear una cadena de marcadores de posición para la cantidad de IDs en el array
-      const placeholders = ids.map(() => '?').join(',');
-
-      // Consulta SQL con cláusula IN y actualización del estado
-      let sql = \`\${this.sqlUpdateEstado}(\${placeholders});\`;
-
-      // Ejecutar la consulta con el array de valores
-      const [result] = await pool.execute<any>(sql, ids);
-
-      // Verificar si se afectaron filas
-      if (result.affectedRows < 1) {
-        throw new Error('No se pudo actualizar el estado');
-      }
-
-      return {response: true, data: true, message: 'Estado actualizado' };
-    } catch (error: any) {
-      return {response: false, data: null, message: error.code };
-    }
-  }`;
-
   const generarSQLinsert = Funciones.generateSqlInsert(propertiesData);
   const generarSQLupdate = Funciones.generarSQLUpdate(propertiesData);
+  const sqlgetmatriculas = `static sqlGetByCurso: string = 'SELECT E.*, ec.EST_CRS_ID FROM vista_estudiante E JOIN estudiante_curso EC ON E.EST_ID = EC.EST_ID JOIN CURSO C ON EC.CRS_ID = C.CRS_ID WHERE EC.ESTADO = 1 AND C.CRS_ID = ?;'`;
+  const sqlGetNoMatriculados = `static sqlGetNoMatriculados: string = 'SELECT a.* FROM vista_estudiante AS a WHERE NOT EXISTS ( SELECT 1 FROM estudiante_curso AS b WHERE b.EST_ID = a.EST_ID AND (b.ESTADO = 1 OR b.CRS_ID = (SELECT CRS_ID FROM curso ORDER BY CRS_ORDEN DESC LIMIT 1)) ) AND a.ESTADO = 1;'`;
+  const sqlGetByUser = `static sqlGetByUser: string = 'SELECT * FROM ${tableName} WHERE USUARIO = ?';`;
+  const sqlGetByParalelo = `static sqlGetByParalelo: string = 'SELECT * FROM ${tableName} WHERE USUARIO = ?';`;
 
-  const validarVistaTabla = (tableName: string) => {
-    return tableName === 'estudiante' || tableName === 'usuario' || tableName === 'estudiante_curso' ? `vista_${tableName}` : tableName;
+  const isViewTable = (tableName: string) => {
+    if (tableName === 'estudiante' || tableName === 'usuario' || tableName === 'estudiante_curso') {
+      return `vista_${tableName}`;
+    } else {
+      tableName;
+    }
   };
 
-  const sqlgetmatriculas = `static sqlGetMatriculas: string = 'SELECT E.*, ec.EST_CRS_ID FROM vista_estudiante E JOIN ESTUDIANTE_CURSO EC ON E.EST_ID = EC.EST_ID JOIN CURSO C ON EC.CRS_ID = C.CRS_ID WHERE EC.ESTADO = 1 AND C.CRS_ID = ?;'`;
-  const sqlGetNoMatriculados = `static sqlGetNoMatriculados: string = 'SELECT a.* FROM vista_estudiante AS a WHERE NOT EXISTS ( SELECT 1 FROM estudiante_curso AS b WHERE b.EST_ID = a.EST_ID AND (b.ESTADO = 1 OR b.CRS_ID = (SELECT CRS_ID FROM curso ORDER BY CRS_ORDEN DESC LIMIT 1)) ) AND a.ESTADO = 1;'`;
+  const importsTable = (tableName: string) => {
+    if (tableName === 'usuario') {
+      return `import Funciones from '../sistema/funciones/Funciones';
+      import UsuarioProfesorDatos from './UsuarioProfesorDatos';
+      import UsuarioProfesorEntidad from '../entidades/UsuarioProfesorEntidad';`;
+    } else if (tableName === 'estudiante_curso_paralelo') {
+      return `import AnioLectivoDatos from './AnioLectivoDatos';`;
+    }
+  };
 
-  const content = `${tableName === 'usuario' ? `import Funciones from '../sistema/funciones/Funciones';\nimport UsuarioProfesorDatos from './UsuarioProfesorDatos';\nimport UsuarioProfesorEntidad from '../entidades/UsuarioProfesorEntidad';` : ''}
+  const otherSql = (tableName: string) => {
+    if (tableName === 'usuario') {
+      return sqlGetByUser;
+    } else if (tableName === 'estudiante_curso') {
+      return sqlGetNoMatriculados + '\n' + sqlgetmatriculas;
+    } else if (tableName === 'estudiante_curso_paralelo') {
+      return sqlGetByParalelo;
+    } else {
+      return '';
+    }
+  };
+
+  const otherFun = (tableName: string) => {
+    if (tableName === 'usuario') {
+      return functionGetByUser;
+    } else if (tableName === 'estudiante_curso') {
+      return functionGetNoMatriculados + functiongetByCurso + functioninsertarMasivamente;
+    } else if (tableName === 'estudiante_curso_paralelo') {
+      return functioninsertarMasivamente + functiongetByParalelo;
+    } else {
+      return '';
+    }
+  };
+
+  const content = `${importsTable(tableName)}
 import pool from '../sistema/conexion/BaseDatos';
 import { Respuesta } from '../sistema/interfaces/Respuesta';
 import ${capitalizedTableName}Entidad from '../entidades/${capitalizedTableName}Entidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class ${capitalizedTableName}Datos {
+  
   static sqlInsert: string = \`INSERT INTO ${tableName} (${generarSQLinsert.headers})VALUES(${generarSQLinsert.marcadores});\`;
   static sqlUpdate: string = \`UPDATE ${tableName} SET ${generarSQLupdate} WHERE ${primaryKeyColumn}=?;\`;
   static sqlUpdateEstado: string = 'UPDATE ${tableName} SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  ${primaryKeyColumn} IN';
   static sqlDelete: string = \`DELETE FROM ${tableName} WHERE ${primaryKeyColumn} = ?\`;
-  static sqlSelect: string = \`SELECT * FROM ${validarVistaTabla(tableName)} \`;
+  static sqlSelect: string = \`SELECT * FROM ${isViewTable(tableName)} \`;
   static sqlGetById: string = 'SELECT * FROM ${tableName} WHERE ${primaryKeyColumn} = ?';
-  static sqlGetEnabled: string = 'SELECT * FROM ${validarVistaTabla(tableName)} WHERE ESTADO = 1';
-  ${tableName === 'usuario' ? `static sqlGetByUser: string = 'SELECT * FROM ${tableName} WHERE USUARIO = ?'` : tableName === 'estudiante_curso' ? sqlGetNoMatriculados + '\n' + sqlgetmatriculas : ''}
+  static sqlGetEnabled: string = 'SELECT * FROM ${isViewTable(tableName)} WHERE ESTADO = 1';
+  ${otherSql(tableName)}
   ${functioninsert}
   ${functionUpdate}
   ${functionupdateEstado}
@@ -349,9 +405,7 @@ class ${capitalizedTableName}Datos {
   ${functionGet}
   ${functiongetById}
   ${functionGetEnabled}
-  ${tableName === 'usuario' ? functionGetByUser : tableName === 'estudiante_curso' ? functionGetNoMatriculados + functiongetByCurso + functioninsertarMasivamente : ''}
-
-
+  ${otherFun(tableName)}
 }
 export default ${capitalizedTableName}Datos;
 `;
