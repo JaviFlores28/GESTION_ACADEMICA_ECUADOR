@@ -85,10 +85,9 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
   const functioninsert = `
   static async insert(${tableName}: ${capitalizedTableName}Entidad ${tableName === 'usuario' ? ', detalle?: UsuarioProfesorEntidad' : ''}): Promise<Respuesta> {
     try {
-      ${tableName}.${primaryKeyColumn} = uuidv4(); 
       ${tableName === 'usuario' ? usuariodata : ''}
+      ${tableName}.${primaryKeyColumn} = uuidv4(); 
       const new${capitalizedTableName} = new ${capitalizedTableName}Entidad(${Funciones.generateObject(propertiesData, tableName, ['FECHA_CREACION'])});
-
       let sql =this.sqlInsert;
       const [result] = await pool.execute<any>(sql, new${capitalizedTableName}.toArrayInsert());
       if (result.affectedRows !== 1) {
@@ -355,6 +354,8 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       import UsuarioProfesorEntidad from '../entidades/UsuarioProfesorEntidad';`;
     } else if (tableName === 'estudiante_curso_paralelo') {
       return `import AnioLectivoDatos from './AnioLectivoDatos';`;
+    } else {
+      return '';
     }
   };
 
@@ -720,7 +721,6 @@ async function main() {
     }
     try {
       execSync(` npx prettier src/ --write --print-width 1000 --single-quote`);
-      console.log('Archivo formateado correctamente con Prettier.');
     } catch (error: any) {
       console.error('Error al formatear el archivo con Prettier:', error.message);
     }
