@@ -95,7 +95,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       }${tableName === 'usuario' ? conditionToInsertUser : ''}
       return {response: true, data:new${capitalizedTableName}.${primaryKeyColumn}, message: 'Se creo correctamente' };
     } catch (error: any) {
-      Funciones.logger.error(error);
+      Funciones.logger.error(error.message);
       return {response: false, data: null, message: error.code }; 
     }
   }`;
@@ -111,7 +111,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       }
       return {response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
-      Funciones.logger.error(error);
+      Funciones.logger.error(error.message);
       return {response: false, data: null, message: error.code }; 
     }
   }`;
@@ -135,7 +135,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
 
       return {response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
-      Funciones.logger.error(error);
+      Funciones.logger.error(error.message);
       return {response: false, data: null, message: error.code };
     }
   }`;
@@ -150,7 +150,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       }
       return { response: true, data: true, message: 'Objeto eliminado' }
     } catch (error: any) {
-      Funciones.logger.error(error);
+      Funciones.logger.error(error.message);
       return { response: false, data: null, message: error.code }; 
     }
   }`;
@@ -173,7 +173,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       const [rows] = await pool.execute<any>(sql);
       return { response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
-      Funciones.logger.error(error);
+      Funciones.logger.error(error.message);
       return { response: false, data: null, message: error.code }; 
     }
   }`;
@@ -196,7 +196,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
-      Funciones.logger.error(error);
+      Funciones.logger.error(error.message);
       return {response: false, data: null, message: error.code }; 
     }
   }`;
@@ -212,7 +212,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       let new${capitalizedTableName} = rows[0] as ${capitalizedTableName}Entidad;
       return {response: true, data: new${capitalizedTableName}, message: 'Encontrado' };
     } catch (error: any) {
-      Funciones.logger.error(error);
+      Funciones.logger.error(error.message);
       return {response: false, data: null, message: error.code }; 
     }
   }`;
@@ -236,7 +236,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       new${capitalizedTableName}.USR_PSWD = 'pswd';
       return {response: true, data: new${capitalizedTableName}, message: '${capitalizedTableName} Valido' }
     } catch (error: any) {
-      Funciones.logger.error(error);
+      Funciones.logger.error(error.message);
       return { response: false, data: null, message: error.code } // Devuelve una Promise rechazada con el error
     }
   }`;
@@ -248,7 +248,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       const [rows] = await pool.execute<any>(sql, [id]);
       return { response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
-      Funciones.logger.error(error);
+      Funciones.logger.error(error.message);
       return {response: false, data: null, message: error.code }; 
     }
   }`;
@@ -260,7 +260,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       const [rows] = await pool.execute<any>(sql, [id]);
       return { response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
-      Funciones.logger.error(error);
+      Funciones.logger.error(error.message);
       return {response: false, data: null, message: error.code }; 
     }
   }`;
@@ -272,7 +272,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       const [rows] = await pool.execute<any>(sql);
       return {response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
-      Funciones.logger.error(error);
+      Funciones.logger.error(error.message);
       return {response: false, data: null, message: error.code }; 
     }
   }`;
@@ -284,8 +284,15 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
     try {
       const arrayIds = data.arrayIds;
       const estado = 1;
-      ${tableName === 'estudiante_curso_paralelo' ? `const anio =(await AnioLectivoDatos.getEnabled()).data[0].AL_ID;` : ''}
-
+      ${
+        tableName === 'estudiante_curso_paralelo'
+          ? `const getAnioEnabled= await AnioLectivoDatos.getEnabled();      
+      if (getAnioEnabled.data.length <= 0) {
+        throw new Error('No existe un año lectivo activo');
+      }
+      const anio = getAnioEnabled.data[0].AL_ID;`
+          : ''
+      }
       // Crear un array de valores para todos los registros utilizando map
       const valores = arrayIds.map((id: any) => [
         uuidv4(),
@@ -316,7 +323,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
 
       return {response: true, data: true, message: 'Matrículas insertadas correctamente' };
     } catch (error: any) {      
-      Funciones.logger.error(error);
+      Funciones.logger.error(error.message);
       return {response: false, data: false, message: error.code };
     }
   }`;
@@ -394,6 +401,18 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
     }
   };
 
+  const ORDER = (tableName: string) => {
+    if (tableName === 'curso') {
+      return 'ORDER BY CRS_ORDEN ASC';
+    } else if (tableName === 'paralelo') {
+      return 'ORDER BY PRLL_NOM ASC';
+    } else if (tableName !== 'usuario') {
+      return 'ORDER BY ESTADO DESC';
+    } else {
+      return '';
+    }
+  };
+
   const content = `${importsTable(tableName)}
 import Funciones from '../sistema/funciones/Funciones';
 import pool from '../sistema/conexion/BaseDatos';
@@ -407,9 +426,9 @@ class ${capitalizedTableName}Datos {
   static sqlUpdate: string = \`UPDATE ${tableName} SET ${generarSQLupdate} WHERE ${primaryKeyColumn}=?;\`;
   static sqlUpdateEstado: string = 'UPDATE ${tableName} SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  ${primaryKeyColumn} IN';
   static sqlDelete: string = \`DELETE FROM ${tableName} WHERE ${primaryKeyColumn} = ?\`;
-  static sqlSelect: string = \`SELECT * FROM ${isViewTable(tableName)} \`;
+  static sqlSelect: string = \`SELECT * FROM ${isViewTable(tableName)} ${ORDER(tableName)}\`;
   static sqlGetById: string = 'SELECT * FROM ${tableName} WHERE ${primaryKeyColumn} = ?';
-  static sqlGetEnabled: string = 'SELECT * FROM ${isViewTable(tableName)} WHERE ESTADO = 1';
+  static sqlGetEnabled: string = 'SELECT * FROM ${isViewTable(tableName)} WHERE ESTADO = 1 ${ORDER(tableName)}';
   ${otherSql(tableName)}
   ${functioninsert}
   ${functionUpdate}

@@ -110,6 +110,7 @@ const routes: Routes = [
               { path: 'editar/:id', component: EstudianteComponent },
             ],
           },
+          { path: 'matriculas', component: EstudianteCursoComponent },
           {
             path: 'paralelos',
             children: [
@@ -132,7 +133,6 @@ const routes: Routes = [
         path: 'institucion',
         children: [
           { path: 'iniciar-anio', component: AnioLectivoComponent },
-          { path: 'matriculas', component: EstudianteCursoComponent },
           { path: 'asignar-paralelo', component: EstudianteParaleloComponent },
           { path: 'asignar-profesor', component: ProfesorAsignaturaComponent },
         ],

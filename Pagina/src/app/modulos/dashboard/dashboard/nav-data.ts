@@ -43,6 +43,10 @@ export const navbarData: NavBarData[] = [
         label: 'Estudiantes',
       },
       {
+        routelink: 'matriculas',
+        label: 'Matrículas',
+      },
+      {
         routelink: 'profesores',
         label: 'Profesores',
       },
@@ -61,11 +65,6 @@ export const navbarData: NavBarData[] = [
       {
         routelink: 'iniciar-anio',
         label: 'Iniciar Año lectivo',
-      },
-
-      {
-        routelink: 'matriculas',
-        label: 'Matrículas',
       },
       {
         routelink: 'asignar-paralelo',
