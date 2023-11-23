@@ -32,7 +32,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
     private paraleloService: ParaleloService,
     private asignaturaService: AsignaturaService,
     private modalService: ModalService,
-  ) {}
+  ) { }
 
   icon = faInfoCircle;
   modoEdicion: boolean = false;
@@ -143,6 +143,85 @@ export class ProfesorAsignaturaComponent implements OnInit {
     });
   }
 
+  loadDataEdit() {
+    this.service.getById(this.elementoId).subscribe({
+      next: (value) => {
+        if (value.response) {
+          this.llenarForm(value.data);
+        } else {
+          console.log(value.message);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
+  }
+
+  llenarForm(data: ProfesorAsignaturaParalelo) {
+    this.form.get('PRF_ID')?.setValue(data.PRF_ID);
+    this.form.get('ASG_ID')?.setValue(data.ASG_ID);
+    this.form.get('CRS_ID')?.setValue(data.CRS_ID);
+    this.form.get('PRLL_ID')?.setValue(data.PRLL_ID);
+    this.userid = data.CREADOR_ID;
+  }
+
+  crear() {
+    if (this.form.valid) {
+      const profesorAsignaturaParalelo: ProfesorAsignaturaParalelo = this.buildObject();
+      this.service.post(profesorAsignaturaParalelo).subscribe({
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
+    } else {
+      this.form.markAllAsTouched();
+    }
+  }
+
+  editar() {
+    if (this.form.valid) {
+      const profesorAsignaturaParalelo: ProfesorAsignaturaParalelo = this.buildObjectEdit();
+      this.service.put(profesorAsignaturaParalelo).subscribe({
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
+    } else {
+      this.form.markAllAsTouched();
+    }
+  }
+
+  buildObject() {
+    const profesorAsignaturaParalelo: ProfesorAsignaturaParalelo = {
+      PRF_ASG_PRLL_ID: '0',
+      PRF_ID: this.form.value.PRF_ID || '',
+      AL_ID: '0',
+      ASG_ID: this.form.value.ASG_ID || '',
+      CRS_ID: this.form.value.CRS_ID || '',
+      PRLL_ID: this.form.value.PRLL_ID || '',
+      ESTADO: 1,
+      CREADOR_ID: this.userid,
+    };
+    return profesorAsignaturaParalelo;
+  }
+
+  buildObjectEdit() {
+    const profesorAsignaturaParalelo: ProfesorAsignaturaParalelo = {
+      PRF_ASG_PRLL_ID: this.elementoId,
+      PRF_ID: this.form.value.PRF_ID || '',
+      AL_ID: '0',
+      ASG_ID: this.form.value.ASG_ID || '',
+      CRS_ID: this.form.value.CRS_ID || '',
+      PRLL_ID: this.form.value.PRLL_ID || '',
+      ESTADO: 1,
+      CREADOR_ID: this.userid,
+    };
+    return profesorAsignaturaParalelo;
+  }
+
   openAlertModal(content: string, alertType: string) {
     this.modalService.openAlertModal(content, alertType);
   }
@@ -152,8 +231,10 @@ export class ProfesorAsignaturaComponent implements OnInit {
       .openConfirmationModal(message)
       .then((result) => {
         if (result === 'save') {
-          if (this.modoEdicion) {
+          if (!this.modoEdicion) {
+            this.crear();
           } else {
+            this.editar();
           }
         }
       })
@@ -162,7 +243,31 @@ export class ProfesorAsignaturaComponent implements OnInit {
       });
   }
 
-  eliminar(data: any) {}
-  checkedsAction(data: any) {}
-  filaAction(data: any) {}
+  handleResponse(value: any) {
+    if (!value.response) {
+      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+      console.log(value.message);
+    } else {
+      if (this.modoEdicion) {
+        this.openAlertModal(value.message, 'success');
+        console.log(value.message);
+      } else {
+        this.openAlertModal(value.message, 'success');
+        this.form.reset();
+        this.router.navigate(['../'], { relativeTo: this.route });
+      }
+    }
+  }
+
+  handleErrorResponse(error: any) {
+    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    console.log(error);
+  }
+
+  eliminar(data: any) { }
+  checkedsAction(data: any) { }
+  filaAction(data: any) {
+    console.log(data);
+
+  }
 }

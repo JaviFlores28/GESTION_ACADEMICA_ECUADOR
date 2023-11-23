@@ -11,10 +11,10 @@
 /build
 /src/componentes
 /src/interfaces
-/src/entidades
-/src/datos
-/src/negocio
-/src/servicios
+# /src/entidades
+# /src/datos
+# /src/negocio
+# /src/servicios
 /src/html
 
 npm-debug.log
