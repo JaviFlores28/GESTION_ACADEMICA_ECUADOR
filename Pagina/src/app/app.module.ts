@@ -8,18 +8,9 @@ import { DashboardModule } from './modulos/dashboard/dashboard.module';
 import { PaginaModule } from './modulos/pagina/pagina.module';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    DashboardModule,
-    HttpClientModule,
-    PaginaModule,
-    BrowserAnimationsModule
-  ],
+  declarations: [AppComponent],
+  imports: [BrowserModule, AppRoutingModule, DashboardModule, HttpClientModule, PaginaModule, BrowserAnimationsModule],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

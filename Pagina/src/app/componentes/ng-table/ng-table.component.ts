@@ -6,7 +6,6 @@ import { faEye, faToggleOff, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { debounceTime } from 'rxjs/operators';
 
-
 /**
  * Componente de tabla personalizada para mostrar datos en una interfaz de usuario.
  */
@@ -15,10 +14,9 @@ import { debounceTime } from 'rxjs/operators';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, NgbTypeaheadModule, NgbPaginationModule, FormsModule, FontAwesomeModule],
   templateUrl: './ng-table.component.html',
-  styleUrls: ['./ng-table.component.scss']
+  styleUrls: ['./ng-table.component.scss'],
 })
 export class NgTableComponent implements OnInit {
-
   /**
    * Datos que se mostrarán en la tabla.
    * @type {any[]}
@@ -101,7 +99,7 @@ export class NgTableComponent implements OnInit {
    * Nombre de la tabla.
    * @type {string}
    */
-  @Input() tableName: string = "default";
+  @Input() tableName: string = 'default';
 
   /**
    * Evento emitido cuando se realiza la acción de eliminar elementos seleccionados.
@@ -177,11 +175,13 @@ export class NgTableComponent implements OnInit {
    * Constructor del componente.
    */
   ngOnInit() {
-    this.filter.valueChanges.pipe(
-      debounceTime(150) // tiempo de espera en milisegundos
-    ).subscribe(filterValue => {
-      this.dataAux = this.filterData(this.data, filterValue.toLowerCase());
-    });
+    this.filter.valueChanges
+      .pipe(
+        debounceTime(150), // tiempo de espera en milisegundos
+      )
+      .subscribe((filterValue) => {
+        this.dataAux = this.filterData(this.data, filterValue.toLowerCase());
+      });
   }
 
   /**
@@ -191,9 +191,7 @@ export class NgTableComponent implements OnInit {
    * @returns Los datos filtrados.
    */
   private filterData(data: any[], filterValue: string): any[] {
-    return data.filter(objeto =>
-      Object.values(objeto).some((value: any) => value.toString().toLowerCase().includes(filterValue))
-    );
+    return data.filter((objeto) => Object.values(objeto).some((value: any) => value.toString().toLowerCase().includes(filterValue)));
   }
 
   /**
@@ -201,8 +199,8 @@ export class NgTableComponent implements OnInit {
    * @param action Acción a realizar.
    */
   emitDataChecked(action: any) {
-    const checkedData = this.dataAux.filter(item => item.isChecked === true);
-    const checkedIds = checkedData.map(item => item[this.campos[0]]);
+    const checkedData = this.dataAux.filter((item) => item.isChecked === true);
+    const checkedIds = checkedData.map((item) => item[this.campos[0]]);
     const response = { action, data: checkedIds };
     this.checkedAction.emit(response); // envia los datos al componente padre
   }
@@ -213,7 +211,7 @@ export class NgTableComponent implements OnInit {
    */
   actionCheckRow(item: any) {
     item.isChecked = !item.isChecked;
-    this.emitDataChecked('checks');  
+    this.emitDataChecked('checks');
   }
 
   /**
@@ -234,7 +232,7 @@ export class NgTableComponent implements OnInit {
     const ini = (this.page - 1) * this.pageSize;
     const end = Math.min(this.page * this.pageSize - 1, this.dataAux.length - 1);
 
-    this.dataAux.slice(ini, end + 1).forEach(item => {
+    this.dataAux.slice(ini, end + 1).forEach((item) => {
       item.isChecked = estado;
     });
 

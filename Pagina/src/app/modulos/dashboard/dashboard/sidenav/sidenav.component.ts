@@ -7,17 +7,17 @@ import { navbarData } from '../nav-data';
 import { faAngleDown, faAngleRight, faBars, faSchoolFlag } from '@fortawesome/free-solid-svg-icons';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 
-
 @Component({
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
-  animations: [
-    fadeInOut,
-  ]
+  animations: [fadeInOut],
 })
 export class SidenavComponent implements OnInit {
-  constructor(public router: Router, public servicio: UsuarioService) { }
+  constructor(
+    public router: Router,
+    public servicio: UsuarioService,
+  ) {}
 
   //pagina
   titulo = 'UEFBC';
@@ -34,7 +34,7 @@ export class SidenavComponent implements OnInit {
 
   ngOnInit(): void {
     this.screenWidth = window.innerWidth;
-    this.hasRol()
+    this.hasRol();
   }
 
   @Output() onToggleSideNav: EventEmitter<SidenavToogle> = new EventEmitter();
@@ -72,7 +72,7 @@ export class SidenavComponent implements OnInit {
     item.expanded = !item.expanded;
   }
 
-  getRouteActive(data: NavBarData): string {    
+  getRouteActive(data: NavBarData): string {
     let res = this.router.url.includes(data.routelink) ? 'active' : '';
     return res;
   }
@@ -85,6 +85,4 @@ export class SidenavComponent implements OnInit {
       }
     }
   }
-
-
 }

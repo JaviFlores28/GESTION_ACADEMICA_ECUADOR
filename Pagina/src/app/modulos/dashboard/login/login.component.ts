@@ -9,56 +9,56 @@ import { ModalService } from 'src/app/servicios/modal.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
     private service: UsuarioService,
     private renderer: Renderer2,
     private el: ElementRef,
-    private modalService: ModalService
-  ) { }
+    private modalService: ModalService,
+  ) {}
 
   icon = faUserTie;
 
   formulario = this.formBuilder.group({
     usuario: ['administrador', [Validators.required, Validators.minLength(8)]],
-    pswd: ['admin', Validators.required]
-  })
+    pswd: ['admin', Validators.required],
+  });
 
   ngOnInit(): void {
     this.addStyle();
   }
 
-  get usuario() { return this.formulario.get('usuario'); }
-  get pswd() { return this.formulario.get('pswd'); }
+  get usuario() {
+    return this.formulario.get('usuario');
+  }
+  get pswd() {
+    return this.formulario.get('pswd');
+  }
 
   login() {
     if (this.formulario.valid) {
       const usuario: UsuarioLogin = {
         usuario: this.formulario.value.usuario || '', // Si es null o undefined, se asigna una cadena vacía.
-        pswd: this.formulario.value.pswd || '' // Igual aquí para pswd
+        pswd: this.formulario.value.pswd || '', // Igual aquí para pswd
       };
-      this.service.getByUser(usuario).subscribe(
-        {
-          next: (value) => {
-            if (!value.response) {
-              this.openAlertModal('Contraseña o usuario incorrecto.', 'danger');
-            } else {
-              this.service.setLocal(value.data)
-              this.resetStyle()
-              this.router.navigate(['/home']);
-            }
-          },
-          error: (error) => {
-            console.error(error);
-
+      this.service.getByUser(usuario).subscribe({
+        next: (value) => {
+          if (!value.response) {
+            this.openAlertModal('Contraseña o usuario incorrecto.', 'danger');
+          } else {
+            this.service.setLocal(value.data);
+            this.resetStyle();
+            this.router.navigate(['/home']);
           }
-        }
-      );
+        },
+        error: (error) => {
+          console.error(error);
+        },
+      });
       this.formulario.reset();
     } else {
       this.formulario.markAllAsTouched();
@@ -94,5 +94,4 @@ export class LoginComponent implements OnInit {
   openAlertModal(content: string, alertType: string) {
     this.modalService.openAlertModal(content, alertType);
   }
-
 }

@@ -12,18 +12,17 @@ import { ModalService } from 'src/app/servicios/modal.service';
 @Component({
   selector: 'app-estudiante',
   templateUrl: './estudiante.component.html',
-  styleUrls: ['./estudiante.component.scss']
+  styleUrls: ['./estudiante.component.scss'],
 })
 export class EstudianteComponent {
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private formBuilder: FormBuilder,
     private usuarioService: UsuarioService,
     private service: EstudianteService,
-    private modalService: ModalService
-  ) { }
+    private modalService: ModalService,
+  ) {}
 
   modoEdicion: boolean = false;
   elementoId: string = '';
@@ -37,8 +36,9 @@ export class EstudianteComponent {
     { id: 'EST_INTE', nombre: 'Internet', value: 5 },
     { id: 'EST_TV', nombre: 'TV', value: 1 },
     { id: 'EST_RAD', nombre: 'Radio', value: 2 },
-    { id: 'EST_PC', nombre: 'Computador', value: 3, },
-    { id: 'EST_CEL', nombre: 'Celular', value: 4 }]
+    { id: 'EST_PC', nombre: 'Computador', value: 3 },
+    { id: 'EST_CEL', nombre: 'Celular', value: 4 },
+  ];
 
   form = this.formBuilder.group({
     EST_DNI: ['', Validators.required],
@@ -69,17 +69,16 @@ export class EstudianteComponent {
     EST_CEL: [false],
     REPR_ID: ['', Validators.required],
     REL_EST_REP: ['', Validators.required],
-    ESTADO: [true]
-  })
+    ESTADO: [true],
+  });
 
   ngOnInit(): void {
     this.validarEdicion();
     this.loadUsuarios();
   }
 
-
   validarEdicion() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id) {
         this.modoEdicion = true;
@@ -100,14 +99,12 @@ export class EstudianteComponent {
   crear() {
     if (this.form.valid) {
       const estudiante: Estudiante = this.buildObject();
-      this.service.post(estudiante).subscribe(
-        {
-          next: (value) => {
-            this.handleResponse(value);
-          },
-          error: (error) => this.handleErrorResponse(error)
-        }
-      );
+      this.service.post(estudiante).subscribe({
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
@@ -116,14 +113,12 @@ export class EstudianteComponent {
   editar() {
     if (this.form.valid) {
       const estudiante: Estudiante = this.buildObjectEdit();
-      this.service.put(estudiante).subscribe(
-        {
-          next: (value) => {
-            this.handleResponse(value);
-          },
-          error: (error) => this.handleErrorResponse(error)
-        }
-      );
+      this.service.put(estudiante).subscribe({
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
@@ -148,20 +143,19 @@ export class EstudianteComponent {
       EST_NAC_ETN: this.form.value.EST_NAC_ETN || '',
       EST_COM_ETN: this.form.value.EST_COM_ETN || '',
       EST_COD_ELE: this.form.value.EST_COD_ELE || '',
-      EST_NEC_ASO_DIS: (this.form.value.EST_NEC_ASO_DIS) ? 1 : 0,
-      EST_NEC_NO_ASO_DIS: (this.form.value.EST_NEC_NO_ASO_DIS) ? 1 : 0,
-      EST_ENF_CAT: (this.form.value.EST_ENF_CAT) ? 1 : 0,
+      EST_NEC_ASO_DIS: this.form.value.EST_NEC_ASO_DIS ? 1 : 0,
+      EST_NEC_NO_ASO_DIS: this.form.value.EST_NEC_NO_ASO_DIS ? 1 : 0,
+      EST_ENF_CAT: this.form.value.EST_ENF_CAT ? 1 : 0,
       EST_NUM_CONA: this.form.value.EST_NUM_CONA || '0',
-      EST_INTE: (this.form.value.EST_INTE) ? 1 : 0,
-      EST_TV: (this.form.value.EST_TV) ? 1 : 0,
-      EST_RAD: (this.form.value.EST_RAD) ? 1 : 0,
-      EST_PC: (this.form.value.EST_PC) ? 1 : 0,
-      EST_CEL: (this.form.value.EST_CEL) ? 1 : 0,
+      EST_INTE: this.form.value.EST_INTE ? 1 : 0,
+      EST_TV: this.form.value.EST_TV ? 1 : 0,
+      EST_RAD: this.form.value.EST_RAD ? 1 : 0,
+      EST_PC: this.form.value.EST_PC ? 1 : 0,
+      EST_CEL: this.form.value.EST_CEL ? 1 : 0,
       REPR_ID: this.form.value.REPR_ID || '',
       REL_EST_REP: this.form.value.REL_EST_REP || '',
-      ESTADO: (this.form.value.ESTADO) ? 1 : 0,
-      CREADOR_ID: this.userid || ''
-
+      ESTADO: this.form.value.ESTADO ? 1 : 0,
+      CREADOR_ID: this.userid || '',
     };
     return estudiante;
   }
@@ -185,19 +179,19 @@ export class EstudianteComponent {
       EST_NAC_ETN: this.form.value.EST_NAC_ETN || '',
       EST_COM_ETN: this.form.value.EST_COM_ETN || '',
       EST_COD_ELE: this.form.value.EST_COD_ELE || '',
-      EST_NEC_ASO_DIS: (this.form.value.EST_NEC_ASO_DIS) ? 1 : 0,
-      EST_NEC_NO_ASO_DIS: (this.form.value.EST_NEC_NO_ASO_DIS) ? 1 : 0,
-      EST_ENF_CAT: (this.form.value.EST_ENF_CAT) ? 1 : 0,
-      EST_NUM_CONA: (this.form.value.haveConadis) ? this.form.value.EST_NUM_CONA || '0' : '0',
-      EST_INTE: (this.form.value.EST_INTE) ? 1 : 0,
-      EST_TV: (this.form.value.EST_TV) ? 1 : 0,
-      EST_RAD: (this.form.value.EST_RAD) ? 1 : 0,
-      EST_PC: (this.form.value.EST_PC) ? 1 : 0,
-      EST_CEL: (this.form.value.EST_CEL) ? 1 : 0,
+      EST_NEC_ASO_DIS: this.form.value.EST_NEC_ASO_DIS ? 1 : 0,
+      EST_NEC_NO_ASO_DIS: this.form.value.EST_NEC_NO_ASO_DIS ? 1 : 0,
+      EST_ENF_CAT: this.form.value.EST_ENF_CAT ? 1 : 0,
+      EST_NUM_CONA: this.form.value.haveConadis ? this.form.value.EST_NUM_CONA || '0' : '0',
+      EST_INTE: this.form.value.EST_INTE ? 1 : 0,
+      EST_TV: this.form.value.EST_TV ? 1 : 0,
+      EST_RAD: this.form.value.EST_RAD ? 1 : 0,
+      EST_PC: this.form.value.EST_PC ? 1 : 0,
+      EST_CEL: this.form.value.EST_CEL ? 1 : 0,
       REPR_ID: this.form.value.REPR_ID || '',
       REL_EST_REP: this.form.value.REL_EST_REP || '',
-      ESTADO: (this.form.value.ESTADO) ? 1 : 0,
-      CREADOR_ID: this.userid
+      ESTADO: this.form.value.ESTADO ? 1 : 0,
+      CREADOR_ID: this.userid,
     };
     return estudiante;
   }
@@ -213,7 +207,7 @@ export class EstudianteComponent {
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
@@ -221,14 +215,14 @@ export class EstudianteComponent {
     this.usuarioService.getEnabled('R').subscribe({
       next: (value) => {
         if (value.response) {
-          this.usuarios = value.data
+          this.usuarios = value.data;
         } else {
           console.log(value.message);
         }
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
@@ -253,7 +247,7 @@ export class EstudianteComponent {
     this.form.get('EST_NEC_NO_ASO_DIS')?.setValue(data.EST_NEC_NO_ASO_DIS === 1);
     this.form.get('EST_ENF_CAT')?.setValue(data.EST_ENF_CAT === 1);
     this.form.get('haveConadis')?.setValue(data.EST_NUM_CONA !== '0');
-    this.form.get('EST_NUM_CONA')?.setValue((data.EST_NUM_CONA !== '0') ? data.EST_NUM_CONA : '0');
+    this.form.get('EST_NUM_CONA')?.setValue(data.EST_NUM_CONA !== '0' ? data.EST_NUM_CONA : '0');
     this.form.get('EST_INTE')?.setValue(data.EST_INTE === 1);
     this.form.get('EST_TV')?.setValue(data.EST_TV === 1);
     this.form.get('EST_RAD')?.setValue(data.EST_RAD === 1);
@@ -270,7 +264,8 @@ export class EstudianteComponent {
   }
 
   openConfirmationModal(message: string) {
-    this.modalService.openConfirmationModal(message)
+    this.modalService
+      .openConfirmationModal(message)
       .then((result) => {
         if (result === 'save') {
           if (this.modoEdicion) {
@@ -298,7 +293,6 @@ export class EstudianteComponent {
         this.form.reset();
         this.router.navigate(['../'], { relativeTo: this.route });
       }
-
     }
   }
 
@@ -306,5 +300,4 @@ export class EstudianteComponent {
     this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
     console.log(error);
   }
-
 }

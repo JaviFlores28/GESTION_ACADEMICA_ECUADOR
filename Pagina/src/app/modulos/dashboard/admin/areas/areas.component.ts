@@ -9,7 +9,11 @@ import { AreaService } from 'src/app/servicios/area.service';
   styleUrls: ['./areas.component.scss'],
 })
 export class AreasComponent implements OnInit {
-  constructor(private service: AreaService, private router: Router, private route: ActivatedRoute) { }
+  constructor(
+    private service: AreaService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
 
   routerLink: string = 'nuevo';
   title: string = 'Áreas';
@@ -24,23 +28,21 @@ export class AreasComponent implements OnInit {
 
   loadData() {
     this.service.get().subscribe({
-      next: value => {
+      next: (value) => {
         if (value.response) {
           this.data = value.data;
-        }
-        else {
+        } else {
           console.log(value.message);
         }
       },
-      error: error => {
+      error: (error) => {
         console.error('Error al cargar los datos:', error);
-      }
+      },
     });
   }
 
   eliminar(id: any) {
     console.log(id);
-
   }
 
   checkedsAction(data: any) {
@@ -55,4 +57,3 @@ export class AreasComponent implements OnInit {
     }
   }
 }
-

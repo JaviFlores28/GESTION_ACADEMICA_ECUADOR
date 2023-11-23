@@ -7,20 +7,24 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss']
+  styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent implements OnInit {
-  constructor(private servicio: UsuarioService, private router: Router, private modalService: ModalService) { }
+  constructor(
+    private servicio: UsuarioService,
+    private router: Router,
+    private modalService: ModalService,
+  ) {}
 
   @Input() collapsed = true;
   @Input() screenWidth = 0;
   nombre: string = '';
   userid: string = '';
-  icon = faUser
+  icon = faUser;
   msg: string = '¿Desea cerrar sesión?';
 
   ngOnInit(): void {
-    this.getuserInfo()
+    this.getuserInfo();
   }
 
   getHeadClass(): string {
@@ -40,19 +44,19 @@ export class NavbarComponent implements OnInit {
   }
 
   openModal() {
-    this.modalService.openConfirmationModal(this.msg)
-      .then(
-        (result) => {
-          if (result === 'save') {
-            this.servicio.removeLocal();
-            // Redirigir al usuario al login
-            this.router.navigate(['login']);
-            // O recargar la página
-            //window.location.reload();
-          }
-        }).catch((error) => {
-          console.log(error);
+    this.modalService
+      .openConfirmationModal(this.msg)
+      .then((result) => {
+        if (result === 'save') {
+          this.servicio.removeLocal();
+          // Redirigir al usuario al login
+          this.router.navigate(['login']);
+          // O recargar la página
+          //window.location.reload();
         }
-        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 }

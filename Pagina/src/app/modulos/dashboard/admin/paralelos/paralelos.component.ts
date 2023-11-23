@@ -6,18 +6,21 @@ import { ParaleloService } from 'src/app/servicios/paralelo.service';
 @Component({
   selector: 'app-paralelos',
   templateUrl: './paralelos.component.html',
-  styleUrls: ['./paralelos.component.scss']
+  styleUrls: ['./paralelos.component.scss'],
 })
 export class ParalelosComponent {
-  constructor(private service: ParaleloService, private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private service: ParaleloService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
 
-  routerLink:string='nuevo';
-  title:string='Paralelos';
- 
+  routerLink: string = 'nuevo';
+  title: string = 'Paralelos';
+
   data: Paralelo[] = [];
   headers = ['NOMBRE', 'ESTADO'];
-  campos = ['PRLL_ID','PRLL_NOM'];
-
+  campos = ['PRLL_ID', 'PRLL_NOM'];
 
   ngOnInit(): void {
     this.loadData();
@@ -25,17 +28,16 @@ export class ParalelosComponent {
 
   loadData() {
     this.service.get().subscribe({
-      next: value => {
+      next: (value) => {
         if (value.response) {
           this.data = value.data;
-        }
-        else {
+        } else {
           console.log(value.message);
         }
       },
-      error: error => {
+      error: (error) => {
         console.error('Error al cargar los datos:', error);
-      }
+      },
     });
   }
 

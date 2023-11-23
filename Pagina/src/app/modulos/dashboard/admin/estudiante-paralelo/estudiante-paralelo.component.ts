@@ -14,7 +14,7 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 @Component({
   selector: 'app-estudiante-paralelo',
   templateUrl: './estudiante-paralelo.component.html',
-  styleUrls: ['./estudiante-paralelo.component.scss']
+  styleUrls: ['./estudiante-paralelo.component.scss'],
 })
 export class EstudianteParaleloComponent implements OnInit {
   constructor(
@@ -25,8 +25,7 @@ export class EstudianteParaleloComponent implements OnInit {
     private estudianteCursoService: EstudianteCursoService,
     private modalService: ModalService,
     private usuarioService: UsuarioService,
-
-  ) { }
+  ) {}
 
   cursos: Curso[] = [];
   paralelos: Paralelo[] = [];
@@ -39,15 +38,15 @@ export class EstudianteParaleloComponent implements OnInit {
   headersEstudianteCurso = ['CÉDULA', 'NOMBRES'];
   camposEstudianteCurso = ['EST_CRS_ID', 'EST_DNI', 'EST_ID'];
   headersEstudianteCursoParalelo = ['CÉDULA', 'CURSO', 'NOMBRES', 'ESTADO'];
-  camposEstudianteCursoParalelo = ['EST_CRS_PRLL_ID', 'EST_DNI','CRS_ID', 'EST_ID'];
+  camposEstudianteCursoParalelo = ['EST_CRS_PRLL_ID', 'EST_DNI', 'CRS_ID', 'EST_ID'];
 
   msg: string = '¿Desea guardar?';
   userId = this.usuarioService.getUserLoggedId();
 
   form = this.formBuilder.group({
     CRS_ID: [''],
-    PRLL_ID: ['', Validators.required]
-  })
+    PRLL_ID: ['', Validators.required],
+  });
 
   ngOnInit(): void {
     this.loadCursos();
@@ -70,14 +69,14 @@ export class EstudianteParaleloComponent implements OnInit {
     this.cursoService.getEnabled().subscribe({
       next: (value) => {
         if (value.response) {
-          this.cursos = value.data
+          this.cursos = value.data;
         } else {
           console.log(value.message);
         }
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
@@ -85,14 +84,14 @@ export class EstudianteParaleloComponent implements OnInit {
     this.paraleloService.getEnabled().subscribe({
       next: (value) => {
         if (value.response) {
-          this.paralelos = value.data
+          this.paralelos = value.data;
         } else {
           console.log(value.message);
         }
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
@@ -100,7 +99,7 @@ export class EstudianteParaleloComponent implements OnInit {
     this.estudianteCursoService.getByCurso(cursoId).subscribe({
       next: (value) => {
         if (value.response) {
-          this.estudianteCurso = value.data
+          this.estudianteCurso = value.data;
           console.log(this.estudianteCurso);
         } else {
           console.log(value.message);
@@ -108,7 +107,7 @@ export class EstudianteParaleloComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
@@ -116,14 +115,14 @@ export class EstudianteParaleloComponent implements OnInit {
     this.service.getByParalelo(paraleloId).subscribe({
       next: (value) => {
         if (value.response) {
-          this.estudiantesParalelos = value.data
+          this.estudiantesParalelos = value.data;
         } else {
           console.log(value.message);
         }
       },
       error: (error) => {
         console.error(error);
-      }
+      },
     });
   }
 
@@ -142,16 +141,14 @@ export class EstudianteParaleloComponent implements OnInit {
       let estudiantes = {
         arrayIds: this.idsEstudianteCursoParalelo,
         PRLL_ID: this.form.value.PRLL_ID,
-        CREADOR_ID: this.userId
+        CREADOR_ID: this.userId,
       };
-      this.service.postMasivo(estudiantes).subscribe(
-        {
-          next: (value) => {
-            this.handleResponse(value);
-          },
-          error: (error) => this.handleErrorResponse(error)
-        }
-      );
+      this.service.postMasivo(estudiantes).subscribe({
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
@@ -160,16 +157,14 @@ export class EstudianteParaleloComponent implements OnInit {
   desactivar() {
     if (this.idsEstudianteCurso.length === 0) {
       this.openAlertModal('Debe seleccionar al menos un item.', 'danger');
-      return
+      return;
     }
-    this.service.patchUpdateEstado(this.idsEstudianteCurso).subscribe(
-      {
-        next: (value) => {
-          this.handleResponse(value);
-        },
-        error: (error) => this.handleErrorResponse(error)
-      }
-    );
+    this.service.patchUpdateEstado(this.idsEstudianteCurso).subscribe({
+      next: (value) => {
+        this.handleResponse(value);
+      },
+      error: (error) => this.handleErrorResponse(error),
+    });
   }
 
   openAlertModal(content: string, alertType: string) {
@@ -177,11 +172,12 @@ export class EstudianteParaleloComponent implements OnInit {
   }
 
   openConfirmationModal(message: string, action: string) {
-    this.modalService.openConfirmationModal(message)
+    this.modalService
+      .openConfirmationModal(message)
       .then((result) => {
         if (result === 'save') {
           if (action === 'create') {
-            this.crear()
+            this.crear();
           } else {
             this.desactivar();
           }

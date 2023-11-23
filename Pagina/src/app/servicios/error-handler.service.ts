@@ -3,11 +3,10 @@ import { Injectable } from '@angular/core';
 import { throwError } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ErrorHandlerService {
-
-  constructor() { }
+  constructor() {}
 
   handleError(error: HttpErrorResponse) {
     let errorMessage = 'Error desconocido';
@@ -23,5 +22,4 @@ export class ErrorHandlerService {
     console.error(errorMessage);
     return throwError(() => new Error(errorMessage)); // Utiliza una función de fábrica para crear el error
   }
-
 }

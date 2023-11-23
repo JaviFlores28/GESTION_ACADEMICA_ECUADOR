@@ -1,185 +1,171 @@
 <div class="container-fluid pb-3">
-    <div class="row bg-light">
-        <h1 class="fw-custom-semibold">Sistema</h1>
-        <ol class="ps-4 py-2 breadcrumb">
-            <li class="breadcrumb-item"> <a class="text-black fw-custom-semibold" routerLink="../">Estudiantes</a></li>
-            <li class="breadcrumb-item active">{{ modoEdicion ? 'Editar' : 'Crear' }}</li>
-        </ol>
+  <div class="row bg-light">
+    <h1 class="fw-custom-semibold">Sistema</h1>
+    <ol class="ps-4 py-2 breadcrumb">
+      <li class="breadcrumb-item"><a class="text-black fw-custom-semibold" routerLink="../">Estudiantes</a></li>
+      <li class="breadcrumb-item active">{{ modoEdicion ? 'Editar' : 'Crear' }}</li>
+    </ol>
+  </div>
+  <form class="row row-cols-1 g-3 justify-content-center justify-content-md-start align-items-md-start align-items-center" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="col">
+      <div class="card text-start border border-0 rounded shadow h-100">
+        <div class="card-body">
+          <h5 class="card-title"><fa-icon [icon]="icon" size="1x"></fa-icon> Datos informativos</h5>
+          <hr />
+          <div class="row g-3 row-cols-1">
+            <div class="col-12 col-md-4">
+              <label for="EST_DNI" class="form-label">Cédula:</label>
+              <input type="text" id="EST_DNI" formControlName="EST_DNI" class="form-control" />
+            </div>
+            <div class="col-12 col-md-4">
+              <label for="EST_FECH_NAC" class="form-label">Fecha de nacimiento:</label>
+              <input type="date" id="EST_FECH_NAC" formControlName="EST_FECH_NAC" class="form-control" />
+            </div>
+            <div class="col-12 col-md-4">
+              <label for="EST_GEN" class="form-label">Genero:</label>
+              <select class="form-select" formControlName="EST_GEN" id="USR_GEN">
+                <option value="1">Femenino</option>
+                <option value="2">Masculino</option>
+              </select>
+            </div>
+            <div class="col-12 col-md-3">
+              <label for="EST_NOM" class="form-label">Primer nombre:</label>
+              <input type="text" id="EST_NOM" formControlName="EST_NOM" class="form-control" />
+            </div>
+            <div class="col-12 col-md-3">
+              <label for="EST_NOM2" class="form-label">Segundo nombre:</label>
+              <input type="text" id="EST_NOM2" formControlName="EST_NOM2" class="form-control" />
+            </div>
+            <div class="col-12 col-md-3">
+              <label for="EST_APE" class="form-label">Primer apellido:</label>
+              <input type="text" id="EST_APE" formControlName="EST_APE" class="form-control" />
+            </div>
+            <div class="col-12 col-md-3">
+              <label for="EST_APE2" class="form-label">Segundo apellido:</label>
+              <input type="text" id="EST_APE2" formControlName="EST_APE2" class="form-control" />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <form
-        class="row row-cols-1 g-3 justify-content-center justify-content-md-start align-items-md-start align-items-center"
-        [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div class="col">
-            <div class="card text-start border border-0 rounded shadow h-100">
-                <div class="card-body">
-                    <h5 class="card-title"> <fa-icon [icon]="icon" size="1x"></fa-icon> Datos informativos</h5>
-                    <hr>
-                    <div class="row g-3 row-cols-1">
-                        <div class="col-12 col-md-4">
-                            <label for="EST_DNI" class="form-label">Cédula:</label>
-                            <input type="text" id="EST_DNI" formControlName="EST_DNI" class="form-control">
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <label for="EST_FECH_NAC" class="form-label">Fecha de nacimiento:</label>
-                            <input type="date" id="EST_FECH_NAC" formControlName="EST_FECH_NAC" class="form-control">
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <label for="EST_GEN" class="form-label">Genero:</label>
-                            <select class="form-select" formControlName="EST_GEN" id="USR_GEN">
-                                <option value="1">Femenino</option>
-                                <option value="2">Masculino</option>
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label for="EST_NOM" class="form-label">Primer nombre:</label>
-                            <input type="text" id="EST_NOM" formControlName="EST_NOM" class="form-control">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label for="EST_NOM2" class="form-label">Segundo nombre:</label>
-                            <input type="text" id="EST_NOM2" formControlName="EST_NOM2" class="form-control">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label for="EST_APE" class="form-label">Primer apellido:</label>
-                            <input type="text" id="EST_APE" formControlName="EST_APE" class="form-control">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label for="EST_APE2" class="form-label">Segundo apellido:</label>
-                            <input type="text" id="EST_APE2" formControlName="EST_APE2" class="form-control">
-                        </div>
-                    </div>
-                </div>
+    <div class="col">
+      <div class="card text-start border border-0 rounded shadow h-100">
+        <div class="card-body">
+          <h5 class="card-title"><fa-icon [icon]="icon" size="1x"></fa-icon> Datos informativos</h5>
+          <hr />
+          <div class="row g-3 row-cols-1">
+            <div class="col-12 col-md-3">
+              <label for="EST_PRV" class="form-label">Provincia:</label>
+              <input type="text" id="EST_PRV" formControlName="EST_PRV" class="form-control" />
             </div>
-        </div>
-        <div class="col">
-            <div class="card text-start border border-0 rounded shadow h-100">
-                <div class="card-body">
-                    <h5 class="card-title"> <fa-icon [icon]="icon" size="1x"></fa-icon> Datos informativos</h5>
-                    <hr>
-                    <div class="row g-3 row-cols-1">
-                        <div class="col-12 col-md-3">
-                            <label for="EST_PRV" class="form-label">Provincia:</label>
-                            <input type="text" id="EST_PRV" formControlName="EST_PRV" class="form-control">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label for="EST_CAN" class="form-label">Cantón:</label>
-                            <input type="text" id="EST_CAN" formControlName="EST_CAN" class="form-control">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label for="EST_PARR" class="form-label">Parroquia:</label>
-                            <input type="text" id="EST_PARR" formControlName="EST_PARR" class="form-control">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label for="EST_COD_ELE" class="form-label">Código unico eléctrico:</label>
-                            <input type="text" id="EST_COD_ELE" formControlName="EST_COD_ELE" class="form-control">
-                        </div>
-                        <div class="col-12">
-                            <label for="EST_DIR" class="form-label">Dirección:</label>
-                            <input type="text" id="EST_DIR" formControlName="EST_DIR" class="form-control">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label for="EST_NAC" class="form-label">Nacionalidad:</label>
-                            <input type="text" id="EST_NAC" formControlName="EST_NAC" class="form-control">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label for="EST_ETN" class="form-label">Autodefinición étnica:</label>
-                            <input type="text" id="EST_ETN" formControlName="EST_ETN" class="form-control">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label for="EST_NAC_ETN" class="form-label">Nacionalidad étnica:</label>
-                            <input type="text" id="EST_NAC_ETN" formControlName="EST_NAC_ETN" class="form-control">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label for="EST_COM_ETN" class="form-label">Comunidad étnica:</label>
-                            <input type="text" id="EST_COM_ETN" formControlName="EST_COM_ETN" class="form-control">
-                        </div>
-
-                    </div>
-                </div>
+            <div class="col-12 col-md-3">
+              <label for="EST_CAN" class="form-label">Cantón:</label>
+              <input type="text" id="EST_CAN" formControlName="EST_CAN" class="form-control" />
             </div>
-        </div>
-        <div class="col">
-            <div class="card text-start border border-0 rounded shadow h-100">
-                <div class="card-body">
-                    <h5 class="card-title"> <fa-icon [icon]="icon" size="1x"></fa-icon> Datos informativos</h5>
-                    <hr>
-                    <div class="row g-3 row-cols-1">
-                        <div class="col-12 col-md-4">
-                            <label for="EST_NEC_ASO_DIS" class="form-label pb-2">Necesidad educativa especial asociada a
-                                la discapacidad:</label>
-                            <input class="form-check-input" id="EST_NEC_ASO_DIS" type="checkbox"
-                                formControlName="EST_NEC_ASO_DIS">
-                            <label class="form-check-label" for="EST_NEC_ASO_DIS">Sí</label>
-
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <label for="EST_NEC_NO_ASO_DIS" class="form-label pb-2">Necesidad educativa especial no
-                                asociada a la discapacidad:</label>
-                            <input class="form-check-input" id="EST_NEC_NO_ASO_DIS" type="checkbox"
-                                formControlName="EST_NEC_NO_ASO_DIS">
-                            <label class="form-check-label" for="EST_NEC_NO_ASO_DIS">Sí</label>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <label for="EST_ENF_CAT" class="form-label pb-2">Enfermedad catastrófica:</label>
-                            <input class="form-check-input" id="EST_ENF_CAT" type="checkbox"
-                                formControlName="EST_ENF_CAT">
-                            <label class="form-check-label" for="EST_ENF_CAT">Sí</label>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <div class="row row-cols-1">
-                                <div class="col"> <label class="form-label" for="haveConadis">Carnet de CONADIS:</label>
-                                    <input class="form-check-input" type="checkbox" id="haveConadis"
-                                        formControlName="haveConadis">
-                                    <label class="form-check-label" for="haveConadis">Sí</label>
-                                </div>
-                                <div class="col" *ngIf="form.value.haveConadis"><label for="EST_NUM_CONA"
-                                        class="form-label">Numero de carnet:</label>
-                                    <input type="number" id="EST_NUM_CONA" formControlName="EST_NUM_CONA"
-                                        class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <label class="form-label">¿Qué equipos de comunicación dispone en su hogar?</label>
-                            <br>
-                            <div *ngFor="let equipo of listEquiposE">
-                                <input class="form-check-input" type="checkbox" [id]="equipo.id" [value]="equipo.value"
-                                    [formControlName]="equipo.id">
-                                <label class="form-check-label" [for]="equipo.id">{{ equipo.nombre }}</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="col-12 col-md-3">
+              <label for="EST_PARR" class="form-label">Parroquia:</label>
+              <input type="text" id="EST_PARR" formControlName="EST_PARR" class="form-control" />
             </div>
-        </div>
-        <div class="col">
-            <div class="card text-start border border-0 rounded shadow h-100">
-                <div class="card-body">
-                    <h5 class="card-title"> <fa-icon [icon]="icon" size="1x"></fa-icon> Datos informativos</h5>
-                    <hr>
-                    <div class="row g-3 row-cols-1 row-cols-md-3">
-                        <div class="col">
-                            <label for="REPR_ID" class="form-label">Representante:</label>
-                            <ng-select [items]="usuarios" bindLabel="USR_NOM" bindValue="USR_ID"
-                                formControlName="REPR_ID" id="REPR_ID">
-                            </ng-select>
-                        </div>
-                        <div class="col">
-                            <label for="REL_EST_REP" class="form-label">Relación del representante:</label>
-                            <input type="text" id="REL_EST_REP" formControlName="REL_EST_REP" class="form-control">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <label for="ESTADO" class="form-label pb-2">Estado:</label>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" id="ESTADO" type="checkbox" role="switch"
-                                    formControlName="ESTADO">
-                            </div>
-                        </div>
-                        <div class="col text-center text-md-start">
-                            <button type="submit" [disabled]="!form.valid" class="btn btn-dark">Guardar</button>
-                        </div>
-                    </div>
-                </div>
+            <div class="col-12 col-md-3">
+              <label for="EST_COD_ELE" class="form-label">Código unico eléctrico:</label>
+              <input type="text" id="EST_COD_ELE" formControlName="EST_COD_ELE" class="form-control" />
             </div>
+            <div class="col-12">
+              <label for="EST_DIR" class="form-label">Dirección:</label>
+              <input type="text" id="EST_DIR" formControlName="EST_DIR" class="form-control" />
+            </div>
+            <div class="col-12 col-md-3">
+              <label for="EST_NAC" class="form-label">Nacionalidad:</label>
+              <input type="text" id="EST_NAC" formControlName="EST_NAC" class="form-control" />
+            </div>
+            <div class="col-12 col-md-3">
+              <label for="EST_ETN" class="form-label">Autodefinición étnica:</label>
+              <input type="text" id="EST_ETN" formControlName="EST_ETN" class="form-control" />
+            </div>
+            <div class="col-12 col-md-3">
+              <label for="EST_NAC_ETN" class="form-label">Nacionalidad étnica:</label>
+              <input type="text" id="EST_NAC_ETN" formControlName="EST_NAC_ETN" class="form-control" />
+            </div>
+            <div class="col-12 col-md-3">
+              <label for="EST_COM_ETN" class="form-label">Comunidad étnica:</label>
+              <input type="text" id="EST_COM_ETN" formControlName="EST_COM_ETN" class="form-control" />
+            </div>
+          </div>
         </div>
-    </form>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card text-start border border-0 rounded shadow h-100">
+        <div class="card-body">
+          <h5 class="card-title"><fa-icon [icon]="icon" size="1x"></fa-icon> Datos informativos</h5>
+          <hr />
+          <div class="row g-3 row-cols-1">
+            <div class="col-12 col-md-4">
+              <label for="EST_NEC_ASO_DIS" class="form-label pb-2">Necesidad educativa especial asociada a la discapacidad:</label>
+              <input class="form-check-input" id="EST_NEC_ASO_DIS" type="checkbox" formControlName="EST_NEC_ASO_DIS" />
+              <label class="form-check-label" for="EST_NEC_ASO_DIS">Sí</label>
+            </div>
+            <div class="col-12 col-md-4">
+              <label for="EST_NEC_NO_ASO_DIS" class="form-label pb-2">Necesidad educativa especial no asociada a la discapacidad:</label>
+              <input class="form-check-input" id="EST_NEC_NO_ASO_DIS" type="checkbox" formControlName="EST_NEC_NO_ASO_DIS" />
+              <label class="form-check-label" for="EST_NEC_NO_ASO_DIS">Sí</label>
+            </div>
+            <div class="col-12 col-md-4">
+              <label for="EST_ENF_CAT" class="form-label pb-2">Enfermedad catastrófica:</label>
+              <input class="form-check-input" id="EST_ENF_CAT" type="checkbox" formControlName="EST_ENF_CAT" />
+              <label class="form-check-label" for="EST_ENF_CAT">Sí</label>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="row row-cols-1">
+                <div class="col">
+                  <label class="form-label" for="haveConadis">Carnet de CONADIS:</label>
+                  <input class="form-check-input" type="checkbox" id="haveConadis" formControlName="haveConadis" />
+                  <label class="form-check-label" for="haveConadis">Sí</label>
+                </div>
+                <div class="col" *ngIf="form.value.haveConadis">
+                  <label for="EST_NUM_CONA" class="form-label">Numero de carnet:</label>
+                  <input type="number" id="EST_NUM_CONA" formControlName="EST_NUM_CONA" class="form-control" />
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="form-label">¿Qué equipos de comunicación dispone en su hogar?</label>
+              <br />
+              <div *ngFor="let equipo of listEquiposE">
+                <input class="form-check-input" type="checkbox" [id]="equipo.id" [value]="equipo.value" [formControlName]="equipo.id" />
+                <label class="form-check-label" [for]="equipo.id">{{ equipo.nombre }}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card text-start border border-0 rounded shadow h-100">
+        <div class="card-body">
+          <h5 class="card-title"><fa-icon [icon]="icon" size="1x"></fa-icon> Datos informativos</h5>
+          <hr />
+          <div class="row g-3 row-cols-1 row-cols-md-3">
+            <div class="col">
+              <label for="REPR_ID" class="form-label">Representante:</label>
+              <ng-select [items]="usuarios" bindLabel="USR_NOM" bindValue="USR_ID" formControlName="REPR_ID" id="REPR_ID"> </ng-select>
+            </div>
+            <div class="col">
+              <label for="REL_EST_REP" class="form-label">Relación del representante:</label>
+              <input type="text" id="REL_EST_REP" formControlName="REL_EST_REP" class="form-control" />
+            </div>
+            <div class="col-12 col-md-3">
+              <label for="ESTADO" class="form-label pb-2">Estado:</label>
+              <div class="form-check form-switch">
+                <input class="form-check-input" id="ESTADO" type="checkbox" role="switch" formControlName="ESTADO" />
+              </div>
+            </div>
+            <div class="col text-center text-md-start">
+              <button type="submit" [disabled]="!form.valid" class="btn btn-dark">Guardar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
 </div>

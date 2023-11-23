@@ -6,18 +6,20 @@ import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 @Component({
   selector: 'app-anios-lectivos',
   templateUrl: './anios-lectivos.component.html',
-  styleUrls: ['./anios-lectivos.component.scss']
+  styleUrls: ['./anios-lectivos.component.scss'],
 })
 export class AniosLectivosComponent implements OnInit {
-
-  constructor(private service: AnioLectivoService, private router: Router, private route: ActivatedRoute) {
-  }
+  constructor(
+    private service: AnioLectivoService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
 
   routerLink: string = 'nuevo';
   title: string = 'Años lectivos';
   data: AnioLectivo[] = [];
-  headers = ['NOMBRE', 'FECHA INICIO', 'FECHA FIN', 'PERIODOS', 'EXAMENES','ESTADO'];
-  campos = ['AL_ID','AL_NOM', 'AL_INICIO', 'AL_FIN', 'NUM_PRD', 'NUM_EXAM'];
+  headers = ['NOMBRE', 'FECHA INICIO', 'FECHA FIN', 'PERIODOS', 'EXAMENES', 'ESTADO'];
+  campos = ['AL_ID', 'AL_NOM', 'AL_INICIO', 'AL_FIN', 'NUM_PRD', 'NUM_EXAM'];
 
   ngOnInit(): void {
     this.loadData();
@@ -25,18 +27,16 @@ export class AniosLectivosComponent implements OnInit {
 
   loadData() {
     this.service.get().subscribe({
-      next: value => {
+      next: (value) => {
         if (value.response) {
           this.data = value.data;
-        }
-        else {
+        } else {
           console.log(value.message);
-
         }
       },
-      error: error => {
+      error: (error) => {
         console.error('Error al cargar los datos:', error);
-      }
+      },
     });
   }
 
@@ -55,6 +55,4 @@ export class AniosLectivosComponent implements OnInit {
       console.log(data.id);
     }
   }
-
 }
-

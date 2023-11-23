@@ -9,18 +9,17 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 @Component({
   selector: 'app-area',
   templateUrl: './area.component.html',
-  styleUrls: ['./area.component.scss']
+  styleUrls: ['./area.component.scss'],
 })
 export class AreaComponent implements OnInit {
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private formBuilder: FormBuilder,
     private service: AreaService,
     private usuarioService: UsuarioService,
-    private modalService: ModalService
-  ) { }
+    private modalService: ModalService,
+  ) {}
 
   modoEdicion: boolean = false;
   elementoId: string = '';
@@ -29,7 +28,7 @@ export class AreaComponent implements OnInit {
 
   form = this.formBuilder.group({
     nom: ['', Validators.required],
-    estado: [true]
+    estado: [true],
   });
 
   ngOnInit(): void {
@@ -37,7 +36,7 @@ export class AreaComponent implements OnInit {
   }
 
   validarEdicion() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id) {
         this.modoEdicion = true;
@@ -58,14 +57,12 @@ export class AreaComponent implements OnInit {
   crear() {
     if (this.form.valid) {
       const area: Area = this.buildObject();
-      this.service.post(area).subscribe(
-        {
-          next: (value) => {
-            this.handleResponse(value);
-          },
-          error: (error) => this.handleErrorResponse(error)
-        }
-      );
+      this.service.post(area).subscribe({
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
@@ -74,14 +71,12 @@ export class AreaComponent implements OnInit {
   editar() {
     if (this.form.valid) {
       const area: Area = this.buildObjectEdit();
-      this.service.put(area).subscribe(
-        {
-          next: (value) => {
-            this.handleResponse(value);
-          },
-          error: (error) => this.handleErrorResponse(error)
-        }
-      );
+      this.service.put(area).subscribe({
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
@@ -91,8 +86,8 @@ export class AreaComponent implements OnInit {
     const area: Area = {
       AREA_ID: '0',
       AREA_NOM: this.form.value.nom || '',
-      ESTADO: (this.form.value.estado) ? 1 : 0,
-      CREADOR_ID: this.userid
+      ESTADO: this.form.value.estado ? 1 : 0,
+      CREADOR_ID: this.userid,
     };
     return area;
   }
@@ -101,8 +96,8 @@ export class AreaComponent implements OnInit {
     const area: Area = {
       AREA_ID: this.elementoId,
       AREA_NOM: this.form.value.nom || '',
-      ESTADO: (this.form.value.estado) ? 1 : 0,
-      CREADOR_ID: this.userid
+      ESTADO: this.form.value.estado ? 1 : 0,
+      CREADOR_ID: this.userid,
     };
     return area;
   }
@@ -118,14 +113,14 @@ export class AreaComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
   llenarForm(data: Area) {
     this.form.get('estado')?.setValue(data.ESTADO === 1);
-    this.form.get('nom')?.setValue(data.AREA_NOM); 
-    this.userid = data.CREADOR_ID
+    this.form.get('nom')?.setValue(data.AREA_NOM);
+    this.userid = data.CREADOR_ID;
   }
 
   openAlertModal(content: string, alertType: string) {
@@ -133,7 +128,8 @@ export class AreaComponent implements OnInit {
   }
 
   openConfirmationModal(message: string) {
-    this.modalService.openConfirmationModal(message)
+    this.modalService
+      .openConfirmationModal(message)
       .then((result) => {
         if (result === 'save') {
           if (this.modoEdicion) {
@@ -161,7 +157,6 @@ export class AreaComponent implements OnInit {
         this.form.reset();
         this.router.navigate(['../'], { relativeTo: this.route });
       }
-
     }
   }
 

@@ -6,18 +6,21 @@ import { EstudianteService } from 'src/app/servicios/estudiante.service';
 @Component({
   selector: 'app-estudiantes',
   templateUrl: './estudiantes.component.html',
-  styleUrls: ['./estudiantes.component.scss']
+  styleUrls: ['./estudiantes.component.scss'],
 })
 export class EstudiantesComponent {
-  routerLink:string='nuevo';
-  title:string='Estudiantes';
-  
-  table: Estudiante[] = [];
-  headers = ['CÉDULA','NOMBRES','REPRESENTANTE', 'ESTADO'];
-  campos = ['EST_ID','EST_DNI','EST_NOM','REPR_ID'];
+  routerLink: string = 'nuevo';
+  title: string = 'Estudiantes';
 
-  constructor(private service: EstudianteService, private router: Router, private route: ActivatedRoute) {
-  }
+  table: Estudiante[] = [];
+  headers = ['CÉDULA', 'NOMBRES', 'REPRESENTANTE', 'ESTADO'];
+  campos = ['EST_ID', 'EST_DNI', 'EST_NOM', 'REPR_ID'];
+
+  constructor(
+    private service: EstudianteService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
 
   ngOnInit(): void {
     this.loadTable();
@@ -25,22 +28,21 @@ export class EstudiantesComponent {
 
   loadTable() {
     this.service.get().subscribe({
-      next: value => {
-        if (value.response) {          
+      next: (value) => {
+        if (value.response) {
           this.table = value.data;
-        }
-        else {
+        } else {
           console.log(value.message);
         }
       },
-      error: error => {
+      error: (error) => {
         console.error('Error al cargar los datos:', error);
-      }
+      },
     });
   }
 
   eliminar(id: any) {
-  console.log(id);
+    console.log(id);
   }
 
   checkedsAction(data: any) {

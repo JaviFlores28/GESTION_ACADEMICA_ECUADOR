@@ -12,18 +12,17 @@ import { ModalService } from 'src/app/servicios/modal.service';
 @Component({
   selector: 'app-usuario',
   templateUrl: './usuario.component.html',
-  styleUrls: ['./usuario.component.scss']
+  styleUrls: ['./usuario.component.scss'],
 })
 export class UsuarioComponent {
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private formBuilder: FormBuilder,
     private service: UsuarioService,
     private detalleService: UsuarioProfesorService,
-    private modalService: ModalService
-  ) { }
+    private modalService: ModalService,
+  ) {}
 
   modoEdicion: boolean = false;
   rutaActual: string[] = [];
@@ -54,35 +53,35 @@ export class UsuarioComponent {
     USUARIO: [{ value: '', disabled: true }, Validators.required],
     ESTADO: [true],
     PRF_FECH_INGR_INST: [getFormattedDate(new Date())],
-    PRF_FECH_INGR_MAG: [getFormattedDate(new Date())]
-  })
+    PRF_FECH_INGR_MAG: [getFormattedDate(new Date())],
+  });
 
   formPswd = this.formBuilder.group({
     USR_PSWD_NEW: ['', Validators.required],
-    USR_PSWD: ['', Validators.required]
-  })
+    USR_PSWD: ['', Validators.required],
+  });
 
   ngOnInit(): void {
     this.determinarRolDesdeRuta();
     this.validarEdicion();
   }
 
-  determinarRolDesdeRuta() {   
+  determinarRolDesdeRuta() {
     this.rutaActual = this.router.url.split('/');
     this.titulo = this.rutaActual[3].charAt(0).toUpperCase() + this.rutaActual[3].slice(1);
 
     if (this.rutaActual[4] === 'nuevo') {
       const rol = this.rutaActual[3];
-      this.isAdmin = (rol === 'usuarios');
-      this.isRep = (rol === 'representantes');
-      this.isProf = (rol === 'profesores');
+      this.isAdmin = rol === 'usuarios';
+      this.isRep = rol === 'representantes';
+      this.isProf = rol === 'profesores';
     }
   }
 
   validarEdicion() {
-    this.route.paramMap.subscribe(params => {
-      const id = (this.rutaActual[2] === "myinfo") ? this.service.getUserLoggedId() : params.get('id');
-      this.myinfo = (this.rutaActual[2] === "myinfo") ? true : false;
+    this.route.paramMap.subscribe((params) => {
+      const id = this.rutaActual[2] === 'myinfo' ? this.service.getUserLoggedId() : params.get('id');
+      this.myinfo = this.rutaActual[2] === 'myinfo' ? true : false;
       if (id) {
         this.modoEdicion = true;
         this.elementoId = id;
@@ -102,14 +101,12 @@ export class UsuarioComponent {
   onSubmitPswd() {
     if (this.form.valid) {
       const pswd = { id: this.elementoId, pswdNew: this.formPswd.value.USR_PSWD_NEW, pswdOld: this.formPswd.value.USR_PSWD };
-      this.service.updatePswd(pswd).subscribe(
-        {
-          next: (response) => {
-            this.handleResponse(response);
-          },
-          error: (error) => this.handleErrorResponse(error)
-        }
-      );
+      this.service.updatePswd(pswd).subscribe({
+        next: (response) => {
+          this.handleResponse(response);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
@@ -120,34 +117,28 @@ export class UsuarioComponent {
       const usuario: Usuario = this.buildObject();
       const detalle = this.isProf ? this.buildUsuarioProfesorObject() : undefined;
 
-      this.service.post(usuario, detalle).subscribe(
-        {
-          next: (response) => {
-            this.handleResponse(response);
-          },
-          error: (error) => this.handleErrorResponse(error)
-        }
-      );
+      this.service.post(usuario, detalle).subscribe({
+        next: (response) => {
+          this.handleResponse(response);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
   }
-
 
   editar() {
     if (this.form.valid) {
       const usuario: Usuario = this.buildObjectEdit();
       console.log(usuario);
 
-      this.service.put(usuario).subscribe(
-        {
-          next: (response) => {
-            this.handleResponse(response);
-          },
-          error: (error) => this.handleErrorResponse(error)
-        }
-      );
-
+      this.service.put(usuario).subscribe({
+        next: (response) => {
+          this.handleResponse(response);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
@@ -165,14 +156,14 @@ export class UsuarioComponent {
       USR_TEL: this.form.value.USR_TEL || '',
       USR_CEL: this.form.value.USR_CEL || '',
       USR_EMAIL: this.form.value.USR_EMAIL || '',
-      USR_FECH_NAC: (this.form.value.USR_FECH_NAC) ? new Date(this.form.value.USR_FECH_NAC) : new Date(),
+      USR_FECH_NAC: this.form.value.USR_FECH_NAC ? new Date(this.form.value.USR_FECH_NAC) : new Date(),
       USR_GEN: this.form.value.USR_GEN || '',
       USUARIO: 'NO USER',
-      ROL_PRF: (this.isProf) ? 1 : 0,
-      ROL_REPR: (this.isRep) ? 1 : 0,
-      ROL_ADMIN: (this.isAdmin) ? 1 : 0,
-      ESTADO: (this.form.value.ESTADO) ? 1 : 0,
-      USR_PSWD: 'NO PSWD'
+      ROL_PRF: this.isProf ? 1 : 0,
+      ROL_REPR: this.isRep ? 1 : 0,
+      ROL_ADMIN: this.isAdmin ? 1 : 0,
+      ESTADO: this.form.value.ESTADO ? 1 : 0,
+      USR_PSWD: 'NO PSWD',
     };
     return usuario;
   }
@@ -192,11 +183,11 @@ export class UsuarioComponent {
       USR_FECH_NAC: this.form.value.USR_FECH_NAC ? new Date(this.form.value.USR_FECH_NAC) : new Date(),
       USR_GEN: this.form.value.USR_GEN || '',
       USUARIO: 'NO USER',
-      ROL_PRF: (this.isProf) ? 1 : 0,
-      ROL_REPR: (this.isRep) ? 1 : 0,
-      ROL_ADMIN: (this.isAdmin) ? 1 : 0,
-      ESTADO: (this.form.value.ESTADO) ? 1 : 0,
-      USR_PSWD: 'NO PSWD'
+      ROL_PRF: this.isProf ? 1 : 0,
+      ROL_REPR: this.isRep ? 1 : 0,
+      ROL_ADMIN: this.isAdmin ? 1 : 0,
+      ESTADO: this.form.value.ESTADO ? 1 : 0,
+      USR_PSWD: 'NO PSWD',
     };
     return usuario;
   }
@@ -206,8 +197,8 @@ export class UsuarioComponent {
       DTLL_PRF_ID: '0',
       PRF_FECH_INGR_INST: this.form.value.PRF_FECH_INGR_INST ? new Date(this.form.value.PRF_FECH_INGR_INST) : new Date(),
       PRF_FECH_INGR_MAG: this.form.value.PRF_FECH_INGR_MAG ? new Date(this.form.value.PRF_FECH_INGR_MAG) : new Date(),
-      USR_ID: '0'
-    }
+      USR_ID: '0',
+    };
     return detalle;
   }
 
@@ -217,7 +208,7 @@ export class UsuarioComponent {
         if (value.data) {
           this.llenarForm(value.data);
           if (this.isProf) {
-            this.loadDetalle()
+            this.loadDetalle();
           }
         } else {
           console.log(value.message);
@@ -225,7 +216,7 @@ export class UsuarioComponent {
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
@@ -233,12 +224,12 @@ export class UsuarioComponent {
     this.detalleService.getById(this.elementoId).subscribe({
       next: (value) => {
         if (value.data) {
-          this.llenarFormDetalle(value.data)
+          this.llenarFormDetalle(value.data);
         }
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
@@ -256,9 +247,9 @@ export class UsuarioComponent {
     this.form.get('USR_GEN')?.setValue(data.USR_GEN);
     this.form.get('USUARIO')?.setValue(data.USUARIO);
     this.form.get('ESTADO')?.setValue(data.ESTADO !== 0);
-    this.isAdmin = (data.ROL_ADMIN !== 0);
-    this.isProf = (data.ROL_PRF !== 0);
-    this.isRep = (data.ROL_REPR !== 0);
+    this.isAdmin = data.ROL_ADMIN !== 0;
+    this.isProf = data.ROL_PRF !== 0;
+    this.isRep = data.ROL_REPR !== 0;
   }
 
   llenarFormDetalle(data: any) {
@@ -271,7 +262,8 @@ export class UsuarioComponent {
   }
 
   openConfirmationModal(message: string) {
-    this.modalService.openConfirmationModal(message)
+    this.modalService
+      .openConfirmationModal(message)
       .then((result) => {
         if (result === 'save') {
           if (this.modoEdicion) {
@@ -299,7 +291,6 @@ export class UsuarioComponent {
         this.form.reset();
         this.router.navigate(['../editar/' + response.data], { relativeTo: this.route });
       }
-
     }
   }
 
@@ -307,6 +298,4 @@ export class UsuarioComponent {
     this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
     console.log(error);
   }
-
-
 }

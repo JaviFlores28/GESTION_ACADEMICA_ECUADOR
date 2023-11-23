@@ -1,48 +1,45 @@
 .sublevel-nav {
-    list-style: none;
-    margin-left: 2px;
-  }
-  
-  .sublevel-nav-item {
-    .sublevel-nav-link {
-      display: flex;
-      align-items: center;
-      height: 3rem;
-      color: #898989;
-      text-decoration: none;
-      border-radius: 0.625rem;
-      transition: all .3ss ease;
-      .menu-collapse-icon {
-        font-size: 25px;
-        width: 2rem;
-        min-width: 2rem;
-        margin: auto 0.5rem auto auto;
-        text-align: center;
-        color: #f3f3f3;
-      }
-      
-    }
-  
-    .sublevel-link-icon {
-      font-size: 4px;
+  list-style: none;
+  margin-left: 2px;
+}
+
+.sublevel-nav-item {
+  .sublevel-nav-link {
+    display: flex;
+    align-items: center;
+    height: 3rem;
+    color: #898989;
+    text-decoration: none;
+    border-radius: 0.625rem;
+    transition: all 0.3ss ease;
+    .menu-collapse-icon {
+      font-size: 25px;
       width: 2rem;
       min-width: 2rem;
-      margin: 0 0.5rem;
+      margin: auto 0.5rem auto auto;
       text-align: center;
+      color: #f3f3f3;
     }
-  
-    .sublevel-link-text {
-      margin-left: 0.8;
-    }
-  
-    .sublevel-nav-link:hover {
-      color: #fff;
-    }
+  }
 
-    
+  .sublevel-link-icon {
+    font-size: 4px;
+    width: 2rem;
+    min-width: 2rem;
+    margin: 0 0.5rem;
+    text-align: center;
   }
-  
-  .active-sublevel {
-    color: #fff !important;
-    opacity: 1 !important;
+
+  .sublevel-link-text {
+    margin-left: 0.8;
   }
+
+  .sublevel-nav-link:hover {
+    color: #fff;
+  }
+}
+
+.active-sublevel {
+  color: #fff !important;
+  opacity: 1 !important;
+}

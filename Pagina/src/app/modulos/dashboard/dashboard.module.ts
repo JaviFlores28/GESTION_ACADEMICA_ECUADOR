@@ -30,51 +30,13 @@ import { HomeComponent } from './dashboard/home/home.component';
 import { LoginComponent } from './login/login.component';
 import { SubLevelMenuComponent } from './dashboard/sub-level-menu/sub-level-menu.component';
 import { InicioComponent } from './inicio/inicio.component';
-import { NgTableComponent } from "../../componentes/ng-table/ng-table.component";
+import { NgTableComponent } from '../../componentes/ng-table/ng-table.component';
 import { ProfesorAsignaturaComponent } from './admin/profesor-asignatura/profesor-asignatura.component';
 import { EstudianteCursoComponent } from './admin/estudiante-curso/estudiante-curso.component';
 import { EstudianteParaleloComponent } from './admin/estudiante-paralelo/estudiante-paralelo.component';
 
-
 @NgModule({
-    declarations: [
-        LoginComponent,
-        AnioLectivoComponent,
-        AniosLectivosComponent,
-        AreaComponent,
-        AreasComponent,
-        AsignaturaComponent,
-        AsignaturasComponent,
-        CursoComponent,
-        CursosComponent,
-        EstudianteComponent,
-        EstudiantesComponent,
-        ParaleloComponent,
-        ParalelosComponent,
-        HomeComponent,
-        ProfesoresComponent,
-        RepresentantesComponent,
-        UsuarioComponent,
-        UsuariosComponent,
-        BodyComponent,
-        NavbarComponent,
-        SidenavComponent,
-        SubLevelMenuComponent,
-        InicioComponent,
-        ProfesorAsignaturaComponent,
-        EstudianteCursoComponent,
-        EstudianteParaleloComponent,
-    ],
-    imports: [
-        CommonModule,
-        DashboardRoutingModule,
-        FormsModule,
-        ReactiveFormsModule,
-        FontAwesomeModule,
-        NgbModule,
-        NgSelectModule,
-        NgTableComponent
-    ]
+  declarations: [LoginComponent, AnioLectivoComponent, AniosLectivosComponent, AreaComponent, AreasComponent, AsignaturaComponent, AsignaturasComponent, CursoComponent, CursosComponent, EstudianteComponent, EstudiantesComponent, ParaleloComponent, ParalelosComponent, HomeComponent, ProfesoresComponent, RepresentantesComponent, UsuarioComponent, UsuariosComponent, BodyComponent, NavbarComponent, SidenavComponent, SubLevelMenuComponent, InicioComponent, ProfesorAsignaturaComponent, EstudianteCursoComponent, EstudianteParaleloComponent],
+  imports: [CommonModule, DashboardRoutingModule, FormsModule, ReactiveFormsModule, FontAwesomeModule, NgbModule, NgSelectModule, NgTableComponent],
 })
-
-export class DashboardModule { }
+export class DashboardModule {}

@@ -12,19 +12,18 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 @Component({
   selector: 'app-curso',
   templateUrl: './curso.component.html',
-  styleUrls: ['./curso.component.scss']
+  styleUrls: ['./curso.component.scss'],
 })
 export class CursoComponent {
-
   constructor(
-    private ngBootstrap: NgbModal, 
-    private route: ActivatedRoute, 
-    private router: Router, 
-    private formBuilder: FormBuilder, 
-    private service: CursoService, 
+    private ngBootstrap: NgbModal,
+    private route: ActivatedRoute,
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private service: CursoService,
     private usuarioService: UsuarioService,
-    private modalService: ModalService
-    ) { }
+    private modalService: ModalService,
+  ) {}
 
   modoEdicion: boolean = false;
   elementoId: string = '';
@@ -37,15 +36,15 @@ export class CursoComponent {
     nom: ['', Validators.required],
     tip: ['', Validators.required],
     orden: [1, Validators.required],
-    estado: [true]
-  })
+    estado: [true],
+  });
 
   ngOnInit(): void {
     this.validarEdicion();
   }
 
   validarEdicion() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id) {
         this.modoEdicion = true;
@@ -66,14 +65,12 @@ export class CursoComponent {
   crear() {
     if (this.form.valid) {
       const curso: Curso = this.buildObject();
-      this.service.post(curso).subscribe(
-        {
-          next: (value) => {
-            this.handleResponse(value);
-          },
-          error: (error) => this.handleErrorResponse(error)
-        }
-      );
+      this.service.post(curso).subscribe({
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
@@ -82,14 +79,12 @@ export class CursoComponent {
   editar() {
     if (this.form.valid) {
       const curso: Curso = this.buildObjectEdit();
-      this.service.put(curso).subscribe(
-        {
-          next: (value) => {
-            this.handleResponse(value);
-          },
-          error: (error) => this.handleErrorResponse(error)
-        }
-      );
+      this.service.put(curso).subscribe({
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
@@ -101,8 +96,8 @@ export class CursoComponent {
       CRS_NOM: this.form.value.nom || '',
       CRS_TIPO: this.form.value.tip || '',
       CRS_ORDEN: this.form.value.orden || 0,
-      ESTADO: (this.form.value.estado) ? 1 : 0,
-      CREADOR_ID: this.userid || ''
+      ESTADO: this.form.value.estado ? 1 : 0,
+      CREADOR_ID: this.userid || '',
     };
     return curso;
   }
@@ -113,8 +108,8 @@ export class CursoComponent {
       CRS_NOM: this.form.value.nom || '',
       CRS_TIPO: this.form.value.tip || '',
       CRS_ORDEN: this.form.value.orden || 0,
-      ESTADO: (this.form.value.estado) ? 1 : 0,
-      CREADOR_ID: this.userid
+      ESTADO: this.form.value.estado ? 1 : 0,
+      CREADOR_ID: this.userid,
     };
     return curso;
   }
@@ -130,14 +125,14 @@ export class CursoComponent {
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
   llenarForm(data: Curso) {
-    this.form.get('nom')?.setValue(data.CRS_NOM); 
-    this.form.get('tip')?.setValue(data.CRS_TIPO); 
-    this.form.get('orden')?.setValue(data.CRS_ORDEN); 
+    this.form.get('nom')?.setValue(data.CRS_NOM);
+    this.form.get('tip')?.setValue(data.CRS_TIPO);
+    this.form.get('orden')?.setValue(data.CRS_ORDEN);
     this.form.get('estado')?.setValue(data.ESTADO === 1);
     this.userid = data.CREADOR_ID;
   }
@@ -147,7 +142,8 @@ export class CursoComponent {
   }
 
   openConfirmationModal(message: string) {
-    this.modalService.openConfirmationModal(message)
+    this.modalService
+      .openConfirmationModal(message)
       .then((result) => {
         if (result === 'save') {
           if (this.modoEdicion) {
@@ -175,7 +171,6 @@ export class CursoComponent {
         this.form.reset();
         this.router.navigate(['../'], { relativeTo: this.route });
       }
-
     }
   }
 
@@ -183,5 +178,4 @@ export class CursoComponent {
     this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
     console.log(error);
   }
-
 }

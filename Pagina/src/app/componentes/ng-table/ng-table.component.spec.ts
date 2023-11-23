@@ -8,7 +8,7 @@ describe('NgTableComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NgTableComponent]
+      imports: [NgTableComponent],
     });
     fixture = TestBed.createComponent(NgTableComponent);
     component = fixture.componentInstance;

@@ -1,7 +1,6 @@
 <div class="container rounded shadow">
   <div class="row row-cols-1 row-cols-md-2">
-    <div class="col bg-img">
-    </div>
+    <div class="col bg-img"></div>
     <div class="col">
       <div class="row row-cols-1 g-2">
         <div class="col align-items-center text-center">
@@ -12,23 +11,17 @@
           <form class="row row-cols-1 g-3 justify-content-center p-4" [formGroup]="formulario">
             <div class="col align-items-center">
               <label for="usuario" class="form-label">Usuario</label>
-              <input type="text" formControlName="usuario" class="form-control" id="usuario">
+              <input type="text" formControlName="usuario" class="form-control" id="usuario" />
               <div *ngIf="usuario?.invalid && (usuario?.dirty || usuario?.touched)" class="alert alert-danger mt-2">
-                <div *ngIf="usuario?.errors?.['required']">
-                  Ingrese un valor de Usuario.
-                </div>
-                <div *ngIf="usuario?.errors?.['minlength']">
-                  debe tener un minimo de 8 caracteres
-                </div>
+                <div *ngIf="usuario?.errors?.['required']">Ingrese un valor de Usuario.</div>
+                <div *ngIf="usuario?.errors?.['minlength']">debe tener un minimo de 8 caracteres</div>
               </div>
             </div>
-            <div class="col  align-items-center">
+            <div class="col align-items-center">
               <label for="pswd" class="form-label">Contraseña</label>
-              <input type="password" formControlName="pswd" class="form-control" id="pswd">
+              <input type="password" formControlName="pswd" class="form-control" id="pswd" />
               <div *ngIf="pswd?.invalid && (pswd?.dirty || pswd?.touched)" class="alert alert-danger mt-2">
-                <div *ngIf="pswd?.errors?.['required']">
-                  Ingrese un valor de contraseña.
-                </div>
+                <div *ngIf="pswd?.errors?.['required']">Ingrese un valor de contraseña.</div>
               </div>
             </div>
             <div class="col align-items-center">

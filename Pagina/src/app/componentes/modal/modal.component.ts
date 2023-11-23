@@ -10,10 +10,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   standalone: true,
   imports: [CommonModule, FontAwesomeModule],
   templateUrl: './modal.component.html',
-  styleUrls: ['./modal.component.scss']
+  styleUrls: ['./modal.component.scss'],
 })
 export class ModalComponent {
-
   @Input()
   contenido: string = '';
   @Input()
@@ -23,8 +22,7 @@ export class ModalComponent {
   @Input()
   modal: boolean = true;
 
-  constructor(public activeModal: NgbActiveModal) {
-  }
+  constructor(public activeModal: NgbActiveModal) {}
 
   saveModal(action: string) {
     this.activeModal.close(action);

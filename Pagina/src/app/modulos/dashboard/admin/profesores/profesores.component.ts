@@ -6,18 +6,21 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 @Component({
   selector: 'app-profesores',
   templateUrl: './profesores.component.html',
-  styleUrls: ['./profesores.component.scss']
+  styleUrls: ['./profesores.component.scss'],
 })
 export class ProfesoresComponent {
-  constructor(private service: UsuarioService, private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private service: UsuarioService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
 
-  routerLink:string='nuevo';
-  title:string='Profesores';
- 
+  routerLink: string = 'nuevo';
+  title: string = 'Profesores';
+
   data: Usuario[] = [];
-  headers = ['CÉDULA','NOMBRES','USUARIO','CORREO', 'ESTADO'];
-  campos = ['USR_ID','USR_DNI','USR_NOM','USUARIO','USR_EMAIL'];
-
+  headers = ['CÉDULA', 'NOMBRES', 'USUARIO', 'CORREO', 'ESTADO'];
+  campos = ['USR_ID', 'USR_DNI', 'USR_NOM', 'USUARIO', 'USR_EMAIL'];
 
   ngOnInit(): void {
     this.loadData();
@@ -25,17 +28,16 @@ export class ProfesoresComponent {
 
   loadData() {
     this.service.get('P').subscribe({
-      next: value => {
+      next: (value) => {
         if (value.response) {
           this.data = value.data;
-        }
-        else {
+        } else {
           console.log(value.message);
         }
       },
-      error: error => {
+      error: (error) => {
         console.error('Error al cargar los datos:', error);
-      }
+      },
     });
   }
 
@@ -54,5 +56,4 @@ export class ProfesoresComponent {
       console.log(data.id);
     }
   }
-
 }

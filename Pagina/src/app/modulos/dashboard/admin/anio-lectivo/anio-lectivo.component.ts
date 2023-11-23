@@ -10,18 +10,17 @@ import { ModalService } from 'src/app/servicios/modal.service';
 @Component({
   selector: 'app-anio-lectivo',
   templateUrl: './anio-lectivo.component.html',
-  styleUrls: ['./anio-lectivo.component.scss']
+  styleUrls: ['./anio-lectivo.component.scss'],
 })
 export class AnioLectivoComponent implements OnInit {
-  
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private formBuilder: FormBuilder,
     private usuarioService: UsuarioService,
     private service: AnioLectivoService,
-    private modalService: ModalService
-  ) { }
+    private modalService: ModalService,
+  ) {}
 
   modoEdicion: boolean = false;
   elementoId: string = '';
@@ -40,15 +39,15 @@ export class AnioLectivoComponent implements OnInit {
     NUM_EXAM: [1, Validators.required],
     NUM_PRCL: [3, Validators.required],
     NUM_SUSP: [1, Validators.required],
-    ESTADO: [true]
-  })
+    ESTADO: [true],
+  });
 
   ngOnInit(): void {
     this.validarEdicion();
   }
 
   validarEdicion() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id) {
         this.modoEdicion = true;
@@ -69,33 +68,27 @@ export class AnioLectivoComponent implements OnInit {
   crear() {
     if (this.form.valid) {
       const aniolectivo: AnioLectivo = this.buildObject();
-      this.service.post(aniolectivo).subscribe(
-        {
-          next: (value) => {
-            this.handleResponse(value);
-          },
-          error: (error) => this.handleErrorResponse(error)
-        }
-      );
+      this.service.post(aniolectivo).subscribe({
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
   }
 
-
   editar() {
     if (this.form.valid) {
       const aniolectivo: AnioLectivo = this.buildObjectEdit();
 
-      this.service.put(aniolectivo).subscribe(
-        {
-          next: (value) => {
-            this.handleResponse(value);
-          },
-          error: (error) => this.handleErrorResponse(error)
-        }
-      );
-
+      this.service.put(aniolectivo).subscribe({
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
@@ -115,9 +108,8 @@ export class AnioLectivoComponent implements OnInit {
       NUM_EXAM: this.form.value.NUM_EXAM || 1,
       NUM_PRCL: this.form.value.NUM_PRCL || 3,
       NUM_SUSP: this.form.value.NUM_SUSP || 1,
-      ESTADO: (this.form.value.ESTADO) ? 1 : 0,
-      CREADOR_ID: this.userid || ''
-
+      ESTADO: this.form.value.ESTADO ? 1 : 0,
+      CREADOR_ID: this.userid || '',
     };
     return aniolectivo;
   }
@@ -136,8 +128,8 @@ export class AnioLectivoComponent implements OnInit {
       NUM_EXAM: this.form.value.NUM_EXAM || 1,
       NUM_PRCL: this.form.value.NUM_PRCL || 3,
       NUM_SUSP: this.form.value.NUM_SUSP || 1,
-      ESTADO: (this.form.value.ESTADO) ? 1 : 0,
-      CREADOR_ID: this.userid
+      ESTADO: this.form.value.ESTADO ? 1 : 0,
+      CREADOR_ID: this.userid,
     };
     return aniolectivo;
   }
@@ -153,7 +145,7 @@ export class AnioLectivoComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
@@ -173,13 +165,13 @@ export class AnioLectivoComponent implements OnInit {
     this.userid = data.CREADOR_ID;
   }
 
-
   openAlertModal(content: string, alertType: string) {
     this.modalService.openAlertModal(content, alertType);
   }
 
   openConfirmationModal(message: string) {
-    this.modalService.openConfirmationModal(message)
+    this.modalService
+      .openConfirmationModal(message)
       .then((result) => {
         if (result === 'save') {
           if (this.modoEdicion) {
@@ -207,7 +199,6 @@ export class AnioLectivoComponent implements OnInit {
         this.form.reset();
         this.router.navigate(['../'], { relativeTo: this.route });
       }
-
     }
   }
 
@@ -215,5 +206,4 @@ export class AnioLectivoComponent implements OnInit {
     this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
     console.log(error);
   }
-
 }

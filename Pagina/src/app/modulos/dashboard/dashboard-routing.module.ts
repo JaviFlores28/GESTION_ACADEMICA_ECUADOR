@@ -27,30 +27,40 @@ import { EstudianteParaleloComponent } from './admin/estudiante-paralelo/estudia
 const routes: Routes = [
   { path: '', component: LoginComponent, canActivate: [authGuardLogin] },
   {
-    path: 'dashboard', component: HomeComponent, canActivate: [authGuard],
+    path: 'dashboard',
+    component: HomeComponent,
+    canActivate: [authGuard],
     children: [
       { path: '', component: InicioComponent },
       { path: 'home', component: CursoComponent },
       {
         path: 'docente',
-        children: [{
-          path: '', component: CursosComponent
-        }]
+        children: [
+          {
+            path: '',
+            component: CursosComponent,
+          },
+        ],
       },
       {
         path: 'representante',
-        children: [{
-          path: '', component: CursosComponent
-        }]
-      },
-      {
-        path: 'sistema', canActivate: [isAdmin],
         children: [
           {
-            path: 'anios', children: [
+            path: '',
+            component: CursosComponent,
+          },
+        ],
+      },
+      {
+        path: 'sistema',
+        canActivate: [isAdmin],
+        children: [
+          {
+            path: 'anios',
+            children: [
               { path: '', component: AniosLectivosComponent },
               { path: 'editar/:id', component: AnioLectivoComponent },
-            ]
+            ],
           },
           {
             path: 'areas',
@@ -58,7 +68,7 @@ const routes: Routes = [
               { path: '', component: AreasComponent },
               { path: 'nuevo', component: AreaComponent },
               { path: 'editar/:id', component: AreaComponent },
-            ]
+            ],
           },
           {
             path: 'asignaturas',
@@ -66,16 +76,15 @@ const routes: Routes = [
               { path: '', component: AsignaturasComponent },
               { path: 'nuevo', component: AsignaturaComponent },
               { path: 'editar/:id', component: AsignaturaComponent },
-            ]
-          }
-          ,
+            ],
+          },
           {
             path: 'profesores',
             children: [
               { path: '', component: ProfesoresComponent },
               { path: 'nuevo', component: UsuarioComponent },
               { path: 'editar/:id', component: UsuarioComponent },
-            ]
+            ],
           },
           {
             path: 'cursos',
@@ -83,7 +92,7 @@ const routes: Routes = [
               { path: '', component: CursosComponent },
               { path: 'nuevo', component: CursoComponent },
               { path: 'editar/:id', component: CursoComponent },
-            ]
+            ],
           },
           {
             path: 'representantes',
@@ -91,7 +100,7 @@ const routes: Routes = [
               { path: '', component: RepresentantesComponent },
               { path: 'nuevo', component: UsuarioComponent },
               { path: 'editar/:id', component: UsuarioComponent },
-            ]
+            ],
           },
           {
             path: 'estudiantes',
@@ -99,7 +108,7 @@ const routes: Routes = [
               { path: '', component: EstudiantesComponent },
               { path: 'nuevo', component: EstudianteComponent },
               { path: 'editar/:id', component: EstudianteComponent },
-            ]
+            ],
           },
           {
             path: 'paralelos',
@@ -107,36 +116,35 @@ const routes: Routes = [
               { path: '', component: ParalelosComponent },
               { path: 'nuevo', component: ParaleloComponent },
               { path: 'editar/:id', component: ParaleloComponent },
-            ]
+            ],
           },
           {
             path: 'usuarios',
             children: [
-              { path: '', component: UsuariosComponent, },
+              { path: '', component: UsuariosComponent },
               { path: 'nuevo', component: UsuarioComponent },
-              { path: 'editar/:id', component: UsuarioComponent},
-            ]
+              { path: 'editar/:id', component: UsuarioComponent },
+            ],
           },
-        ]
+        ],
       },
       {
         path: 'institucion',
         children: [
-          { path: 'iniciar-anio', component: AnioLectivoComponent, },
+          { path: 'iniciar-anio', component: AnioLectivoComponent },
           { path: 'matriculas', component: EstudianteCursoComponent },
           { path: 'asignar-paralelo', component: EstudianteParaleloComponent },
           { path: 'asignar-profesor', component: ProfesorAsignaturaComponent },
-        ]
+        ],
       },
-      { path: 'myinfo/:id', component: UsuarioComponent},
-    ]
+      { path: 'myinfo/:id', component: UsuarioComponent },
+    ],
   },
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '' },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-
-export class DashboardRoutingModule { }
+export class DashboardRoutingModule {}

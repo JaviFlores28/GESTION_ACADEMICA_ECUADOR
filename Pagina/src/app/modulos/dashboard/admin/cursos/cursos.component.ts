@@ -6,19 +6,21 @@ import { CursoService } from 'src/app/servicios/curso.service';
 @Component({
   selector: 'app-cursos',
   templateUrl: './cursos.component.html',
-  styleUrls: ['./cursos.component.scss']
+  styleUrls: ['./cursos.component.scss'],
 })
 export class CursosComponent {
   routerLink: string = 'nuevo';
   title: string = 'Cursos';
 
-
   data: Curso[] = [];
   headers = ['NOMBRE', 'TIPO', 'ORDEN', 'ESTADO'];
   campos = ['CRS_ID', 'CRS_NOM', 'CRS_TIPO', 'CRS_ORDEN'];
 
-  constructor(private service: CursoService, private router: Router, private route: ActivatedRoute) {
-  }
+  constructor(
+    private service: CursoService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
 
   ngOnInit(): void {
     this.loadData();
@@ -26,23 +28,21 @@ export class CursosComponent {
 
   loadData() {
     this.service.get().subscribe({
-      next: value => {
+      next: (value) => {
         if (value.response) {
           this.data = value.data;
-        }
-        else {
+        } else {
           console.log(value.message);
         }
       },
-      error: error => {
+      error: (error) => {
         console.error('Error al cargar los datos:', error);
-      }
+      },
     });
   }
 
   eliminar(id: any) {
     console.log(id);
-
   }
 
   checkedsAction(data: any) {

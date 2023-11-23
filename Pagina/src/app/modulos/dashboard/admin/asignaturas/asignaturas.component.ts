@@ -6,17 +6,21 @@ import { AsignaturaService } from 'src/app/servicios/asignatura.service';
 @Component({
   selector: 'app-asignaturas',
   templateUrl: './asignaturas.component.html',
-  styleUrls: ['./asignaturas.component.scss']
+  styleUrls: ['./asignaturas.component.scss'],
 })
 export class AsignaturasComponent {
-  constructor(private service: AsignaturaService, private router: Router, private route: ActivatedRoute) {}
- 
-  routerLink:string='nuevo';
-  title:string='Asignaturas';
+  constructor(
+    private service: AsignaturaService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
+
+  routerLink: string = 'nuevo';
+  title: string = 'Asignaturas';
 
   data: Asignatura[] = [];
-  headers = ['NOMBRE','TIPO', 'ESTADO'];
-  campos = ['ASG_ID', 'ASG_NOM', 'ASG_TIPO']
+  headers = ['NOMBRE', 'TIPO', 'ESTADO'];
+  campos = ['ASG_ID', 'ASG_NOM', 'ASG_TIPO'];
 
   ngOnInit(): void {
     this.loadData();
@@ -24,23 +28,21 @@ export class AsignaturasComponent {
 
   loadData() {
     this.service.get().subscribe({
-      next: value => {
+      next: (value) => {
         if (value.response) {
           this.data = value.data;
-        }
-        else {
+        } else {
           console.log(value.message);
         }
       },
-      error: error => {
+      error: (error) => {
         console.error('Error al cargar los datos:', error);
-      }
+      },
     });
   }
 
   eliminar(id: any) {
     console.log(id);
-
   }
 
   checkedsAction(data: any) {
@@ -55,5 +57,3 @@ export class AsignaturasComponent {
     }
   }
 }
-
-

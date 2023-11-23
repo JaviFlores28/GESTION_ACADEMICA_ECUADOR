@@ -1,62 +1,52 @@
 <div class="container-fluid">
-    <div class="row bg-light">
-        <h1 class="fw-custom-semibold">Institución</h1>
-        <ol class="ps-4 py-2 breadcrumb">
-            <li class="breadcrumb-item"> <a class="text-black fw-custom-semibold"
-                    routerLink="../matriculas">Matrículas</a></li>
-            <li class="breadcrumb-item active">Paralelos</li>
-        </ol>
+  <div class="row bg-light">
+    <h1 class="fw-custom-semibold">Institución</h1>
+    <ol class="ps-4 py-2 breadcrumb">
+      <li class="breadcrumb-item"><a class="text-black fw-custom-semibold" routerLink="../matriculas">Matrículas</a></li>
+      <li class="breadcrumb-item active">Paralelos</li>
+    </ol>
+  </div>
+  <form class="row g-3" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="col-6">
+      <div class="card text-start border border-0 rounded shadow">
+        <div class="card-body row">
+          <div class="col">
+            <label for="CRS_ID" class="form-label">Curso:</label>
+            <ng-select [items]="cursos" bindLabel="CRS_NOM" bindValue="CRS_ID" formControlName="CRS_ID" id="CRS_ID"> </ng-select>
+          </div>
+        </div>
+      </div>
     </div>
-    <form class="row g-3" [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div class="col-6">
-            <div class="card text-start border border-0 rounded shadow">
-                <div class="card-body row">
-                    <div class="col">
-                        <label for="CRS_ID" class="form-label">Curso:</label>
-                        <ng-select [items]="cursos" bindLabel="CRS_NOM" bindValue="CRS_ID" formControlName="CRS_ID"
-                            id="CRS_ID">
-                        </ng-select>
-                    </div>
-                </div>
+    <div class="col-6">
+      <div class="card text-start border border-0 rounded shadow">
+        <div class="card-body row align-items-end">
+          <div class="col-3">
+            <label for="PRLL_ID" class="form-label">Paralelo:</label>
+            <ng-select [items]="paralelos" bindLabel="PRLL_NOM" bindValue="PRLL_ID" formControlName="PRLL_ID" id="PRLL_ID"> </ng-select>
+          </div>
+          <div class="col-2">
+            <div class="btn-group" role="group">
+              <button type="submit" [disabled]="idsEstudianteCursoParalelo.length <= 0 || !form.valid" class="btn btn-dark">Guardar</button>
             </div>
+          </div>
         </div>
-        <div class="col-6">
-            <div class="card text-start border border-0 rounded shadow">
-                <div class="card-body row align-items-end">
-                    <div class="col-3">
-                        <label for="PRLL_ID" class="form-label">Paralelo:</label>
-                        <ng-select [items]="paralelos" bindLabel="PRLL_NOM" bindValue="PRLL_ID"
-                            formControlName="PRLL_ID" id="PRLL_ID">
-                        </ng-select>
-                    </div>
-                    <div class="col-2">
-                        <div class="btn-group" role="group">
-                            <button type="submit" [disabled]="idsEstudianteCursoParalelo.length<=0 ||!form.valid"
-                                class="btn btn-dark">Guardar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      </div>
+    </div>
+    <div class="col">
+      <h3 class="card-title p-3 m-2 shadow rounded text-center bg-black text-white">Estudiantes por curso</h3>
+      <div class="card text-start border border-0 rounded shadow">
+        <div class="card-body">
+          <app-ng-table tableName="estudianteCurso" [data]="estudianteCurso" [headers]="headersEstudianteCurso" [campos]="camposEstudianteCurso" [botonera]="false" [checksOptions]="false" [botonEstado]="false" [pageSize]="30" (checkedAction)="estudianteCursoAction($event)"></app-ng-table>
         </div>
-        <div class="col">
-            <h3 class="card-title p-3 m-2 shadow rounded text-center bg-black text-white">Estudiantes por curso</h3>
-            <div class="card text-start border border-0 rounded shadow">
-                <div class="card-body">
-                    <app-ng-table tableName="estudianteCurso" [data]="estudianteCurso" [headers]="headersEstudianteCurso"
-                        [campos]="camposEstudianteCurso" [botonera]="false" [checksOptions]="false" [botonEstado]="false"
-                        [pageSize]="30" (checkedAction)="estudianteCursoAction($event)"></app-ng-table>
-                </div>
-            </div>
+      </div>
+    </div>
+    <div class="col">
+      <h3 class="card-title p-3 m-2 shadow rounded text-center bg-black text-white">Estudiantes por paralelo</h3>
+      <div class="card text-start border border-0 rounded shadow">
+        <div class="card-body">
+          <app-ng-table tableName="estudiantesParalelos" [data]="estudiantesParalelos" [headers]="headersEstudianteCursoParalelo" [campos]="camposEstudianteCursoParalelo" [botonera]="false" [pageSize]="30" (checkedAction)="estudiantesaction($event)"></app-ng-table>
         </div>
-        <div class="col">
-            <h3 class="card-title p-3 m-2 shadow rounded text-center bg-black text-white">Estudiantes por paralelo</h3>
-            <div class="card text-start border border-0 rounded shadow">
-                <div class="card-body">
-                    <app-ng-table tableName="estudiantesParalelos" [data]="estudiantesParalelos"
-                        [headers]="headersEstudianteCursoParalelo" [campos]="camposEstudianteCursoParalelo" [botonera]="false"
-                        [pageSize]="30" (checkedAction)="estudiantesaction($event)"></app-ng-table>
-                </div>
-            </div>
-        </div>
-    </form>
+      </div>
+    </div>
+  </form>
 </div>

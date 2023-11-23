@@ -1,18 +1,18 @@
-import { Component, OnInit } from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { Curso } from "src/app/interfaces/Curso.interface";
-import { Estudiante } from "src/app/interfaces/Estudiante.interface";
-import { EstudianteCursoParalelo } from "src/app/interfaces/EstudianteCursoParalelo.interface";
-import { CursoService } from "src/app/servicios/curso.service";
-import { EstudianteCursoService } from "src/app/servicios/estudiante-curso.service";
-import { ModalService } from "src/app/servicios/modal.service";
-import { UsuarioService } from "src/app/servicios/usuario.service";
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { Curso } from 'src/app/interfaces/Curso.interface';
+import { Estudiante } from 'src/app/interfaces/Estudiante.interface';
+import { EstudianteCursoParalelo } from 'src/app/interfaces/EstudianteCursoParalelo.interface';
+import { CursoService } from 'src/app/servicios/curso.service';
+import { EstudianteCursoService } from 'src/app/servicios/estudiante-curso.service';
+import { ModalService } from 'src/app/servicios/modal.service';
+import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
   selector: 'app-estudiante-curso',
   templateUrl: './estudiante-curso.component.html',
-  styleUrls: ['./estudiante-curso.component.scss']
+  styleUrls: ['./estudiante-curso.component.scss'],
 })
 export class EstudianteCursoComponent implements OnInit {
   constructor(
@@ -20,8 +20,8 @@ export class EstudianteCursoComponent implements OnInit {
     private usuarioService: UsuarioService,
     private service: EstudianteCursoService,
     private cursoService: CursoService,
-    private modalService: ModalService
-  ) { }
+    private modalService: ModalService,
+  ) {}
 
   userId = this.usuarioService.getUserLoggedId();
   modoEdicion: boolean = false;
@@ -40,9 +40,8 @@ export class EstudianteCursoComponent implements OnInit {
   camposMatriculados = ['EST_CRS_ID', 'EST_DNI', 'EST_ID', 'CRS_ID'];
 
   form = this.formBuilder.group({
-    CRS_ID: ['', Validators.required]
-  })
-
+    CRS_ID: ['', Validators.required],
+  });
 
   ngOnInit(): void {
     this.loadCursos();
@@ -58,14 +57,14 @@ export class EstudianteCursoComponent implements OnInit {
     this.cursoService.getEnabled().subscribe({
       next: (value) => {
         if (value.response) {
-          this.cursos = value.data
+          this.cursos = value.data;
         } else {
           console.log(value.message);
         }
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
@@ -73,14 +72,14 @@ export class EstudianteCursoComponent implements OnInit {
     this.service.getNoMatriculados().subscribe({
       next: (value) => {
         if (value.response) {
-          this.noMatriculados = value.data
+          this.noMatriculados = value.data;
         } else {
           console.log(value.message);
         }
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
@@ -88,14 +87,14 @@ export class EstudianteCursoComponent implements OnInit {
     this.service.getEnabled().subscribe({
       next: (value) => {
         if (value.response) {
-          this.matriculas = value.data
+          this.matriculas = value.data;
         } else {
           console.log(value.message);
         }
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
@@ -115,35 +114,30 @@ export class EstudianteCursoComponent implements OnInit {
       let estudiantes = {
         arrayIds: this.idsEstudiantes,
         CRS_ID: this.form.value.CRS_ID,
-        CREADOR_ID: this.userId
+        CREADOR_ID: this.userId,
       };
-      this.service.postMasivo(estudiantes).subscribe(
-        {
-          next: (value) => {
-            this.handleResponse(value);
-          },
-          error: (error) => this.handleErrorResponse(error)
-        }
-      );
+      this.service.postMasivo(estudiantes).subscribe({
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
   }
 
   desactivar() {
-
     if (this.idsEstudiantes.length === 0) {
       this.openAlertModal('Debe seleccionar al menos un item.', 'danger');
-      return
+      return;
     }
-    this.service.patchUpdateEstado(this.idsEstudiantes).subscribe(
-      {
-        next: (value) => {
-          this.handleResponse(value);
-        },
-        error: (error) => this.handleErrorResponse(error)
-      }
-    );
+    this.service.patchUpdateEstado(this.idsEstudiantes).subscribe({
+      next: (value) => {
+        this.handleResponse(value);
+      },
+      error: (error) => this.handleErrorResponse(error),
+    });
   }
 
   openAlertModal(content: string, alertType: string) {
@@ -151,11 +145,12 @@ export class EstudianteCursoComponent implements OnInit {
   }
 
   openConfirmationModal(message: string, action: string) {
-    this.modalService.openConfirmationModal(message)
+    this.modalService
+      .openConfirmationModal(message)
       .then((result) => {
         if (result === 'save') {
           if (action === 'create') {
-            this.crear()
+            this.crear();
           } else {
             this.desactivar();
           }
@@ -174,8 +169,8 @@ export class EstudianteCursoComponent implements OnInit {
       console.log(value.message);
       this.openAlertModal(value.message, 'success');
       this.form.reset();
-      this.loadMatriculados()
-      this.loadNoMatriculados()
+      this.loadMatriculados();
+      this.loadNoMatriculados();
       // this.router.navigate(['../'], { relativeTo: this.route });
     }
   }

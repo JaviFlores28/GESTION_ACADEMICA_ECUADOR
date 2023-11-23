@@ -14,19 +14,18 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 @Component({
   selector: 'app-asignatura',
   templateUrl: './asignatura.component.html',
-  styleUrls: ['./asignatura.component.scss']
+  styleUrls: ['./asignatura.component.scss'],
 })
 export class AsignaturaComponent {
-  
   constructor(
-    private route: ActivatedRoute, 
+    private route: ActivatedRoute,
     private router: Router,
-    private formBuilder: FormBuilder, 
-    private service: AsignaturaService, 
-    private areaService: AreaService, 
-    private modalService: ModalService, 
-    private usuarioService: UsuarioService
-    ) { }
+    private formBuilder: FormBuilder,
+    private service: AsignaturaService,
+    private areaService: AreaService,
+    private modalService: ModalService,
+    private usuarioService: UsuarioService,
+  ) {}
 
   modoEdicion: boolean = false;
   elementoId: string = '';
@@ -41,7 +40,7 @@ export class AsignaturaComponent {
     nom: ['', Validators.required],
     cltv: [false, Validators.required],
     area: ['', Validators.required],
-    estado: [true]
+    estado: [true],
   });
 
   ngOnInit(): void {
@@ -50,7 +49,7 @@ export class AsignaturaComponent {
   }
 
   validarEdicion() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id) {
         this.modoEdicion = true;
@@ -63,66 +62,62 @@ export class AsignaturaComponent {
       }
     });
   }
-  
+
   onSubmit() {
     this.openConfirmationModal(this.msg);
   }
 
- crear() {
-  if (this.form.valid) {
-    const asignatura: Asignatura = this.buildObject();
-    this.service.post(asignatura).subscribe(
-      {
+  crear() {
+    if (this.form.valid) {
+      const asignatura: Asignatura = this.buildObject();
+      this.service.post(asignatura).subscribe({
         next: (value) => {
           this.handleResponse(value);
         },
-        error: (error) => this.handleErrorResponse(error)
-      }
-    );
-  } else {
-    this.form.markAllAsTouched();
+        error: (error) => this.handleErrorResponse(error),
+      });
+    } else {
+      this.form.markAllAsTouched();
+    }
   }
-}
 
-editar() {
-  if (this.form.valid) {
-    const asignatura: Asignatura = this.buildObjectEdit();
-    this.service.put(asignatura).subscribe(
-      {
+  editar() {
+    if (this.form.valid) {
+      const asignatura: Asignatura = this.buildObjectEdit();
+      this.service.put(asignatura).subscribe({
         next: (value) => {
           this.handleResponse(value);
         },
-        error: (error) => this.handleErrorResponse(error)
-      }
-    );
-  } else {
-    this.form.markAllAsTouched();
+        error: (error) => this.handleErrorResponse(error),
+      });
+    } else {
+      this.form.markAllAsTouched();
+    }
   }
-}
 
-buildObject() {
-  const asignatura: Asignatura = {
-    ASG_ID: '1',
-    ASG_NOM: this.form.value.nom || '',
-    ASG_TIPO: (this.form.value.cltv) ? '1' : '2',
-    AREA_ID: this.form.value.area || '',
-    ESTADO: (this.form.value.estado) ? 1 : 0,
-    CREADOR_ID: this.userid || ''
-  };
-  return asignatura;
-}
+  buildObject() {
+    const asignatura: Asignatura = {
+      ASG_ID: '1',
+      ASG_NOM: this.form.value.nom || '',
+      ASG_TIPO: this.form.value.cltv ? '1' : '2',
+      AREA_ID: this.form.value.area || '',
+      ESTADO: this.form.value.estado ? 1 : 0,
+      CREADOR_ID: this.userid || '',
+    };
+    return asignatura;
+  }
 
-buildObjectEdit() {
-  const asignatura: Asignatura = {
-    ASG_ID: this.elementoId,
-    ASG_NOM: this.form.value.nom || '',
-    ASG_TIPO: (this.form.value.cltv) ? '1' : '2',
-    AREA_ID: this.form.value.area || '',
-    ESTADO: (this.form.value.estado) ? 1 : 0,
-    CREADOR_ID: this.userid
-  };
-  return asignatura;
-} 
+  buildObjectEdit() {
+    const asignatura: Asignatura = {
+      ASG_ID: this.elementoId,
+      ASG_NOM: this.form.value.nom || '',
+      ASG_TIPO: this.form.value.cltv ? '1' : '2',
+      AREA_ID: this.form.value.area || '',
+      ESTADO: this.form.value.estado ? 1 : 0,
+      CREADOR_ID: this.userid,
+    };
+    return asignatura;
+  }
 
   loadDataEdit() {
     this.service.getById(this.elementoId).subscribe({
@@ -135,29 +130,29 @@ buildObjectEdit() {
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
   loadAreas() {
     this.areaService.getEnabled().subscribe({
-      next: (value) => {        
+      next: (value) => {
         if (value.response) {
-          this.areas = value.data
+          this.areas = value.data;
         } else {
           console.log(value.message);
         }
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
   llenarForm(data: Asignatura) {
-    this.form.get('nom')?.setValue(data.ASG_NOM); 
-    this.form.get('cltv')?.setValue(data.ASG_TIPO === 'CUALITATIVA'); 
-    this.form.get('area')?.setValue(data.AREA_ID); 
+    this.form.get('nom')?.setValue(data.ASG_NOM);
+    this.form.get('cltv')?.setValue(data.ASG_TIPO === 'CUALITATIVA');
+    this.form.get('area')?.setValue(data.AREA_ID);
     this.form.get('estado')?.setValue(data.ESTADO === 1);
     this.userid = data.CREADOR_ID;
   }
@@ -167,7 +162,8 @@ buildObjectEdit() {
   }
 
   openConfirmationModal(message: string) {
-    this.modalService.openConfirmationModal(message)
+    this.modalService
+      .openConfirmationModal(message)
       .then((result) => {
         if (result === 'save') {
           if (this.modoEdicion) {
@@ -195,7 +191,6 @@ buildObjectEdit() {
         this.form.reset();
         this.router.navigate(['../'], { relativeTo: this.route });
       }
-
     }
   }
 

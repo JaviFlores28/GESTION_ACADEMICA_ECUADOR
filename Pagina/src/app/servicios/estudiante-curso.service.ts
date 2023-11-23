@@ -7,62 +7,51 @@ import { variables } from '../sistema/variables/variables';
 import { ErrorHandlerService } from './error-handler.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EstudianteCursoService extends ErrorHandlerService {
-  private apiUrl = variables.URL_API + '/estudianteCurso'// Reemplaza con tu URL
+  private apiUrl = variables.URL_API + '/estudianteCurso'; // Reemplaza con tu URL
 
   constructor(private http: HttpClient) {
     super();
   }
   get(): Observable<any> {
-    return this.http.get(`${this.apiUrl}?by=all`).pipe(
-      catchError(this.handleError));
+    return this.http.get(`${this.apiUrl}?by=all`).pipe(catchError(this.handleError));
   }
 
   getById(id: string): Observable<Respuesta> {
-    return this.http.get<Respuesta>(`${this.apiUrl}?by=id&id=${id}`).pipe(
-      catchError(this.handleError));
+    return this.http.get<Respuesta>(`${this.apiUrl}?by=id&id=${id}`).pipe(catchError(this.handleError));
   }
 
   getByCurso(id: string): Observable<Respuesta> {
-    return this.http.get<Respuesta>(`${this.apiUrl}?by=curso&id=${id}`).pipe(
-      catchError(this.handleError));
+    return this.http.get<Respuesta>(`${this.apiUrl}?by=curso&id=${id}`).pipe(catchError(this.handleError));
   }
 
   getEnabled(): Observable<any> {
-    return this.http.get(`${this.apiUrl}?by=enabled`).pipe(
-      catchError(this.handleError));
+    return this.http.get(`${this.apiUrl}?by=enabled`).pipe(catchError(this.handleError));
   }
 
   getNoMatriculados(): Observable<any> {
-    return this.http.get(`${this.apiUrl}?by=noMatriculados`).pipe(
-      catchError(this.handleError));
+    return this.http.get(`${this.apiUrl}?by=noMatriculados`).pipe(catchError(this.handleError));
   }
 
   post(estudianteCurso: EstudianteCurso): Observable<any> {
-    return this.http.post(this.apiUrl, { masivo: false, data: estudianteCurso }).pipe(
-      catchError(this.handleError));
+    return this.http.post(this.apiUrl, { masivo: false, data: estudianteCurso }).pipe(catchError(this.handleError));
   }
 
   postMasivo(arrayData: any): Observable<any> {
-    return this.http.post(this.apiUrl, { masivo: true, data: arrayData }).pipe(
-      catchError(this.handleError));
+    return this.http.post(this.apiUrl, { masivo: true, data: arrayData }).pipe(catchError(this.handleError));
   }
 
   patchUpdateEstado(arrayData: any): Observable<any> {
-    return this.http.patch(this.apiUrl, { masivo: true, type: 'updateEstado', data: arrayData }).pipe(
-      catchError(this.handleError));
+    return this.http.patch(this.apiUrl, { masivo: true, type: 'updateEstado', data: arrayData }).pipe(catchError(this.handleError));
   }
 
   put(estudianteCurso: EstudianteCurso): Observable<any> {
-    return this.http.put(this.apiUrl, estudianteCurso).pipe(
-      catchError(this.handleError));
+    return this.http.put(this.apiUrl, estudianteCurso).pipe(catchError(this.handleError));
   }
 
   delete(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}?id=${id}`).pipe(
-      catchError(this.handleError));
+    return this.http.delete(`${this.apiUrl}?id=${id}`).pipe(catchError(this.handleError));
   }
-
 }

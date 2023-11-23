@@ -6,16 +6,20 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 @Component({
   selector: 'app-usuarios',
   templateUrl: './usuarios.component.html',
-  styleUrls: ['./usuarios.component.scss']
+  styleUrls: ['./usuarios.component.scss'],
 })
 export class UsuariosComponent {
-  constructor(private service: UsuarioService, private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private service: UsuarioService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
 
-  routerLink:string='nuevo';
-  title:string='Usuarios';
+  routerLink: string = 'nuevo';
+  title: string = 'Usuarios';
   data: Usuario[] = [];
-  headers = ['CÉDULA','NOMBRES','USUARIO','CORREO', 'ESTADO'];
-  campos = ['USR_ID','USR_DNI', 'USR_NOM','USUARIO','USR_EMAIL'];
+  headers = ['CÉDULA', 'NOMBRES', 'USUARIO', 'CORREO', 'ESTADO'];
+  campos = ['USR_ID', 'USR_DNI', 'USR_NOM', 'USUARIO', 'USR_EMAIL'];
 
   ngOnInit(): void {
     this.loadData();
@@ -23,23 +27,21 @@ export class UsuariosComponent {
 
   loadData() {
     this.service.get('A').subscribe({
-      next: value => {
+      next: (value) => {
         if (value.response) {
           this.data = value.data;
-        }
-        else {
+        } else {
           console.log(value.message);
         }
       },
-      error: error => {
+      error: (error) => {
         console.error('Error al cargar los datos:', error);
-      }
+      },
     });
   }
 
   eliminar(id: any) {
     console.log(id);
-
   }
 
   checkedsAction(data: any) {

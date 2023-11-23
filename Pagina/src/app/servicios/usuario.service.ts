@@ -9,43 +9,37 @@ import { UsuarioProfesor } from '../interfaces/UsuarioProfesor.interface';
 import { Usuario } from '../interfaces/Usuario.interface';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UsuarioService extends ErrorHandlerService {
-  private apiUrl = variables.URL_API + '/usuario' // Reemplaza con tu URL
+  private apiUrl = variables.URL_API + '/usuario'; // Reemplaza con tu URL
 
   constructor(private http: HttpClient) {
     super();
   }
 
   get(tipo: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}?by=all&tipo=${tipo}`).pipe(
-      catchError(this.handleError));
+    return this.http.get(`${this.apiUrl}?by=all&tipo=${tipo}`).pipe(catchError(this.handleError));
   }
 
   getById(id: string): Observable<Respuesta> {
-    return this.http.get<Respuesta>(`${this.apiUrl}?by=id&id=${id}`).pipe(
-      catchError(this.handleError));
+    return this.http.get<Respuesta>(`${this.apiUrl}?by=id&id=${id}`).pipe(catchError(this.handleError));
   }
 
   getByUser(usuario: UsuarioLogin): Observable<Respuesta> {
-    return this.http.patch<Respuesta>(this.apiUrl, { masivo: false, type: 'getByUser', data: usuario }).pipe(
-      catchError(this.handleError));
+    return this.http.patch<Respuesta>(this.apiUrl, { masivo: false, type: 'getByUser', data: usuario }).pipe(catchError(this.handleError));
   }
 
   getEnabled(tipo: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}?by=enabled&tipo=${tipo}`).pipe(
-      catchError(this.handleError));
+    return this.http.get(`${this.apiUrl}?by=enabled&tipo=${tipo}`).pipe(catchError(this.handleError));
   }
 
   put(usuario: Usuario): Observable<any> {
-    return this.http.put(this.apiUrl, usuario).pipe(
-      catchError(this.handleError));
+    return this.http.put(this.apiUrl, usuario).pipe(catchError(this.handleError));
   }
 
   delete(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}?id=${id}`).pipe(
-      catchError(this.handleError));
+    return this.http.delete(`${this.apiUrl}?id=${id}`).pipe(catchError(this.handleError));
   }
 
   post(usuario: Usuario, detalle?: UsuarioProfesor): Observable<any> {
@@ -57,10 +51,8 @@ export class UsuarioService extends ErrorHandlerService {
   }
 
   updatePswd(data: any): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/${data.id}`, { pswdNew: data.pswdNew, pswdOld: data.pswdOld }).pipe(
-      catchError(this.handleError));
+    return this.http.patch(`${this.apiUrl}/${data.id}`, { pswdNew: data.pswdNew, pswdOld: data.pswdOld }).pipe(catchError(this.handleError));
   }
-
 
   setLocal(usuario: Usuario): void {
     localStorage.setItem(variables.KEY_NAME, btoa(JSON.stringify(usuario.USR_ID)));
@@ -81,7 +73,7 @@ export class UsuarioService extends ErrorHandlerService {
   }
 
   async getUserLogged(): Promise<Usuario | null> {
-    const id = this.getUserLoggedId()
+    const id = this.getUserLoggedId();
     try {
       const response = await lastValueFrom(this.getById(id));
       if (!response) {
@@ -98,10 +90,6 @@ export class UsuarioService extends ErrorHandlerService {
     const user = await this.getUserLogged();
     if (!user) return false;
 
-    return (user.ROL_PRF === 1 && rol === 'P') ||
-      (user.ROL_ADMIN === 1 && rol === 'A') ||
-      (user.ROL_REPR === 1 && rol === 'R');
+    return (user.ROL_PRF === 1 && rol === 'P') || (user.ROL_ADMIN === 1 && rol === 'A') || (user.ROL_REPR === 1 && rol === 'R');
   }
-
 }
-

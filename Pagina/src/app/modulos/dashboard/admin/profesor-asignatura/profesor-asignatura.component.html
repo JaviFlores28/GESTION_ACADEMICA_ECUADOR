@@ -1,59 +1,47 @@
 <div class="container-fluid">
-    <div class="row bg-light">
-        <h1 class="fw-custom-semibold">Institución</h1>
-        <ol class="ps-4 py-2 breadcrumb">
-            <li class="breadcrumb-item"> <a class="text-black fw-custom-semibold" routerLink="../../sistema/profesores">Profesores</a></li>
-            <li class="breadcrumb-item active">Asignaturas</li>
-        </ol>
+  <div class="row bg-light">
+    <h1 class="fw-custom-semibold">Institución</h1>
+    <ol class="ps-4 py-2 breadcrumb">
+      <li class="breadcrumb-item"><a class="text-black fw-custom-semibold" routerLink="../../sistema/profesores">Profesores</a></li>
+      <li class="breadcrumb-item active">Asignaturas</li>
+    </ol>
+  </div>
+  <form class="row g-3" class="row row-cols-1 g-3 justify-content-center justify-content-md-start align-items-md-start align-items-center" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="col-12">
+      <div class="card text-start shadow border-0">
+        <div class="card-body">
+          <div class="row row-cols-6 justify-content-start align-items-end pt-2">
+            <div class="col">
+              <label for="PRF_ID" class="form-label">Profesor:</label>
+              <ng-select [items]="profesores" bindLabel="USR_NOM" bindValue="USR_ID" formControlName="PRF_ID" id="PRF_ID"> </ng-select>
+            </div>
+            <div class="col">
+              <label for="CRS_ID" class="form-label">Curso:</label>
+              <ng-select [items]="cursos" bindLabel="CRS_NOM" bindValue="CRS_ID" formControlName="CRS_ID" id="CRS_ID"> </ng-select>
+            </div>
+            <div class="col">
+              <label for="PRLL_ID" class="form-label">Paralelo:</label>
+              <ng-select [items]="paralelos" bindLabel="PRLL_NOM" bindValue="PRLL_ID" formControlName="PRLL_ID" id="PRLL_ID"> </ng-select>
+            </div>
+            <div class="col">
+              <label for="ASG_ID" class="form-label">Asignatura:</label>
+              <ng-select [items]="asignaturas" bindLabel="ASG_NOM" bindValue="ASG_ID" formControlName="ASG_ID" id="ASG_ID"> </ng-select>
+            </div>
+            <div class="col text-center text-md-start">
+              <button type="submit" [disabled]="!form.valid" class="btn btn-dark">Guardar</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <form class="row g-3"
-        class="row row-cols-1 g-3 justify-content-center justify-content-md-start align-items-md-start align-items-center"
-        [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div class="col-12">
-            <div class="card text-start shadow border-0">
-                <div class="card-body">
-                    <div class="row row-cols-6 justify-content-start align-items-end pt-2">
-                        <div class="col">
-                            <label for="PRF_ID" class="form-label">Profesor:</label>
-                            <ng-select [items]="profesores" bindLabel="USR_NOM" bindValue="USR_ID"
-                                formControlName="PRF_ID" id="PRF_ID">
-                            </ng-select>
-                        </div>
-                        <div class="col">
-                            <label for="CRS_ID" class="form-label">Curso:</label>
-                            <ng-select [items]="cursos" bindLabel="CRS_NOM" bindValue="CRS_ID" formControlName="CRS_ID"
-                                id="CRS_ID">
-                            </ng-select>
-                        </div>
-                        <div class="col">
-                            <label for="PRLL_ID" class="form-label">Paralelo:</label>
-                            <ng-select [items]="paralelos" bindLabel="PRLL_NOM" bindValue="PRLL_ID"
-                                formControlName="PRLL_ID" id="PRLL_ID">
-                            </ng-select>
-                        </div>
-                        <div class="col">
-                            <label for="ASG_ID" class="form-label">Asignatura:</label>
-                            <ng-select [items]="asignaturas" bindLabel="ASG_NOM" bindValue="ASG_ID"
-                                formControlName="ASG_ID" id="ASG_ID">
-                            </ng-select>
-                        </div>
-                        <div class="col text-center text-md-start">
-                            <button type="submit" [disabled]="!form.valid" class="btn btn-dark">Guardar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="col">
+      <div class="card text-start shadow border-0">
+        <div class="card-body">
+          <div *ngIf="table" class="col">
+            <app-ng-table [data]="table" [headers]="headers" [campos]="campos" (eliminarAction)="eliminar($event)" (checkedAction)="checkedsAction($event)" (filaAction)="filaAction($event)"></app-ng-table>
+          </div>
         </div>
-        <div class="col">
-            <div class="card text-start  shadow border-0">
-                <div class="card-body">
-                    <div *ngIf="table" class="col">
-                        <app-ng-table [data]="table" [headers]="headers" [campos]="campos"
-                            (eliminarAction)="eliminar($event)" (checkedAction)="checkedsAction($event)"
-                            (filaAction)="filaAction($event)"></app-ng-table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
+      </div>
+    </div>
+  </form>
 </div>

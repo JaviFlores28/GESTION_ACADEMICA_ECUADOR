@@ -8,7 +8,7 @@ describe('SubLevelMenuComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [SubLevelMenuComponent]
+      declarations: [SubLevelMenuComponent],
     });
     fixture = TestBed.createComponent(SubLevelMenuComponent);
     component = fixture.componentInstance;

@@ -4,10 +4,9 @@ import { SidenavToogle } from 'src/app/sistema/interfaces/sideNav.interface';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent  {
-
+export class HomeComponent {
   isSideNavCollapsed = true;
   screenWidth = window.innerWidth;
 
@@ -15,5 +14,4 @@ export class HomeComponent  {
     this.screenWidth = data.screenWidth;
     this.isSideNavCollapsed = data.collapsed;
   }
-
 }

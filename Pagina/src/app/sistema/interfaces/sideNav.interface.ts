@@ -1,4 +1,4 @@
 export interface SidenavToogle {
-    screenWidth: number;
-    collapsed: boolean;
-  }
+  screenWidth: number;
+  collapsed: boolean;
+}

@@ -18,10 +18,9 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 @Component({
   selector: 'app-profesor-asignatura',
   templateUrl: './profesor-asignatura.component.html',
-  styleUrls: ['./profesor-asignatura.component.scss']
+  styleUrls: ['./profesor-asignatura.component.scss'],
 })
 export class ProfesorAsignaturaComponent implements OnInit {
-
   constructor(
     private ngBootstrap: NgbModal,
     private route: ActivatedRoute,
@@ -32,8 +31,8 @@ export class ProfesorAsignaturaComponent implements OnInit {
     private cursoService: CursoService,
     private paraleloService: ParaleloService,
     private asignaturaService: AsignaturaService,
-    private modalService: ModalService
-  ) { }
+    private modalService: ModalService,
+  ) {}
 
   icon = faInfoCircle;
   modoEdicion: boolean = false;
@@ -45,10 +44,10 @@ export class ProfesorAsignaturaComponent implements OnInit {
   cursos: Curso[] = [];
   paralelos: Paralelo[] = [];
   asignaturas: Asignatura[] = [];
-  table: ProfesorAsignaturaParalelo[] = []
+  table: ProfesorAsignaturaParalelo[] = [];
 
   headers = ['PROFESOR', 'CURSO', 'PARALELO', 'ASIGNATURA', 'ESTADO'];
-  campos = ['PRF_ASG_PRLL_ID', 'PRF_ID', 'CRS_ID', 'PRLL_ID', 'ASG_ID',];
+  campos = ['PRF_ASG_PRLL_ID', 'PRF_ID', 'CRS_ID', 'PRLL_ID', 'ASG_ID'];
 
   form = this.formBuilder.group({
     PRF_ID: ['', Validators.required],
@@ -73,14 +72,14 @@ export class ProfesorAsignaturaComponent implements OnInit {
     this.service.getEnabled().subscribe({
       next: (value) => {
         if (value.response) {
-          this.table = value.data
+          this.table = value.data;
         } else {
           console.log(value.message);
         }
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
@@ -88,14 +87,14 @@ export class ProfesorAsignaturaComponent implements OnInit {
     this.usuarioService.getEnabled('P').subscribe({
       next: (value) => {
         if (value.response) {
-          this.profesores = value.data
+          this.profesores = value.data;
         } else {
           console.log(value.message);
         }
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
@@ -103,14 +102,14 @@ export class ProfesorAsignaturaComponent implements OnInit {
     this.cursoService.getEnabled().subscribe({
       next: (value) => {
         if (value.response) {
-          this.cursos = value.data
+          this.cursos = value.data;
         } else {
           console.log(value.message);
         }
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
@@ -118,14 +117,14 @@ export class ProfesorAsignaturaComponent implements OnInit {
     this.paraleloService.getEnabled().subscribe({
       next: (value) => {
         if (value.response) {
-          this.paralelos = value.data
+          this.paralelos = value.data;
         } else {
           console.log(value.message);
         }
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
@@ -133,14 +132,14 @@ export class ProfesorAsignaturaComponent implements OnInit {
     this.asignaturaService.getEnabled().subscribe({
       next: (value) => {
         if (value.response) {
-          this.asignaturas = value.data
+          this.asignaturas = value.data;
         } else {
           console.log(value.message);
         }
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
@@ -149,7 +148,8 @@ export class ProfesorAsignaturaComponent implements OnInit {
   }
 
   openConfirmationModal(message: string) {
-    this.modalService.openConfirmationModal(message)
+    this.modalService
+      .openConfirmationModal(message)
       .then((result) => {
         if (result === 'save') {
           if (this.modoEdicion) {
@@ -162,7 +162,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
       });
   }
 
-  eliminar(data: any) { }
-  checkedsAction(data: any) { }
-  filaAction(data: any) { }
+  eliminar(data: any) {}
+  checkedsAction(data: any) {}
+  filaAction(data: any) {}
 }
