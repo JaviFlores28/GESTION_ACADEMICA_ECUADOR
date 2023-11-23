@@ -334,16 +334,16 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
 
   const generarSQLinsert = Funciones.generateSqlInsert(propertiesData);
   const generarSQLupdate = Funciones.generarSQLUpdate(propertiesData);
-  const sqlgetmatriculas = `static sqlGetByCurso: string = 'SELECT E.*, ec.EST_CRS_ID FROM vista_estudiante E JOIN estudiante_curso EC ON E.EST_ID = EC.EST_ID JOIN CURSO C ON EC.CRS_ID = C.CRS_ID WHERE EC.ESTADO = 1 AND C.CRS_ID = ?;'`;
+  const sqlGetByCurso = `static sqlGetByCurso: string = 'SELECT a.* FROM vista_estudiante_curso as a JOIN estudiante_curso as b ON a.EST_CRS_ID = b.EST_CRS_ID WHERE b.CRS_ID=? AND NOT EXISTS ( SELECT 1 FROM estudiante_curso_paralelo ECP WHERE ECP.EST_CRS_ID = b.EST_CRS_ID AND ECP.ESTADO = 1 );'`;
   const sqlGetNoMatriculados = `static sqlGetNoMatriculados: string = 'SELECT a.* FROM vista_estudiante AS a WHERE NOT EXISTS ( SELECT 1 FROM estudiante_curso AS b WHERE b.EST_ID = a.EST_ID AND (b.ESTADO = 1 OR b.CRS_ID = (SELECT CRS_ID FROM curso ORDER BY CRS_ORDEN DESC LIMIT 1)) ) AND a.ESTADO = 1;'`;
   const sqlGetByUser = `static sqlGetByUser: string = 'SELECT * FROM ${tableName} WHERE USUARIO = ?';`;
-  const sqlGetByParalelo = `static sqlGetByParalelo: string = 'SELECT * FROM ${tableName} WHERE USUARIO = ?';`;
+  const sqlGetByParalelo = `static sqlGetByParalelo: string = 'SELECT b.EST_CRS_PRLL_ID, a.* FROM vista_estudiante_curso as a JOIN estudiante_curso_paralelo as b ON a.EST_CRS_ID = b.EST_CRS_ID WHERE b.PRLL_ID =? AND b.ESTADO=1';`;
 
   const isViewTable = (tableName: string) => {
     if (tableName === 'estudiante' || tableName === 'usuario' || tableName === 'estudiante_curso') {
       return `vista_${tableName}`;
     } else {
-      tableName;
+      return tableName;
     }
   };
 
@@ -363,7 +363,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
     if (tableName === 'usuario') {
       return sqlGetByUser;
     } else if (tableName === 'estudiante_curso') {
-      return sqlGetNoMatriculados + '\n' + sqlgetmatriculas;
+      return sqlGetNoMatriculados + '\n' + sqlGetByCurso;
     } else if (tableName === 'estudiante_curso_paralelo') {
       return sqlGetByParalelo;
     } else {
@@ -532,6 +532,27 @@ async function generateNegocioFile(tableName: string): Promise<void> {
     }
   }`;
 
+  const functiongetByParalelo = `
+   static async getByParalelo(id: String): Promise<Respuesta> {
+    try {
+      return ${capitalizedTableName}Datos.getByParalelo(id);
+    } catch (error: any) {
+      return {response: false, data: null, message: error.code }; 
+    }
+  }`;
+
+  const otherFun = (tableName: string) => {
+    if (tableName === 'usuario') {
+      return functionGetByUser;
+    } else if (tableName === 'estudiante_curso') {
+      return functionGetNoMatriculados + functiongetByCurso + functioninsertarMasivamente;
+    } else if (tableName === 'estudiante_curso_paralelo') {
+      return functioninsertarMasivamente + functiongetByParalelo;
+    } else {
+      return '';
+    }
+  };
+
   const content = `${tableName === 'usuario' ? `import UsuarioProfesorEntidad from '../entidades/UsuarioProfesorEntidad'; ` : ''}
 import ${capitalizedTableName}Datos from '../datos/${capitalizedTableName}Datos';
 import ${capitalizedTableName}Entidad from '../entidades/${capitalizedTableName}Entidad';
@@ -545,7 +566,7 @@ class ${capitalizedTableName}Negocio {
   ${functionGetAll}
   ${functionGetEnabled}
   ${functiongetById}
-  ${tableName === 'usuario' ? functionGetByUser : tableName === 'estudiante_curso' ? functionGetNoMatriculados + functiongetByCurso + functioninsertarMasivamente : ''}
+  ${otherFun(tableName)}
 }
 
 export default ${capitalizedTableName}Negocio;`;
@@ -569,12 +590,23 @@ async function generateServiceFile(tableName: any): Promise<void> {
   const capitalizedTableName = Funciones.stringToCapitalize(tableName);
   const lowercaseTableName = Funciones.stringToCamelCase(tableName);
 
-  const estudiante_curso = `case 'noMatriculados':
-    ${tableName} = await ${capitalizedTableName}Negocio.getNoMatriculados();
-    break;
-  case 'curso':
-    ${tableName} = await ${capitalizedTableName}Negocio.getByCurso(id);
-    break;`;
+  const otherGets = (tableName: string) => {
+    if (tableName === 'estudiante_curso') {
+      return `case 'noMatriculados':
+      ${tableName} = await ${capitalizedTableName}Negocio.getNoMatriculados();
+      break;
+      case 'curso':
+      ${tableName} = await ${capitalizedTableName}Negocio.getByCurso(id);
+      break;`;
+    } else if (tableName === 'estudiante_curso_paralelo') {
+      return `case 'paralelo':
+      ${tableName} = await ${capitalizedTableName}Negocio.getByParalelo(id);
+      break;
+      `;
+    } else {
+      return '';
+    }
+  };
 
   const getroute = `
   router.get('/${lowercaseTableName}', async (req, res) => {
@@ -596,7 +628,7 @@ async function generateServiceFile(tableName: any): Promise<void> {
         case 'id':
           ${tableName} = await ${capitalizedTableName}Negocio.getById(id);
           break;
-          ${tableName === 'estudiante_curso' ? estudiante_curso : ''}
+          ${otherGets(tableName)}
         default:
           return res.status(400).json({ message: 'Parámetro inválido en la consulta.' });
       }
@@ -614,7 +646,7 @@ const response = await ${capitalizedTableName}Negocio.insert(usuario, detalle);
   const scriptPost = `const ${tableName}: ${capitalizedTableName}Entidad = req.body;
 const response = await ${capitalizedTableName}Negocio.insert(${tableName});`;
 
-  const scriptPostMasivo = `const { masivo,type, data }: TypeRequest = req.body;
+  const scriptPostMasivo = `const { masivo, data }: TypeRequest = req.body;
   let response;
   if(!masivo){
      response = await ${capitalizedTableName}Negocio.insert(data);
@@ -626,7 +658,7 @@ const response = await ${capitalizedTableName}Negocio.insert(${tableName});`;
   const postroute = `
 router.post('/${lowercaseTableName}', async (req, res) => {
    try {
-${tableName === 'usuario' ? scriptUsuarioPost : tableName === 'estudiante_curso' ? scriptPostMasivo : scriptPost}
+${tableName === 'usuario' ? scriptUsuarioPost : tableName === 'estudiante_curso' || tableName === 'estudiante_curso_paralelo' ? scriptPostMasivo : scriptPost}
     res.json(response);
   } catch (error: any) {
     res.status(500).json({ message: error.code });

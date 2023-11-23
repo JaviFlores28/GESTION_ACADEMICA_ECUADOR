@@ -31,28 +31,30 @@
                     </div>
                     <div class="col-2">
                         <div class="btn-group" role="group">
-                            <button type="submit" [disabled]="idsMatriculas.length<=0 ||!form.valid"
+                            <button type="submit" [disabled]="idsEstudianteCursoParalelo.length<=0 ||!form.valid"
                                 class="btn btn-dark">Guardar</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col" *ngIf="matriculas.length>0">
+        <div class="col">
+            <h3 class="card-title p-3 m-2 shadow rounded text-center bg-black text-white">Estudiantes por curso</h3>
             <div class="card text-start border border-0 rounded shadow">
                 <div class="card-body">
-                    <app-ng-table tableName="matriculas" [data]="matriculas" [headers]="headersMatriculas"
-                        [campos]="camposMatriculados" [botonera]="false" [checksOptions]="false" [botonEstado]="false"
-                        [pageSize]="30" (checkedAction)="estudiantesaction($event)"></app-ng-table>
+                    <app-ng-table tableName="estudianteCurso" [data]="estudianteCurso" [headers]="headersEstudianteCurso"
+                        [campos]="camposEstudianteCurso" [botonera]="false" [checksOptions]="false" [botonEstado]="false"
+                        [pageSize]="30" (checkedAction)="estudianteCursoAction($event)"></app-ng-table>
                 </div>
             </div>
         </div>
-        <div class="col" *ngIf="estudiantesParalelos.length>0">
+        <div class="col">
+            <h3 class="card-title p-3 m-2 shadow rounded text-center bg-black text-white">Estudiantes por paralelo</h3>
             <div class="card text-start border border-0 rounded shadow">
                 <div class="card-body">
                     <app-ng-table tableName="estudiantesParalelos" [data]="estudiantesParalelos"
-                        [headers]="headersEstudiantesParalelos" [campos]="camposestudiantesParalelos" [botonera]="false"
-                        [pageSize]="30" (checkedAction)="matriculasAction($event)"></app-ng-table>
+                        [headers]="headersEstudianteCursoParalelo" [campos]="camposEstudianteCursoParalelo" [botonera]="false"
+                        [pageSize]="30" (checkedAction)="estudiantesaction($event)"></app-ng-table>
                 </div>
             </div>
         </div>

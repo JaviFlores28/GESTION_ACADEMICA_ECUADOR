@@ -7,7 +7,9 @@ import { Paralelo } from 'src/app/interfaces/Paralelo.interface';
 import { CursoService } from 'src/app/servicios/curso.service';
 import { EstudianteCursoParaleloService } from 'src/app/servicios/estudiante-curso-paralelo.service';
 import { EstudianteCursoService } from 'src/app/servicios/estudiante-curso.service';
+import { ModalService } from 'src/app/servicios/modal.service';
 import { ParaleloService } from 'src/app/servicios/paralelo.service';
+import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
   selector: 'app-estudiante-paralelo',
@@ -21,23 +23,29 @@ export class EstudianteParaleloComponent implements OnInit {
     private cursoService: CursoService,
     private paraleloService: ParaleloService,
     private estudianteCursoService: EstudianteCursoService,
+    private modalService: ModalService,
+    private usuarioService: UsuarioService,
+
   ) { }
 
   cursos: Curso[] = [];
   paralelos: Paralelo[] = [];
-  matriculas: EstudianteCurso[] = [];
+  estudianteCurso: EstudianteCurso[] = [];
   estudiantesParalelos: EstudianteCursoParalelo[] = [];
 
-  idEstudiantesSelecionados: string[] = [];
-  idsMatriculas: string[] = [];
+  idsEstudianteCurso: string[] = [];
+  idsEstudianteCursoParalelo: string[] = [];
 
-  headersMatriculas = ['CÉDULA', 'NOMBRES'];
-  camposMatriculados = ['EST_CRS_ID', 'EST_DNI', 'EST_NOM'];
-  headersEstudiantesParalelos = ['CÉDULA', 'NOMBRES', 'CURSO', 'ESTADO'];
-  camposestudiantesParalelos = ['CÉDULA', 'NOMBRES', 'CURSO', 'PARALELO', 'ESTADO'];
+  headersEstudianteCurso = ['CÉDULA', 'NOMBRES'];
+  camposEstudianteCurso = ['EST_CRS_ID', 'EST_DNI', 'EST_ID'];
+  headersEstudianteCursoParalelo = ['CÉDULA', 'CURSO', 'NOMBRES', 'ESTADO'];
+  camposEstudianteCursoParalelo = ['EST_CRS_PRLL_ID', 'EST_DNI','CRS_ID', 'EST_ID'];
+
+  msg: string = '¿Desea guardar?';
+  userId = this.usuarioService.getUserLoggedId();
 
   form = this.formBuilder.group({
-    CRS_ID: ['', Validators.required],
+    CRS_ID: [''],
     PRLL_ID: ['', Validators.required]
   })
 
@@ -46,7 +54,7 @@ export class EstudianteParaleloComponent implements OnInit {
     this.loadParalelos();
 
     this.form.get('CRS_ID')?.valueChanges.subscribe((value) => {
-      this.loadMatriculas(value || '');
+      this.loadestudianteCurso(value || '');
     });
 
     this.form.get('PRLL_ID')?.valueChanges.subscribe((value) => {
@@ -54,7 +62,9 @@ export class EstudianteParaleloComponent implements OnInit {
     });
   }
 
-  onSubmit() { }
+  onSubmit() {
+    this.openConfirmationModal(this.msg, 'create');
+  }
 
   loadCursos() {
     this.cursoService.getEnabled().subscribe({
@@ -86,12 +96,12 @@ export class EstudianteParaleloComponent implements OnInit {
     });
   }
 
-  loadMatriculas(cursoId: string) {
+  loadestudianteCurso(cursoId: string) {
     this.estudianteCursoService.getByCurso(cursoId).subscribe({
       next: (value) => {
         if (value.response) {
-          this.matriculas = value.data
-          console.log(this.matriculas);
+          this.estudianteCurso = value.data
+          console.log(this.estudianteCurso);
         } else {
           console.log(value.message);
         }
@@ -112,11 +122,90 @@ export class EstudianteParaleloComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.log(error);
+        console.error(error);
       }
     });
   }
 
-  estudiantesaction(data: any) { }
-  matriculasAction(data: any) { }
+  estudiantesaction(value: any) {
+    this.idsEstudianteCurso = value.data;
+    if (value.action === 'desactivar') {
+      this.openConfirmationModal('¿Desea desactivar los items seleccionados?', value.action);
+    }
+  }
+  estudianteCursoAction(value: any) {
+    this.idsEstudianteCursoParalelo = value.data;
+  }
+
+  crear() {
+    if (this.form.valid) {
+      let estudiantes = {
+        arrayIds: this.idsEstudianteCursoParalelo,
+        PRLL_ID: this.form.value.PRLL_ID,
+        CREADOR_ID: this.userId
+      };
+      this.service.postMasivo(estudiantes).subscribe(
+        {
+          next: (value) => {
+            this.handleResponse(value);
+          },
+          error: (error) => this.handleErrorResponse(error)
+        }
+      );
+    } else {
+      this.form.markAllAsTouched();
+    }
+  }
+
+  desactivar() {
+    if (this.idsEstudianteCurso.length === 0) {
+      this.openAlertModal('Debe seleccionar al menos un item.', 'danger');
+      return
+    }
+    this.service.patchUpdateEstado(this.idsEstudianteCurso).subscribe(
+      {
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error)
+      }
+    );
+  }
+
+  openAlertModal(content: string, alertType: string) {
+    this.modalService.openAlertModal(content, alertType);
+  }
+
+  openConfirmationModal(message: string, action: string) {
+    this.modalService.openConfirmationModal(message)
+      .then((result) => {
+        if (result === 'save') {
+          if (action === 'create') {
+            this.crear()
+          } else {
+            this.desactivar();
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  handleResponse(value: any) {
+    if (!value.response) {
+      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+      console.log(value.message);
+    } else {
+      console.log(value.message);
+      this.openAlertModal(value.message, 'success');
+      this.form.reset();
+      // this.router.navigate(['../'], { relativeTo: this.route });
+    }
+  }
+
+  handleErrorResponse(error: any) {
+    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    console.log(error);
+  }
 }

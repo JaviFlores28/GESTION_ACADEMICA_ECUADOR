@@ -15,6 +15,14 @@ import { UsuarioService } from "src/app/servicios/usuario.service";
   styleUrls: ['./estudiante-curso.component.scss']
 })
 export class EstudianteCursoComponent implements OnInit {
+  constructor(
+    private formBuilder: FormBuilder,
+    private usuarioService: UsuarioService,
+    private service: EstudianteCursoService,
+    private cursoService: CursoService,
+    private modalService: ModalService
+  ) { }
+
   userId = this.usuarioService.getUserLoggedId();
   modoEdicion: boolean = false;
   elementoId: string = '';
@@ -35,13 +43,6 @@ export class EstudianteCursoComponent implements OnInit {
     CRS_ID: ['', Validators.required]
   })
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private usuarioService: UsuarioService,
-    private service: EstudianteCursoService,
-    private cursoService: CursoService,
-    private modalService: ModalService
-  ) { }
 
   ngOnInit(): void {
     this.loadCursos();
