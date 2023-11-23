@@ -39,7 +39,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
   elementoId: string = '';
   msg: string = '¿Desea guardar?';
   userid = this.usuarioService.getUserLoggedId();
-
+  AL_ID = '0';
   profesores: Usuario[] = [];
   cursos: Curso[] = [];
   paralelos: Paralelo[] = [];
@@ -163,6 +163,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
     this.form.get('ASG_ID')?.setValue(data.ASG_ID);
     this.form.get('CRS_ID')?.setValue(data.CRS_ID);
     this.form.get('PRLL_ID')?.setValue(data.PRLL_ID);
+    this.AL_ID = data.AL_ID;
     this.userid = data.CREADOR_ID;
   }
 
@@ -198,7 +199,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
     const profesorAsignaturaParalelo: ProfesorAsignaturaParalelo = {
       PRF_ASG_PRLL_ID: '0',
       PRF_ID: this.form.value.PRF_ID || '',
-      AL_ID: '0',
+      AL_ID: this.AL_ID,
       ASG_ID: this.form.value.ASG_ID || '',
       CRS_ID: this.form.value.CRS_ID || '',
       PRLL_ID: this.form.value.PRLL_ID || '',
@@ -212,7 +213,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
     const profesorAsignaturaParalelo: ProfesorAsignaturaParalelo = {
       PRF_ASG_PRLL_ID: this.elementoId,
       PRF_ID: this.form.value.PRF_ID || '',
-      AL_ID: '0',
+      AL_ID: this.AL_ID,
       ASG_ID: this.form.value.ASG_ID || '',
       CRS_ID: this.form.value.CRS_ID || '',
       PRLL_ID: this.form.value.PRLL_ID || '',
@@ -250,13 +251,19 @@ export class ProfesorAsignaturaComponent implements OnInit {
     } else {
       if (this.modoEdicion) {
         this.openAlertModal(value.message, 'success');
-        console.log(value.message);
+        this.clear();
       } else {
         this.openAlertModal(value.message, 'success');
-        this.form.reset();
-        this.router.navigate(['../'], { relativeTo: this.route });
+        this.clear();
       }
     }
+  }
+
+  clear() {
+    this.loadTable();
+    this.form.reset();
+    this.modoEdicion = false;
+    this.AL_ID = '0';
   }
 
   handleErrorResponse(error: any) {
@@ -266,8 +273,17 @@ export class ProfesorAsignaturaComponent implements OnInit {
 
   eliminar(data: any) { }
   checkedsAction(data: any) { }
-  filaAction(data: any) {
-    console.log(data);
 
+  filaAction(data: any) {
+    if (data.option === 'editar') {
+      this.modoEdicion = true;
+      this.elementoId = data.id;
+      this.loadDataEdit();
+    } else if (data.option === 'eliminar') {
+      this.modoEdicion = false;
+      this.elementoId = data.elementoId;
+      this.msg = '¿Desea eliminar?';
+      this.openConfirmationModal(this.msg);
+    }
   }
 }

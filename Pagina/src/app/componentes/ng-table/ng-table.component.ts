@@ -93,7 +93,7 @@ export class NgTableComponent implements OnInit {
    * Tamaño de página para la paginación de la tabla.
    * @type {number}
    */
-  @Input() pageSize: number = 4;
+  @Input() pageSize: number = 10;
 
   /**
    * Nombre de la tabla.

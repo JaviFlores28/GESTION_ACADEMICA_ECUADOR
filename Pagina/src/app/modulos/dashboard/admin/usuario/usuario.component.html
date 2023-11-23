@@ -3,7 +3,7 @@
     <h1 class="fw-custom-semibold">Sistema</h1>
     <ol class="ps-4 py-2 breadcrumb">
       <li class="breadcrumb-item">
-        <a class="text-black fw-custom-semibold" routerLink="../">{{ titulo }}</a>
+        <a class="text-black fw-custom-semibold" routerLink="{{modoEdicion?'../../':'../'}}">{{ titulo }}</a>
       </li>
       <li class="breadcrumb-item active">{{ modoEdicion ? 'Editar' : 'Crear' }}</li>
     </ol>
