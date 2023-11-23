@@ -56,7 +56,7 @@ async function createTables() {
 async function insertOnTables() {
   try {
     // Leer el contenido del archivo SQL
-    const sqlScript = await fs.readFile('SQL/Datos.sql', 'utf-8');
+    const sqlScript = await fs.readFile('SQL/DatosTest.sql', 'utf-8');
 
     // Dividir el script en consultas individuales
     const queries = sqlScript.split(';').filter((query) => query.trim() !== '');

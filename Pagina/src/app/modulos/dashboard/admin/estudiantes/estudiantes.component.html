@@ -9,7 +9,7 @@
   <div class="card text-start border border-0 rounded shadow">
     <div class="card-body">
       <ng-container *ngIf="table">
-        <app-ng-table [data]="table" [headers]="headers" [campos]="campos" (eliminarAction)="eliminar($event)" (checkedAction)="checkedsAction($event)" (filaAction)="filaAction($event)"></app-ng-table>
+        <app-ng-table [data]="table" [headers]="headers" [campos]="campos" [pageSize]="20" (eliminarAction)="eliminar($event)" (checkedAction)="checkedsAction($event)" (filaAction)="filaAction($event)"></app-ng-table>
       </ng-container>
     </div>
   </div>
