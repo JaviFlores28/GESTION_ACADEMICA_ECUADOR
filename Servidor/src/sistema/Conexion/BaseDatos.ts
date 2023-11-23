@@ -1,6 +1,7 @@
 import { createPool } from 'mysql2/promise';
 import * as dotenv from 'dotenv';
-import * as fs from 'fs/promises'; // Utilizando fs/promises para trabajar con promesas
+import * as fs from 'fs/promises';
+import Funciones from '../funciones/Funciones';
 
 dotenv.config();
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE } = process.env;
@@ -26,8 +27,9 @@ async function createDatabase() {
 
     // Liberar la conexión de vuelta al pool
     connectionWithoutDB.release();
-  } catch (error) {
-    console.error('Error al crear la base de datos: ', error);
+
+  } catch (error: any) {
+    Funciones.logger.error(error.errors);
   }
 }
 
@@ -36,29 +38,18 @@ async function createTables() {
     // Leer el contenido del archivo SQL
     const sqlScript = await fs.readFile('SQL/UEFBC.sql', 'utf-8');
 
-    // Obtener una conexión de la piscina
-    const connection = await pool.getConnection();
+    // Dividir el script en consultas individuales
+    const queries = sqlScript.split(';').filter((query) => query.trim() !== '');
 
-    try {
-      // Dividir el script en consultas individuales
-      const queries = sqlScript.split(';').filter((query) => query.trim() !== '');
-
-      // Ejecutar cada consulta por separado
-      for (const query of queries) {
-        const result = await connection.query(query);
-        if (!result[0]) {
-          console.error('Error al ejecutar la consulta:', result[0]);
-        }
+    // Ejecutar cada consulta por separado
+    for (const query of queries) {
+      const result = await pool.query(query);
+      if (!result[0]) {
+        throw new Error('Error al ejecutar la consulta:' + result[0]);
       }
-
-    } finally {
-      // Liberar la conexión de vuelta a la piscina
-      connection.release();
     }
   } catch (error: any) {
-    console.error('Error al ejecutar el script SQL: ', error);
-    console.error('SQL State:', error.sqlState);
-    console.error('SQL Message:', error.sqlMessage);
+    Funciones.logger.error(error);
   }
 }
 
@@ -67,29 +58,19 @@ async function insertOnTables() {
     // Leer el contenido del archivo SQL
     const sqlScript = await fs.readFile('SQL/Datos.sql', 'utf-8');
 
-    // Obtener una conexión de la piscina
-    const connection = await pool.getConnection();
+    // Dividir el script en consultas individuales
+    const queries = sqlScript.split(';').filter((query) => query.trim() !== '');
 
-    try {
-      // Dividir el script en consultas individuales
-      const queries = sqlScript.split(';').filter((query) => query.trim() !== '');
-
-      // Ejecutar cada consulta por separado
-      for (const query of queries) {
-        const result = await connection.query(query);
-        if (!result[0]) {
-          console.error('Error al ejecutar la consulta:', result[0]);
-        }
+    // Ejecutar cada consulta por separado
+    for (const query of queries) {
+      const result = await pool.query(query);
+      if (!result[0]) {
+        throw new Error('Error al ejecutar la consulta:' + result[0]);
       }
-
-    } finally {
-      // Liberar la conexión de vuelta a la piscina
-      connection.release();
     }
+
   } catch (error: any) {
-    console.error('Error al ejecutar el script SQL: ', error);
-    console.error('SQL State:', error.sqlState);
-    console.error('SQL Message:', error.sqlMessage);
+    Funciones.logger.error(error);
   }
 }
 
@@ -98,8 +79,8 @@ async function runDatabaseSetup() {
     await createDatabase();
     await createTables();
     await insertOnTables();
-  } catch (error) {
-    console.error('Error during database setup:', error);
+  } catch (error: any) {
+    Funciones.logger.error(error);
   }
 }
 
