@@ -4,6 +4,7 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Curso } from 'src/app/interfaces/Curso.interface';
 import { Estudiante } from 'src/app/interfaces/Estudiante.interface';
 import { EstudianteCursoParalelo } from 'src/app/interfaces/EstudianteCursoParalelo.interface';
+import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 import { CursoService } from 'src/app/servicios/curso.service';
 import { EstudianteCursoService } from 'src/app/servicios/estudiante-curso.service';
 import { ModalService } from 'src/app/servicios/modal.service';
@@ -17,17 +18,13 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 export class EstudianteCursoComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
+    private modalService: ModalService,
     private usuarioService: UsuarioService,
     private service: EstudianteCursoService,
     private cursoService: CursoService,
-    private modalService: ModalService,
-  ) {}
+    private anioService: AnioLectivoService
 
-  USR_ID = this.usuarioService.getUserLoggedId();
-  modoEdicion: boolean = false;
-  elementoId: string = '';
-  msg: string = '¿Desea guardar?';
-  icon = faInfoCircle;
+  ) { }
 
   cursos: Curso[] = [];
   noMatriculados: Estudiante[] = [];
@@ -39,6 +36,15 @@ export class EstudianteCursoComponent implements OnInit {
   headersMatriculados = ['CÉDULA', 'NOMBRES', 'CURSO', 'ESTADO'];
   camposMatriculados = ['EST_CRS_ID', 'EST_DNI', 'EST_ID', 'CRS_ID'];
 
+
+  modoEdicion: boolean = false;
+  elementoId: string = '';
+  msg: string = '¿Desea guardar?';
+  icon = faInfoCircle;
+
+  USR_ID = this.usuarioService.getUserLoggedId();
+  AL_ID: string = '0';
+  ESTADO: number = 1;
   form = this.formBuilder.group({
     CRS_ID: ['', Validators.required],
   });
@@ -47,10 +53,27 @@ export class EstudianteCursoComponent implements OnInit {
     this.loadCursos();
     this.loadNoMatriculados();
     this.loadMatriculados();
+    this.loadAnioLectivo();
+
   }
 
   onSubmit() {
     this.openConfirmationModal(this.msg, 'create');
+  }
+
+  loadAnioLectivo() {
+    this.anioService.getEnabled().subscribe({
+      next: (value) => {
+        if (value.response) {
+          this.AL_ID = value.data[0].AL_ID;
+        } else {
+          console.log(value.message);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    })
   }
 
   loadCursos() {
@@ -114,7 +137,7 @@ export class EstudianteCursoComponent implements OnInit {
       let estudiantes = {
         arrayIds: this.idsEstudiantes,
         CRS_ID: this.form.value.CRS_ID,
-        ESTADO: 1,
+        ESTADO: this.ESTADO,
         CREADOR_ID: this.USR_ID,
       };
       this.service.postMasivo(estudiantes).subscribe({

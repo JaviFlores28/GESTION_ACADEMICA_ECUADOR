@@ -289,7 +289,7 @@ FROM
 CREATE VIEW IF NOT EXISTS  vista_estudiante_curso AS SELECT a.EST_CRS_ID, b.EST_DNI, CONCAT(b.EST_NOM, ' ', b.EST_NOM2, ' ', b.EST_APE, ' ', b.EST_APE2) AS EST_ID, CONCAT( c.CRS_NOM, ' - ',C.CRS_TIPO) AS CRS_ID,A.ESTADO FROM `estudiante_curso` AS A JOIN estudiante as b on b.EST_ID=a.EST_ID join curso as c on c.CRS_ID=a.CRS_ID  
 ORDER BY `A`.`ESTADO` ASC;
 
-CREATE VIEW vista_profesor_asignatura_paralelo AS
+CREATE VIEW IF NOT EXISTS vista_profesor_asignatura_paralelo AS
 SELECT
   pap.PRF_ASG_PRLL_ID,
   CONCAT(U.USR_NOM, ' ', U.USR_NOM2, ' ', U.USR_APE, ' ', U.USR_APE2) AS PRF_ID,
