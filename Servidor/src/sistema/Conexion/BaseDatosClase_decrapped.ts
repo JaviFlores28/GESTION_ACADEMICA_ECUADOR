@@ -39,7 +39,6 @@ class BaseDatos {
 
       // Liberar la conexión de vuelta al pool
       connectionWithoutDB.release();
-
     } catch (error: any) {
       Funciones.logger.error(error);
       //console.error('Error al crear la base de datos: ', error);
@@ -61,7 +60,6 @@ class BaseDatos {
           console.error('Error al ejecutar la consulta:', result[0]);
         }
       }
-
     } catch (error: any) {
       Funciones.logger.error(error);
       /* console.error('Error al ejecutar el script SQL: ', error);
@@ -85,7 +83,6 @@ class BaseDatos {
           throw new Error('Error al ejecutar la consulta:', result[0]);
         }
       }
-
     } catch (error: any) {
       Funciones.logger.error(error);
       /*  console.error('Error al ejecutar el script SQL: ', error);

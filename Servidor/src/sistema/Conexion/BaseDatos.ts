@@ -27,7 +27,6 @@ async function createDatabase() {
 
     // Liberar la conexión de vuelta al pool
     connectionWithoutDB.release();
-
   } catch (error: any) {
     Funciones.logger.error(error.errors);
   }
@@ -68,7 +67,6 @@ async function insertOnTables() {
         throw new Error('Error al ejecutar la consulta:' + result[0]);
       }
     }
-
   } catch (error: any) {
     Funciones.logger.error(error);
   }

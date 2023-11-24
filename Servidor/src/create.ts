@@ -302,10 +302,10 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
 
       // Verificar si se afectaron filas
       if (result.affectedRows < 1) {
-        throw new Error('No se pudieron insertar las matrículas');
+        throw new Error('No se pudieron insertar los datos');
       }
 
-      return {response: true, data: true, message: 'Matrículas insertadas correctamente' };
+      return {response: true, data: true, message: 'Datos insertados correctamente' };
     } catch (error: any) {      
       Funciones.logger.error(error.message);
       return {response: false, data: false, message:error.message };
