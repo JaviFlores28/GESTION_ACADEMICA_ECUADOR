@@ -38,7 +38,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
   modoEdicion: boolean = false;
   elementoId: string = '';
   msg: string = '¿Desea guardar?';
-  userid = this.usuarioService.getUserLoggedId();
+  USR_ID = this.usuarioService.getUserLoggedId();
   AL_ID = '0';
   profesores: Usuario[] = [];
   cursos: Curso[] = [];
@@ -164,7 +164,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
     this.form.get('CRS_ID')?.setValue(data.CRS_ID);
     this.form.get('PRLL_ID')?.setValue(data.PRLL_ID);
     this.AL_ID = data.AL_ID;
-    this.userid = data.CREADOR_ID;
+    this.USR_ID = data.CREADOR_ID;
   }
 
   crear() {
@@ -204,7 +204,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
       CRS_ID: this.form.value.CRS_ID || '',
       PRLL_ID: this.form.value.PRLL_ID || '',
       ESTADO: 1,
-      CREADOR_ID: this.userid,
+      CREADOR_ID: this.USR_ID,
     };
     return profesorAsignaturaParalelo;
   }
@@ -218,7 +218,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
       CRS_ID: this.form.value.CRS_ID || '',
       PRLL_ID: this.form.value.PRLL_ID || '',
       ESTADO: 1,
-      CREADOR_ID: this.userid,
+      CREADOR_ID: this.USR_ID,
     };
     return profesorAsignaturaParalelo;
   }

@@ -4,6 +4,7 @@ import { Curso } from 'src/app/interfaces/Curso.interface';
 import { EstudianteCurso } from 'src/app/interfaces/EstudianteCurso.interface';
 import { EstudianteCursoParalelo } from 'src/app/interfaces/EstudianteCursoParalelo.interface';
 import { Paralelo } from 'src/app/interfaces/Paralelo.interface';
+import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 import { CursoService } from 'src/app/servicios/curso.service';
 import { EstudianteCursoParaleloService } from 'src/app/servicios/estudiante-curso-paralelo.service';
 import { EstudianteCursoService } from 'src/app/servicios/estudiante-curso.service';
@@ -19,13 +20,14 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 export class EstudianteParaleloComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
+    private modalService: ModalService,
     private service: EstudianteCursoParaleloService,
     private cursoService: CursoService,
     private paraleloService: ParaleloService,
     private estudianteCursoService: EstudianteCursoService,
-    private modalService: ModalService,
     private usuarioService: UsuarioService,
-  ) {}
+    private anioService: AnioLectivoService
+  ) { }
 
   cursos: Curso[] = [];
   paralelos: Paralelo[] = [];
@@ -41,7 +43,10 @@ export class EstudianteParaleloComponent implements OnInit {
   camposEstudianteCursoParalelo = ['EST_CRS_PRLL_ID', 'EST_DNI', 'CRS_ID', 'EST_ID'];
 
   msg: string = '¿Desea guardar?';
-  userId = this.usuarioService.getUserLoggedId();
+  USR_ID: string = this.usuarioService.getUserLoggedId();
+  AL_ID: string = '0';
+  PASE: number = 4;
+  ESTADO: number = 1;
 
   form = this.formBuilder.group({
     CRS_ID: [''],
@@ -51,6 +56,7 @@ export class EstudianteParaleloComponent implements OnInit {
   ngOnInit(): void {
     this.loadCursos();
     this.loadParalelos();
+    this.loadAnioLectivo();
 
     this.form.get('CRS_ID')?.valueChanges.subscribe((value) => {
       this.loadestudianteCurso(value || '');
@@ -95,12 +101,26 @@ export class EstudianteParaleloComponent implements OnInit {
     });
   }
 
+  loadAnioLectivo() {
+    this.anioService.getEnabled().subscribe({
+      next: (value) => {
+        if (value.response) {
+          this.AL_ID = value.data[0].AL_ID;
+        } else {
+          console.log(value.message);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    })
+  }
+
   loadestudianteCurso(cursoId: string) {
     this.estudianteCursoService.getByCurso(cursoId).subscribe({
       next: (value) => {
         if (value.response) {
           this.estudianteCurso = value.data;
-          console.log(this.estudianteCurso);
         } else {
           console.log(value.message);
         }
@@ -126,12 +146,13 @@ export class EstudianteParaleloComponent implements OnInit {
     });
   }
 
-  estudiantesaction(value: any) {
+  estudiantesParaleloAction(value: any) {
     this.idsEstudianteCurso = value.data;
     if (value.action === 'desactivar') {
       this.openConfirmationModal('¿Desea desactivar los items seleccionados?', value.action);
     }
   }
+
   estudianteCursoAction(value: any) {
     this.idsEstudianteCursoParalelo = value.data;
   }
@@ -140,14 +161,15 @@ export class EstudianteParaleloComponent implements OnInit {
     if (this.form.valid) {
       let estudiantes = {
         arrayIds: this.idsEstudianteCursoParalelo,
+        AL_ID: this.AL_ID,
         PRLL_ID: this.form.value.PRLL_ID,
-        CREADOR_ID: this.userId,
+        PASE: this.PASE,
+        ESTADO: this.ESTADO,
+        CREADOR_ID: this.USR_ID,
       };
-      console.log(estudiantes);
-      
       this.service.postMasivo(estudiantes).subscribe({
         next: (value) => {
-          this.handleResponse(value);
+          this.handleResponse(value.message);
         },
         error: (error) => this.handleErrorResponse(error),
       });
@@ -163,7 +185,7 @@ export class EstudianteParaleloComponent implements OnInit {
     }
     this.service.patchUpdateEstado(this.idsEstudianteCurso).subscribe({
       next: (value) => {
-        this.handleResponse(value);
+        this.handleResponse(value.message);
       },
       error: (error) => this.handleErrorResponse(error),
     });

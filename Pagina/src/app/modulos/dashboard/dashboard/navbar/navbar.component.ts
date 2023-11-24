@@ -19,7 +19,7 @@ export class NavbarComponent implements OnInit {
   @Input() collapsed = true;
   @Input() screenWidth = 0;
   nombre: string = '';
-  userid: string = '';
+  USR_ID: string = '';
   icon = faUser;
   msg: string = '¿Desea cerrar sesión?';
 
@@ -40,7 +40,7 @@ export class NavbarComponent implements OnInit {
   async getuserInfo() {
     let usuario = await this.servicio.getUserLogged();
     this.nombre = usuario?.USR_NOM || '' + usuario?.USR_APE;
-    this.userid = usuario?.USR_ID || '';
+    this.USR_ID = usuario?.USR_ID || '';
   }
 
   openModal() {

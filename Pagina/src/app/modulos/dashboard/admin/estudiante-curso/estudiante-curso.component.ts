@@ -23,7 +23,7 @@ export class EstudianteCursoComponent implements OnInit {
     private modalService: ModalService,
   ) {}
 
-  userId = this.usuarioService.getUserLoggedId();
+  USR_ID = this.usuarioService.getUserLoggedId();
   modoEdicion: boolean = false;
   elementoId: string = '';
   msg: string = '¿Desea guardar?';
@@ -114,7 +114,8 @@ export class EstudianteCursoComponent implements OnInit {
       let estudiantes = {
         arrayIds: this.idsEstudiantes,
         CRS_ID: this.form.value.CRS_ID,
-        CREADOR_ID: this.userId,
+        ESTADO: 1,
+        CREADOR_ID: this.USR_ID,
       };
       this.service.postMasivo(estudiantes).subscribe({
         next: (value) => {

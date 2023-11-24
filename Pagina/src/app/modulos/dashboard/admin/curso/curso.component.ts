@@ -28,7 +28,7 @@ export class CursoComponent {
   modoEdicion: boolean = false;
   elementoId: string = '';
   msg: string = '¿Desea guardar?';
-  userid = this.usuarioService.getUserLoggedId();
+  USR_ID = this.usuarioService.getUserLoggedId();
 
   icon = faInfoCircle;
 
@@ -97,7 +97,7 @@ export class CursoComponent {
       CRS_TIPO: this.form.value.tip || '',
       CRS_ORDEN: this.form.value.orden || 0,
       ESTADO: this.form.value.estado ? 1 : 0,
-      CREADOR_ID: this.userid || '',
+      CREADOR_ID: this.USR_ID || '',
     };
     return curso;
   }
@@ -109,7 +109,7 @@ export class CursoComponent {
       CRS_TIPO: this.form.value.tip || '',
       CRS_ORDEN: this.form.value.orden || 0,
       ESTADO: this.form.value.estado ? 1 : 0,
-      CREADOR_ID: this.userid,
+      CREADOR_ID: this.USR_ID,
     };
     return curso;
   }
@@ -134,7 +134,7 @@ export class CursoComponent {
     this.form.get('tip')?.setValue(data.CRS_TIPO);
     this.form.get('orden')?.setValue(data.CRS_ORDEN);
     this.form.get('estado')?.setValue(data.ESTADO === 1);
-    this.userid = data.CREADOR_ID;
+    this.USR_ID = data.CREADOR_ID;
   }
 
   openAlertModal(content: string, alertType: string) {

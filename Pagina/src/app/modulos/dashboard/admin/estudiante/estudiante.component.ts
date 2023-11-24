@@ -27,7 +27,7 @@ export class EstudianteComponent {
   modoEdicion: boolean = false;
   elementoId: string = '';
   msg: string = '¿Desea guardar?';
-  userid = this.usuarioService.getUserLoggedId();
+  USR_ID = this.usuarioService.getUserLoggedId();
   icon = faInfoCircle;
 
   usuarios: Usuario[] = [];
@@ -155,7 +155,7 @@ export class EstudianteComponent {
       REPR_ID: this.form.value.REPR_ID || '',
       REL_EST_REP: this.form.value.REL_EST_REP || '',
       ESTADO: this.form.value.ESTADO ? 1 : 0,
-      CREADOR_ID: this.userid || '',
+      CREADOR_ID: this.USR_ID || '',
     };
     return estudiante;
   }
@@ -191,7 +191,7 @@ export class EstudianteComponent {
       REPR_ID: this.form.value.REPR_ID || '',
       REL_EST_REP: this.form.value.REL_EST_REP || '',
       ESTADO: this.form.value.ESTADO ? 1 : 0,
-      CREADOR_ID: this.userid,
+      CREADOR_ID: this.USR_ID,
     };
     return estudiante;
   }
@@ -256,7 +256,7 @@ export class EstudianteComponent {
     this.form.get('REPR_ID')?.setValue(data.REPR_ID);
     this.form.get('REL_EST_REP')?.setValue(data.REL_EST_REP);
     this.form.get('ESTADO')?.setValue(data.ESTADO === 1);
-    this.userid = data.CREADOR_ID;
+    this.USR_ID = data.CREADOR_ID;
   }
 
   openAlertModal(content: string, alertType: string) {

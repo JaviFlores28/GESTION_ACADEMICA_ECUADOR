@@ -63,8 +63,8 @@ export class UsuarioService extends ErrorHandlerService {
   }
 
   getUserLoggedId() {
-    const userId = localStorage.getItem(variables.KEY_NAME);
-    return userId ? JSON.parse(atob(userId)) : '';
+    const USR_ID = localStorage.getItem(variables.KEY_NAME);
+    return USR_ID ? JSON.parse(atob(USR_ID)) : '';
   }
 
   isLoggedIn(): boolean {
