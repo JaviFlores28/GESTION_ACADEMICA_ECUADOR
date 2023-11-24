@@ -9,7 +9,7 @@
   </div>
   <form class="row g-3"
     class="row row-cols-1 g-3 justify-content-center justify-content-md-start align-items-md-start align-items-end"
-    [formGroup]="form" (ngSubmit)="onSubmit()">
+    [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="existeAnio">
     <div class="col-12">
       <div class="card text-start shadow border-0">
         <div class="card-body">
@@ -56,4 +56,11 @@
       </div>
     </div>
   </form>
+  <div class="row" *ngIf="!existeAnio">
+    <div class="col">
+      <div class="alert alert-danger" role="alert">
+        No existe un año lectivo activo
+      </div>
+    </div>
+  </div>
 </div>

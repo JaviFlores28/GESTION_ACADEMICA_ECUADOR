@@ -171,6 +171,9 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       let sql = this.sqlSelect;
       ${tableName === 'usuario' ? sqlToUser : ''}
       const [rows] = await pool.execute<any>(sql);
+      if(rows.length <= 0){
+        throw new Error('No se encontraron datos para ${capitalizedTableName}.');
+      }
       return { response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
@@ -194,6 +197,9 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       let sql = this.sqlGetEnabled;
       ${tableName === 'usuario' ? mapToUserEnabled : ''}
       const [rows] = await pool.execute<any>(sql);
+      if(rows.length <= 0){
+        throw new Error('No se encontraron datos para ${capitalizedTableName}.');
+      }
       return {response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
       Funciones.logger.error(error.message);

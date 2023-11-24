@@ -21,8 +21,7 @@ export class EstudianteCursoComponent implements OnInit {
     private modalService: ModalService,
     private usuarioService: UsuarioService,
     private service: EstudianteCursoService,
-    private cursoService: CursoService,
-    private anioService: AnioLectivoService
+    private cursoService: CursoService
   ) { }
 
   cursos: Curso[] = [];
@@ -49,26 +48,10 @@ export class EstudianteCursoComponent implements OnInit {
     this.loadCursos();
     this.loadNoMatriculados();
     this.loadMatriculados();
-    this.loadAnioLectivo();
   }
 
   onSubmit() {
     this.openConfirmationModal(this.msg, 'create');
-  }
-
-  loadAnioLectivo() {
-    this.anioService.getEnabled().subscribe({
-      next: (value) => {
-        if (value.response) {
-          this.AL_ID = value.data[0].AL_ID;
-        } else {
-          console.log(value.message);
-        }
-      },
-      error: (error) => {
-        console.log(error);
-      },
-    })
   }
 
   loadCursos() {

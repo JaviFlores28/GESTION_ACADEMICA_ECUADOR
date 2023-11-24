@@ -47,7 +47,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
   USR_ID: string = this.usuarioService.getUserLoggedId();
   AL_ID: string = '0';
   ESTADO: number = 1;
-
+existeAnio: boolean = false;
   form = this.formBuilder.group({
     PRF_ID: ['', Validators.required],
     CRS_ID: ['', Validators.required],
@@ -73,7 +73,9 @@ export class ProfesorAsignaturaComponent implements OnInit {
       next: (value) => {
         if (value.response) {
           this.AL_ID = value.data[0].AL_ID;
+          this.existeAnio = true;
         } else {
+          this.existeAnio = false;
           console.log(value.message);
         }
       },
