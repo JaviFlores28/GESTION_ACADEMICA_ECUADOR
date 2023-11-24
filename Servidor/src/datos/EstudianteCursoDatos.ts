@@ -30,7 +30,7 @@ static sqlGetByCurso: string = 'SELECT a.* FROM vista_estudiante_curso as a JOIN
       return {response: true, data:newEstudianteCurso.EST_CRS_ID, message: 'Se creo correctamente' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -45,7 +45,7 @@ static sqlGetByCurso: string = 'SELECT a.* FROM vista_estudiante_curso as a JOIN
       return {response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
     
@@ -68,7 +68,7 @@ static sqlGetByCurso: string = 'SELECT a.* FROM vista_estudiante_curso as a JOIN
       return {response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code };
+      return {response: false, data: null, message:error.message };
     }
   }
   
@@ -82,7 +82,7 @@ static sqlGetByCurso: string = 'SELECT a.* FROM vista_estudiante_curso as a JOIN
       return { response: true, data: true, message: 'Objeto eliminado' }
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return { response: false, data: null, message: error.code }; 
+      return { response: false, data: null, message:error.message }; 
     }
   }
   
@@ -94,7 +94,7 @@ static sqlGetByCurso: string = 'SELECT a.* FROM vista_estudiante_curso as a JOIN
       return { response: true, data: rows as EstudianteCursoEntidad[], message: '' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return { response: false, data: null, message: error.code }; 
+      return { response: false, data: null, message:error.message }; 
     }
   }
   
@@ -109,7 +109,7 @@ static sqlGetByCurso: string = 'SELECT a.* FROM vista_estudiante_curso as a JOIN
       return {response: true, data: newEstudianteCurso, message: 'Encontrado' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -121,7 +121,7 @@ static sqlGetByCurso: string = 'SELECT a.* FROM vista_estudiante_curso as a JOIN
       return {response: true, data: rows as EstudianteCursoEntidad[], message: '' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -132,7 +132,7 @@ static sqlGetByCurso: string = 'SELECT a.* FROM vista_estudiante_curso as a JOIN
       return {response: true, data: rows as EstudianteCursoEntidad[], message: '' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   static async getByCurso(id: String): Promise<Respuesta> {
@@ -142,23 +142,17 @@ static sqlGetByCurso: string = 'SELECT a.* FROM vista_estudiante_curso as a JOIN
       return { response: true, data: rows as EstudianteCursoEntidad[], message: '' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   static async insertMasivo(data:any): Promise<Respuesta> {
     try {
       const arrayIds = data.arrayIds;
-      const estado = 1;
-      
       // Crear un array de valores para todos los registros utilizando map
       const valores = arrayIds.map((id: any) => [
         uuidv4(),
         id,
-        
-        data.CRS_ID,
-        
-        estado,
-        data.CREADOR_ID
+        data.CRS_ID, data.ESTADO, data.CREADOR_ID
       ]);      
       // Crear una cadena de marcadores de posición y una cadena de campos
       const placeholders = valores
@@ -181,7 +175,7 @@ static sqlGetByCurso: string = 'SELECT a.* FROM vista_estudiante_curso as a JOIN
       return {response: true, data: true, message: 'Matrículas insertadas correctamente' };
     } catch (error: any) {      
       Funciones.logger.error(error.message);
-      return {response: false, data: false, message: error.code };
+      return {response: false, data: false, message:error.message };
     }
   }
 }

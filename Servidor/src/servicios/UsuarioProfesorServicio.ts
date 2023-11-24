@@ -11,7 +11,7 @@ const usuario_profesor: UsuarioProfesorEntidad = req.body;
 const response = await UsuarioProfesorNegocio.insert(usuario_profesor);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });
 
@@ -21,7 +21,7 @@ router.put('/usuarioprofesor', async (req, res) => {
     const response = await UsuarioProfesorNegocio.update(usuario_profesor);
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.code });
+     res.status(500).json({ message:error.message });
    }
 });
 
@@ -37,7 +37,7 @@ router.patch('/usuarioprofesor', async (req, res) => {
       
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });
 
@@ -48,7 +48,7 @@ router.delete('/usuarioprofesor', async (req, res) => {
     const response = await UsuarioProfesorNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });
 
@@ -77,7 +77,7 @@ router.delete('/usuarioprofesor', async (req, res) => {
       }
       res.json(usuario_profesor);
     } catch (error: any) {
-      res.status(500).json({ message: error.code });
+      res.status(500).json({ message:error.message });
     }
   });
   

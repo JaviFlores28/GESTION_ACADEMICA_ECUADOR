@@ -11,7 +11,7 @@ const paralelo: ParaleloEntidad = req.body;
 const response = await ParaleloNegocio.insert(paralelo);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });
 
@@ -21,7 +21,7 @@ router.put('/paralelo', async (req, res) => {
     const response = await ParaleloNegocio.update(paralelo);
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.code });
+     res.status(500).json({ message:error.message });
    }
 });
 
@@ -37,7 +37,7 @@ router.patch('/paralelo', async (req, res) => {
       
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });
 
@@ -48,7 +48,7 @@ router.delete('/paralelo', async (req, res) => {
     const response = await ParaleloNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });
 
@@ -77,7 +77,7 @@ router.delete('/paralelo', async (req, res) => {
       }
       res.json(paralelo);
     } catch (error: any) {
-      res.status(500).json({ message: error.code });
+      res.status(500).json({ message:error.message });
     }
   });
   

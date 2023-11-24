@@ -11,7 +11,7 @@ const parametro: ParametroEntidad = req.body;
 const response = await ParametroNegocio.insert(parametro);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });
 
@@ -21,7 +21,7 @@ router.put('/parametro', async (req, res) => {
     const response = await ParametroNegocio.update(parametro);
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.code });
+     res.status(500).json({ message:error.message });
    }
 });
 
@@ -37,7 +37,7 @@ router.patch('/parametro', async (req, res) => {
       
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });
 
@@ -48,7 +48,7 @@ router.delete('/parametro', async (req, res) => {
     const response = await ParametroNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });
 
@@ -77,7 +77,7 @@ router.delete('/parametro', async (req, res) => {
       }
       res.json(parametro);
     } catch (error: any) {
-      res.status(500).json({ message: error.code });
+      res.status(500).json({ message:error.message });
     }
   });
   

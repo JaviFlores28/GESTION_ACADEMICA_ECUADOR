@@ -17,7 +17,7 @@ const { masivo, data }: TypeRequest = req.body;
 
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });
 
@@ -27,7 +27,7 @@ router.put('/estudiantecursoparalelo', async (req, res) => {
     const response = await EstudianteCursoParaleloNegocio.update(estudiante_curso_paralelo);
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.code });
+     res.status(500).json({ message:error.message });
    }
 });
 
@@ -43,7 +43,7 @@ router.patch('/estudiantecursoparalelo', async (req, res) => {
       
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });
 
@@ -54,7 +54,7 @@ router.delete('/estudiantecursoparalelo', async (req, res) => {
     const response = await EstudianteCursoParaleloNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });
 
@@ -86,7 +86,7 @@ router.delete('/estudiantecursoparalelo', async (req, res) => {
       }
       res.json(estudiante_curso_paralelo);
     } catch (error: any) {
-      res.status(500).json({ message: error.code });
+      res.status(500).json({ message:error.message });
     }
   });
   

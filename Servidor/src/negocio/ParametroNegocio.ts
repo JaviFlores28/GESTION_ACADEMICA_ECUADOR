@@ -9,7 +9,7 @@ class ParametroNegocio {
     try {
       return ParametroDatos.insert(parametro );
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -17,7 +17,7 @@ class ParametroNegocio {
     try {
       return ParametroDatos.update(parametro);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -26,7 +26,7 @@ class ParametroNegocio {
       return ParametroDatos.updateEstado(ids);
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -34,7 +34,7 @@ class ParametroNegocio {
     try {
       return ParametroDatos.delete(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -42,7 +42,7 @@ class ParametroNegocio {
     try {
       return ParametroDatos.getAll();
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -51,7 +51,7 @@ class ParametroNegocio {
       return ParametroDatos.getEnabled();
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -59,7 +59,7 @@ class ParametroNegocio {
     try {
       return ParametroDatos.getById(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   

@@ -29,7 +29,7 @@ class ProfesorAsignaturaParaleloDatos {
       return {response: true, data:newProfesorAsignaturaParalelo.PRF_ASG_PRLL_ID, message: 'Se creo correctamente' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -44,7 +44,7 @@ class ProfesorAsignaturaParaleloDatos {
       return {response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
     
@@ -67,7 +67,7 @@ class ProfesorAsignaturaParaleloDatos {
       return {response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code };
+      return {response: false, data: null, message:error.message };
     }
   }
   
@@ -81,7 +81,7 @@ class ProfesorAsignaturaParaleloDatos {
       return { response: true, data: true, message: 'Objeto eliminado' }
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return { response: false, data: null, message: error.code }; 
+      return { response: false, data: null, message:error.message }; 
     }
   }
   
@@ -93,7 +93,7 @@ class ProfesorAsignaturaParaleloDatos {
       return { response: true, data: rows as ProfesorAsignaturaParaleloEntidad[], message: '' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return { response: false, data: null, message: error.code }; 
+      return { response: false, data: null, message:error.message }; 
     }
   }
   
@@ -108,7 +108,7 @@ class ProfesorAsignaturaParaleloDatos {
       return {response: true, data: newProfesorAsignaturaParalelo, message: 'Encontrado' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -120,7 +120,7 @@ class ProfesorAsignaturaParaleloDatos {
       return {response: true, data: rows as ProfesorAsignaturaParaleloEntidad[], message: '' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   

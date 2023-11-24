@@ -11,7 +11,7 @@ const profesor_asignatura_paralelo: ProfesorAsignaturaParaleloEntidad = req.body
 const response = await ProfesorAsignaturaParaleloNegocio.insert(profesor_asignatura_paralelo);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });
 
@@ -21,7 +21,7 @@ router.put('/profesorasignaturaparalelo', async (req, res) => {
     const response = await ProfesorAsignaturaParaleloNegocio.update(profesor_asignatura_paralelo);
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.code });
+     res.status(500).json({ message:error.message });
    }
 });
 
@@ -37,7 +37,7 @@ router.patch('/profesorasignaturaparalelo', async (req, res) => {
       
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });
 
@@ -48,7 +48,7 @@ router.delete('/profesorasignaturaparalelo', async (req, res) => {
     const response = await ProfesorAsignaturaParaleloNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });
 
@@ -77,7 +77,7 @@ router.delete('/profesorasignaturaparalelo', async (req, res) => {
       }
       res.json(profesor_asignatura_paralelo);
     } catch (error: any) {
-      res.status(500).json({ message: error.code });
+      res.status(500).json({ message:error.message });
     }
   });
   

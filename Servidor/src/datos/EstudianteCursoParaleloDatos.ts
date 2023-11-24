@@ -29,7 +29,7 @@ class EstudianteCursoParaleloDatos {
       return {response: true, data:newEstudianteCursoParalelo.EST_CRS_PRLL_ID, message: 'Se creo correctamente' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -44,7 +44,7 @@ class EstudianteCursoParaleloDatos {
       return {response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
     
@@ -67,7 +67,7 @@ class EstudianteCursoParaleloDatos {
       return {response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code };
+      return {response: false, data: null, message:error.message };
     }
   }
   
@@ -81,7 +81,7 @@ class EstudianteCursoParaleloDatos {
       return { response: true, data: true, message: 'Objeto eliminado' }
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return { response: false, data: null, message: error.code }; 
+      return { response: false, data: null, message:error.message }; 
     }
   }
   
@@ -93,7 +93,7 @@ class EstudianteCursoParaleloDatos {
       return { response: true, data: rows as EstudianteCursoParaleloEntidad[], message: '' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return { response: false, data: null, message: error.code }; 
+      return { response: false, data: null, message:error.message }; 
     }
   }
   
@@ -108,7 +108,7 @@ class EstudianteCursoParaleloDatos {
       return {response: true, data: newEstudianteCursoParalelo, message: 'Encontrado' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -120,28 +120,18 @@ class EstudianteCursoParaleloDatos {
       return {response: true, data: rows as EstudianteCursoParaleloEntidad[], message: '' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
   static async insertMasivo(data:any): Promise<Respuesta> {
     try {
       const arrayIds = data.arrayIds;
-      const estado = 1;
-      const getAnioEnabled= await AnioLectivoDatos.getEnabled();      
-      if (getAnioEnabled.data.length <= 0) {
-        throw new Error('No existe un año lectivo activo');
-      }
-      const anio = getAnioEnabled.data[0].AL_ID;
       // Crear un array de valores para todos los registros utilizando map
       const valores = arrayIds.map((id: any) => [
         uuidv4(),
         id,
-        anio,
-        data.PRLL_ID,
-        4,
-        estado,
-        data.CREADOR_ID
+        data.AL_ID, data.PRLL_ID, data.PASE, data.ESTADO, data.CREADOR_ID
       ]);      
       // Crear una cadena de marcadores de posición y una cadena de campos
       const placeholders = valores
@@ -164,7 +154,7 @@ class EstudianteCursoParaleloDatos {
       return {response: true, data: true, message: 'Matrículas insertadas correctamente' };
     } catch (error: any) {      
       Funciones.logger.error(error.message);
-      return {response: false, data: false, message: error.code };
+      return {response: false, data: false, message:error.message };
     }
   }
   static async getByParalelo(id: String): Promise<Respuesta> {
@@ -174,7 +164,7 @@ class EstudianteCursoParaleloDatos {
       return { response: true, data: rows as EstudianteCursoParaleloEntidad[], message: '' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
 }

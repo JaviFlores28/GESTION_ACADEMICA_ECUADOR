@@ -11,7 +11,7 @@ const calificaciones_cualitativas: CalificacionesCualitativasEntidad = req.body;
 const response = await CalificacionesCualitativasNegocio.insert(calificaciones_cualitativas);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });
 
@@ -21,7 +21,7 @@ router.put('/calificacionescualitativas', async (req, res) => {
     const response = await CalificacionesCualitativasNegocio.update(calificaciones_cualitativas);
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.code });
+     res.status(500).json({ message:error.message });
    }
 });
 
@@ -37,7 +37,7 @@ router.patch('/calificacionescualitativas', async (req, res) => {
       
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });
 
@@ -48,7 +48,7 @@ router.delete('/calificacionescualitativas', async (req, res) => {
     const response = await CalificacionesCualitativasNegocio.delete(id);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });
 
@@ -77,7 +77,7 @@ router.delete('/calificacionescualitativas', async (req, res) => {
       }
       res.json(calificaciones_cualitativas);
     } catch (error: any) {
-      res.status(500).json({ message: error.code });
+      res.status(500).json({ message:error.message });
     }
   });
   

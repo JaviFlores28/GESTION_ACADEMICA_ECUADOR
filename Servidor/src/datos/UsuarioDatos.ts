@@ -41,7 +41,7 @@ class UsuarioDatos {
       return {response: true, data:newUsuario.USR_ID, message: 'Se creo correctamente' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -56,7 +56,7 @@ class UsuarioDatos {
       return {response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
     
@@ -79,7 +79,7 @@ class UsuarioDatos {
       return {response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code };
+      return {response: false, data: null, message:error.message };
     }
   }
   
@@ -93,7 +93,7 @@ class UsuarioDatos {
       return { response: true, data: true, message: 'Objeto eliminado' }
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return { response: false, data: null, message: error.code }; 
+      return { response: false, data: null, message:error.message }; 
     }
   }
   
@@ -113,7 +113,7 @@ class UsuarioDatos {
       return { response: true, data: rows as UsuarioEntidad[], message: '' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return { response: false, data: null, message: error.code }; 
+      return { response: false, data: null, message:error.message }; 
     }
   }
   
@@ -128,7 +128,7 @@ class UsuarioDatos {
       return {response: true, data: newUsuario, message: 'Encontrado' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -148,7 +148,7 @@ class UsuarioDatos {
       return {response: true, data: rows as UsuarioEntidad[], message: '' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -171,7 +171,7 @@ class UsuarioDatos {
       return {response: true, data: newUsuario, message: 'Usuario Valido' }
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return { response: false, data: null, message: error.code } // Devuelve una Promise rechazada con el error
+      return { response: false, data: null, message:error.message } // Devuelve una Promise rechazada con el error
     }
   }
 }

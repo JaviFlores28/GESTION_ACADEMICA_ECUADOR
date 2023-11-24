@@ -9,7 +9,7 @@ class AnioLectivoNegocio {
     try {
       return AnioLectivoDatos.insert(anio_lectivo );
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -17,7 +17,7 @@ class AnioLectivoNegocio {
     try {
       return AnioLectivoDatos.update(anio_lectivo);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -26,7 +26,7 @@ class AnioLectivoNegocio {
       return AnioLectivoDatos.updateEstado(ids);
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -34,7 +34,7 @@ class AnioLectivoNegocio {
     try {
       return AnioLectivoDatos.delete(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -42,7 +42,7 @@ class AnioLectivoNegocio {
     try {
       return AnioLectivoDatos.getAll();
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -51,7 +51,7 @@ class AnioLectivoNegocio {
       return AnioLectivoDatos.getEnabled();
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -59,7 +59,7 @@ class AnioLectivoNegocio {
     try {
       return AnioLectivoDatos.getById(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   

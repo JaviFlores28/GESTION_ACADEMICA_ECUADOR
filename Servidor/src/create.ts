@@ -96,7 +96,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       return {response: true, data:new${capitalizedTableName}.${primaryKeyColumn}, message: 'Se creo correctamente' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }`;
 
@@ -112,7 +112,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       return {response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }`;
 
@@ -136,7 +136,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       return {response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code };
+      return {response: false, data: null, message:error.message };
     }
   }`;
 
@@ -151,7 +151,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       return { response: true, data: true, message: 'Objeto eliminado' }
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return { response: false, data: null, message: error.code }; 
+      return { response: false, data: null, message:error.message }; 
     }
   }`;
 
@@ -174,7 +174,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       return { response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return { response: false, data: null, message: error.code }; 
+      return { response: false, data: null, message:error.message }; 
     }
   }`;
 
@@ -197,7 +197,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       return {response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }`;
 
@@ -213,7 +213,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       return {response: true, data: new${capitalizedTableName}, message: 'Encontrado' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }`;
 
@@ -237,7 +237,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       return {response: true, data: new${capitalizedTableName}, message: '${capitalizedTableName} Valido' }
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return { response: false, data: null, message: error.code } // Devuelve una Promise rechazada con el error
+      return { response: false, data: null, message:error.message } // Devuelve una Promise rechazada con el error
     }
   }`;
 
@@ -249,7 +249,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       return { response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }`;
 
@@ -261,7 +261,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       return { response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }`;
 
@@ -273,35 +273,21 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       return {response: true, data: rows as ${capitalizedTableName}Entidad[], message: '' };
     } catch (error: any) {
       Funciones.logger.error(error.message);
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }`;
 
-  const excludedProperties = ['FECHA_CREACION', primaryKeyColumn, 'EST_ID', 'ESTADO', 'CREADOR_ID', 'EST_CRS_ID', 'PASE', 'AL_ID'];
+  const excludedProperties = ['FECHA_CREACION', primaryKeyColumn, 'EST_ID', 'EST_CRS_ID'];
 
   const functioninsertarMasivamente = `
   static async insertMasivo(data:any): Promise<Respuesta> {
     try {
       const arrayIds = data.arrayIds;
-      const estado = 1;
-      ${
-        tableName === 'estudiante_curso_paralelo'
-          ? `const getAnioEnabled= await AnioLectivoDatos.getEnabled();      
-      if (getAnioEnabled.data.length <= 0) {
-        throw new Error('No existe un año lectivo activo');
-      }
-      const anio = getAnioEnabled.data[0].AL_ID;`
-          : ''
-      }
       // Crear un array de valores para todos los registros utilizando map
       const valores = arrayIds.map((id: any) => [
         uuidv4(),
         id,
-        ${tableName === 'estudiante_curso_paralelo' ? `anio,` : ''}
-        ${Funciones.generateObject(propertiesData, 'data', excludedProperties)},
-        ${tableName === 'estudiante_curso_paralelo' ? `4,` : ''}
-        estado,
-        data.CREADOR_ID
+        ${Funciones.generateObject(propertiesData, 'data', excludedProperties)}
       ]);      
       // Crear una cadena de marcadores de posición y una cadena de campos
       const placeholders = valores
@@ -324,7 +310,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       return {response: true, data: true, message: 'Matrículas insertadas correctamente' };
     } catch (error: any) {      
       Funciones.logger.error(error.message);
-      return {response: false, data: false, message: error.code };
+      return {response: false, data: false, message:error.message };
     }
   }`;
 
@@ -347,7 +333,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
 
       return { data: true, message: 'Matrículas eliminadas' };
     } catch (error: any) {
-      return { data: false, message: error.code };
+      return { data: false, message:error.message };
     }
   }`;
 
@@ -466,7 +452,7 @@ async function generateNegocioFile(tableName: string): Promise<void> {
     try {
       return ${capitalizedTableName}Datos.insert(${tableName} ${tableName === 'usuario' ? ', detalle' : ''});
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }`;
 
@@ -475,7 +461,7 @@ async function generateNegocioFile(tableName: string): Promise<void> {
     try {
       return ${capitalizedTableName}Datos.insertMasivo(data);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }`;
 
@@ -484,7 +470,7 @@ async function generateNegocioFile(tableName: string): Promise<void> {
     try {
       return ${capitalizedTableName}Datos.update(${tableName});
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }`;
 
@@ -493,7 +479,7 @@ async function generateNegocioFile(tableName: string): Promise<void> {
     try {
       return ${capitalizedTableName}Datos.delete(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }`;
 
@@ -502,7 +488,7 @@ async function generateNegocioFile(tableName: string): Promise<void> {
     try {
       return ${capitalizedTableName}Datos.getAll(${tableName === 'usuario' ? `tipo` : ''});
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }`;
 
@@ -511,7 +497,7 @@ async function generateNegocioFile(tableName: string): Promise<void> {
     try {
       return ${capitalizedTableName}Datos.getById(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }`;
 
@@ -520,7 +506,7 @@ async function generateNegocioFile(tableName: string): Promise<void> {
     try {
       return ${capitalizedTableName}Datos.getByCurso(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }`;
 
@@ -530,7 +516,7 @@ async function generateNegocioFile(tableName: string): Promise<void> {
       return ${capitalizedTableName}Datos.getEnabled(${tableName === 'usuario' ? `tipo` : ''});
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }`;
 
@@ -540,7 +526,7 @@ async function generateNegocioFile(tableName: string): Promise<void> {
       return ${capitalizedTableName}Datos.getByUser(${tableName}, pswd);
 
     } catch (error: any) {
-      return { response: false, data: null, message: error.code } // Devuelve una Promise rechazada con el error
+      return { response: false, data: null, message:error.message } // Devuelve una Promise rechazada con el error
     }
   }`;
 
@@ -549,7 +535,7 @@ async function generateNegocioFile(tableName: string): Promise<void> {
     try {
       return ${capitalizedTableName}Datos.getNoMatriculados();
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }`;
 
@@ -559,7 +545,7 @@ async function generateNegocioFile(tableName: string): Promise<void> {
       return ${capitalizedTableName}Datos.updateEstado(ids);
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }`;
 
@@ -568,7 +554,7 @@ async function generateNegocioFile(tableName: string): Promise<void> {
     try {
       return ${capitalizedTableName}Datos.getByParalelo(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }`;
 
@@ -665,7 +651,7 @@ async function generateServiceFile(tableName: any): Promise<void> {
       }
       res.json(${tableName});
     } catch (error: any) {
-      res.status(500).json({ message: error.code });
+      res.status(500).json({ message:error.message });
     }
   });
   `;
@@ -692,7 +678,7 @@ router.post('/${lowercaseTableName}', async (req, res) => {
 ${tableName === 'usuario' ? scriptUsuarioPost : tableName === 'estudiante_curso' || tableName === 'estudiante_curso_paralelo' ? scriptPostMasivo : scriptPost}
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });`;
 
@@ -713,7 +699,7 @@ router.patch('/${lowercaseTableName}', async (req, res) => {
       
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });
 `;
@@ -725,7 +711,7 @@ router.put('/${lowercaseTableName}', async (req, res) => {
     const response = await ${capitalizedTableName}Negocio.update(${tableName});
     res.json(response);
   } catch (error: any) {
-     res.status(500).json({ message: error.code });
+     res.status(500).json({ message:error.message });
    }
 });`;
 
@@ -736,7 +722,7 @@ router.delete('/${lowercaseTableName}', async (req, res) => {
     const response = await ${capitalizedTableName}Negocio.delete(id);
     res.json(response);
   } catch (error: any) {
-    res.status(500).json({ message: error.code });
+    res.status(500).json({ message:error.message });
   }
 });`;
 
@@ -789,7 +775,7 @@ async function main() {
     }
     console.info('Archivos creados correctamente');
   } catch (error: any) {
-    console.error('Error: ' + error.code);
+    console.error('Error: ' + error.message);
   } finally {
     process.exit(); // Esto cerrará el programa después de que se complete la ejecución
   }

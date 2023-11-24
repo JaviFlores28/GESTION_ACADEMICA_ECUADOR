@@ -9,7 +9,7 @@ class PeriodoNegocio {
     try {
       return PeriodoDatos.insert(periodo );
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -17,7 +17,7 @@ class PeriodoNegocio {
     try {
       return PeriodoDatos.update(periodo);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -26,7 +26,7 @@ class PeriodoNegocio {
       return PeriodoDatos.updateEstado(ids);
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -34,7 +34,7 @@ class PeriodoNegocio {
     try {
       return PeriodoDatos.delete(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -42,7 +42,7 @@ class PeriodoNegocio {
     try {
       return PeriodoDatos.getAll();
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -51,7 +51,7 @@ class PeriodoNegocio {
       return PeriodoDatos.getEnabled();
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -59,7 +59,7 @@ class PeriodoNegocio {
     try {
       return PeriodoDatos.getById(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   

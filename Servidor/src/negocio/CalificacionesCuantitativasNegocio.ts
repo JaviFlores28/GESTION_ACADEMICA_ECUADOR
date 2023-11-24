@@ -9,7 +9,7 @@ class CalificacionesCuantitativasNegocio {
     try {
       return CalificacionesCuantitativasDatos.insert(calificaciones_cuantitativas );
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -17,7 +17,7 @@ class CalificacionesCuantitativasNegocio {
     try {
       return CalificacionesCuantitativasDatos.update(calificaciones_cuantitativas);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -26,7 +26,7 @@ class CalificacionesCuantitativasNegocio {
       return CalificacionesCuantitativasDatos.updateEstado(ids);
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -34,7 +34,7 @@ class CalificacionesCuantitativasNegocio {
     try {
       return CalificacionesCuantitativasDatos.delete(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -42,7 +42,7 @@ class CalificacionesCuantitativasNegocio {
     try {
       return CalificacionesCuantitativasDatos.getAll();
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -51,7 +51,7 @@ class CalificacionesCuantitativasNegocio {
       return CalificacionesCuantitativasDatos.getEnabled();
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -59,7 +59,7 @@ class CalificacionesCuantitativasNegocio {
     try {
       return CalificacionesCuantitativasDatos.getById(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   

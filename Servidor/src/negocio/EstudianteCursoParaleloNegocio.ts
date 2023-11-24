@@ -9,7 +9,7 @@ class EstudianteCursoParaleloNegocio {
     try {
       return EstudianteCursoParaleloDatos.insert(estudiante_curso_paralelo );
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -17,7 +17,7 @@ class EstudianteCursoParaleloNegocio {
     try {
       return EstudianteCursoParaleloDatos.update(estudiante_curso_paralelo);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -26,7 +26,7 @@ class EstudianteCursoParaleloNegocio {
       return EstudianteCursoParaleloDatos.updateEstado(ids);
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -34,7 +34,7 @@ class EstudianteCursoParaleloNegocio {
     try {
       return EstudianteCursoParaleloDatos.delete(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -42,7 +42,7 @@ class EstudianteCursoParaleloNegocio {
     try {
       return EstudianteCursoParaleloDatos.getAll();
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -51,7 +51,7 @@ class EstudianteCursoParaleloNegocio {
       return EstudianteCursoParaleloDatos.getEnabled();
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -59,7 +59,7 @@ class EstudianteCursoParaleloNegocio {
     try {
       return EstudianteCursoParaleloDatos.getById(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -67,14 +67,14 @@ class EstudianteCursoParaleloNegocio {
     try {
       return EstudianteCursoParaleloDatos.insertMasivo(data);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
    static async getByParalelo(id: String): Promise<Respuesta> {
     try {
       return EstudianteCursoParaleloDatos.getByParalelo(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
 }

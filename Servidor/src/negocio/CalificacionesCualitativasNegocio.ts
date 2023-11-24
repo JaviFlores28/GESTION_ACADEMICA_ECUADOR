@@ -9,7 +9,7 @@ class CalificacionesCualitativasNegocio {
     try {
       return CalificacionesCualitativasDatos.insert(calificaciones_cualitativas );
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -17,7 +17,7 @@ class CalificacionesCualitativasNegocio {
     try {
       return CalificacionesCualitativasDatos.update(calificaciones_cualitativas);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -26,7 +26,7 @@ class CalificacionesCualitativasNegocio {
       return CalificacionesCualitativasDatos.updateEstado(ids);
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -34,7 +34,7 @@ class CalificacionesCualitativasNegocio {
     try {
       return CalificacionesCualitativasDatos.delete(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -42,7 +42,7 @@ class CalificacionesCualitativasNegocio {
     try {
       return CalificacionesCualitativasDatos.getAll();
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -51,7 +51,7 @@ class CalificacionesCualitativasNegocio {
       return CalificacionesCualitativasDatos.getEnabled();
 
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
@@ -59,7 +59,7 @@ class CalificacionesCualitativasNegocio {
     try {
       return CalificacionesCualitativasDatos.getById(id);
     } catch (error: any) {
-      return {response: false, data: null, message: error.code }; 
+      return {response: false, data: null, message:error.message }; 
     }
   }
   
