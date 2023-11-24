@@ -283,16 +283,14 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
   static async insertMasivo(data:any): Promise<Respuesta> {
     try {
       const arrayIds = data.arrayIds;
+
       // Crear un array de valores para todos los registros utilizando map
       const valores = arrayIds.map((id: any) => [
-        uuidv4(),
-        id,
-        ${Funciones.generateObject(propertiesData, 'data', excludedProperties)}
-      ]);      
+        uuidv4(), id, ${Funciones.generateObject(propertiesData, 'data', excludedProperties)}
+      ]); 
+
       // Crear una cadena de marcadores de posición y una cadena de campos
-      const placeholders = valores
-        .map((fila: string | any[]) => \`(\${Array.from({ length: fila.length }, () => '?').join(',')})\`)
-        .join(',');
+      const placeholders = valores.map((fila: string | any[]) => \`(\${Array.from({ length: fila.length }, () => '?').join(',')})\`).join(',');
 
       const campos = [${Funciones.generatePropsToArray(propertiesData, ['FECHA_CREACION'])}].join(',');
 
@@ -769,7 +767,7 @@ async function main() {
       //await generateHTMLFile(pool, tableName, primaryKeyColumn);
     }
     try {
-      execSync(` npx prettier src/ --write --print-width 1000 --single-quote`);
+      execSync(`npx prettier src/ --write --print-width 1000 --single-quote`);
     } catch (error: any) {
       console.error('Error al formatear el archivo con Prettier:', error.message);
     }
