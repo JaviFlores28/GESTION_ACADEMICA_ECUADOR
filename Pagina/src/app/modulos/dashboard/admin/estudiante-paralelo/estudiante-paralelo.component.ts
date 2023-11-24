@@ -169,7 +169,7 @@ export class EstudianteParaleloComponent implements OnInit {
       };
       this.service.postMasivo(estudiantes).subscribe({
         next: (value) => {
-          this.handleResponse(value.message);
+          this.handleResponse(value);
         },
         error: (error) => this.handleErrorResponse(error),
       });
@@ -185,7 +185,7 @@ export class EstudianteParaleloComponent implements OnInit {
     }
     this.service.patchUpdateEstado(this.idsEstudianteCurso).subscribe({
       next: (value) => {
-        this.handleResponse(value.message);
+        this.handleResponse(value);
       },
       error: (error) => this.handleErrorResponse(error),
     });

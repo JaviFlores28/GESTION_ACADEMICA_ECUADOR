@@ -23,7 +23,6 @@ export class EstudianteCursoComponent implements OnInit {
     private service: EstudianteCursoService,
     private cursoService: CursoService,
     private anioService: AnioLectivoService
-
   ) { }
 
   cursos: Curso[] = [];
@@ -36,11 +35,8 @@ export class EstudianteCursoComponent implements OnInit {
   headersMatriculados = ['CÉDULA', 'NOMBRES', 'CURSO', 'ESTADO'];
   camposMatriculados = ['EST_CRS_ID', 'EST_DNI', 'EST_ID', 'CRS_ID'];
 
-
-  modoEdicion: boolean = false;
   elementoId: string = '';
   msg: string = '¿Desea guardar?';
-  icon = faInfoCircle;
 
   USR_ID = this.usuarioService.getUserLoggedId();
   AL_ID: string = '0';
@@ -54,7 +50,6 @@ export class EstudianteCursoComponent implements OnInit {
     this.loadNoMatriculados();
     this.loadMatriculados();
     this.loadAnioLectivo();
-
   }
 
   onSubmit() {

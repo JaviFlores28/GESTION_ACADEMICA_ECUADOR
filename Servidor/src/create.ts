@@ -343,7 +343,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
   const sqlGetByParalelo = `static sqlGetByParalelo: string = 'SELECT b.EST_CRS_PRLL_ID, a.* FROM vista_estudiante_curso as a JOIN estudiante_curso_paralelo as b ON a.EST_CRS_ID = b.EST_CRS_ID WHERE b.PRLL_ID =? AND b.ESTADO=1';`;
 
   const isViewTable = (tableName: string) => {
-    if (tableName === 'estudiante' || tableName === 'usuario' || tableName === 'estudiante_curso') {
+    if (tableName === 'estudiante' || tableName === 'usuario' || tableName === 'estudiante_curso' || tableName === 'profesor_asignatura_paralelo') {
       return `vista_${tableName}`;
     } else {
       return tableName;
@@ -390,7 +390,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       return 'ORDER BY CRS_ORDEN ASC';
     } else if (tableName === 'paralelo') {
       return 'ORDER BY PRLL_NOM ASC';
-    } else if (tableName !== 'usuario') {
+    } else if (tableName !== 'usuario' && tableName !== 'profesor_asignatura_paralelo') {
       return 'ORDER BY ESTADO DESC';
     } else {
       return '';

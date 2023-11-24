@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Asignatura } from 'src/app/interfaces/Asignatura.interface';
 import { Curso } from 'src/app/interfaces/Curso.interface';
 import { Paralelo } from 'src/app/interfaces/Paralelo.interface';
 import { ProfesorAsignaturaParalelo } from 'src/app/interfaces/ProfesorAsignaturaParalelo.interface';
 import { Usuario } from 'src/app/interfaces/Usuario.interface';
+import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 import { AsignaturaService } from 'src/app/servicios/asignatura.service';
 import { CursoService } from 'src/app/servicios/curso.service';
 import { ModalService } from 'src/app/servicios/modal.service';
@@ -22,9 +22,6 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 })
 export class ProfesorAsignaturaComponent implements OnInit {
   constructor(
-    private ngBootstrap: NgbModal,
-    private route: ActivatedRoute,
-    private router: Router,
     private formBuilder: FormBuilder,
     private service: ProfesorAsignaturaService,
     private usuarioService: UsuarioService,
@@ -32,14 +29,9 @@ export class ProfesorAsignaturaComponent implements OnInit {
     private paraleloService: ParaleloService,
     private asignaturaService: AsignaturaService,
     private modalService: ModalService,
+    private anioService: AnioLectivoService
   ) { }
 
-  icon = faInfoCircle;
-  modoEdicion: boolean = false;
-  elementoId: string = '';
-  msg: string = '¿Desea guardar?';
-  USR_ID = this.usuarioService.getUserLoggedId();
-  AL_ID = '0';
   profesores: Usuario[] = [];
   cursos: Curso[] = [];
   paralelos: Paralelo[] = [];
@@ -48,6 +40,13 @@ export class ProfesorAsignaturaComponent implements OnInit {
 
   headers = ['PROFESOR', 'CURSO', 'PARALELO', 'ASIGNATURA', 'ESTADO'];
   campos = ['PRF_ASG_PRLL_ID', 'PRF_ID', 'CRS_ID', 'PRLL_ID', 'ASG_ID'];
+
+  modoEdicion: boolean = false;
+  elementoId: string = '';
+  msg: string = '¿Desea guardar?';
+  USR_ID: string = this.usuarioService.getUserLoggedId();
+  AL_ID: string = '0';
+  ESTADO: number = 1;
 
   form = this.formBuilder.group({
     PRF_ID: ['', Validators.required],
@@ -62,10 +61,26 @@ export class ProfesorAsignaturaComponent implements OnInit {
     this.loadCursos();
     this.loadParalelos();
     this.loadAsignaturas();
+    this.loadAnioLectivo();
   }
 
   onSubmit() {
     this.openConfirmationModal(this.msg);
+  }
+
+  loadAnioLectivo() {
+    this.anioService.getEnabled().subscribe({
+      next: (value) => {
+        if (value.response) {
+          this.AL_ID = value.data[0].AL_ID;
+        } else {
+          console.log(value.message);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    })
   }
 
   loadTable() {
@@ -165,6 +180,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
     this.form.get('PRLL_ID')?.setValue(data.PRLL_ID);
     this.AL_ID = data.AL_ID;
     this.USR_ID = data.CREADOR_ID;
+    this.ESTADO = data.ESTADO;
   }
 
   crear() {
@@ -199,11 +215,11 @@ export class ProfesorAsignaturaComponent implements OnInit {
     const profesorAsignaturaParalelo: ProfesorAsignaturaParalelo = {
       PRF_ASG_PRLL_ID: '0',
       PRF_ID: this.form.value.PRF_ID || '',
-      AL_ID: this.AL_ID,
+      AL_ID: this.AL_ID || '',
       ASG_ID: this.form.value.ASG_ID || '',
       CRS_ID: this.form.value.CRS_ID || '',
       PRLL_ID: this.form.value.PRLL_ID || '',
-      ESTADO: 1,
+      ESTADO: this.ESTADO,
       CREADOR_ID: this.USR_ID,
     };
     return profesorAsignaturaParalelo;
@@ -213,11 +229,11 @@ export class ProfesorAsignaturaComponent implements OnInit {
     const profesorAsignaturaParalelo: ProfesorAsignaturaParalelo = {
       PRF_ASG_PRLL_ID: this.elementoId,
       PRF_ID: this.form.value.PRF_ID || '',
-      AL_ID: this.AL_ID,
+      AL_ID: this.AL_ID || '',
       ASG_ID: this.form.value.ASG_ID || '',
       CRS_ID: this.form.value.CRS_ID || '',
       PRLL_ID: this.form.value.PRLL_ID || '',
-      ESTADO: 1,
+      ESTADO: this.ESTADO,
       CREADOR_ID: this.USR_ID,
     };
     return profesorAsignaturaParalelo;
@@ -263,7 +279,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
     this.loadTable();
     this.form.reset();
     this.modoEdicion = false;
-    this.AL_ID = '0';
+    this.loadAnioLectivo();
   }
 
   handleErrorResponse(error: any) {
