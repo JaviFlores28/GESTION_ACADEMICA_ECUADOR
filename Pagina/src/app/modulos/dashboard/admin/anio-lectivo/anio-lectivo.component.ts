@@ -197,7 +197,7 @@ export class AnioLectivoComponent implements OnInit {
       } else {
         this.openAlertModal(value.message, 'success');
         this.form.reset();
-        this.router.navigate(['../'], { relativeTo: this.route });
+       // this.router.navigate(['../'], { relativeTo: this.route });
       }
     }
   }

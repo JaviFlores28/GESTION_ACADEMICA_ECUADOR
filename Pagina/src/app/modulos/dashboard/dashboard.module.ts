@@ -34,9 +34,40 @@ import { NgTableComponent } from '../../componentes/ng-table/ng-table.component'
 import { ProfesorAsignaturaComponent } from './admin/profesor-asignatura/profesor-asignatura.component';
 import { EstudianteCursoComponent } from './admin/estudiante-curso/estudiante-curso.component';
 import { EstudianteParaleloComponent } from './admin/estudiante-paralelo/estudiante-paralelo.component';
+import { ProfesorCursosAsignaturasComponent } from './docente/profesor-cursos-asignaturas/profesor-cursos-asignaturas.component';
+import { ProfesorHorariosComponent } from './docente/profesor-horarios/profesor-horarios.component';
 
 @NgModule({
-  declarations: [LoginComponent, AnioLectivoComponent, AniosLectivosComponent, AreaComponent, AreasComponent, AsignaturaComponent, AsignaturasComponent, CursoComponent, CursosComponent, EstudianteComponent, EstudiantesComponent, ParaleloComponent, ParalelosComponent, HomeComponent, ProfesoresComponent, RepresentantesComponent, UsuarioComponent, UsuariosComponent, BodyComponent, NavbarComponent, SidenavComponent, SubLevelMenuComponent, InicioComponent, ProfesorAsignaturaComponent, EstudianteCursoComponent, EstudianteParaleloComponent],
+  declarations: [
+    LoginComponent,
+    AnioLectivoComponent,
+    AniosLectivosComponent,
+    AreaComponent,
+    AreasComponent,
+    AsignaturaComponent,
+    AsignaturasComponent,
+    CursoComponent,
+    CursosComponent,
+    EstudianteComponent,
+    EstudiantesComponent,
+    ParaleloComponent,
+    ParalelosComponent,
+    HomeComponent,
+    ProfesoresComponent,
+    RepresentantesComponent,
+    UsuarioComponent,
+    UsuariosComponent,
+    BodyComponent,
+    NavbarComponent,
+    SidenavComponent,
+    SubLevelMenuComponent,
+    InicioComponent,
+    ProfesorAsignaturaComponent,
+    EstudianteCursoComponent,
+    EstudianteParaleloComponent,
+    ProfesorCursosAsignaturasComponent,
+    ProfesorHorariosComponent
+  ],
   imports: [CommonModule, DashboardRoutingModule, FormsModule, ReactiveFormsModule, FontAwesomeModule, NgbModule, NgSelectModule, NgTableComponent],
 })
-export class DashboardModule {}
+export class DashboardModule { }
