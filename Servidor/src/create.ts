@@ -271,6 +271,20 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
     }
   }`;
 
+  const functionGetByPrf = `static async getByPrf(data: any): Promise<Respuesta> {
+  try {
+    let sql = this.sqlGetByPrf;
+    const [rows] = await pool.execute<any>(sql, [data.AL_ID, data.PRF_ID]);
+    if (rows.length <= 0) {
+      throw new Error('Objeto de tipo ProfesorAsignaturaParalelo no encontrado');
+    }
+    let ${tableName} = rows[0] as ${capitalizedTableName}Entidad;
+    return { response: true, data: ${tableName}, message: 'Encontrado' };
+  } catch (error: any) {
+    Funciones.logger.error(error.message);
+    return { response: false, data: null, message: error.message };
+  }
+}`;
   const functionGetNoMatriculados = `
   static async getNoMatriculados(): Promise<Respuesta> {
     try {
@@ -347,6 +361,7 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
   const sqlGetNoMatriculados = `static sqlGetNoMatriculados: string = 'SELECT a.* FROM vista_estudiante AS a WHERE NOT EXISTS ( SELECT 1 FROM estudiante_curso AS b WHERE b.EST_ID = a.EST_ID AND (b.ESTADO = 1 OR b.CRS_ID = (SELECT CRS_ID FROM curso ORDER BY CRS_ORDEN DESC LIMIT 1)) ) AND a.ESTADO = 1;'`;
   const sqlGetByUser = `static sqlGetByUser: string = 'SELECT * FROM ${tableName} WHERE USUARIO = ?';`;
   const sqlGetByParalelo = `static sqlGetByParalelo: string = 'SELECT b.EST_CRS_PRLL_ID, a.* FROM vista_estudiante_curso as a JOIN estudiante_curso_paralelo as b ON a.EST_CRS_ID = b.EST_CRS_ID WHERE b.PRLL_ID =? AND b.ESTADO=1';`;
+  const sqlGetByPrf = `static sqlGetByPrf: string = SELECT a.* FROM vista_profesor_asignatura_paralelo as a JOIN profesor_asignatura_paralelo as b ON a.PRF_ASG_PRLL_ID = b.PRF_ASG_PRLL_ID WHERE b.ESTADO = 1 AND b.AL_ID = ? AND b.PRF_ID = ?;`;
 
   const isViewTable = (tableName: string) => {
     if (tableName === 'estudiante' || tableName === 'usuario' || tableName === 'estudiante_curso' || tableName === 'profesor_asignatura_paralelo') {
@@ -368,12 +383,16 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
   };
 
   const otherSql = (tableName: string) => {
+    console.log(tableName);
+
     if (tableName === 'usuario') {
       return sqlGetByUser;
     } else if (tableName === 'estudiante_curso') {
       return sqlGetNoMatriculados + '\n' + sqlGetByCurso;
     } else if (tableName === 'estudiante_curso_paralelo') {
       return sqlGetByParalelo;
+    } else if (tableName === 'profesor_asignatura_paralelo') {
+      return sqlGetByPrf;
     } else {
       return '';
     }
@@ -386,6 +405,8 @@ async function generateDataFile(connection: any, tableName: string, primaryKeyCo
       return functionGetNoMatriculados + functiongetByCurso + functioninsertarMasivamente;
     } else if (tableName === 'estudiante_curso_paralelo') {
       return functioninsertarMasivamente + functiongetByParalelo;
+    } else if (tableName === 'profesor_asignatura_paralelo') {
+      return functionGetByPrf;
     } else {
       return '';
     }
