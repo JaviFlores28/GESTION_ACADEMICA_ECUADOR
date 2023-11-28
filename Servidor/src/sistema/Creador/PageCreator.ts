@@ -91,24 +91,7 @@ function generateFillFormReactive(propertiesData: MappedProperty[]) {
     .join(',\n ');
 }
 
-async function generateInterfaceFile(connection: any, tableName: string) {
-  const capitalizedTableName = Funciones.stringToCapitalize(tableName);
-  const properties = await BaseDatos.getTableInfo(tableName);
-  const propertiesData = BaseDatos.mapProperties(properties);
 
-  const content = `export interface ${capitalizedTableName} {
-    ${EntityCreator.generatePropsDefinitions(propertiesData)}
-  }`;
-
-  const carpeta = path.join(__dirname, 'interfaces');
-  const archivo = path.join(carpeta, `${capitalizedTableName}.interface.ts`);
-
-  if (!existsSync(carpeta)) {
-    mkdirSync(carpeta, { recursive: true });
-  }
-
-  writeFileSync(archivo, content, 'utf8');
-}
 
 async function generateComponentFile(connection: any, tableName: any, primaryKeyColumn: string) {
   const capitalizedTableName = Funciones.stringToCapitalize(tableName);
