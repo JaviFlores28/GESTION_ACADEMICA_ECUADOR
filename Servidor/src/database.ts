@@ -1,13 +1,10 @@
 import BaseDatos from './sistema/conexion/BaseDatos';
 
 async function main() {
-  BaseDatos.createDatabase()
-    .then(() => {
-      BaseDatos.defaultData();
-    })
-    .finally(() => {
-      process.exit();
-    });
+  BaseDatos.createDatabase();
+  BaseDatos.defaultData().finally(() => {
+    process.exit();
+  });
 }
 
 main();

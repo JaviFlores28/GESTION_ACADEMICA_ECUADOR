@@ -51,8 +51,7 @@ class DataCreator {
     const functioninsert = `
         static async insert(${this.tableName}: ${this.capitalizedTableName}Entidad ${this.tableName === 'usuario' ? ', detalle?: UsuarioProfesorEntidad' : ''}): Promise<Respuesta> {
           try {
-            const baseDatos = new BaseDatos();
-            const pool = await baseDatos.getPool();
+            const pool = await BaseDatos.getInstanceDataBase();
             ${this.tableName === 'usuario' ? usuariodata : ''}
             ${this.tableName}.${this.primaryKey} = uuidv4(); 
             const new${this.capitalizedTableName} = new ${this.capitalizedTableName}Entidad(${this.generateObject(this.propertiesTable, this.tableName, ['FECHA_CREACION'])});
@@ -75,8 +74,8 @@ class DataCreator {
     const functionUpdate = `
     static async update(${this.tableName}: ${this.capitalizedTableName}Entidad): Promise<Respuesta> {
       try {
-        const baseDatos = new BaseDatos();
-        const pool = await baseDatos.getPool();
+        const pool = await BaseDatos.getInstanceDataBase();
+
         const new${this.capitalizedTableName} = new ${this.capitalizedTableName}Entidad(${this.generateObject(this.propertiesTable, this.tableName, ['FECHA_CREACION'])});
         let sql =this.sqlUpdate;
         const [result] = await pool.execute<any>(sql, new${this.capitalizedTableName}.toArrayUpdate());
@@ -96,8 +95,7 @@ class DataCreator {
     const functionDelete = `
         static async delete(id: String): Promise<Respuesta> {
           try {
-            const baseDatos = new BaseDatos();
-            const pool = await baseDatos.getPool();
+            const pool = await BaseDatos.getInstanceDataBase();
             let sql = this.sqlDelete;
             const [result] = await pool.execute<any>(sql, [id]);
             if (result.affectedRows !== 1) {
@@ -127,8 +125,7 @@ class DataCreator {
     const functionGet = `
         static async getAll(${this.tableName === 'usuario' ? 'tipo: string' : ''}): Promise<Respuesta> {
           try {
-            const baseDatos = new BaseDatos();
-            const pool = await baseDatos.getPool();
+            const pool = await BaseDatos.getInstanceDataBase();
             let sql = this.sqlSelect;
             ${this.tableName === 'usuario' ? sqlToGetUser : ''}
             const [rows] = await pool.execute<any>(sql);
@@ -159,8 +156,7 @@ class DataCreator {
     const functionGetEnabled = `
         static async getEnabled(${this.tableName === 'usuario' ? 'tipo: string' : ''}): Promise<Respuesta> {
           try {
-            const baseDatos = new BaseDatos();
-            const pool = await baseDatos.getPool();
+            const pool = await BaseDatos.getInstanceDataBase();
             let sql = this.sqlGetEnabled;
             ${this.tableName === 'usuario' ? mapToGetUserEnabled : ''}
             const [rows] = await pool.execute<any>(sql);
@@ -180,8 +176,7 @@ class DataCreator {
     const functiongetById = `
         static async getById(id: String): Promise<Respuesta> {
           try {
-            const baseDatos = new BaseDatos();
-            const pool = await baseDatos.getPool();
+            const pool = await BaseDatos.getInstanceDataBase();
             let sql = this.sqlGetById;
             const [rows] = await pool.execute<any>(sql, [id]);
             if (rows.length <= 0) {
@@ -231,8 +226,7 @@ class DataCreator {
     const functiongetByCurso = `
         static async getByCurso(id: String): Promise<Respuesta> {
           try {
-            const baseDatos = new BaseDatos();
-            const pool = await baseDatos.getPool();
+            const pool = await BaseDatos.getInstanceDataBase();
             let sql = this.sqlGetByCurso;
             const [rows] = await pool.execute<any>(sql, [id]);
             return { response: true, data: rows as ${this.capitalizedTableName}Entidad[], message: '' };
@@ -248,8 +242,7 @@ class DataCreator {
     const functiongetByParalelo = `
         static async getByParalelo(id: String): Promise<Respuesta> {
           try {
-            const baseDatos = new BaseDatos();
-            const pool = await baseDatos.getPool();
+            const pool = await BaseDatos.getInstanceDataBase();
             let sql = this.sqlGetByParalelo;
             const [rows] = await pool.execute<any>(sql, [id]);
             return { response: true, data: rows as ${this.capitalizedTableName}Entidad[], message: '' };
@@ -305,8 +298,7 @@ class DataCreator {
     const functioninsertarMasivamente = `
         static async insertMasivo(data:any): Promise<Respuesta> {
           try {
-            const baseDatos = new BaseDatos();
-            const pool = await baseDatos.getPool();
+            const pool = await BaseDatos.getInstanceDataBase();
             const arrayIds = data.arrayIds;
       
             // Crear un array de valores para todos los registros utilizando map
@@ -368,8 +360,7 @@ class DataCreator {
     const functionupdateEstado = `  
         static async updateEstado(ids: string[]): Promise<Respuesta> {
           try {
-            const baseDatos = new BaseDatos();
-            const pool = await baseDatos.getPool();
+            const pool = await BaseDatos.getInstanceDataBase();
             // Crear una cadena de marcadores de posición para la cantidad de IDs en el array
             const placeholders = ids.map(() => '?').join(',');
       

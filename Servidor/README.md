@@ -69,6 +69,8 @@ npm i --save-dev --save-exact prettier
 ```shell
 npm start # para produccion
 npm run dev # para desarrollo
-npm run testdev # para testeo en consola
+npm run generate # para generar archivos desde base de datos
+npm run test # para testeo desde consola en archivo test
+npm run database # para crear la base de datos
 
 ```

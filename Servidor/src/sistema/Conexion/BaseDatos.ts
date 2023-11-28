@@ -1,55 +1,58 @@
 import mysql, { Pool, PoolOptions } from 'mysql2/promise';
 import 'dotenv/config';
-import { readFile } from 'fs/promises';
 import { ColumnData } from '../interfaces/ColumnData';
 import { MappedProperty } from '../interfaces/MappedProperty';
+import { readFileSync } from 'fs';
 class BaseDatos {
-
-  private static pool: Pool;
+  
+  private static instancia: Pool;
 
   // Constructor privado para evitar la creación de instancias desde fuera de la clase
-  private constructor() {
-    const access: PoolOptions = {
-      host: process.env.DB_HOST || 'localhost',
-      user: process.env.DB_USER || 'root',
-      password: process.env.DB_PASSWORD || '',
-    };
-    // Inicializar el pool solo si aún no está creado
-    BaseDatos.pool = mysql.createPool(access);
-  }
+  private constructor() {}
 
   // Método para obtener la única instancia de la clase
   public static getInstance(): Pool {
-    if (!BaseDatos.pool) {
-      // Si la instancia aún no se ha creado, crear una nueva instancia
-      new BaseDatos();
+    if (!BaseDatos.instancia) {
+      const access: PoolOptions = {
+        host: process.env.DB_HOST || 'localhost',
+        user: process.env.DB_USER || 'root',
+        password: process.env.DB_PASSWORD || '',
+      };
+      // Inicializar el pool solo si aún no está creado
+      BaseDatos.instancia = mysql.createPool(access);
     }
-    return BaseDatos.pool;
+    return BaseDatos.instancia;
   }
 
-
-  public static async getInstanceDataBase() {
-    if (!BaseDatos.pool) {
-      // Si la instancia aún no se ha creado, crear una nueva instancia
-      new BaseDatos();
+  // Método para obtener la única instancia de la clase con la base de datos seleccionada
+  public static async getInstanceDataBase(): Promise<Pool> {
+    if (!BaseDatos.instancia) {
+      const access: PoolOptions = {
+        host: process.env.DB_HOST || 'localhost',
+        user: process.env.DB_USER || 'root',
+        password: process.env.DB_PASSWORD || '',
+      };
+      // Inicializar el pool solo si aún no está creado
+      BaseDatos.instancia = mysql.createPool(access);
     }
-    await BaseDatos.pool.query('USE ' + process.env.DB_DATABASE);
-    return BaseDatos.pool;
+    await BaseDatos.instancia.query('USE ' + process.env.DB_DATABASE);
+    return BaseDatos.instancia;
   }
 
-  static async createDatabase() {
+  static async createDatabase(): Promise<void> {
     try {
       console.log('Creando base de datos...');
       // crea la base de datos
       const result = await BaseDatos.getInstance().query(`CREATE DATABASE IF NOT EXISTS ${process.env.DB_DATABASE}`);
-      console.log(result[0]);
-
+      if (!result[0]) {
+        throw new Error('Error al crear la base de datos');
+      }
       // lee el archivo sql
       console.log('Creando tablas...');
-      let sqlScript = await readFile('SQL/TABLAS.sql', 'utf-8');
+      let sqlScript = readFileSync('SQL/TABLAS.sql', 'utf-8');
       // array de consultas
       const queries = sqlScript.split(';').filter((query) => query.trim() !== '');
-      
+
       // ejecuta cada consulta
       for (const query of queries) {
         const pool = await BaseDatos.getInstanceDataBase();
@@ -64,11 +67,12 @@ class BaseDatos {
     }
   }
 
-  static async defaultData() {
+  static async defaultData(): Promise<void> {
     try {
       console.log('Agregando datos por defecto...');
-      const sqlScript = await readFile('SQL/DATOS_TEST.sql', 'utf-8');
+      const sqlScript = readFileSync('SQL/DATOS_TEST.sql', 'utf-8');
       const queries = sqlScript.split(';').filter((query) => query.trim() !== '');
+
       for (const query of queries) {
         const pool = await BaseDatos.getInstanceDataBase();
         const result = await pool.query(query);
@@ -82,13 +86,13 @@ class BaseDatos {
     }
   }
 
-  static getMappedType(fieldType: string | string[], propertyName: string) {
+  static getMappedType(fieldType: string | string[]): string {
     if (fieldType.includes('tinyint')) {
       return 'number';
     } else if (fieldType.includes('char') || fieldType.includes('varchar') || fieldType.includes('enum')) {
       return 'string';
     } else if (fieldType.includes('date') || fieldType.includes('datetime')) {
-      return `${propertyName === 'FECHA_CREACION' ? 'Date | undefined' : 'Date'}`;
+      return 'Date';
     } else if (fieldType.includes('int') || fieldType.includes('float') || fieldType.includes('double') || fieldType.includes('decimal')) {
       return 'number';
     } else {
@@ -99,15 +103,14 @@ class BaseDatos {
   static mapProperties(properties: any): MappedProperty[] {
     return properties.map((column: ColumnData) => {
       const fieldType = column.Type.toLowerCase();
-      const propertyName = column.Field;
-      const mappedType = this.getMappedType(fieldType, propertyName);
+      const mappedType = this.getMappedType(fieldType);
       const key = column.Key;
 
-      return { name: propertyName, type: mappedType, key: key, type_old: fieldType };
+      return { name: column.Field, type: mappedType, key: key, type_old: fieldType };
     });
   }
 
-  static async getTableInfo(tableName: string) {
+  static async getTableInfo(tableName: string): Promise<any> {
     const [results] = await BaseDatos.getInstance().execute(`DESCRIBE ${tableName}`);
     return results;
   }
