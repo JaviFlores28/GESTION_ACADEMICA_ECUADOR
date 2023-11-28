@@ -19,7 +19,7 @@ class InterfaceCreator {
         this.lowercaseTableName = Funciones.stringToCamelCase(tableName);
     }
 
-    async generateInterfaceFile() {
+    async generateInterfaceFile() : Promise<void>{
         const capitalizedTableName = this.capitalizedTableName;
         const content = `export interface ${capitalizedTableName} {
           ${EntityCreator.generatePropsDefinitions(this.propertiesTable)}
@@ -35,3 +35,4 @@ class InterfaceCreator {
         writeFileSync(archivo, content, 'utf8');
     }
 }
+export default InterfaceCreator;

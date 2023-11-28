@@ -5,6 +5,7 @@ import 'dotenv/config';
 import ServicesCreator from './sistema/Creador/ServicesCreator';
 import EntityCreator from './sistema/Creador/EntityCreator';
 import BusinessCreator from './sistema/Creador/BusinessCreator';
+import InterfaceCreator from './sistema/Creador/InterfaceCreator';
 
 async function main() {
   try {
@@ -14,10 +15,14 @@ async function main() {
       const tableName = table[`Tables_in_${process.env.DB_DATABASE}`];
       const properties = await BaseDatos.getTableInfo(tableName);
       const propertiesData = BaseDatos.mapProperties(properties);
+
       const entityCreator = new EntityCreator(tableName, propertiesData);
+      const interfaceCreator = new InterfaceCreator(tableName, propertiesData);
       const dataCreator = new DataCreator(tableName, propertiesData);
       const businessCreator = new BusinessCreator(tableName);
       const servicesCreator = new ServicesCreator(tableName);
+
+      await interfaceCreator.generateInterfaceFile();
       await entityCreator.generateEntityFile();
       await dataCreator.generateDataFile();
       await businessCreator.generateBusinessFile();

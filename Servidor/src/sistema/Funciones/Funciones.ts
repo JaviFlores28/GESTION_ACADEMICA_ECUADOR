@@ -1,7 +1,5 @@
 import CryptoJS from 'crypto-js';
 import * as dotenv from 'dotenv';
-import { ColumnData } from '../interfaces/ColumnData';
-import { MappedProperty } from '../interfaces/MappedProperty';
 /* import winston from 'winston';
  */
 dotenv.config();
@@ -49,6 +47,7 @@ class Funciones {
     return false;
   }
 
+  
 
   /*  static logger = winston.createLogger({
     level: 'silly',
