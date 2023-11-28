@@ -7,9 +7,9 @@
     "prestart": "tsc",
     "start": "node build/app.js",
     "generate": "ts-node-dev src/create.ts",
+    "database": "ts-node-dev src/database.ts",
     "dev": "ts-node-dev src/app.ts",
-    "test": "ts-node-dev src/test.ts",
-    "database": "ts-node-dev src/sistema/conexion/BaseDatos.ts"
+    "test": "ts-node-dev src/test.ts"
   },
   "keywords": [],
   "author": "",

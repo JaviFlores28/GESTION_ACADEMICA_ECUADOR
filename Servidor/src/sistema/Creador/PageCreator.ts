@@ -1,5 +1,5 @@
-import Funciones from './sistema/funciones/Funciones';
-import { MappedProperty } from './sistema/interfaces/MappedProperty';
+import Funciones from '../funciones/Funciones';
+import { MappedProperty } from '../interfaces/MappedProperty';
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import path from 'path';
 

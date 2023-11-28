@@ -34,12 +34,13 @@ npm install ts-node-dev -D # soporte para desarrollo en typescript
    > **Nota:** create.ts o npm run generate no ejecutar en este momento, solo era para cambios iniciales de la base de datos
 
 ```js
- "scripts": {
+  "scripts": {
     "prestart": "tsc",
     "start": "node build/app.js",
     "generate": "ts-node-dev src/create.ts",
+    "database": "ts-node-dev src/database.ts",
     "dev": "ts-node-dev src/app.ts",
-    "testdev": "ts-node-dev src/test.ts"
+    "test": "ts-node-dev src/test.ts"
   },
 ```
 
