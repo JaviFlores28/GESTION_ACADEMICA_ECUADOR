@@ -403,11 +403,11 @@ class DataCreator {
   async generateDataFile(): Promise<void> {
     const generarSQLinsert = this.generateSqlInsert();
     const generarSQLupdate = this.generarSQLUpdate();
-    const sqlGetByCurso = `static sqlGetByCurso: string = 'SELECT a.* FROM vista_estudiante_curso as a JOIN estudiante_curso as b ON a.EST_CRS_ID = b.EST_CRS_ID WHERE b.CRS_ID=? AND NOT EXISTS ( SELECT 1 FROM estudiante_curso_paralelo ECP WHERE ECP.EST_CRS_ID = b.EST_CRS_ID AND ECP.ESTADO = 1 );'`;
-    const sqlGetNoMatriculados = `static sqlGetNoMatriculados: string = 'SELECT a.* FROM vista_estudiante AS a WHERE NOT EXISTS ( SELECT 1 FROM estudiante_curso AS b WHERE b.EST_ID = a.EST_ID AND (b.ESTADO = 1 OR b.CRS_ID = (SELECT CRS_ID FROM curso ORDER BY CRS_ORDEN DESC LIMIT 1)) ) AND a.ESTADO = 1;'`;
+    const sqlGetByCurso = `static sqlGetByCurso: string = 'SELECT A.* FROM vista_estudiante_curso A INNER JOIN estudiante_curso B ON A.EST_CRS_ID = B.EST_CRS_ID LEFT JOIN estudiante_curso_paralelo ECP ON A.EST_CRS_ID = ECP.EST_CRS_ID AND ECP.ESTADO = 1 WHERE A.ESTADO = 1 AND B.CRS_ID = ? AND ECP.EST_CRS_ID IS NULL;';`;
+    const sqlGetNoMatriculados = `static sqlGetNoMatriculados: string = 'SELECT a.* FROM vista_estudiante AS a LEFT JOIN estudiante_curso AS b ON b.EST_ID = a.EST_ID AND (b.ESTADO = 1 OR b.CRS_ID = (SELECT CRS_ID FROM curso ORDER BY CRS_ORDEN DESC LIMIT 1)) WHERE A.ESTADO=1 AND b.EST_ID IS NULL;';`;
     const sqlGetByUser = `static sqlGetByUser: string = 'SELECT * FROM ${this.tableName} WHERE USUARIO = ?';`;
-    const sqlGetByParalelo = `static sqlGetByParalelo: string = 'SELECT b.EST_CRS_PRLL_ID, a.* FROM vista_estudiante_curso as a JOIN estudiante_curso_paralelo as b ON a.EST_CRS_ID = b.EST_CRS_ID WHERE b.PRLL_ID =? AND b.ESTADO=1';`;
-    const sqlGetByPrf = `static sqlGetByPrf: string = 'SELECT a.* FROM vista_profesor_asignatura_paralelo as a JOIN profesor_asignatura_paralelo as b ON a.PRF_ASG_PRLL_ID = b.PRF_ASG_PRLL_ID WHERE b.ESTADO = 1 AND b.AL_ID = ? AND b.PRF_ID = ?';`;
+    const sqlGetByParalelo = `static sqlGetByParalelo: string = 'SELECT b.EST_CRS_PRLL_ID, a.* FROM vista_estudiante_curso as a JOIN estudiante_curso_paralelo as b ON a.EST_CRS_ID = b.EST_CRS_ID WHERE b.PRLL_ID =? AND b.ESTADO=1;';`;
+    const sqlGetByPrf = `static sqlGetByPrf: string = 'SELECT a.* FROM vista_profesor_asignatura_paralelo as a JOIN profesor_asignatura_paralelo as b ON a.PRF_ASG_PRLL_ID = b.PRF_ASG_PRLL_ID WHERE b.ESTADO = 1 AND b.AL_ID = ? AND b.PRF_ID = ?;';`;
 
     const isViewTable = () => {
       if (this.tableName === 'estudiante' || this.tableName === 'usuario' || this.tableName === 'estudiante_curso' || this.tableName === 'profesor_asignatura_paralelo') {

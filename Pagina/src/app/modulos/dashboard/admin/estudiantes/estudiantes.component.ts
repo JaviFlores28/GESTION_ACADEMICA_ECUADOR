@@ -14,7 +14,7 @@ export class EstudiantesComponent {
 
   table: Estudiante[] = [];
   headers = ['CÉDULA', 'NOMBRES', 'REPRESENTANTE', 'ESTADO'];
-  campos = ['EST_ID', 'EST_DNI', 'EST_NOM', 'REPR_ID'];
+  campos = ['EST_ID', 'EST_DNI', 'EST_NOM', 'USR_NOM'];
 
   constructor(
     private service: EstudianteService,

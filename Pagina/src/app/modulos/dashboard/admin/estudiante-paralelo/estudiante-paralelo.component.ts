@@ -40,7 +40,7 @@ export class EstudianteParaleloComponent implements OnInit {
   headersEstudianteCurso = ['CÉDULA', 'NOMBRES'];
   camposEstudianteCurso = ['EST_CRS_ID', 'EST_DNI', 'EST_ID'];
   headersEstudianteCursoParalelo = ['CÉDULA', 'CURSO', 'NOMBRES', 'ESTADO'];
-  camposEstudianteCursoParalelo = ['EST_CRS_PRLL_ID', 'EST_DNI', 'CRS_ID', 'EST_ID'];
+  camposEstudianteCursoParalelo = ['EST_CRS_PRLL_ID', 'EST_DNI', 'CRS_NOM', 'EST_ID'];
 
   msg: string = '¿Desea guardar?';
   USR_ID: string = this.usuarioService.getUserLoggedId();

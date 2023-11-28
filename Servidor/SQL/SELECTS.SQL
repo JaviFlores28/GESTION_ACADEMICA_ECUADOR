@@ -5,3 +5,9 @@ SELECT a.* FROM estudiante AS a WHERE NOT EXISTS ( SELECT 1 FROM estudiante_curs
 SELECT a.* FROM `vista_profesor_asignatura_paralelo` as a JOIN profesor_asignatura_paralelo as b ON a.PRF_ASG_PRLL_ID = b.PRF_ASG_PRLL_ID WHERE b.ESTADO = 1 AND b.AL_ID = '090f8103-fffd-4216-ae64-8f2a843387ff' AND b.PRF_ID = 'a8ace72a-77b1-456c-a2dc-c5c3799407e9';
 
 SHOW KEYS FROM ${tableName} WHERE Key_name = 'PRIMARY'
+
+SELECT c.* 
+FROM vista_estudiante_curso_paralelo AS c
+JOIN estudiante_curso_paralelo AS a ON a.EST_CRS_ID = b.EST_CRS_ID
+JOIN estudiante_curso AS b ON a.EST_CRS_ID = b.EST_CRS_ID
+WHERE b.CRS_ID = '' AND a.AL_ID = '' AND a.PRLL_ID = '' AND a.ESTADO = 1
