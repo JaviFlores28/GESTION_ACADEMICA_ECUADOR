@@ -18,24 +18,56 @@ class EntityCreator {
     this.lowercaseTableName = Funciones.stringToCamelCase(tableName);
   }
 
+  static generatePropsDefinitions(propertiesData: MappedProperty[]) {
+    return propertiesData
+      .filter((property) => property.name !== 'FECHA_CREACION')
+      .map((property) => `${property.name}: ${property.type};`)
+      .join('\n    ');
+  }
+
+  static generatePropsConstruct(propertiesData: MappedProperty[]) {
+    return propertiesData
+      .filter((property) => property.name !== 'FECHA_CREACION')
+      .map((property) => {
+        return `${property.name}: ${property.type}`;
+      })
+      .join(', ');
+  }
+
+  generatePropsValues(propertiesData: MappedProperty[]) {
+    return propertiesData
+      .filter((property) => property.name !== 'FECHA_CREACION')
+      .map((property) => {
+        return `this.${property.name} = ${property.name};`;
+      })
+      .join('\n      ');
+  }
+
+  generateFunctionToarray(propertiesData: MappedProperty[], excludedProperties: string[]) {
+    return propertiesData
+      .filter((property) => !excludedProperties.includes(property.name))
+      .map((property) => `this.${property.name}`)
+      .join(',');
+  }
+  
   async generateEntityFile(): Promise<void> {
     const excludedPropertiesInsert = ['FECHA_CREACION'];
     const excludedPropertiesUpdate = ['USUARIO', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID', this.primaryKey];
 
     const content = `
       class ${this.capitalizedTableName}Entidad {
-        ${Funciones.generatePropsDefinitions(this.propertiesTable)} 
+        ${EntityCreator.generatePropsDefinitions(this.propertiesTable)} 
            
-          constructor(${Funciones.generatePropsConstruct(this.propertiesTable)}) {
-             ${Funciones.generatePropsValues(this.propertiesTable)}
+          constructor(${EntityCreator.generatePropsConstruct(this.propertiesTable)}) {
+             ${this.generatePropsValues(this.propertiesTable)}
           }
       
           toArrayInsert(): any[] {
-            return [${Funciones.generateFunctionToarray(this.propertiesTable, excludedPropertiesInsert)}];
+            return [${this.generateFunctionToarray(this.propertiesTable, excludedPropertiesInsert)}];
           }
       
           toArrayUpdate(): any[] {
-            return [${Funciones.generateFunctionToarray(this.propertiesTable, excludedPropertiesUpdate)}, this.${this.primaryKey}];
+            return [${this.generateFunctionToarray(this.propertiesTable, excludedPropertiesUpdate)}, this.${this.primaryKey}];
           }
       }
       

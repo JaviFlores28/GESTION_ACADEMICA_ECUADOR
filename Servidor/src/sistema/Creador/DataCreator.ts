@@ -18,6 +18,20 @@ class DataCreator {
     this.lowercaseTableName = Funciones.stringToCamelCase(tableName);
   }
 
+  generateObject(propertiesData: MappedProperty[], tableName: string, excludedProperties: string[]) {
+    return propertiesData
+      .filter((property) => !excludedProperties.includes(property.name))
+      .map((property) => `${tableName}.${property.name}`)
+      .join(', ');
+  }
+
+  generatePropsToArray(propertiesData: MappedProperty[], excludedProperties: string[]) {
+    return propertiesData
+      .filter((property) => !excludedProperties.includes(property.name))
+      .map((property) => `'${property.name}'`)
+      .join(',');
+  }
+
   insert(): string {
     const usuariodata = `usuario.USUARIO = Funciones.crearUsuario(usuario.USR_DNI, usuario.USR_NOM, usuario.USR_NOM2, usuario.USR_APE);
         usuario.USR_PSWD = Funciones.encrypt(usuario.USR_DNI);
@@ -41,7 +55,7 @@ class DataCreator {
             const pool = await baseDatos.getPool();
             ${this.tableName === 'usuario' ? usuariodata : ''}
             ${this.tableName}.${this.primaryKey} = uuidv4(); 
-            const new${this.capitalizedTableName} = new ${this.capitalizedTableName}Entidad(${Funciones.generateObject(this.propertiesTable, this.tableName, ['FECHA_CREACION'])});
+            const new${this.capitalizedTableName} = new ${this.capitalizedTableName}Entidad(${this.generateObject(this.propertiesTable, this.tableName, ['FECHA_CREACION'])});
             let sql =this.sqlInsert;
             const [result] = await pool.execute<any>(sql, new${this.capitalizedTableName}.toArrayInsert());
             if (result.affectedRows !== 1) {
@@ -63,7 +77,7 @@ class DataCreator {
       try {
         const baseDatos = new BaseDatos();
         const pool = await baseDatos.getPool();
-        const new${this.capitalizedTableName} = new ${this.capitalizedTableName}Entidad(${Funciones.generateObject(this.propertiesTable, this.tableName, ['FECHA_CREACION'])});
+        const new${this.capitalizedTableName} = new ${this.capitalizedTableName}Entidad(${this.generateObject(this.propertiesTable, this.tableName, ['FECHA_CREACION'])});
         let sql =this.sqlUpdate;
         const [result] = await pool.execute<any>(sql, new${this.capitalizedTableName}.toArrayUpdate());
         if (result.affectedRows !== 1) {
@@ -297,13 +311,13 @@ class DataCreator {
       
             // Crear un array de valores para todos los registros utilizando map
             const valores = arrayIds.map((id: any) => [
-              uuidv4(), id, ${Funciones.generateObject(this.propertiesTable, 'data', excludedProperties)}
+              uuidv4(), id, ${this.generateObject(this.propertiesTable, 'data', excludedProperties)}
             ]); 
       
             // Crear una cadena de marcadores de posición y una cadena de campos
             const placeholders = valores.map((fila: string | any[]) => \`(\${Array.from({ length: fila.length }, () => '?').join(',')})\`).join(',');
       
-            const campos = [${Funciones.generatePropsToArray(this.propertiesTable, ['FECHA_CREACION'])}].join(',');
+            const campos = [${this.generatePropsToArray(this.propertiesTable, ['FECHA_CREACION'])}].join(',');
       
             // Consulta SQL con la cláusula INSERT INTO y VALUES
             const sql = \`INSERT INTO ${this.tableName} (\${campos}) VALUES \${placeholders};\`;

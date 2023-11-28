@@ -1,11 +1,9 @@
 import BaseDatos from './sistema/conexion/BaseDatos';
 
 async function main() {
-  const baseDatos = new BaseDatos();
-  baseDatos
-    .createDatabase()
+  BaseDatos.createDatabase()
     .then(() => {
-      baseDatos.defaultData();
+      BaseDatos.defaultData();
     })
     .finally(() => {
       process.exit();

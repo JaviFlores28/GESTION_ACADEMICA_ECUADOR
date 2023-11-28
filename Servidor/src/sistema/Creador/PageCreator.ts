@@ -1,7 +1,9 @@
+import BaseDatos from '../conexion/BaseDatos';
 import Funciones from '../funciones/Funciones';
 import { MappedProperty } from '../interfaces/MappedProperty';
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import path from 'path';
+import EntityCreator from './EntityCreator';
 
 //no son parte del sistema
 function generateFormReactive(propertiesData: MappedProperty[]) {
@@ -91,11 +93,11 @@ function generateFillFormReactive(propertiesData: MappedProperty[]) {
 
 async function generateInterfaceFile(connection: any, tableName: string) {
   const capitalizedTableName = Funciones.stringToCapitalize(tableName);
-  const properties = await Funciones.getTableInfo(connection, tableName);
-  const propertiesData = Funciones.mapProperties(properties);
+  const properties = await BaseDatos.getTableInfo(tableName);
+  const propertiesData = BaseDatos.mapProperties(properties);
 
   const content = `export interface ${capitalizedTableName} {
-    ${Funciones.generatePropsDefinitions(propertiesData)}
+    ${EntityCreator.generatePropsDefinitions(propertiesData)}
   }`;
 
   const carpeta = path.join(__dirname, 'interfaces');
@@ -111,8 +113,8 @@ async function generateInterfaceFile(connection: any, tableName: string) {
 async function generateComponentFile(connection: any, tableName: any, primaryKeyColumn: string) {
   const capitalizedTableName = Funciones.stringToCapitalize(tableName);
   const lowercaseTableName = Funciones.stringToCamelCase(tableName);
-  const properties = await Funciones.getTableInfo(connection, tableName);
-  const propertiesData = Funciones.mapProperties(properties);
+  const properties = await BaseDatos.getTableInfo(tableName);
+  const propertiesData = BaseDatos.mapProperties(properties);
 
   const content = `
     
@@ -289,8 +291,8 @@ async function generateComponentFile(connection: any, tableName: any, primaryKey
 async function generateHTMLFile(connection: any, tableName: any) {
   const capitalizedTableName = Funciones.stringToCapitalize(tableName);
   const lowercaseTableName = Funciones.stringToCamelCase(tableName);
-  const properties = await Funciones.getTableInfo(connection, tableName);
-  const propertiesData = Funciones.mapProperties(properties);
+  const properties = await BaseDatos.getTableInfo(tableName);
+  const propertiesData = BaseDatos.mapProperties(properties);
 
   const content = `${generateFormHTML(propertiesData)}`;
   const carpeta = path.join(__dirname, 'html');

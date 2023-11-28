@@ -1,11 +1,9 @@
 import BaseDatos from './sistema/conexion/BaseDatos';
 
 async function main() {
-  const baseDatos = new BaseDatos();
-  baseDatos
-    .createDatabase()
+  BaseDatos.createDatabase()
     .then(() => {
-      baseDatos.defaultData();
+      BaseDatos.defaultData();
     })
     .finally(() => {
       process.exit();
@@ -13,3 +11,22 @@ async function main() {
 }
 
 main();
+
+
+/* 
+ 
+
+static 
+
+static 
+
+static generatePropsIsValid(propertiesData: MappedProperty[], excludedProperties: string[]) {
+  return propertiesData
+    .filter((property) => !excludedProperties.includes(property.name))
+    .map((property) => `!!this.${property.name}`)
+    .join(' && ');
+}
+
+
+
+*/
