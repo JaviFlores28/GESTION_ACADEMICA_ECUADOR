@@ -38,4 +38,9 @@ export class ProfesorAsignaturaService extends ErrorHandlerService {
   delete(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}?id=${id}`).pipe(catchError(this.handleError));
   }
+
+  updateEstado(arrayData: any): Observable<any> {
+    const request = {type: 'updateEstado', data: arrayData };
+    return this.http.patch(this.apiUrl, request).pipe(catchError(this.handleError));
+  }
 }

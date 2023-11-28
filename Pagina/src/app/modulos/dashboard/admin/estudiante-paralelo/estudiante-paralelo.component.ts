@@ -186,7 +186,7 @@ export class EstudianteParaleloComponent implements OnInit {
       this.openAlertModal('Debe seleccionar al menos un item.', 'danger');
       return;
     }
-    this.service.patchUpdateEstado(this.idsEstudianteCurso).subscribe({
+    this.service.updateEstado(this.idsEstudianteCurso).subscribe({
       next: (value) => {
         this.handleResponse(value);
       },

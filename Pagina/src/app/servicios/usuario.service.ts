@@ -26,10 +26,6 @@ export class UsuarioService extends ErrorHandlerService {
     return this.http.get<Respuesta>(`${this.apiUrl}?by=id&id=${id}`).pipe(catchError(this.handleError));
   }
 
-  getByUser(usuario: UsuarioLogin): Observable<Respuesta> {
-    return this.http.patch<Respuesta>(this.apiUrl, { masivo: false, type: 'getByUser', data: usuario }).pipe(catchError(this.handleError));
-  }
-
   getEnabled(tipo: string): Observable<any> {
     return this.http.get(`${this.apiUrl}?by=enabled&tipo=${tipo}`).pipe(catchError(this.handleError));
   }
@@ -44,16 +40,29 @@ export class UsuarioService extends ErrorHandlerService {
 
   post(usuario: Usuario, detalle?: UsuarioProfesor): Observable<any> {
     if (detalle) {
-      return this.http.post(this.apiUrl, { usuario, detalle }).pipe(catchError(this.handleError));
+      const request = {usuario: usuario, detalle:detalle };
+      return this.http.post(this.apiUrl, request).pipe(catchError(this.handleError));
     } else {
-      return this.http.post(this.apiUrl, { usuario }).pipe(catchError(this.handleError));
+      const request = {usuario: usuario, detalle: null };
+      return this.http.post(this.apiUrl, request).pipe(catchError(this.handleError));
     }
   }
 
-  updatePswd(data: any): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/${data.id}`, { pswdNew: data.pswdNew, pswdOld: data.pswdOld }).pipe(catchError(this.handleError));
+  getByUser(usuario: UsuarioLogin): Observable<Respuesta> {
+    const request = { type: 'getByUser', data: usuario };
+    return this.http.patch<Respuesta>(this.apiUrl, request).pipe(catchError(this.handleError));
   }
 
+  updatePswd(data: any): Observable<any> {
+    const request = { type: 'updatePswd', data: data };
+    return this.http.patch(`${this.apiUrl}/${data.id}`, request).pipe(catchError(this.handleError));
+  }
+
+  updateEstado(arrayData: any): Observable<any> {
+    const request = {type: 'updateEstado', data: arrayData };
+    return this.http.patch(this.apiUrl, request).pipe(catchError(this.handleError));
+  }
+  
   setLocal(usuario: Usuario): void {
     localStorage.setItem(variables.KEY_NAME, btoa(JSON.stringify(usuario.USR_ID)));
   }

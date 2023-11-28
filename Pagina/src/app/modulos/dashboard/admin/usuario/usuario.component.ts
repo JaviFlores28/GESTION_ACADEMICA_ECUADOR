@@ -115,6 +115,8 @@ export class UsuarioComponent {
   crear() {
     if (this.form.valid) {
       const usuario: Usuario = this.buildObject();
+      console.log(usuario);
+      
       const detalle = this.isProf ? this.buildUsuarioProfesorObject() : undefined;
 
       this.service.post(usuario, detalle).subscribe({
