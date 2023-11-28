@@ -5,6 +5,7 @@ import Funciones from './sistema/funciones/Funciones';
 import 'dotenv/config';
 import ServicesCreator from './sistema/Creador/ServicesCreator';
 import EntityCreator from './sistema/Creador/EntityCreator';
+import BusinessCreator from './sistema/Creador/BusinessCreator';
 
 async function main() {
   try {
@@ -15,26 +16,25 @@ async function main() {
       const tableName = table[`Tables_in_${process.env.DB_DATABASE}`];
       const properties = await Funciones.getTableInfo(pool, tableName);
       const propertiesData = Funciones.mapProperties(properties);
+
       const entityCreator = new EntityCreator(tableName, propertiesData);
       const dataCreator = new DataCreator(tableName, propertiesData);
+      const businessCreator = new BusinessCreator(tableName);
       const servicesCreator = new ServicesCreator(tableName);
-      dataCreator.generateDataFile();
-      servicesCreator.generateServiceFile();
-      entityCreator.generateEntityFile();
-      // await generateEntityFile(pool, tableName, primaryKeyColumn);
-      // await generateNegocioFile(tableName);
-      // await generateServiceFile(tableName);
-      //await generateInterfaceFile(pool, tableName);
-      //await generateComponentFile(pool, tableName, primaryKeyColumn);
-      //await generateHTMLFile(pool, tableName, primaryKeyColumn);
-    }
-    execSync(`npx prettier src/ --write --print-width 1000 --single-quote`);
 
+      await entityCreator.generateEntityFile();
+      await dataCreator.generateDataFile();
+      await businessCreator.generateBusinessFile();
+      await servicesCreator.generateServiceFile();
+    }
+    
+    execSync(`npx prettier src/ --write --print-width 1000 --single-quote`);
     console.info('Archivos creados correctamente');
+
   } catch (error: any) {
     console.error('Error: ' + error);
   } finally {
-    process.exit(); // Esto cerrará el programa después de que se complete la ejecución
+    process.exit();
   }
 }
 main();

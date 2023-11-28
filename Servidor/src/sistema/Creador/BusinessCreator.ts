@@ -161,7 +161,7 @@ class BusinessCreator {
     return functionupdateEstado;
   }
 
-  async generateNegocioFile(): Promise<void> {
+  async generateBusinessFile(): Promise<void> {
     const otherFun = () => {
       if (this.tableName === 'usuario') {
         return this.getByUser();
