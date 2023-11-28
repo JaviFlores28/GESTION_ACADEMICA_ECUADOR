@@ -1,7 +1,7 @@
-import { existsSync, mkdirSync, writeFileSync } from "fs";
-import path from "path";
-import Funciones from "../funciones/Funciones";
-import { MappedProperty } from "../interfaces/MappedProperty";
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import path from 'path';
+import Funciones from '../funciones/Funciones';
+import { MappedProperty } from '../interfaces/MappedProperty';
 
 class DataCreator {
   tableName: string;
@@ -327,7 +327,7 @@ class DataCreator {
 
   deleteMasivo(): string {
     const functiondeleteMasivo = `
-    static async deleteMasivo(ids: string[]): Promise<{ data: boolean, message: string }> {
+    static async deleteMasivo(ids: string[]): Promise<Respuesta> {
       try {
         // Crear una cadena de marcadores de posición para la cantidad de IDs en el array
         const placeholders = ids.map(() => '?').join(',');
@@ -342,10 +342,9 @@ class DataCreator {
         if (result.affectedRows < 1) {
           throw new Error('No se pudieron eliminar las matrículas');
         }
-  
-        return { data: true, message: 'Matrículas eliminadas' };
+        return {response: true, data: true, message: 'Datos eliminados correctamente' };
       } catch (error: any) {
-        return { data: false, message:error.message };
+        return {response: false, data: false, message:error.message };
       }
     }`;
     return functiondeleteMasivo;
@@ -381,16 +380,17 @@ class DataCreator {
     return functionupdateEstado;
   }
 
-  generateSqlInsert() {
+  generateSqlInsert(): { headers: string, marcadores: string } {
     const excludedProperties = ['FECHA_CREACION'];
-    const filteredProperties = this.propertiesTable.filter((property) => !excludedProperties.includes(property.name));
+    const filteredProperties = this.propertiesTable.filter((property: any) => !excludedProperties.includes(property.name));
 
     const marcadores = filteredProperties.map(() => '?').join(', ');
-    const headers = filteredProperties.map((property) => property.name).join(', ');
+    const headers = filteredProperties.map((property: any) => property.name).join(', ');
+
     return { headers, marcadores };
   }
 
-  generarSQLUpdate() {
+  generarSQLUpdate(): string {
     const excludedProperties = ['USUARIO', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID'];
     return this.propertiesTable
       .filter((property) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
@@ -398,8 +398,7 @@ class DataCreator {
       .join(',');
   }
 
-
-  async generateDataFile() {
+  async generateDataFile(): Promise<void> {
     const generarSQLinsert = this.generateSqlInsert();
     const generarSQLupdate = this.generarSQLUpdate();
     const sqlGetByCurso = `static sqlGetByCurso: string = 'SELECT a.* FROM vista_estudiante_curso as a JOIN estudiante_curso as b ON a.EST_CRS_ID = b.EST_CRS_ID WHERE b.CRS_ID=? AND NOT EXISTS ( SELECT 1 FROM estudiante_curso_paralelo ECP WHERE ECP.EST_CRS_ID = b.EST_CRS_ID AND ECP.ESTADO = 1 );'`;
@@ -505,6 +504,5 @@ class DataCreator {
 
     writeFileSync(archivoEntidad, content, 'utf8');
   }
-
 }
 export default DataCreator;

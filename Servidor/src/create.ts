@@ -4,23 +4,23 @@ import BaseDatos from './sistema/conexion/BaseDatos';
 import Funciones from './sistema/funciones/Funciones';
 import 'dotenv/config';
 import ServicesCreator from './sistema/Creador/ServicesCreator';
+import EntityCreator from './sistema/Creador/EntityCreator';
 
 async function main() {
   try {
     const baseDatos = new BaseDatos();
     const pool = await baseDatos.getPool();
-
     const [tables] = await pool.execute<any>('SHOW FULL TABLES WHERE Table_type = "BASE TABLE"');
-
     for (const table of tables) {
       const tableName = table[`Tables_in_${process.env.DB_DATABASE}`];
       const properties = await Funciones.getTableInfo(pool, tableName);
       const propertiesData = Funciones.mapProperties(properties);
+      const entityCreator = new EntityCreator(tableName, propertiesData);
       const dataCreator = new DataCreator(tableName, propertiesData);
       const servicesCreator = new ServicesCreator(tableName);
       dataCreator.generateDataFile();
       servicesCreator.generateServiceFile();
-      // await generateDataFile(pool, tableName, primaryKeyColumn);
+      entityCreator.generateEntityFile();
       // await generateEntityFile(pool, tableName, primaryKeyColumn);
       // await generateNegocioFile(tableName);
       // await generateServiceFile(tableName);

@@ -1,46 +1,57 @@
-import path from "path";
-import Funciones from "../funciones/Funciones";
-import { existsSync, mkdirSync, writeFileSync } from "fs";
+import path from 'path';
+import Funciones from '../funciones/Funciones';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { MappedProperty } from '../interfaces/MappedProperty';
 
 class EntityCreator {
 
-    async generateEntityFile(connection: any, tableName: string, primaryKeyColumn: string): Promise<void> {
-        const capitalizedTableName = Funciones.stringToCapitalize(tableName);
-        const properties = await Funciones.getTableInfo(connection, tableName);
-        const propertiesData = Funciones.mapProperties(properties);
+  tableName: string;
+  capitalizedTableName: string;
+  lowercaseTableName: string;
+  propertiesTable: MappedProperty[];
+  primaryKey: string;
 
-        const excludedPropertiesInsert = ['FECHA_CREACION'];
-        const excludedPropertiesUpdate = ['USUARIO', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID', primaryKeyColumn];
+  constructor(tableName: string, propertiesTable: MappedProperty[]) {
+    this.tableName = tableName;
+    this.primaryKey = propertiesTable.find((column) => column.key === 'PRI')?.name;
+    this.propertiesTable = propertiesTable;
+    this.capitalizedTableName = Funciones.stringToCapitalize(tableName);
+    this.lowercaseTableName = Funciones.stringToCamelCase(tableName);
+  }
 
-        const content = `
-      class ${capitalizedTableName}Entidad {
-        ${Funciones.generatePropsDefinitions(propertiesData)} 
+  async generateEntityFile(): Promise<void> {
+  
+    const excludedPropertiesInsert = ['FECHA_CREACION'];
+    const excludedPropertiesUpdate = ['USUARIO', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID', this.primaryKey];
+
+    const content = `
+      class ${this.capitalizedTableName}Entidad {
+        ${Funciones.generatePropsDefinitions(this.propertiesTable)} 
            
-          constructor(${Funciones.generatePropsConstruct(propertiesData)}) {
-             ${Funciones.generatePropsValues(propertiesData)}
+          constructor(${Funciones.generatePropsConstruct(this.propertiesTable)}) {
+             ${Funciones.generatePropsValues(this.propertiesTable)}
           }
       
           toArrayInsert(): any[] {
-            return [${Funciones.generateFunctionToarray(propertiesData, excludedPropertiesInsert)}];
+            return [${Funciones.generateFunctionToarray(this.propertiesTable, excludedPropertiesInsert)}];
           }
       
           toArrayUpdate(): any[] {
-            return [${Funciones.generateFunctionToarray(propertiesData, excludedPropertiesUpdate)}, this.${primaryKeyColumn}];
+            return [${Funciones.generateFunctionToarray(this.propertiesTable, excludedPropertiesUpdate)}, this.${this.primaryKey}];
           }
       }
       
-      export default ${capitalizedTableName}Entidad;
+      export default ${this.capitalizedTableName}Entidad;
       `;
 
-        const carpetaEntidades = path.join(__dirname, 'entidades');
-        const archivoEntidad = path.join(carpetaEntidades, `${capitalizedTableName}Entidad.ts`);
+    const carpetaEntidades = path.join(__dirname, '../../entidades');
+    const archivoEntidad = path.join(carpetaEntidades, `${this.capitalizedTableName}Entidad.ts`);
 
-        if (!existsSync(carpetaEntidades)) {
-            mkdirSync(carpetaEntidades, { recursive: true });
-        }
-
-        writeFileSync(archivoEntidad, content, 'utf8');
+    if (!existsSync(carpetaEntidades)) {
+      mkdirSync(carpetaEntidades, { recursive: true });
     }
 
+    writeFileSync(archivoEntidad, content, 'utf8');
+  }
 }
 export default EntityCreator;

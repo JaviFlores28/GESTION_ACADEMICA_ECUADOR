@@ -2,7 +2,6 @@ import mysql, { Pool, PoolOptions } from 'mysql2/promise';
 import 'dotenv/config';
 import { readFile } from 'fs/promises';
 class BaseDatos {
-  
   private static pool: Pool;
 
   constructor() {
@@ -10,7 +9,7 @@ class BaseDatos {
       const access: PoolOptions = {
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD
+        password: process.env.DB_PASSWORD,
       };
       BaseDatos.pool = mysql.createPool(access);
     }
@@ -64,6 +63,5 @@ class BaseDatos {
       console.log(error);
     }
   }
-
 }
 export default BaseDatos;

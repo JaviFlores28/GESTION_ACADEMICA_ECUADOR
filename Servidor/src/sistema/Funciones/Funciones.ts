@@ -79,7 +79,6 @@ class Funciones {
     return results;
   }
 
-
   static generatePropsDefinitions(propertiesData: MappedProperty[]) {
     return propertiesData
       .filter((property) => property.name !== 'FECHA_CREACION')
@@ -112,16 +111,6 @@ class Funciones {
       .join(',');
   }
 
-  /* const excludedProperties = [
-                'FECHA_CREACION',
-                'ROL_PRF',
-                'ROL_REPR',
-                'ROL_ADMIN',
-                'USUARIO',
-                'USR_PSWD',
-                'ESTADO'
-            ]; 
-    */
   static generatePropsIsValid(propertiesData: MappedProperty[], excludedProperties: string[]) {
     return propertiesData
       .filter((property) => !excludedProperties.includes(property.name))
@@ -143,24 +132,8 @@ class Funciones {
       .join(', ');
   }
 
-  static generateSqlInsert(propertiesData: MappedProperty[]) {
-    const excludedProperties = ['FECHA_CREACION'];
-    const filteredProperties = propertiesData.filter((property) => !excludedProperties.includes(property.name));
 
-    const marcadores = filteredProperties.map(() => '?').join(', ');
-    const headers = filteredProperties.map((property) => property.name).join(', ');
-    return { headers, marcadores };
-  }
-
-  static generarSQLUpdate(propertiesData: MappedProperty[]) {
-    const excludedProperties = ['USUARIO', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID'];
-    return propertiesData
-      .filter((property) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
-      .map((property) => `${property.name}=?`)
-      .join(',');
-  }
-
- /*  static logger = winston.createLogger({
+  /*  static logger = winston.createLogger({
     level: 'silly',
     format: winston.format.json(),
     transports: [

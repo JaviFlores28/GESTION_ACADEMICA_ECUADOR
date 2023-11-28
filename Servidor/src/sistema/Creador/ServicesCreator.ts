@@ -1,6 +1,6 @@
-import { existsSync, mkdirSync, writeFileSync } from "fs";
-import path from "path";
-import Funciones from "../funciones/Funciones";
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import path from 'path';
+import Funciones from '../funciones/Funciones';
 
 class ServicesCreator {
   tableName: string;
@@ -30,7 +30,7 @@ class ServicesCreator {
       } else {
         return '';
       }
-    }
+    };
 
     const getroute = `
         router.get('/${this.lowercaseTableName}', async (req, res) => {
@@ -66,7 +66,6 @@ class ServicesCreator {
   }
 
   createPostRoute(): string {
-
     const scriptUsuarioPost = `const { usuario, detalle } = req.body;
     const response = await ${this.capitalizedTableName}Negocio.insert(usuario, detalle);
     `;
@@ -91,7 +90,7 @@ class ServicesCreator {
       } else {
         return scriptPost;
       }
-    }
+    };
 
     const postroute = `
     router.post('/${this.lowercaseTableName}', async (req, res) => {
@@ -107,7 +106,6 @@ class ServicesCreator {
   }
 
   createPatchRoute(): string {
-
     const getByUser = `else if(!masivo && type === 'getByUser'){
       response = await ${this.capitalizedTableName}Negocio.getByUser(data.usuario,data.pswd);
    }  `;
@@ -161,14 +159,13 @@ class ServicesCreator {
   }
 
   async generateServiceFile(): Promise<void> {
-
     const content = `
       import { Router } from 'express';
       const router = Router();
       import ${this.capitalizedTableName}Negocio from '../negocio/${this.capitalizedTableName}Negocio';
       import ${this.capitalizedTableName}Entidad from '../entidades/${this.capitalizedTableName}Entidad';
       import { TypeRequest } from '../sistema/interfaces/TypeRequest';
-      ${this.createPostRoute}
+      ${this.createPostRoute()}
       ${this.createPutRoute()}
       ${this.createPatchRoute()}
       ${this.createDeleteRoute()}
