@@ -2,8 +2,8 @@ import CryptoJS from 'crypto-js';
 import * as dotenv from 'dotenv';
 import { ColumnData } from '../interfaces/ColumnData';
 import { MappedProperty } from '../interfaces/MappedProperty';
-import winston from 'winston';
-
+/* import winston from 'winston';
+ */
 dotenv.config();
 const { KEY_ENCRYPT } = process.env;
 
@@ -79,10 +79,6 @@ class Funciones {
     return results;
   }
 
-  static async getPrimaryKey(connection: any, tableName: any) {
-    const [results] = await connection.execute(`SHOW KEYS FROM ${tableName} WHERE Key_name = 'PRIMARY'`);
-    return results;
-  }
 
   static generatePropsDefinitions(propertiesData: MappedProperty[]) {
     return propertiesData
@@ -164,14 +160,14 @@ class Funciones {
       .join(',');
   }
 
-  static logger = winston.createLogger({
+ /*  static logger = winston.createLogger({
     level: 'silly',
     format: winston.format.json(),
     transports: [
       new winston.transports.File({ filename: 'servidor.log' }),
       //new winston.transports.Console()
     ],
-  });
+  }); */
 }
 
 export default Funciones;

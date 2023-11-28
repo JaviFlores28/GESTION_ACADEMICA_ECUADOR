@@ -48,8 +48,9 @@ npm install ts-node-dev -D # soporte para desarrollo en typescript
 ### DEPENDENCIAS DE DESARROLLO
 
 ```shell
-npm i dotenv
-npm i mysql2
+npm i dotenv --save
+npm i --save mysql2
+npm i --save-dev @types/node
 npm i express
 npm i --save-dev @types/express
 npm i uuid
@@ -58,7 +59,8 @@ npm install crypto-js
 npm i --save-dev @types/crypto-js
 npm install cors
 npm i --save-dev @types/cors
-npm i --save-dev @types/node #recomendado
+npm i --save-dev --save-exact prettier
+
 ```
 
 ## COMANDOS PARA COMPILAR EL PROYECTO

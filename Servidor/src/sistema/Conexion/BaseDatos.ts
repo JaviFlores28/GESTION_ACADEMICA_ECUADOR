@@ -1,87 +1,69 @@
-import { createPool } from 'mysql2/promise';
-import * as dotenv from 'dotenv';
-import * as fs from 'fs/promises';
-import Funciones from '../funciones/Funciones';
+import mysql, { Pool, PoolOptions } from 'mysql2/promise';
+import 'dotenv/config';
+import { readFile } from 'fs/promises';
+class BaseDatos {
+  
+  private static pool: Pool;
 
-dotenv.config();
-const { DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE } = process.env;
-
-const pool = createPool({
-  host: DB_HOST,
-  user: DB_USER,
-  password: DB_PASSWORD,
-  database: DB_DATABASE,
-});
-
-async function createDatabase() {
-  try {
-    // Crear una conexión sin especificar la base de datos
-    const connectionWithoutDB = await createPool({
-      host: DB_HOST,
-      user: DB_USER,
-      password: DB_PASSWORD,
-    }).getConnection();
-
-    // Crear la base de datos si no existe
-    await connectionWithoutDB.query(`CREATE DATABASE IF NOT EXISTS ${DB_DATABASE}`);
-
-    // Liberar la conexión de vuelta al pool
-    connectionWithoutDB.release();
-  } catch (error: any) {
-    Funciones.logger.error(error.errors);
-  }
-}
-
-async function createTables() {
-  try {
-    // Leer el contenido del archivo SQL
-    const sqlScript = await fs.readFile('SQL/UEFBC.sql', 'utf-8');
-
-    // Dividir el script en consultas individuales
-    const queries = sqlScript.split(';').filter((query) => query.trim() !== '');
-
-    // Ejecutar cada consulta por separado
-    for (const query of queries) {
-      const result = await pool.query(query);
-      if (!result[0]) {
-        throw new Error('Error al ejecutar la consulta:' + result[0]);
-      }
+  constructor() {
+    if (!BaseDatos.pool) {
+      const access: PoolOptions = {
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD
+      };
+      BaseDatos.pool = mysql.createPool(access);
     }
-  } catch (error: any) {
-    Funciones.logger.error(error);
   }
-}
 
-async function insertOnTables() {
-  try {
-    // Leer el contenido del archivo SQL
-    const sqlScript = await fs.readFile('SQL/DatosTest.sql', 'utf-8');
+  async getPool() {
+    await BaseDatos.pool.query('USE ' + process.env.DB_DATABASE);
+    return BaseDatos.pool;
+  }
 
-    // Dividir el script en consultas individuales
-    const queries = sqlScript.split(';').filter((query) => query.trim() !== '');
+  async createDatabase() {
+    try {
+      console.log('Creando base de datos...');
+      // crea la base de datos
+      const result = await BaseDatos.pool.query(`CREATE DATABASE IF NOT EXISTS ${process.env.DB_DATABASE}`);
+      console.log(result[0]);
 
-    // Ejecutar cada consulta por separado
-    for (const query of queries) {
-      const result = await pool.query(query);
-      if (!result[0]) {
-        throw new Error('Error al ejecutar la consulta:' + result[0]);
+      // lee el archivo sql
+      console.log('Creando tablas...');
+      let sqlScript = await readFile('SQL/TABLAS.sql', 'utf-8');
+      // array de consultas
+      const queries = sqlScript.split(';').filter((query) => query.trim() !== '');
+      // cambia a la base de datos creada
+      await BaseDatos.pool.query('USE ' + process.env.DB_DATABASE);
+      // ejecuta cada consulta
+      for (const query of queries) {
+        const result = await BaseDatos.pool.query(query);
+        if (!result[0]) {
+          throw new Error('Error al ejecutar la consulta:' + result[0]);
+        }
       }
+      console.log('Base de datos creada');
+    } catch (error: any) {
+      console.log(error);
     }
-  } catch (error: any) {
-    Funciones.logger.error(error);
   }
-}
 
-async function runDatabaseSetup() {
-  try {
-    await createDatabase();
-    await createTables();
-    await insertOnTables();
-  } catch (error: any) {
-    Funciones.logger.error(error);
+  async defaultData() {
+    try {
+      console.log('Agregando datos por defecto...');
+      const sqlScript = await readFile('SQL/DATOS_TEST.sql', 'utf-8');
+      const queries = sqlScript.split(';').filter((query) => query.trim() !== '');
+      for (const query of queries) {
+        const result = await BaseDatos.pool.query(query);
+        if (!result[0]) {
+          throw new Error('Error al ejecutar la consulta:' + result[0]);
+        }
+      }
+      console.log('Datos agregados');
+    } catch (error: any) {
+      console.log(error);
+    }
   }
+
 }
-
-runDatabaseSetup();
-
-export default pool;
+export default BaseDatos;
