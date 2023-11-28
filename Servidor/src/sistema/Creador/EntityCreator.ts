@@ -4,7 +4,6 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { MappedProperty } from '../interfaces/MappedProperty';
 
 class EntityCreator {
-
   tableName: string;
   capitalizedTableName: string;
   lowercaseTableName: string;
@@ -20,7 +19,6 @@ class EntityCreator {
   }
 
   async generateEntityFile(): Promise<void> {
-  
     const excludedPropertiesInsert = ['FECHA_CREACION'];
     const excludedPropertiesUpdate = ['USUARIO', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID', this.primaryKey];
 

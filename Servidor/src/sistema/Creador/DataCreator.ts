@@ -380,7 +380,7 @@ class DataCreator {
     return functionupdateEstado;
   }
 
-  generateSqlInsert(): { headers: string, marcadores: string } {
+  generateSqlInsert(): { headers: string; marcadores: string } {
     const excludedProperties = ['FECHA_CREACION'];
     const filteredProperties = this.propertiesTable.filter((property: any) => !excludedProperties.includes(property.name));
 

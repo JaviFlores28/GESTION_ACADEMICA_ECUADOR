@@ -132,7 +132,6 @@ class Funciones {
       .join(', ');
   }
 
-
   /*  static logger = winston.createLogger({
     level: 'silly',
     format: winston.format.json(),
