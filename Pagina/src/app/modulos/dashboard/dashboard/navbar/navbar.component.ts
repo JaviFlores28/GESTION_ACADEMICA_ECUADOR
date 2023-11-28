@@ -50,9 +50,9 @@ export class NavbarComponent implements OnInit {
         if (result === 'save') {
           this.servicio.removeLocal();
           // Redirigir al usuario al login
-          this.router.navigate(['login']);
+         // this.router.navigate(['login']);
           // O recargar la página
-          //window.location.reload();
+          window.location.reload();
         }
       })
       .catch((error) => {

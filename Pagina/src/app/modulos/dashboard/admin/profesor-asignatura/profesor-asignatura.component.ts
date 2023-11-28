@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Asignatura } from 'src/app/interfaces/Asignatura.interface';
 import { Curso } from 'src/app/interfaces/Curso.interface';
 import { Paralelo } from 'src/app/interfaces/Paralelo.interface';
@@ -47,7 +45,8 @@ export class ProfesorAsignaturaComponent implements OnInit {
   USR_ID: string = this.usuarioService.getUserLoggedId();
   AL_ID: string = '0';
   ESTADO: number = 1;
-existeAnio: boolean = false;
+  existeAnio: boolean = false;
+  
   form = this.formBuilder.group({
     PRF_ID: ['', Validators.required],
     CRS_ID: ['', Validators.required],
