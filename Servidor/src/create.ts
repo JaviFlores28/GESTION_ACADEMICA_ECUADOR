@@ -27,10 +27,9 @@ async function main() {
       await businessCreator.generateBusinessFile();
       await servicesCreator.generateServiceFile();
     }
-    
+
     execSync(`npx prettier src/ --write --print-width 1000 --single-quote`);
     console.info('Archivos creados correctamente');
-
   } catch (error: any) {
     console.error('Error: ' + error);
   } finally {

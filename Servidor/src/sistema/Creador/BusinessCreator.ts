@@ -192,7 +192,7 @@ class BusinessCreator {
       
       export default ${this.capitalizedTableName}Negocio;`;
 
-    const carpeta = path.join(__dirname, 'negocio');
+    const carpeta = path.join(__dirname, '../../negocio');
     const archivo = path.join(carpeta, `${this.capitalizedTableName}Negocio.ts`);
 
     if (!existsSync(carpeta)) {
