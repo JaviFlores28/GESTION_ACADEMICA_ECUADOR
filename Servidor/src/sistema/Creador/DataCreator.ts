@@ -197,8 +197,7 @@ class DataCreator {
     const functionGetByUser = `
     static async getByUser(${this.tableName}: string, pswd: string): Promise<Respuesta> {
       try {
-        const baseDatos = new BaseDatos();
-        const pool = await baseDatos.getPool();
+        const pool = await BaseDatos.getInstanceDataBase();
         let sql = this.sqlGetByUser;
         const [rows] = await pool.execute<any>(sql, [${this.tableName}]);
   
@@ -258,8 +257,8 @@ class DataCreator {
   getByPrf(): string {
     const functionGetByPrf = `static async getByPrf(data: any): Promise<Respuesta> {
       try {
-        const baseDatos = new BaseDatos();
-        const pool = await baseDatos.getPool();
+        
+        const pool = await BaseDatos.getInstanceDataBase();
         let sql = this.sqlGetByPrf;
         const [rows] = await pool.execute<any>(sql, [data.AL_ID, data.PRF_ID]);
         if (rows.length <= 0) {
@@ -279,8 +278,7 @@ class DataCreator {
     const functionGetNoMatriculados = `
     static async getNoMatriculados(): Promise<Respuesta> {
       try {
-        const baseDatos = new BaseDatos();
-        const pool = await baseDatos.getPool();
+        const pool = await BaseDatos.getInstanceDataBase();
         let sql = this.sqlGetNoMatriculados;
         const [rows] = await pool.execute<any>(sql);
         return {response: true, data: rows as ${this.capitalizedTableName}Entidad[], message: '' };
@@ -453,7 +451,7 @@ class DataCreator {
       } else if (this.tableName === 'estudiante_curso_paralelo') {
         return this.insertMasivo() + this.getByParalelo();
       } else if (this.tableName === 'profesor_asignatura_paralelo') {
-        return this.getByPrf;
+        return this.getByPrf();
       } else {
         return '';
       }
