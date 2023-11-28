@@ -100,7 +100,7 @@ class BaseDatos {
     }
   }
 
-  static mapProperties(properties: any): MappedProperty[] {
+  static mapProperties(properties: ColumnData[]): MappedProperty[] {
     return properties.map((column: ColumnData) => {
       const fieldType = column.Type.toLowerCase();
       const mappedType = this.getMappedType(fieldType);
