@@ -15,20 +15,21 @@ class ServicesCreator {
 
   createGetRoute(): string {
     const otherGets = () => {
-      if (this.tableName === 'estudiante_curso') {
-        return `case 'noMatriculados':
+      switch (this.tableName) {
+        case 'estudiante_curso':
+          return `case 'noMatriculados':
               ${this.tableName} = await ${this.capitalizedTableName}Negocio.getNoMatriculados();
               break;
               case 'curso':
               ${this.tableName} = await ${this.capitalizedTableName}Negocio.getByCurso(id);
               break;`;
-      } else if (this.tableName === 'estudiante_curso_paralelo') {
-        return `case 'paralelo':
+        case 'estudiante_curso_paralelo':
+          return `case 'paralelo':
               ${this.tableName} = await ${this.capitalizedTableName}Negocio.getByParalelo(id);
               break;
               `;
-      } else {
-        return '';
+        default:
+          return '';
       }
     };
 
@@ -106,21 +107,38 @@ class ServicesCreator {
   }
 
   createPatchRoute(): string {
-    const getByUser = `else if(!masivo && type === 'getByUser'){
-      response = await ${this.capitalizedTableName}Negocio.getByUser(data.usuario,data.pswd);
-   }  `;
+
+    const gets = () => {
+      switch (this.tableName) {
+        case 'usuario':
+          return `case 'getByUser':
+          response = await ${this.capitalizedTableName}Negocio.getByUser(data);
+          break;`;
+        case 'profesor_asignatura_paralelo':
+          return `case 'getByPrf':
+          response = await ${this.capitalizedTableName}Negocio.getByPrf(data);
+          break;`;
+        default:
+          return '';
+      }
+    }
 
     const patchRoute = `
    router.patch('/${this.lowercaseTableName}', async (req, res) => {
       try {
-       const { masivo, type, data}: TypeRequest = req.body;
+       const {type, data}: TypeRequest = req.body;
        let response;
-       if(masivo && type === 'updateEstado'){
-         response = await ${this.capitalizedTableName}Negocio.updateEstado(data);
-       }else if(masivo && type === 'delete'){
-         //response = await ${this.capitalizedTableName}Negocio.updateEstado(data);
-       }${this.tableName === 'usuario' ? getByUser : ''}
-         
+       switch (type) {
+        case 'updateEstado':
+          response = await ${this.capitalizedTableName}Negocio.updateEstado(data);
+          break;
+        case 'delete':
+          // Handle delete case
+          break;
+        ${gets()}
+        default:
+          return res.status(400).json({ message: 'Tipo de solicitud inválido.' });
+      }
        res.json(response);
      } catch (error: any) {
        res.status(500).json({ message:error.message });

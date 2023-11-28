@@ -89,9 +89,9 @@ class BusinessCreator {
 
   getByUser(): string {
     const functionGetByUser = `
-    static async getByUser(${this.tableName}: string, pswd: string): Promise<Respuesta> {
+    static async getByUser(data:any): Promise<Respuesta> {
       try {
-        return ${this.capitalizedTableName}Datos.getByUser(${this.tableName}, pswd);
+        return ${this.capitalizedTableName}Datos.getByUser(data);
   
       } catch (error: any) {
         return { response: false, data: null, message:error.message } // Devuelve una Promise rechazada con el error
@@ -136,6 +136,18 @@ class BusinessCreator {
     return functionGetNoMatriculados;
   }
 
+  getByPrf(): string { 
+    const functionGetByPrf = `
+    static async getByPrf(data: any): Promise<Respuesta> {
+      try {
+        return ${this.capitalizedTableName}Datos.getByPrf(data);
+      } catch (error: any) {
+        return {response: false, data: null, message:error.message }; 
+      }
+    }`;
+    return functionGetByPrf; 
+  }
+
   insertMasivo(): string {
     const functioninsertarMasivamente = `
         static async insertMasivo(data:any): Promise<Respuesta> {
@@ -163,14 +175,17 @@ class BusinessCreator {
 
   async generateBusinessFile(): Promise<void> {
     const otherFun = () => {
-      if (this.tableName === 'usuario') {
-        return this.getByUser();
-      } else if (this.tableName === 'estudiante_curso') {
-        return this.getNoMatriculados() + this.getByCurso() + this.insertMasivo();
-      } else if (this.tableName === 'estudiante_curso_paralelo') {
-        return this.insertMasivo() + this.getByParalelo();
-      } else {
-        return '';
+      switch (this.tableName) {
+        case 'usuario':
+          return this.getByUser();
+        case 'estudiante_curso':
+          return this.getNoMatriculados() + this.getByCurso() + this.insertMasivo();
+        case 'estudiante_curso_paralelo':
+          return this.insertMasivo() + this.getByParalelo();
+        case 'profesor_asignatura_paralelo':
+          return this.getByPrf();
+        default:
+          return '';
       }
     };
 

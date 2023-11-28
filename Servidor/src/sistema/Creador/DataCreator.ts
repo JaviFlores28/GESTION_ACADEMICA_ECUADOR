@@ -195,11 +195,11 @@ class DataCreator {
 
   getByUser(): string {
     const functionGetByUser = `
-    static async getByUser(${this.tableName}: string, pswd: string): Promise<Respuesta> {
+    static async getByUser(data:any): Promise<Respuesta> {
       try {
         const pool = await BaseDatos.getInstanceDataBase();
         let sql = this.sqlGetByUser;
-        const [rows] = await pool.execute<any>(sql, [${this.tableName}]);
+        const [rows] = await pool.execute<any>(sql, [data.usuario]);
   
         if (rows.length <= 0) {
           throw new Error('${this.capitalizedTableName} no encontrado');
@@ -207,7 +207,7 @@ class DataCreator {
   
         const pswdDecrypt = Funciones.decrypt(rows[0].USR_PSWD);
   
-        if (!Funciones.pswdValid(pswdDecrypt, pswd)) {
+        if (!Funciones.pswdValid(pswdDecrypt, data.pswd)) {
           throw new Error('Contraseña incorrecta');
         }
         let new${this.capitalizedTableName} = rows[0] as ${this.capitalizedTableName}Entidad;
@@ -262,10 +262,9 @@ class DataCreator {
         let sql = this.sqlGetByPrf;
         const [rows] = await pool.execute<any>(sql, [data.AL_ID, data.PRF_ID]);
         if (rows.length <= 0) {
-          throw new Error('Objeto de tipo ProfesorAsignaturaParalelo no encontrado');
+          throw new Error('Objeto de tipo ${this.capitalizedTableName} no encontrado');
         }
-        let ${this.tableName} = rows[0] as ${this.capitalizedTableName}Entidad;
-        return { response: true, data: ${this.tableName}, message: 'Encontrado' };
+        return { response: true, data:rows as ${this.capitalizedTableName}Entidad[], message: 'Encontrado' };
       } catch (error: any) {
         
         return { response: false, data: null, message: error.message };

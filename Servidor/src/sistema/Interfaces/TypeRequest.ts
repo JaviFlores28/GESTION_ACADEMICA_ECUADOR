@@ -1,5 +1,5 @@
 export interface TypeRequest {
-  masivo: boolean;
+  masivo?: boolean;
   type?: string;
   data: any;
 }
