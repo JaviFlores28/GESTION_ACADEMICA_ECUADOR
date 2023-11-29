@@ -6,7 +6,7 @@
       <button [routerLink]="[routerLink]" class="btn btn-primary btn-sm shadow">Crear</button>
     </ol>
   </nav>
-  <div class="card text-start border border-0 rounded shadow">
+  <div class="card text-start border-0 rounded shadow">
     <div class="card-body">
       <ng-container *ngIf="data">
         <app-ng-table [data]="data" [headers]="headers" [campos]="campos" [pageSize]="10" (eliminarAction)="eliminar($event)" (checkedAction)="checkedsAction($event)" (filaAction)="filaAction($event)"></app-ng-table>

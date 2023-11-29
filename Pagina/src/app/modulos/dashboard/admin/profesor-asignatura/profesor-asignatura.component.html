@@ -12,7 +12,7 @@
     <div class="col-7">
       <div class="card text-start shadow border-0">
         <div class="card-body">
-          <div class="row row-cols-1">
+          <div class="row row-cols-1 g-3">
             <div class="col">
               <div class="row g-3 justify-content-start align-items-end pt-2">
                 <div class="col-5">
@@ -45,6 +45,10 @@
               </div>
             </div>
             <div class="col">
+              <div *ngIf="table" class="col">
+                <app-ng-table [data]="table" [headers]="headers" [campos]="campos" (eliminarAction)="eliminar($event)"
+                  (checkedAction)="checkedsAction($event)" (filaAction)="filaAction($event)" [botonDelete]="false" [botonEstado]="false"></app-ng-table>
+              </div>
             </div>
           </div>
         </div>

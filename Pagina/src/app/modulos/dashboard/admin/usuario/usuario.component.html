@@ -12,7 +12,7 @@
     class="row row-cols-1 row-cols-md-2 g-3 justify-content-center justify-content-md-start align-items-md-start align-items-center"
     [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="col">
-      <div class="card text-start border border-0 rounded shadow h-100">
+      <div class="card text-start border-0 rounded shadow h-100">
         <div class="card-body">
           <h5 class="card-title"><fa-icon [icon]="icon" size="1x"></fa-icon> Datos informativos</h5>
           <hr />
@@ -72,7 +72,7 @@
     <div class="col">
       <div class="row row-cols-1 g-3">
         <div class="col">
-          <div class="card text-start border border-0 rounded shadow" *ngIf="isProf">
+          <div class="card text-start border-0 rounded shadow" *ngIf="isProf">
             <div class="card-body">
               <h5 class="card-title"><fa-icon [icon]="faperson" size="1x"></fa-icon> Datos institucionales</h5>
               <hr />
@@ -94,7 +94,7 @@
           </div>
         </div>
         <div class="col">
-          <div class="card text-start border border-0 rounded shadow">
+          <div class="card text-start border-0 rounded shadow">
             <div class="card-body">
               <h5 class="card-title"><fa-icon [icon]="fauser" size="1x"></fa-icon> Datos de usuario</h5>
               <hr />
@@ -121,7 +121,7 @@
       </div>
     </div>
     <div class="col">
-      <div class="card text-start border border-0 rounded shadow" *ngIf="modoEdicion">
+      <div class="card text-start border-0 rounded shadow" *ngIf="modoEdicion">
         <div class="card-body">
           <h5 class="card-title"><fa-icon [icon]="fakey" size="1x"></fa-icon> Cambiar Contraseña</h5>
           <hr />

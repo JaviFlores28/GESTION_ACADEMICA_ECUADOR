@@ -13,7 +13,7 @@
       <p class="shadow rounded-top-4 text-center h4 p-2 mb-2 bg-dark text-white">Estudiantes</p>
       <div class="row row-cols-1 g-3">
         <div class="col">
-          <div class="card text-start border border-0 rounded shadow">
+          <div class="card text-start  border-0 rounded shadow">
             <div class="card-body">
               <form class="row g-3 justify-content-start align-items-end" [formGroup]="form" (ngSubmit)="onSubmit()">
                 <div class="col-3">
@@ -32,7 +32,7 @@
           </div>
         </div>
         <div class="col">
-          <div class="card text-start rounded-bottom-5 border border-0 shadow">
+          <div class="card text-start rounded-bottom-5  border-0 shadow">
             <div class="card-body">
               <app-ng-table tableName="nomatriculados" [data]="noMatriculados" [headers]="headersNoMatriculados"
                 [campos]="camposNoMatriculados" [botonera]="false" [checksOptions]="false" [botonEstado]="false"
@@ -44,7 +44,7 @@
     </div>
     <div class="col">
       <p class="shadow rounded-top-4 text-center h4 p-2 mb-2 bg-dark text-white">Matrículas</p>
-      <div class="card text-start rounded-bottom-5 border border-0 shadow">
+      <div class="card text-start rounded-bottom-5 border-0 shadow">
         <div class="card-body">
           <app-ng-table tableName="matriculados" [data]="matriculas" [headers]="headersMatriculados"
             [campos]="camposMatriculados" [botonera]="false" [botonEstado]="false"

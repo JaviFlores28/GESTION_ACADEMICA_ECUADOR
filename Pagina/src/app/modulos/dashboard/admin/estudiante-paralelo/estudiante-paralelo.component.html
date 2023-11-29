@@ -7,12 +7,13 @@
     <li class="breadcrumb-item active">Paralelos</li>
     </ol>
   </nav>
+
   <form class="row row-cols-2 g-3" [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="existeAnio">
     <div class="col">
       <p class="shadow rounded-top-4 text-center h4 p-2 mb-2 bg-dark text-white ">Estudiantes</p>
       <div class="row row-cols-1 g-3">
         <div class="col">
-          <div class="card text-start border border-0 rounded shadow">
+          <div class="card text-start border-0 rounded shadow">
             <div class="card-body">
               <div class="row align-items-end justify-content-center">
                 <div class="col">
@@ -37,7 +38,7 @@
           </div>
         </div>
         <div class="col">
-          <div class="card text-start rounded-bottom-5 border border-0 shadow">
+          <div class="card text-start rounded-bottom-5 border-0 shadow">
             <div class="card-body">
               <app-ng-table tableName="estudianteCurso" [data]="estudianteCurso" [headers]="headersEstudianteCurso"
                 [campos]="camposEstudianteCurso" [botonera]="false" [checksOptions]="false" [botonEstado]="false"
@@ -49,7 +50,7 @@
     </div>
     <div class="col">
       <p class="shadow rounded-top-4 text-center h4 p-2 mb-2 bg-dark text-white">Registros</p>
-      <div class="card text-start rounded-bottom-5 border border-0 shadow">
+      <div class="card text-start rounded-bottom-5 border-0 shadow">
         <div class="card-body">
           <app-ng-table class="shadow" tableName="estudiantesParalelos" [data]="estudiantesParalelos"
             [headers]="headersEstudianteCursoParalelo" [campos]="camposEstudianteCursoParalelo" [botonera]="false" [botonEstado]="false"
