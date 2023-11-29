@@ -36,8 +36,8 @@ export class ProfesorAsignaturaComponent implements OnInit {
   asignaturas: Asignatura[] = [];
   table: ProfesorAsignaturaParalelo[] = [];
 
-  headers = ['PROFESOR', 'CURSO', 'PARALELO', 'ASIGNATURA'];
-  campos = ['PRF_ASG_PRLL_ID', 'PRF_ID', 'CRS_ID', 'PRLL_ID', 'ASG_ID'];
+  headers = ['PROFESOR', 'CURSO', 'TIPO','PARALELO', 'ASIGNATURA'];
+  campos = ['PRF_ASG_PRLL_ID', 'PRF_NOM', 'CRS_NOM','CRS_TIPO', 'PRLL_NOM', 'ASG_NOM'];
   headersAsg = ['NOMBRE'];
   camposAsg = ['ASG_ID', 'ASG_NOM'];
 
@@ -90,6 +90,8 @@ export class ProfesorAsignaturaComponent implements OnInit {
     this.service.getEnabled().subscribe({
       next: (value) => {
         if (value.response) {
+          console.log(value.data);
+          
           this.table = value.data;
         } else {
           console.log(value.message);

@@ -25,6 +25,7 @@ import { EstudianteCursoComponent } from './admin/estudiante-curso/estudiante-cu
 import { EstudianteParaleloComponent } from './admin/estudiante-paralelo/estudiante-paralelo.component';
 import { ProfesorCursosAsignaturasComponent } from './docente/profesor-cursos-asignaturas/profesor-cursos-asignaturas.component';
 import { ProfesorHorariosComponent } from './docente/profesor-horarios/profesor-horarios.component';
+import { CalificacionesComponent } from './docente/calificaciones/calificaciones.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent, canActivate: [authGuardLogin] },
@@ -38,7 +39,13 @@ const routes: Routes = [
       {
         path: 'docente',
         children: [
-          { path: 'cursos', component: ProfesorCursosAsignaturasComponent},
+          { path: 'cursos',
+          children: [
+            { path: '', component: ProfesorCursosAsignaturasComponent},
+            { path: 'calificaciones/:id', component: CalificacionesComponent},
+
+          ]
+        },
           { path: 'horarios', component: ProfesorHorariosComponent},
 
         ],

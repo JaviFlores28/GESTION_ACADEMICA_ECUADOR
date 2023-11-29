@@ -47,7 +47,7 @@ export class EstudianteCursoParaleloService extends ErrorHandlerService {
     return this.http.post(this.apiUrl, { masivo: true, data: arrayData }).pipe(catchError(this.handleError));
   }
 
-  getByParalelo(id: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}?by=paralelo&id=${id}`).pipe(catchError(this.handleError));
+  getEstudiantesByParalelo(data: any): Observable<any> {
+    return this.http.get(`${this.apiUrl}?by=paralelo&id=${data}`).pipe(catchError(this.handleError));
   }
 }

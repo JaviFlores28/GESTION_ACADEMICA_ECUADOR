@@ -1,17 +1,18 @@
 <div class="container-fluid">
-    <div class="row bg-light">
-      <h1 class="fw-custom-semibold">Profesores</h1>
-      <ol class="ps-4 py-2 breadcrumb">
-        <li class="breadcrumb-item">Cursos</li>
-        <li class="breadcrumb-item active">{{ title }}</li>
-      </ol>
-    </div>
-    <div class="card text-start border-0 rounded shadow">
-      <div class="card-body">
-        <ng-container *ngIf="data">
-          <app-ng-table [data]="data" [headers]="headers" [campos]="campos" [editButton]="false" [deleteButton]="false" [viewButton]="true" [checks]="false" (actionOnRowButton)="filaAction($event)"></app-ng-table>
-        </ng-container>
-      </div>
+  <nav aria-label="breadcrumb">
+    <h3 class="fw-custom-semibold">Profesores</h3>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">Cursos</li>
+      <li class="breadcrumb-item active">{{ title }}</li>
+    </ol>
+  </nav>
+  <div class="card text-start border-0 rounded shadow">
+    <div class="card-body">
+      <ng-container *ngIf="data">
+        <app-ng-table [data]="data" [headers]="headers" [campos]="campos" [editButton]="false" [deleteButton]="false"
+          [statusButton]="false" [viewButton]="true" [checks]="false"
+          (actionOnRowButton)="filaAction($event)"></app-ng-table>
+      </ng-container>
     </div>
   </div>
-  
+</div>

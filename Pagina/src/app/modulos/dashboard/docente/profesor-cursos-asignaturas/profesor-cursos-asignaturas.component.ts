@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 import { ProfesorAsignaturaService } from 'src/app/servicios/profesor-asignatura.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
@@ -12,13 +13,15 @@ export class ProfesorCursosAsignaturasComponent implements OnInit {
   constructor(
     private service: ProfesorAsignaturaService,
     private usuarioService: UsuarioService,
-    private anioService: AnioLectivoService
+    private anioService: AnioLectivoService,
+    private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
 
   data: any[] = [];
-  campos: any[] = ['PRF_ASG_PRLL_ID', 'AL_ID', 'ASG_ID', 'CRS_ID', 'PRLL_ID', 'PRF_ID'];
-  headers: any[] = ['Año lectivo', 'Asignatura', 'Curso', 'Paralelo', 'Profesor', 'ESTADO'];
+  campos: any[] = ['PRF_ASG_PRLL_ID', 'AL_NOM', 'ASG_NOM', 'CRS_NOM', 'CRS_TIPO', 'PRLL_NOM', 'PRF_NOM'];
+  headers: any[] = ['Año lectivo', 'Asignatura', 'Curso', 'Tipo', 'Paralelo', 'Profesor'];
 
   title = 'Asignaturas';
   USR_ID: string = this.usuarioService.getUserLoggedId();
@@ -66,6 +69,9 @@ export class ProfesorCursosAsignaturasComponent implements OnInit {
   }
 
   filaAction(value: any) {
-    console.log(value)
-  }
+    if (value.option === 'ver') {
+      this.router.navigate(['calificaciones/' + value.id], { relativeTo: this.route });
+    } else if (value.option === 'eliminar') {
+      console.log(value.id);
+    }  }
 }
