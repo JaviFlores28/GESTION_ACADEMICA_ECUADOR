@@ -46,7 +46,7 @@
             </div>
             <div class="col">
               <div *ngIf="table" class="col">
-                <app-ng-table tableName="asignaturas" [data]="asignaturas" [headers]="headersAsg" [campos]="camposAsg" [rowButtons]="false"  [checkButtons]="false" (checkedAction)="checkAsg($event)" ></app-ng-table>
+                <app-ng-table tableName="asignaturas" [data]="asignaturas" [headers]="headersAsg" [campos]="camposAsg" [rowButtons]="false"  [checkButtons]="false" [statusButton]="false" (actionOnChecks)="checkAsg($event)" ></app-ng-table>
               </div>
             </div>
           </div>
@@ -57,7 +57,7 @@
       <div class="card text-start shadow border-0">
         <div class="card-body">
           <div *ngIf="table" class="col">
-            <app-ng-table tableName="profesoresAsignaturas" [data]="table" [headers]="headers" [campos]="campos" [botonDelete]="false" [botonEstado]="false" 
+            <app-ng-table tableName="profesoresAsignaturas" [data]="table" [headers]="headers" [campos]="campos" [deleteButton]="false" [statusButton]="false" 
             (actionOnChecks)="checkedsAction($event)" (actionOnRowButton)="filaAction($event)"></app-ng-table>
           </div>
         </div>

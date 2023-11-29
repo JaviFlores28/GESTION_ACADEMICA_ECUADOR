@@ -45,25 +45,25 @@ export class NgTableComponent implements OnInit {
    * Indica si se mostrará el botón de edición en la tabla.
    * @type {boolean}
    */
-  @Input() botonEdit: boolean = true;
+  @Input() editButton: boolean = true;
 
   /**
    * Indica si se mostrará el botón de eliminación en la tabla.
    * @type {boolean}
    */
-  @Input() botonDelete: boolean = true;
+  @Input() deleteButton: boolean = true;
 
   /**
    * Indica si se mostrará el botón de cambio de estado en la tabla.
    * @type {boolean}
    */
-  @Input() botonEstado: boolean = true;
+  @Input() statusButton: boolean = true;
 
   /**
    * Indica si se mostrará el botón de ver detalles en la tabla.
    * @type {boolean}
    */
-  @Input() botonVer: boolean = false;
+  @Input() viewButton: boolean = false;
 
   /**
    * Indica si se mostrarán casillas de verificación en la tabla.

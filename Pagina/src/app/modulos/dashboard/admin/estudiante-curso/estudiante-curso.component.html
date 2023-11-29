@@ -35,7 +35,7 @@
           <div class="card text-start rounded-bottom-5  border-0 shadow">
             <div class="card-body">
               <app-ng-table tableName="nomatriculados" [data]="noMatriculados" [headers]="headersNoMatriculados"
-                [campos]="camposNoMatriculados" [rowButtons]="false" [checkButtons]="false" [botonEstado]="false"
+                [campos]="camposNoMatriculados" [rowButtons]="false" [checkButtons]="false" [statusButton]="false"
                 (actionOnChecks)="estudiantesaction($event)"></app-ng-table>
             </div>
           </div>
@@ -46,8 +46,8 @@
       <p class="shadow rounded-top-4 text-center h4 p-2 mb-2 bg-dark text-white">Matrículas</p>
       <div class="card text-start rounded-bottom-5 border-0 shadow">
         <div class="card-body">
-          <app-ng-table tableName="matriculados" [data]="matriculas" [headers]="headersMatriculados"
-            [campos]="camposMatriculados" [rowButtons]="false"  [botonEstado]="false"
+          <app-ng-table tableName="matriculados" [pageSize]="20" [data]="matriculas" [headers]="headersMatriculados"
+            [campos]="camposMatriculados" [rowButtons]="false"  [statusButton]="false"
             (actionOnChecks)="matriculasAction($event)"></app-ng-table>
         </div>
       </div>

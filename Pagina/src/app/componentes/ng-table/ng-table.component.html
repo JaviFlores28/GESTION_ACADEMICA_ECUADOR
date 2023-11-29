@@ -50,7 +50,7 @@
               <ngb-highlight [result]="item[campo]" [term]="filter.value"></ngb-highlight>
             </td>
           </ng-container>
-          <ng-container *ngIf="botonEstado">
+          <ng-container *ngIf="statusButton">
             <td>
               <div class="form-switch">
                 <input class="form-check-input" type="checkbox" role="switch" id="estado" [(ngModel)]="item.ESTADO"
@@ -61,11 +61,11 @@
           <ng-container *ngIf="rowButtons">
             <td class="col-1">
               <div class="btn-group" role="group">
-                <button *ngIf="botonEdit" type="button" class="btn btn-sm btn-primary"
+                <button *ngIf="editButton" type="button" class="btn btn-sm btn-primary"
                   (click)="actionRowButton(item[campos[0]], 'editar')">Editar</button>
-                <button *ngIf="botonDelete" type="button" class="btn btn-sm btn-danger"
+                <button *ngIf="deleteButton" type="button" class="btn btn-sm btn-danger"
                   (click)="actionRowButton(item[campos[0]], 'eliminar')">Eliminar</button>
-                <button *ngIf="botonVer" type="button" class="btn btn-sm btn-info"
+                <button *ngIf="viewButton" type="button" class="btn btn-sm btn-info"
                   (click)="actionRowButton(item[campos[0]], 'ver')">
                   <fa-icon [icon]="icon3" size="1x" class="text-white"></fa-icon>
                 </button>
