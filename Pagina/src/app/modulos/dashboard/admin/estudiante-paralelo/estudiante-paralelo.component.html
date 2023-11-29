@@ -41,8 +41,7 @@
           <div class="card text-start rounded-bottom-5 border-0 shadow">
             <div class="card-body">
               <app-ng-table tableName="estudianteCurso" [data]="estudianteCurso" [headers]="headersEstudianteCurso"
-                [campos]="camposEstudianteCurso" [botonera]="false" [checksOptions]="false" [botonEstado]="false"
-                [pageSize]="30" (checkedAction)="estudianteCursoAction($event)"></app-ng-table>
+                [campos]="camposEstudianteCurso" [rowButtons]="false" [checkButtons]="false" [botonEstado]="false" (actionOnChecks)="estudianteCursoAction($event)"></app-ng-table>
             </div>
           </div>
         </div>
@@ -53,7 +52,7 @@
       <div class="card text-start rounded-bottom-5 border-0 shadow">
         <div class="card-body">
           <app-ng-table class="shadow" tableName="estudiantesParalelos" [data]="estudiantesParalelos"
-            [headers]="headersEstudianteCursoParalelo" [campos]="camposEstudianteCursoParalelo" [botonera]="false" [botonEstado]="false"
+            [headers]="headersEstudianteCursoParalelo" [campos]="camposEstudianteCursoParalelo" [rowButtons]="false" [botonEstado]="false"
             [pageSize]="30" (checkedAction)="estudiantesParaleloAction($event)"></app-ng-table>
         </div>
       </div>

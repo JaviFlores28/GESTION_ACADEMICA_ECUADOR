@@ -36,10 +36,10 @@ export class NgTableComponent implements OnInit {
   @Input() campos: any[] = [];
 
   /**
-   * Indica si se mostrará la botonera en la tabla.
+   * Indica si se mostrará los botones en la fila tabla.
    * @type {boolean}
    */
-  @Input() botonera: boolean = true;
+  @Input() rowButtons: boolean = true;
 
   /**
    * Indica si se mostrará el botón de edición en la tabla.
@@ -75,7 +75,7 @@ export class NgTableComponent implements OnInit {
    * Indica si se mostrarán opciones de casillas de verificación en la tabla.
    * @type {boolean}
    */
-  @Input() checksOptions: boolean = true;
+  @Input() checkButtons: boolean = true;
 
   /**
    * Indica si se mostrará la casilla de verificación para eliminar en la tabla.
@@ -102,28 +102,28 @@ export class NgTableComponent implements OnInit {
   @Input() tableName: string = 'default';
 
   /**
-   * Evento emitido cuando se realiza la acción de eliminar elementos seleccionados.
-   * @type {EventEmitter<any>}
-   */
-  @Output() eliminarAction: EventEmitter<any> = new EventEmitter<any>();
-
-  /**
    * Evento emitido cuando se realiza la acción de seleccionar elementos.
    * @type {EventEmitter<any>}
    */
-  @Output() checkedAction: EventEmitter<any> = new EventEmitter<any>();
+  @Output() actionOnChecks: EventEmitter<any> = new EventEmitter<any>();
 
   /**
    * Evento emitido cuando se realiza una acción en una fila de la tabla.
    * @type {EventEmitter<any>}
    */
-  @Output() filaAction: EventEmitter<any> = new EventEmitter<any>();
+  @Output() actionOnRowButton: EventEmitter<any> = new EventEmitter<any>();
 
   /**
    * Controlador del filtro de búsqueda de la tabla.
    * @type {FormControl}
    */
   filter: FormControl = new FormControl('', { nonNullable: true });
+
+  /**
+   * Valor seleccionado en el select de opciones de casillas de verificación.
+   */
+  selectedValue: FormControl = new FormControl('0');
+
 
   /**
    * Página actual de la tabla.
@@ -182,6 +182,10 @@ export class NgTableComponent implements OnInit {
       .subscribe((filterValue) => {
         this.dataAux = this.filterData(this.data, filterValue.toLowerCase());
       });
+
+    this.selectedValue.valueChanges.subscribe((value) => {
+      this.emitselectedData(value || '');
+    });
   }
 
   /**
@@ -202,16 +206,25 @@ export class NgTableComponent implements OnInit {
     const checkedData = this.dataAux.filter((item) => item.isChecked === true);
     const checkedIds = checkedData.map((item) => item[this.campos[0]]);
     const response = { action, data: checkedIds };
-    this.checkedAction.emit(response); // envia los datos al componente padre
+    this.actionOnChecks.emit(response); // envia los datos al componente padre
+  }
+
+  emitselectedData(value: any) {
+    if (value !== '0') {
+      this.emitDataChecked(value);
+      this.selectedValue.setValue('0');
+    }
   }
 
   /**
    * Realiza la acción correspondiente a una fila seleccionada.
    * @param item Fila seleccionada.
    */
-  actionCheckRow(item: any) {
+  actionRowCheck(item: any) {
     item.isChecked = !item.isChecked;
-    this.emitDataChecked('checks');
+    if (!this.checkButtons) {
+      this.emitDataChecked('checkRow');
+    }
   }
 
   /**
@@ -219,8 +232,8 @@ export class NgTableComponent implements OnInit {
    * @param id Identificador de la fila.
    * @param option Opción de la acción.
    */
-  actionButtonRow(id: string, option: any) {
-    this.filaAction.emit({ id, option });
+  actionRowButton(id: string, option: any) {
+    this.actionOnRowButton.emit({ id, option });
   }
 
   /**
@@ -236,8 +249,8 @@ export class NgTableComponent implements OnInit {
       item.isChecked = estado;
     });
 
-    if (!this.checksOptions) {
-      this.emitDataChecked('checks');
+    if (!this.checkButtons) {
+      this.emitDataChecked('checkAll');
     }
   }
 

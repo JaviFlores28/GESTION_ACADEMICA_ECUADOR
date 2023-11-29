@@ -10,8 +10,8 @@
     <div class="card-body">
       <ng-container *ngIf="data">
         <app-ng-table [data]="data" [headers]="headers" [campos]="campos" [pageSize]="10"
-          (eliminarAction)="eliminar($event)" (checkedAction)="checkedsAction($event)"
-          (filaAction)="filaAction($event)"></app-ng-table>
+           (actionOnChecks)="checkedsAction($event)"
+          (actionOnRowButton)="filaAction($event)"></app-ng-table>
       </ng-container>
     </div>
   </div>

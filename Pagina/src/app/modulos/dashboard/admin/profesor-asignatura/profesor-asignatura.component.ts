@@ -38,6 +38,8 @@ export class ProfesorAsignaturaComponent implements OnInit {
 
   headers = ['PROFESOR', 'CURSO', 'PARALELO', 'ASIGNATURA'];
   campos = ['PRF_ASG_PRLL_ID', 'PRF_ID', 'CRS_ID', 'PRLL_ID', 'ASG_ID'];
+  headersAsg = ['NOMBRE'];
+  camposAsg = ['ASG_ID', 'ASG_NOM'];
 
   modoEdicion: boolean = false;
   elementoId: string = '';
@@ -147,7 +149,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
   loadAsignaturas() {
     this.asignaturaService.getEnabled().subscribe({
       next: (value) => {
-        if (value.response) {
+        if (value.response) {          
           this.asignaturas = value.data;
         } else {
           console.log(value.message);
@@ -289,7 +291,10 @@ export class ProfesorAsignaturaComponent implements OnInit {
   }
 
   eliminar(data: any) { }
-  checkedsAction(data: any) { }
+  checkedsAction(data: any) {
+    console.log(data);
+    
+   }
 
   filaAction(data: any) {
     if (data.option === 'editar') {
@@ -302,5 +307,9 @@ export class ProfesorAsignaturaComponent implements OnInit {
       this.msg = '¿Desea eliminar?';
       this.openConfirmationModal(this.msg);
     }
+  }
+  checkAsg(data: any) {
+    console.log(data);
+    
   }
 }

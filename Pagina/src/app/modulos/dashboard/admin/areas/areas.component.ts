@@ -13,7 +13,7 @@ export class AreasComponent implements OnInit {
     private service: AreaService,
     private router: Router,
     private route: ActivatedRoute,
-  ) {}
+  ) { }
 
   routerLink: string = 'nuevo';
   title: string = 'Áreas';
@@ -41,9 +41,6 @@ export class AreasComponent implements OnInit {
     });
   }
 
-  eliminar(id: any) {
-    console.log(id);
-  }
 
   checkedsAction(data: any) {
     console.log(data);

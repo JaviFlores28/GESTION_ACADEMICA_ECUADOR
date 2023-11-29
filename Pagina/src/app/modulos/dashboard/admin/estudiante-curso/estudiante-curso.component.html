@@ -8,7 +8,7 @@
       <li class="breadcrumb-item active">Matrículas</li>
     </ol>
   </nav>
-  <div class="row row-cols-2 g-3 justify-content-center align-items-start">
+  <div class="row row-cols-1 row-cols-md-2 g-3 justify-content-center align-items-start">
     <div class="col">
       <p class="shadow rounded-top-4 text-center h4 p-2 mb-2 bg-dark text-white">Estudiantes</p>
       <div class="row row-cols-1 g-3">
@@ -16,12 +16,12 @@
           <div class="card text-start  border-0 rounded shadow">
             <div class="card-body">
               <form class="row g-3 justify-content-start align-items-end" [formGroup]="form" (ngSubmit)="onSubmit()">
-                <div class="col-3">
+                <div class="col">
                   <label for="CRS_ID" class="form-label">Curso:</label>
                   <ng-select [items]="cursos" bindLabel="CRS_NOM" bindValue="CRS_ID" formControlName="CRS_ID"
                     id="CRS_ID"> </ng-select>
                 </div>
-                <div class="col-2">
+                <div class="col">
                   <div class="btn-group" role="group">
                     <button type="submit" [disabled]="idsEstudiantes.length <= 0 || !form.valid"
                       class="btn btn-dark">Guardar</button>
@@ -35,8 +35,8 @@
           <div class="card text-start rounded-bottom-5  border-0 shadow">
             <div class="card-body">
               <app-ng-table tableName="nomatriculados" [data]="noMatriculados" [headers]="headersNoMatriculados"
-                [campos]="camposNoMatriculados" [botonera]="false" [checksOptions]="false" [botonEstado]="false"
-                (checkedAction)="estudiantesaction($event)"></app-ng-table>
+                [campos]="camposNoMatriculados" [rowButtons]="false" [checkButtons]="false" [botonEstado]="false"
+                (actionOnChecks)="estudiantesaction($event)"></app-ng-table>
             </div>
           </div>
         </div>
@@ -47,8 +47,8 @@
       <div class="card text-start rounded-bottom-5 border-0 shadow">
         <div class="card-body">
           <app-ng-table tableName="matriculados" [data]="matriculas" [headers]="headersMatriculados"
-            [campos]="camposMatriculados" [botonera]="false" [botonEstado]="false"
-            (checkedAction)="matriculasAction($event)"></app-ng-table>
+            [campos]="camposMatriculados" [rowButtons]="false"  [botonEstado]="false"
+            (actionOnChecks)="matriculasAction($event)"></app-ng-table>
         </div>
       </div>
     </div>

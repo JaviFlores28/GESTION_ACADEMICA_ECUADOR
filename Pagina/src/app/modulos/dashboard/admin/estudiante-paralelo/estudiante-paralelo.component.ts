@@ -77,6 +77,10 @@ export class EstudianteParaleloComponent implements OnInit {
       next: (value) => {
         if (value.response) {
           this.cursos = value.data;
+          this.cursos = this.cursos.map(curso => ({
+            ...curso,
+            CRS_NOM: `${curso.CRS_NOM} ${curso.CRS_TIPO}`
+          }));
         } else {
           console.log(value.message);
         }
@@ -86,6 +90,7 @@ export class EstudianteParaleloComponent implements OnInit {
       },
     });
   }
+  
 
   loadParalelos() {
     this.paraleloService.getEnabled().subscribe({
@@ -123,6 +128,8 @@ export class EstudianteParaleloComponent implements OnInit {
     this.estudianteCursoService.getByCurso(cursoId).subscribe({
       next: (value) => {
         if (value.response) {
+          console.log(value.data);
+          
           this.estudianteCurso = value.data;
         } else {
           console.log(value.message);
@@ -158,7 +165,7 @@ export class EstudianteParaleloComponent implements OnInit {
     }
   }
 
-  estudianteCursoAction(value: any) {
+  estudianteCursoAction(value: any) {    
     this.idsEstudianteCursoParalelo = value.data;
   }
 

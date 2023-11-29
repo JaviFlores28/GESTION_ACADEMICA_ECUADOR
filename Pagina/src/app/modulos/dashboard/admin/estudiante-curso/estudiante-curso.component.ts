@@ -109,6 +109,9 @@ export class EstudianteCursoComponent implements OnInit {
     this.idsEstudiantes = value.data;
     if (value.action === 'desactivar') {
       this.openConfirmationModal('¿Desea desactivar los items seleccionados?', value.action);
+    }else{
+      console.log(value);
+      
     }
   }
 
