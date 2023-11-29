@@ -1,11 +1,11 @@
 <div class="container-fluid">
-  <div class="row bg-light">
-    <h1 class="fw-custom-semibold">Sistema</h1>
-    <ol class="ps-4 py-2 breadcrumb">
+  <nav aria-label="breadcrumb">
+    <h3 class="fw-custom-semibold">Sistema</h3>
+    <ol class="breadcrumb">
       <li class="breadcrumb-item active pe-2">{{ title }}</li>
       <button [routerLink]="[routerLink]" class="btn btn-primary btn-sm shadow">Crear</button>
     </ol>
-  </div>
+  </nav>
   <div class="card text-start border border-0 rounded shadow">
     <div class="card-body">
       <ng-container *ngIf="table">

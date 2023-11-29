@@ -1,15 +1,16 @@
 <div class="container-fluid">
-  <div class="row bg-light">
-    <h1 class="fw-custom-semibold">Institución</h1>
-    <ol class="ps-4 py-2 breadcrumb">
-      <li class="breadcrumb-item"><a class="text-black fw-custom-semibold" routerLink="../estudiantes">Estudiantes</a>
+  <nav aria-label="breadcrumb">
+    <h3 class="fw-custom-semibold">Sistema</h3>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a class="text-black fw-custom-semibold" routerLink="../estudiantes">Estudiantes</a>
       </li>
       <li class="breadcrumb-item active">Matrículas</li>
     </ol>
-  </div>
+  </nav>
   <div class="row row-cols-2 g-3 justify-content-center align-items-start">
     <div class="col">
-                <h3 class="card-title p-3 m-2 shadow rounded text-center bg-black text-white">No Matrículados</h3>
+      <p class="shadow rounded-top-4 text-center h4 p-2 mb-2 bg-dark text-white">Estudiantes</p>
       <div class="row row-cols-1 g-3">
         <div class="col">
           <div class="card text-start border border-0 rounded shadow">
@@ -31,7 +32,7 @@
           </div>
         </div>
         <div class="col">
-          <div class="card text-start border border-0 rounded shadow">
+          <div class="card text-start rounded-bottom-5 border border-0 shadow">
             <div class="card-body">
               <app-ng-table tableName="nomatriculados" [data]="noMatriculados" [headers]="headersNoMatriculados"
                 [campos]="camposNoMatriculados" [botonera]="false" [checksOptions]="false" [botonEstado]="false"
@@ -42,11 +43,12 @@
       </div>
     </div>
     <div class="col">
-      <h3 class="card-title p-3 m-2 shadow rounded text-center bg-primary text-white">Matrículas</h3>
-      <div class="card text-start border border-0 rounded shadow">
+      <p class="shadow rounded-top-4 text-center h4 p-2 mb-2 bg-dark text-white">Matrículas</p>
+      <div class="card text-start rounded-bottom-5 border border-0 shadow">
         <div class="card-body">
           <app-ng-table tableName="matriculados" [data]="matriculas" [headers]="headersMatriculados"
-            [campos]="camposMatriculados" [botonera]="false" [botonEstado]="false" (checkedAction)="matriculasAction($event)"></app-ng-table>
+            [campos]="camposMatriculados" [botonera]="false" [botonEstado]="false"
+            (checkedAction)="matriculasAction($event)"></app-ng-table>
         </div>
       </div>
     </div>

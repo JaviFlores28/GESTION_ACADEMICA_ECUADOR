@@ -31,8 +31,8 @@ export class EstudianteCursoComponent implements OnInit {
 
   headersNoMatriculados = ['CÉDULA', 'NOMBRES'];
   camposNoMatriculados = ['EST_ID', 'EST_DNI', 'EST_NOM'];
-  headersMatriculados = ['CÉDULA', 'NOMBRES', 'CURSO','TIPO'];
-  camposMatriculados = ['EST_CRS_ID', 'EST_DNI', 'EST_NOM', 'CRS_NOM','CRS_TIPO'];
+  headersMatriculados = ['CÉDULA', 'NOMBRES', 'CURSO', 'TIPO'];
+  camposMatriculados = ['EST_CRS_ID', 'EST_DNI', 'EST_NOM', 'CRS_NOM', 'CRS_TIPO'];
 
   elementoId: string = '';
   msg: string = '¿Desea guardar?';
@@ -90,7 +90,7 @@ export class EstudianteCursoComponent implements OnInit {
         if (value.response) {
           this.matriculas = value.data;
           console.log(this.matriculas);
-          
+
         } else {
           console.log(value.message);
         }

@@ -410,7 +410,7 @@ class DataCreator {
     const sqlGetByPrf = `static sqlGetByPrf: string = 'SELECT a.* FROM vista_profesor_asignatura_paralelo as a JOIN profesor_asignatura_paralelo as b ON a.PRF_ASG_PRLL_ID = b.PRF_ASG_PRLL_ID WHERE b.ESTADO = 1 AND b.AL_ID = ? AND b.PRF_ID = ?;';`;
 
     const isViewTable = () => {
-      if (this.tableName === 'estudiante' || this.tableName === 'usuario' || this.tableName === 'estudiante_curso' || this.tableName === 'profesor_asignatura_paralelo') {
+      if (this.tableName === 'estudiante' || this.tableName === 'usuario' || this.tableName === 'estudiante_curso'|| this.tableName==='estudiante_curso_paralelo' || this.tableName === 'profesor_asignatura_paralelo') {
         return `vista_${this.tableName}`;
       } else {
         return this.tableName;
@@ -461,7 +461,7 @@ class DataCreator {
         return 'ORDER BY CRS_ORDEN ASC';
       } else if (this.tableName === 'paralelo') {
         return 'ORDER BY PRLL_NOM ASC';
-      } else if (this.tableName !== 'usuario' && this.tableName !== 'profesor_asignatura_paralelo') {
+      } else if (this.tableName !== 'usuario' && this.tableName !== 'profesor_asignatura_paralelo' && this.tableName !== 'estudiante_curso_paralelo' && this.tableName !== 'estudiante_curso') {
         return 'ORDER BY ESTADO DESC';
       } else {
         return '';

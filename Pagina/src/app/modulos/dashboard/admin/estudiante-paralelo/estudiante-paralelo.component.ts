@@ -38,9 +38,9 @@ export class EstudianteParaleloComponent implements OnInit {
   idsEstudianteCursoParalelo: string[] = [];
 
   headersEstudianteCurso = ['CÉDULA', 'NOMBRES'];
-  camposEstudianteCurso = ['EST_CRS_ID', 'EST_DNI', 'EST_ID'];
-  headersEstudianteCursoParalelo = ['CÉDULA', 'CURSO', 'NOMBRES', 'ESTADO'];
-  camposEstudianteCursoParalelo = ['EST_CRS_PRLL_ID', 'EST_DNI', 'CRS_NOM', 'EST_ID'];
+  camposEstudianteCurso = ['EST_CRS_ID', 'EST_DNI', 'EST_NOM'];
+  headersEstudianteCursoParalelo = ['CÉDULA', 'NOMBRES','CURSO','TIPO', 'PARALELO'];
+  camposEstudianteCursoParalelo = ['EST_CRS_PRLL_ID', 'EST_DNI','EST_CRS_NOM', 'CRS_NOM', 'CRS_TIPO', 'PRLL_NOM'];
 
   msg: string = '¿Desea guardar?';
   USR_ID: string = this.usuarioService.getUserLoggedId();
@@ -58,14 +58,14 @@ export class EstudianteParaleloComponent implements OnInit {
     this.loadCursos();
     this.loadParalelos();
     this.loadAnioLectivo();
-
+    this.loadEstudianteParalelo();
     this.form.get('CRS_ID')?.valueChanges.subscribe((value) => {
       this.loadestudianteCurso(value || '');
     });
 
-    this.form.get('PRLL_ID')?.valueChanges.subscribe((value) => {
+    /* this.form.get('PRLL_ID')?.valueChanges.subscribe((value) => {
       this.loadEstudianteParalelo(value || '');
-    });
+    }); */
   }
 
   onSubmit() {
@@ -134,10 +134,12 @@ export class EstudianteParaleloComponent implements OnInit {
     });
   }
 
-  loadEstudianteParalelo(paraleloId: string) {
-    this.service.getByParalelo(paraleloId).subscribe({
+  loadEstudianteParalelo() {
+    this.service.getEnabled().subscribe({
       next: (value) => {
         if (value.response) {
+          console.log(value.data);
+
           this.estudiantesParalelos = value.data;
         } else {
           console.log(value.message);
@@ -223,6 +225,7 @@ export class EstudianteParaleloComponent implements OnInit {
       console.log(value.message);
       this.openAlertModal(value.message, 'success');
       this.form.reset();
+      this.loadEstudianteParalelo();
       // this.router.navigate(['../'], { relativeTo: this.route });
     }
   }

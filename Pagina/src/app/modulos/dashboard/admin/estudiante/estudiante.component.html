@@ -1,11 +1,11 @@
 <div class="container-fluid pb-3">
-  <div class="row bg-light">
-    <h1 class="fw-custom-semibold">Sistema</h1>
-    <ol class="ps-4 py-2 breadcrumb">
+  <nav aria-label="breadcrumb">
+    <h3 class="fw-custom-semibold">Sistema</h3>
+    <ol class="breadcrumb">
       <li class="breadcrumb-item"><a class="text-black fw-custom-semibold" routerLink="{{modoEdicion?'../../':'../'}}">Estudiantes</a></li>
       <li class="breadcrumb-item active">{{ modoEdicion ? 'Editar' : 'Crear' }}</li>
     </ol>
-  </div>
+  </nav>
   <form class="row row-cols-1 g-3 justify-content-center justify-content-md-start align-items-md-start align-items-center" [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="col">
       <div class="card text-start border border-0 rounded shadow h-100">

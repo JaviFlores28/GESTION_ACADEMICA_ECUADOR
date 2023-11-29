@@ -36,7 +36,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
   asignaturas: Asignatura[] = [];
   table: ProfesorAsignaturaParalelo[] = [];
 
-  headers = ['PROFESOR', 'CURSO', 'PARALELO', 'ASIGNATURA', 'ESTADO'];
+  headers = ['PROFESOR', 'CURSO', 'PARALELO', 'ASIGNATURA'];
   campos = ['PRF_ASG_PRLL_ID', 'PRF_ID', 'CRS_ID', 'PRLL_ID', 'ASG_ID'];
 
   modoEdicion: boolean = false;
