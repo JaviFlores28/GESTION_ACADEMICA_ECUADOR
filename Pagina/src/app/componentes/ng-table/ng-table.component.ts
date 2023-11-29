@@ -171,6 +171,7 @@ export class NgTableComponent implements OnInit {
     }
   }
 
+
   /**
    * Constructor del componente.
    */
@@ -222,6 +223,7 @@ export class NgTableComponent implements OnInit {
    */
   actionRowCheck(item: any) {
     item.isChecked = !item.isChecked;
+    this.onPageChange();
     if (!this.checkButtons) {
       this.emitDataChecked('checkRow');
     }
@@ -253,12 +255,24 @@ export class NgTableComponent implements OnInit {
       this.emitDataChecked('checkAll');
     }
   }
+  /**
+ * Valida si todos los elementos de dataAux tienen isChecked como true.
+ * @returns true si todos los elementos tienen isChecked como true, de lo contrario false.
+ */
+  areAllChecked(): boolean {
+    const ini = (this.page - 1) * this.pageSize;
+    const end = Math.min(this.page * this.pageSize - 1, this.dataAux.length - 1);
+    return this.dataAux.slice(ini, end + 1).every((item) => item.isChecked);
+  }
+
 
   /**
    * Maneja el cambio de página de la tabla.
    */
   onPageChange() {
-    if (this.isCheckedAll) {
+    if (this.isCheckedAll && !this.areAllChecked()) {
+      this.isCheckedAll = !this.isCheckedAll;
+    } else if (!this.isCheckedAll && this.areAllChecked()) {
       this.isCheckedAll = !this.isCheckedAll;
     }
   }
