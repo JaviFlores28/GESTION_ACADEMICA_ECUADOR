@@ -43,6 +43,10 @@ export class ProfesorAsignaturaService extends ErrorHandlerService {
     const request = {type: 'updateEstado', data: arrayData };
     return this.http.patch(this.apiUrl, request).pipe(catchError(this.handleError));
   }
+
+  postMasivo(arrayData: any): Observable<any> {
+    return this.http.post(this.apiUrl, { masivo: true, data: arrayData }).pipe(catchError(this.handleError));
+  }
   
   getByPrf(data: any): Observable<any> {
     const request = {type: 'getByPrf', data: data };

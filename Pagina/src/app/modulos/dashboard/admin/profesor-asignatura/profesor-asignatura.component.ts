@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Asignatura } from 'src/app/interfaces/Asignatura.interface';
 import { Curso } from 'src/app/interfaces/Curso.interface';
 import { Paralelo } from 'src/app/interfaces/Paralelo.interface';
@@ -48,12 +48,12 @@ export class ProfesorAsignaturaComponent implements OnInit {
   AL_ID: string = '0';
   ESTADO: number = 1;
   existeAnio: boolean = false;
-  
-  form = this.formBuilder.group({
+
+  form: FormGroup = this.formBuilder.group({
     PRF_ID: ['', Validators.required],
     CRS_ID: ['', Validators.required],
     PRLL_ID: ['', Validators.required],
-    ASG_ID: ['', Validators.required],
+    ASG_ID: [[], Validators.required],
   });
 
   ngOnInit(): void {
@@ -149,7 +149,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
   loadAsignaturas() {
     this.asignaturaService.getEnabled().subscribe({
       next: (value) => {
-        if (value.response) {          
+        if (value.response) {
           this.asignaturas = value.data;
         } else {
           console.log(value.message);
@@ -188,8 +188,8 @@ export class ProfesorAsignaturaComponent implements OnInit {
 
   crear() {
     if (this.form.valid) {
-      const profesorAsignaturaParalelo: ProfesorAsignaturaParalelo = this.buildObject();
-      this.service.post(profesorAsignaturaParalelo).subscribe({
+      const profesorAsignaturaParalelo = this.buildObject();
+      this.service.postMasivo(profesorAsignaturaParalelo).subscribe({
         next: (value) => {
           this.handleResponse(value);
         },
@@ -215,11 +215,11 @@ export class ProfesorAsignaturaComponent implements OnInit {
   }
 
   buildObject() {
-    const profesorAsignaturaParalelo: ProfesorAsignaturaParalelo = {
+    const profesorAsignaturaParalelo = {
       PRF_ASG_PRLL_ID: '0',
       PRF_ID: this.form.value.PRF_ID || '',
       AL_ID: this.AL_ID || '',
-      ASG_ID: this.form.value.ASG_ID || '',
+      arrayIds: this.form.value.ASG_ID || '',
       CRS_ID: this.form.value.CRS_ID || '',
       PRLL_ID: this.form.value.PRLL_ID || '',
       ESTADO: this.ESTADO,
@@ -252,7 +252,9 @@ export class ProfesorAsignaturaComponent implements OnInit {
       .then((result) => {
         if (result === 'save') {
           if (!this.modoEdicion) {
+
             this.crear();
+
           } else {
             this.editar();
           }
@@ -293,8 +295,8 @@ export class ProfesorAsignaturaComponent implements OnInit {
   eliminar(data: any) { }
   checkedsAction(data: any) {
     console.log(data);
-    
-   }
+
+  }
 
   filaAction(data: any) {
     if (data.option === 'editar') {
@@ -310,6 +312,6 @@ export class ProfesorAsignaturaComponent implements OnInit {
   }
   checkAsg(data: any) {
     console.log(data);
-    
+
   }
 }

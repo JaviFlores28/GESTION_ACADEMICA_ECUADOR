@@ -168,6 +168,7 @@ export class NgTableComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['data'] && Array.isArray(changes['data'].currentValue)) {
       this.dataAux = [...changes['data'].currentValue];
+      this.isCheckedAll = false;
     }
   }
 

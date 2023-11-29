@@ -183,7 +183,7 @@ class BusinessCreator {
         case 'estudiante_curso_paralelo':
           return this.insertMasivo() + this.getByParalelo();
         case 'profesor_asignatura_paralelo':
-          return this.getByPrf();
+          return this.getByPrf()+ this.insertMasivo();
         default:
           return '';
       }

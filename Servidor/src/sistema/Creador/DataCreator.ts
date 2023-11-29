@@ -290,7 +290,7 @@ class DataCreator {
   }
 
   insertMasivo(): string {
-    const excludedProperties = ['FECHA_CREACION', this.primaryKey, 'EST_ID', 'EST_CRS_ID'];
+    const excludedProperties = ['FECHA_CREACION', this.primaryKey, 'EST_ID', 'EST_CRS_ID','ASG_ID'];
 
     const functioninsertarMasivamente = `
         static async insertMasivo(data:any): Promise<Respuesta> {
@@ -450,7 +450,7 @@ class DataCreator {
       } else if (this.tableName === 'estudiante_curso_paralelo') {
         return this.insertMasivo() + this.getByParalelo();
       } else if (this.tableName === 'profesor_asignatura_paralelo') {
-        return this.getByPrf();
+        return this.getByPrf() + this.insertMasivo();
       } else {
         return '';
       }

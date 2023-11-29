@@ -86,7 +86,7 @@ class ServicesCreator {
     const typePost = () => {
       if (this.tableName === 'usuario') {
         return scriptUsuarioPost;
-      } else if (this.tableName === 'estudiante_curso' || this.tableName === 'estudiante_curso_paralelo') {
+      } else if (this.tableName === 'estudiante_curso' || this.tableName === 'estudiante_curso_paralelo'|| this.tableName === 'profesor_asignatura_paralelo') {
         return scriptPostMasivo;
       } else {
         return scriptPost;

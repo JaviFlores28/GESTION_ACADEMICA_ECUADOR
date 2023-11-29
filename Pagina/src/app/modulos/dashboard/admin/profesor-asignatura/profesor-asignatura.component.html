@@ -7,33 +7,28 @@
     <li class="breadcrumb-item active">Asignaturas</li>
     </ol>
   </nav>
-  <form class="row row-cols-2 g-3 justify-content-center justify-content-md-start align-items-md-start align-items-end"
+  <form class="row row-cols-1 g-3 justify-content-center justify-content-md-start align-items-md-start align-items-end"
     [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="existeAnio">
-    <div class="col-7">
+    <div class="col">
       <div class="card text-start shadow border-0">
         <div class="card-body">
           <div class="row row-cols-1 g-3">
             <div class="col">
               <div class="row g-3 justify-content-start align-items-end pt-2">
-                <div class="col-5">
+                <div class="col">
                   <label for="PRF_ID" class="form-label">Profesor:</label>
                   <ng-select [items]="profesores" bindLabel="USR_NOM" bindValue="USR_ID" formControlName="PRF_ID"
                     id="PRF_ID"> </ng-select>
                 </div>
-                <div class="col-2">
+                <div class="col">
                   <label for="CRS_ID" class="form-label">Curso:</label>
                   <ng-select [items]="cursos" bindLabel="CRS_NOM" bindValue="CRS_ID" formControlName="CRS_ID" id="CRS_ID">
                   </ng-select>
                 </div>
-                <div class="col-2">
+                <div class="col">
                   <label for="PRLL_ID" class="form-label">Paralelo:</label>
                   <ng-select [items]="paralelos" bindLabel="PRLL_NOM" bindValue="PRLL_ID" formControlName="PRLL_ID"
                     id="PRLL_ID"> </ng-select>
-                </div>
-                <div class="col" *ngIf="modoEdicion">
-                  <label for="ASG_ID" class="form-label">Asignatura:</label>
-                  <ng-select [items]="asignaturas" bindLabel="ASG_NOM" bindValue="ASG_ID" formControlName="ASG_ID"
-                    id="ASG_ID"> </ng-select>
                 </div>
                 <div class="col text-center text-md-end">
                   <div class="input-group" >
@@ -42,18 +37,27 @@
                       aria-label="Limpiar búsqueda">X</button>
                   </div>
                 </div>
+                <div class="col-12">
+                  <label for="ASG_ID" class="form-label">Asignatura:</label>
+                  <ng-select [items]="asignaturas"
+                  [multiple]="modoEdicion?false:true"
+                  [closeOnSelect]="false"
+                  [hideSelected]="true" 
+                  bindLabel="ASG_NOM" bindValue="ASG_ID" formControlName="ASG_ID"
+                    id="ASG_ID"> </ng-select>
+                </div>
               </div>
             </div>
-            <div class="col">
+          <!--   <div class="col">
               <div *ngIf="table" class="col">
                 <app-ng-table tableName="asignaturas" [data]="asignaturas" [headers]="headersAsg" [campos]="camposAsg" [rowButtons]="false"  [checkButtons]="false" [statusButton]="false" (actionOnChecks)="checkAsg($event)" ></app-ng-table>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
     </div>
-    <div class="col-5">
+    <div class="col">
       <div class="card text-start shadow border-0">
         <div class="card-body">
           <div *ngIf="table" class="col">
