@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { EstudianteCursoParalelo } from 'src/app/interfaces/EstudianteCursoParalelo.interface';
 import { EstudianteCursoParaleloService } from 'src/app/servicios/estudiante-curso-paralelo.service';
 import { ProfesorAsignaturaService } from 'src/app/servicios/profesor-asignatura.service';
 
@@ -19,6 +20,8 @@ export class CalificacionesComponent {
   PRLL_ID: string = '';
   CRS_ID: string = '';
   AL_ID: string = '';
+
+  estudiantes: any[] = [];
 
   ngOnInit(): void {
     this.getId();
@@ -41,6 +44,7 @@ export class CalificacionesComponent {
           this.AL_ID = value.data.AL_ID;
           this.CRS_ID = value.data.CRS_ID;
           this.PRLL_ID = value.data.PRLL_ID;
+          this.llenarTablaEstudiantes();
         } else {
           console.log(value.message);
         }
@@ -53,10 +57,10 @@ export class CalificacionesComponent {
 
   llenarTablaEstudiantes() {
     const data = { PRLL_ID: this.PRLL_ID, CRS_ID: this.CRS_ID, AL_ID: this.AL_ID }
-    this.estudianteCursoParaleloservice.getEstudiantesByParalelo(data).subscribe({
+    this.estudianteCursoParaleloservice.getEstudiantesByCursoParalelo(data).subscribe({
       next: (value) => {
         if (value.response) {
-          console.log(value.data);
+          this.estudiantes = value.data;          
         } else {
           console.log(value.message);
         }

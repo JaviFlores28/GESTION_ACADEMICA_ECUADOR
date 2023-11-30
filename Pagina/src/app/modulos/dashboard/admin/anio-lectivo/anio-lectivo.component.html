@@ -24,6 +24,13 @@
           <input type="date" class="form-control" id="AL_FIN" formControlName="AL_FIN" />
         </div>
         <div class="col-md-3">
+          <label for="PRD_NOM" class="form-label">Nombre Periodo:</label>
+          <select class="form-select" formControlName="PRD_NOM" id="PRD_NOM">
+            <option value="Quimestre">Quimestre</option>
+            <option value="Trimestre">Trimestre</option>
+          </select>
+        </div>
+        <div class="col-md-3">
           <label for="NUM_PRD" class="form-label">Periodos:</label>
           <input type="number" class="form-control" id="NUM_PRD" formControlName="NUM_PRD" min="1" pattern="^[0-9]+" />
         </div>
@@ -42,22 +49,22 @@
           <input type="number" class="form-control" id="NUM_SUSP" formControlName="NUM_SUSP" min="0"
             pattern="^[0-9]+" />
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
           <label for="AL_POR_PRD" class="form-label">Porcentaje periodo:</label>
           <input type="number" class="form-control" id="AL_POR_PRD" formControlName="AL_POR_PRD" min="1"
             pattern="^[0-9]+" />
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
           <label for="AL_POR_EXAM" class="form-label">Porcentaje examenes:</label>
           <input type="number" class="form-control" id="AL_POR_EXAM" formControlName="AL_POR_EXAM" min="1"
             pattern="^[0-9]+" />
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
           <label for="CLFN_MIN_APR" class="form-label">Calificación mínima pase:</label>
           <input type="number" class="form-control" id="CLFN_MIN_APR" formControlName="CLFN_MIN_APR" min="1"
             pattern="^[0-9]+" />
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
           <label for="CLFN_MIN_PERD" class="form-label">Calificación mínima perdida: </label>
           <input type="number" class="form-control" id="CLFN_MIN_PERD" formControlName="CLFN_MIN_PERD" min="1"
             pattern="^[0-9]+" />

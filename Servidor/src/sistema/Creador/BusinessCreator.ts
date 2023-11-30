@@ -112,16 +112,16 @@ class BusinessCreator {
     return functiongetByCurso;
   }
 
-  getByParalelo(): string {
-    const functiongetByParalelo = `
-    static async getByParalelo(id: String): Promise<Respuesta> {
+  getByCursoParalelo(): string {
+    const functionGetByCursoParalelo = `
+    static async getByCursoParalelo(data: any): Promise<Respuesta> {
      try {
-       return ${this.capitalizedTableName}Datos.getByParalelo(id);
+       return ${this.capitalizedTableName}Datos.getByCursoParalelo(data);
      } catch (error: any) {
        return {response: false, data: null, message:error.message }; 
      }
    }`;
-    return functiongetByParalelo;
+    return functionGetByCursoParalelo;
   }
 
   getNoMatriculados(): string {
@@ -181,7 +181,7 @@ class BusinessCreator {
         case 'estudiante_curso':
           return this.getNoMatriculados() + this.getByCurso() + this.insertMasivo();
         case 'estudiante_curso_paralelo':
-          return this.insertMasivo() + this.getByParalelo();
+          return this.insertMasivo() + this.getByCursoParalelo();
         case 'profesor_asignatura_paralelo':
           return this.getByPrf()+ this.insertMasivo();
         default:

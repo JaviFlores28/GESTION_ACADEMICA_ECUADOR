@@ -31,6 +31,7 @@ export class AnioLectivoComponent implements OnInit {
     AL_NOM: ['', Validators.required],
     AL_INICIO: [getFormattedDate(new Date()), Validators.required],
     AL_FIN: [getFormattedDate(new Date()), Validators.required],
+    PRD_NOM:['Trimestre', Validators.required],
     AL_POR_PRD: [70, Validators.required],
     AL_POR_EXAM: [30, Validators.required],
     CLFN_MIN_APR: [7, Validators.required],
@@ -104,6 +105,7 @@ export class AnioLectivoComponent implements OnInit {
       AL_POR_EXAM: this.form.value.AL_POR_EXAM || 30,
       CLFN_MIN_APR: this.form.value.CLFN_MIN_APR || 7,
       CLFN_MIN_PERD: this.form.value.CLFN_MIN_PERD || 5,
+      PRD_NOM: this.form.value.PRD_NOM || 'Trimestre',
       NUM_PRD: this.form.value.NUM_PRD || 2,
       NUM_EXAM: this.form.value.NUM_EXAM || 1,
       NUM_PRCL: this.form.value.NUM_PRCL || 3,
@@ -124,6 +126,7 @@ export class AnioLectivoComponent implements OnInit {
       AL_POR_EXAM: this.form.value.AL_POR_EXAM || 30,
       CLFN_MIN_APR: this.form.value.CLFN_MIN_APR || 7,
       CLFN_MIN_PERD: this.form.value.CLFN_MIN_PERD || 5,
+      PRD_NOM: this.form.value.PRD_NOM || 'Trimestre',
       NUM_PRD: this.form.value.NUM_PRD || 2,
       NUM_EXAM: this.form.value.NUM_EXAM || 1,
       NUM_PRCL: this.form.value.NUM_PRCL || 3,
@@ -157,6 +160,7 @@ export class AnioLectivoComponent implements OnInit {
     this.form.get('AL_POR_EXAM')?.setValue(data.AL_POR_EXAM);
     this.form.get('CLFN_MIN_APR')?.setValue(data.CLFN_MIN_APR);
     this.form.get('CLFN_MIN_PERD')?.setValue(data.CLFN_MIN_PERD);
+    this.form.get('PRD_NOM')?.setValue(data.PRD_NOM);
     this.form.get('NUM_PRD')?.setValue(data.NUM_PRD);
     this.form.get('NUM_EXAM')?.setValue(data.NUM_EXAM);
     this.form.get('NUM_PRCL')?.setValue(data.NUM_PRCL);

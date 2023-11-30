@@ -237,13 +237,13 @@ class DataCreator {
     return functiongetByCurso;
   }
 
-  getByParalelo(): string {
-    const functiongetByParalelo = `
-        static async getByParalelo(id: String): Promise<Respuesta> {
+  getByCursoParalelo(): string {
+    const functiongetByCursoParalelo = `
+        static async getByCursoParalelo(data: any): Promise<Respuesta> {
           try {
             const pool = await BaseDatos.getInstanceDataBase();
-            let sql = this.sqlGetByParalelo;
-            const [rows] = await pool.execute<any>(sql, [id]);
+            let sql = this.sqlGetByCursoParalelo;
+            const [rows] = await pool.execute<any>(sql, [data.PRLL_ID,data.AL_ID,data.CRS_ID]);
             return { response: true, data: rows as ${this.capitalizedTableName}Entidad[], message: '' };
           } catch (error: any) {
             
@@ -251,7 +251,7 @@ class DataCreator {
           }
         }`;
 
-    return functiongetByParalelo;
+    return functiongetByCursoParalelo;
   }
 
   getByPrf(): string {
@@ -406,7 +406,7 @@ class DataCreator {
     const sqlGetByCurso = `static sqlGetByCurso: string = 'SELECT A.* FROM vista_estudiante_curso A INNER JOIN estudiante_curso B ON A.EST_CRS_ID = B.EST_CRS_ID LEFT JOIN estudiante_curso_paralelo ECP ON A.EST_CRS_ID = ECP.EST_CRS_ID AND ECP.ESTADO = 1 WHERE A.ESTADO = 1 AND B.CRS_ID = ? AND ECP.EST_CRS_ID IS NULL;';`;
     const sqlGetNoMatriculados = `static sqlGetNoMatriculados: string = 'SELECT a.* FROM vista_estudiante AS a LEFT JOIN estudiante_curso AS b ON b.EST_ID = a.EST_ID AND (b.ESTADO = 1 OR b.CRS_ID = (SELECT CRS_ID FROM curso ORDER BY CRS_ORDEN DESC LIMIT 1)) WHERE A.ESTADO=1 AND b.EST_ID IS NULL;';`;
     const sqlGetByUser = `static sqlGetByUser: string = 'SELECT * FROM ${this.tableName} WHERE USUARIO = ?';`;
-    const sqlGetByParalelo = `static sqlGetByParalelo: string = 'SELECT b.EST_CRS_PRLL_ID, a.* FROM vista_estudiante_curso as a JOIN estudiante_curso_paralelo as b ON a.EST_CRS_ID = b.EST_CRS_ID WHERE b.PRLL_ID =? AND b.ESTADO=1;';`;
+    const sqlGetByCursoParalelo = `static sqlGetByCursoParalelo: string = 'SELECT a.* FROM vista_estudiante_curso_paralelo AS a INNER JOIN estudiante_curso_paralelo AS b ON a.EST_CRS_PRLL_ID = b.EST_CRS_PRLL_ID INNER JOIN estudiante_curso AS c ON c.EST_CRS_ID = b.EST_CRS_ID WHERE b.PRLL_ID = ? AND b.AL_ID = ? AND b.ESTADO = 1 AND c.CRS_ID = ? AND c.ESTADO = 1;';`;
     const sqlGetByPrf = `static sqlGetByPrf: string = 'SELECT a.* FROM vista_profesor_asignatura_paralelo as a JOIN profesor_asignatura_paralelo as b ON a.PRF_ASG_PRLL_ID = b.PRF_ASG_PRLL_ID WHERE b.ESTADO = 1 AND b.AL_ID = ? AND b.PRF_ID = ?;';`;
 
     const isViewTable = () => {
@@ -422,7 +422,7 @@ class DataCreator {
         return `import UsuarioProfesorDatos from './UsuarioProfesorDatos';
             import UsuarioProfesorEntidad from '../entidades/UsuarioProfesorEntidad';`;
       } else if (this.tableName === 'estudiante_curso_paralelo') {
-        return `import AnioLectivoDatos from './AnioLectivoDatos';`;
+        return ``;
       } else {
         return '';
       }
@@ -434,7 +434,7 @@ class DataCreator {
       } else if (this.tableName === 'estudiante_curso') {
         return sqlGetNoMatriculados + '\n' + sqlGetByCurso;
       } else if (this.tableName === 'estudiante_curso_paralelo') {
-        return sqlGetByParalelo;
+        return sqlGetByCursoParalelo;
       } else if (this.tableName === 'profesor_asignatura_paralelo') {
         return sqlGetByPrf;
       } else {
@@ -448,7 +448,7 @@ class DataCreator {
       } else if (this.tableName === 'estudiante_curso') {
         return this.getNoMatriculados() + this.getByCurso() + this.insertMasivo();
       } else if (this.tableName === 'estudiante_curso_paralelo') {
-        return this.insertMasivo() + this.getByParalelo();
+        return this.insertMasivo() + this.getByCursoParalelo();
       } else if (this.tableName === 'profesor_asignatura_paralelo') {
         return this.getByPrf() + this.insertMasivo();
       } else {

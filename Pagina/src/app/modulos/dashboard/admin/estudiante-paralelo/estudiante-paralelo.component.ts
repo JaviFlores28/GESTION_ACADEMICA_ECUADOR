@@ -127,9 +127,7 @@ export class EstudianteParaleloComponent implements OnInit {
   loadestudianteCurso(cursoId: string) {
     this.estudianteCursoService.getByCurso(cursoId).subscribe({
       next: (value) => {
-        if (value.response) {
-          console.log(value.data);
-          
+        if (value.response) {          
           this.estudianteCurso = value.data;
         } else {
           console.log(value.message);
@@ -145,8 +143,6 @@ export class EstudianteParaleloComponent implements OnInit {
     this.service.getEnabled().subscribe({
       next: (value) => {
         if (value.response) {
-          console.log(value.data);
-
           this.estudiantesParalelos = value.data;
         } else {
           console.log(value.message);

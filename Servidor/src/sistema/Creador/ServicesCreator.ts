@@ -23,11 +23,6 @@ class ServicesCreator {
               case 'curso':
               ${this.tableName} = await ${this.capitalizedTableName}Negocio.getByCurso(id);
               break;`;
-        case 'estudiante_curso_paralelo':
-          return `case 'paralelo':
-              ${this.tableName} = await ${this.capitalizedTableName}Negocio.getByParalelo(id);
-              break;
-              `;
         default:
           return '';
       }
@@ -118,6 +113,10 @@ class ServicesCreator {
           return `case 'getByPrf':
           response = await ${this.capitalizedTableName}Negocio.getByPrf(data);
           break;`;
+        case 'estudiante_curso_paralelo':
+          return `case 'getByCursoParalelo':
+           response = await ${this.capitalizedTableName}Negocio.getByCursoParalelo(data);
+          break;`;
         default:
           return '';
       }
@@ -137,7 +136,7 @@ class ServicesCreator {
           break;
         ${gets()}
         default:
-          return res.status(400).json({ message: 'Tipo de solicitud inválido.' });
+          return res.status(400).json({ message: 'Tipo de solicitud inválida.' });
       }
        res.json(response);
      } catch (error: any) {

@@ -4,8 +4,8 @@ const app = express();
 const port = 3000;
 
 app.get('/generate-pdf', async (req, res) => {
-    const browser = await puppeteer.launch({ headless: 'new' });
-    const page = await browser.newPage();
+  const browser = await puppeteer.launch({ headless: 'new' });
+  const page = await browser.newPage();
 
   // Lógica para generar el PDF
   await page.setContent(`
@@ -97,7 +97,7 @@ app.get('/generate-pdf', async (req, res) => {
   </html>
   `);
 
-  const pdfBuffer = await page.pdf({ format: 'A4',landscape: true  });
+  const pdfBuffer = await page.pdf({ format: 'A4', landscape: true });
 
   await browser.close();
 
