@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
+import { ActivatedRoute } from '@angular/router';
 import { getFormattedDate } from 'src/app/sistema/variables/variables';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 import { ModalService } from 'src/app/servicios/modal.service';
+import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
 
 @Component({
   selector: 'app-anio-lectivo',
@@ -15,7 +15,6 @@ import { ModalService } from 'src/app/servicios/modal.service';
 export class AnioLectivoComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private formBuilder: FormBuilder,
     private usuarioService: UsuarioService,
     private service: AnioLectivoService,
