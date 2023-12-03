@@ -43,4 +43,8 @@ export class ParcialService extends ErrorHandlerService {
     const request = {type: 'updateEstado', data: arrayData };
     return this.http.patch(this.apiUrl, request).pipe(catchError(this.handleError));
   }
+
+  getByPeriodo(id: string): Observable<Respuesta> {
+    return this.http.get<Respuesta>(`${this.apiUrl}?by=getByPeriodo&id=${id}`).pipe(catchError(this.handleError));
+  }
 }

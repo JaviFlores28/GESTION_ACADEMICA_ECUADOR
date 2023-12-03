@@ -23,6 +23,10 @@ class ServicesCreator {
               case 'curso':
               ${this.tableName} = await ${this.capitalizedTableName}Negocio.getByCurso(id);
               break;`;
+        case 'parcial':
+          return `case 'getByPeriodo':
+              ${this.tableName} = await ${this.capitalizedTableName}Negocio.getByPeriodo(id);
+               break;`
         default:
           return '';
       }
@@ -81,7 +85,7 @@ class ServicesCreator {
     const typePost = () => {
       if (this.tableName === 'usuario') {
         return scriptUsuarioPost;
-      } else if (this.tableName === 'estudiante_curso' || this.tableName === 'estudiante_curso_paralelo'|| this.tableName === 'profesor_asignatura_paralelo') {
+      } else if (this.tableName === 'estudiante_curso' || this.tableName === 'estudiante_curso_paralelo' || this.tableName === 'profesor_asignatura_paralelo') {
         return scriptPostMasivo;
       } else {
         return scriptPost;

@@ -136,7 +136,7 @@ class BusinessCreator {
     return functionGetNoMatriculados;
   }
 
-  getByPrf(): string { 
+  getByPrf(): string {
     const functionGetByPrf = `
     static async getByPrf(data: any): Promise<Respuesta> {
       try {
@@ -145,7 +145,19 @@ class BusinessCreator {
         return {response: false, data: null, message:error.message }; 
       }
     }`;
-    return functionGetByPrf; 
+    return functionGetByPrf;
+  }
+
+  getByPeriodo(): string {
+    const functionGetByPeriodo = `
+    static async getByPeriodo(data: any): Promise<Respuesta> {
+      try {
+        return ${this.capitalizedTableName}Datos.getByPeriodo(data);
+      } catch (error: any) {
+        return {response: false, data: null, message:error.message }; 
+      }
+    }`;
+    return functionGetByPeriodo;
   }
 
   insertMasivo(): string {
@@ -183,7 +195,9 @@ class BusinessCreator {
         case 'estudiante_curso_paralelo':
           return this.insertMasivo() + this.getByCursoParalelo();
         case 'profesor_asignatura_paralelo':
-          return this.getByPrf()+ this.insertMasivo();
+          return this.getByPrf() + this.insertMasivo();
+        case 'parcial':
+          return this.getByPeriodo();
         default:
           return '';
       }

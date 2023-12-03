@@ -1,4 +1,5 @@
 export interface Periodo {
+  [x: string]: any;
           PRD_ID: string;
     PRD_NOM: string;
     PRD_INI: Date;

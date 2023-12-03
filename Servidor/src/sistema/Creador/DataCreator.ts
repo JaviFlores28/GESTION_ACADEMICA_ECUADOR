@@ -289,8 +289,28 @@ class DataCreator {
     return functionGetNoMatriculados;
   }
 
+  getByPeriodo(): string {
+    const functiongetById = `
+        static async getByPeriodo(id: String): Promise<Respuesta> {
+          try {
+            const pool = await BaseDatos.getInstanceDataBase();
+            let sql = this.sqlGetByPeriodo;
+            const [rows] = await pool.execute<any>(sql, [id]);
+            if (rows.length <= 0) {
+              throw new Error('Objeto de tipo ${this.capitalizedTableName} no encontrado');
+            }
+            return {response: true, data: rows as ${this.capitalizedTableName}Entidad[], message: 'Encontrado' };
+          } catch (error: any) {
+            
+            return {response: false, data: null, message:error.message }; 
+          }
+        }`;
+
+    return functiongetById;
+  }
+
   insertMasivo(): string {
-    const excludedProperties = ['FECHA_CREACION', this.primaryKey, 'EST_ID', 'EST_CRS_ID','ASG_ID'];
+    const excludedProperties = ['FECHA_CREACION', this.primaryKey, 'EST_ID', 'EST_CRS_ID', 'ASG_ID'];
 
     const functioninsertarMasivamente = `
         static async insertMasivo(data:any): Promise<Respuesta> {
@@ -408,63 +428,80 @@ class DataCreator {
     const sqlGetByUser = `static sqlGetByUser: string = 'SELECT * FROM ${this.tableName} WHERE USUARIO = ?';`;
     const sqlGetByCursoParalelo = `static sqlGetByCursoParalelo: string = 'SELECT a.* FROM vista_estudiante_curso_paralelo AS a INNER JOIN estudiante_curso_paralelo AS b ON a.EST_CRS_PRLL_ID = b.EST_CRS_PRLL_ID INNER JOIN estudiante_curso AS c ON c.EST_CRS_ID = b.EST_CRS_ID WHERE b.PRLL_ID = ? AND b.AL_ID = ? AND b.ESTADO = 1 AND c.CRS_ID = ? AND c.ESTADO = 1;';`;
     const sqlGetByPrf = `static sqlGetByPrf: string = 'SELECT a.* FROM vista_profesor_asignatura_paralelo as a JOIN profesor_asignatura_paralelo as b ON a.PRF_ASG_PRLL_ID = b.PRF_ASG_PRLL_ID WHERE b.ESTADO = 1 AND b.AL_ID = ? AND b.PRF_ID = ?;';`;
+    const sqlGetByPeriodo = `static sqlGetByPeriodo: string = 'SELECT * FROM ${this.tableName} WHERE PRD_ID = ?';`;
 
     const isViewTable = () => {
-      if (this.tableName === 'estudiante' || this.tableName === 'usuario' || this.tableName === 'estudiante_curso'|| this.tableName==='estudiante_curso_paralelo' || this.tableName === 'profesor_asignatura_paralelo') {
-        return `vista_${this.tableName}`;
-      } else {
-        return this.tableName;
+      switch (this.tableName) {
+        case 'estudiante':
+        case 'usuario':
+        case 'estudiante_curso':
+        case 'estudiante_curso_paralelo':
+        case 'profesor_asignatura_paralelo':
+          return `vista_${this.tableName}`;
+        default:
+          return this.tableName;
       }
     };
 
     const importsTable = () => {
-      if (this.tableName === 'usuario') {
-        return `import UsuarioProfesorDatos from './UsuarioProfesorDatos';
-            import UsuarioProfesorEntidad from '../entidades/UsuarioProfesorEntidad';`;
-      } else if (this.tableName === 'estudiante_curso_paralelo') {
-        return ``;
-      } else {
-        return '';
+      switch (this.tableName) {
+        case 'usuario':
+          return `import UsuarioProfesorDatos from './UsuarioProfesorDatos';
+                  import UsuarioProfesorEntidad from '../entidades/UsuarioProfesorEntidad';`;
+        case 'estudiante_curso_paralelo':
+          return ``;
+        default:
+          return '';
       }
     };
 
     const otherSql = () => {
-      if (this.tableName === 'usuario') {
-        return sqlGetByUser;
-      } else if (this.tableName === 'estudiante_curso') {
-        return sqlGetNoMatriculados + '\n' + sqlGetByCurso;
-      } else if (this.tableName === 'estudiante_curso_paralelo') {
-        return sqlGetByCursoParalelo;
-      } else if (this.tableName === 'profesor_asignatura_paralelo') {
-        return sqlGetByPrf;
-      } else {
-        return '';
+      switch (this.tableName) {
+        case 'usuario':
+          return sqlGetByUser;
+        case 'estudiante_curso':
+          return sqlGetNoMatriculados + '\n' + sqlGetByCurso;
+        case 'estudiante_curso_paralelo':
+          return sqlGetByCursoParalelo;
+        case 'profesor_asignatura_paralelo':
+          return sqlGetByPrf;
+        case 'parcial':
+          return sqlGetByPeriodo;
+        default:
+          return '';
       }
     };
 
     const otherFun = () => {
-      if (this.tableName === 'usuario') {
-        return this.getByUser();
-      } else if (this.tableName === 'estudiante_curso') {
-        return this.getNoMatriculados() + this.getByCurso() + this.insertMasivo();
-      } else if (this.tableName === 'estudiante_curso_paralelo') {
-        return this.insertMasivo() + this.getByCursoParalelo();
-      } else if (this.tableName === 'profesor_asignatura_paralelo') {
-        return this.getByPrf() + this.insertMasivo();
-      } else {
-        return '';
+      switch (this.tableName) {
+        case 'usuario':
+          return this.getByUser();
+        case 'estudiante_curso':
+          return this.getNoMatriculados() + this.getByCurso() + this.insertMasivo();
+        case 'estudiante_curso_paralelo':
+          return this.insertMasivo() + this.getByCursoParalelo();
+        case 'profesor_asignatura_paralelo':
+          return this.getByPrf() + this.insertMasivo();
+        case 'parcial':
+          return this.getByPeriodo();
+        default:
+          return '';
       }
     };
 
     const ORDER = () => {
-      if (this.tableName === 'curso') {
-        return 'ORDER BY CRS_ORDEN ASC';
-      } else if (this.tableName === 'paralelo') {
-        return 'ORDER BY PRLL_NOM ASC';
-      } else if (this.tableName !== 'usuario' && this.tableName !== 'profesor_asignatura_paralelo' && this.tableName !== 'estudiante_curso_paralelo' && this.tableName !== 'estudiante_curso') {
-        return 'ORDER BY ESTADO DESC';
-      } else {
-        return '';
+      switch (this.tableName) {
+        case 'curso':
+          return 'ORDER BY CRS_ORDEN ASC';
+        case 'paralelo':
+          return 'ORDER BY PRLL_NOM ASC';
+        case 'usuario':
+        case 'profesor_asignatura_paralelo':
+        case 'estudiante_curso_paralelo':
+        case 'estudiante_curso':
+          return '';
+        default:
+          return 'ORDER BY ESTADO DESC';
       }
     };
 

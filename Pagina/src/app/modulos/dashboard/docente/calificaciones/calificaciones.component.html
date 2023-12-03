@@ -15,63 +15,79 @@
             <tr>
               <th rowspan="2">#</th>
               <th rowspan="2">Nombres</th>
-              <ng-container *ngFor="let periodo of periodos;let i = index;">
-                <th [attr.colspan]="getColspan()">{{(periodo.PRD_TIPO==='Normal')? periodo.PRD_NOM: 'Suspenso'}}
-                </th>
+              <!-- encabezados de periodos -->
+              <ng-container *ngFor="let periodo of periodosNormales;let i = index;">
+                <th [attr.colspan]="periodo['colspan']">{{periodo.PRD_NOM}}</th>
+              </ng-container>
+              <!-- encabezados de periodos suspenso -->
+              <ng-container *ngFor="let periodo of periodosEvaluativos;let i = index;">
+                <th [attr.colspan]="periodo['colspan']">{{periodo.PRD_NOM}}</th>
               </ng-container>
             </tr>
+            <!-- subEncabezados de peridos -->
             <tr>
-              <ng-container *ngFor="let periodo of periodos">
-                <ng-container *ngIf="(periodo.PRD_TIPO==='Normal')">
-                  <ng-container *ngFor="let periodo of getRange(anio.NUM_PRCL);let i = index;">
-                    <th>P {{i+1}}</th>
-                  </ng-container>
-                  <th>PROM</th>
-                  <th>80%</th>
-                  <ng-container *ngFor="let periodo of getRange(anio.NUM_EXAM);let i = index;">
-                    <th>EX {{i+1}}</th>
-                  </ng-container>
-                  <th>20%</th>
-                  <th>Total</th>
-                  <th>EC</th>
+              <ng-container *ngFor="let periodo of periodosNormales">
+                <!-- parciales -->
+                <ng-container *ngFor="let parcial of periodo['parcialesNormales']">
+                  <th>{{parcial['PRCL_NOM']}}</th>
                 </ng-container>
-                <ng-container *ngIf="(periodo.PRD_TIPO!=='Normal')">
-                  <ng-container *ngFor="let periodo of getRange(anio.NUM_SUSP);let i = index;">
-                    <th>EX {{i+1}}</th>
-                  </ng-container>
+                <th>PROM</th>
+                <th>80%</th>
+                <!-- examenes -->
+                <ng-container *ngFor="let parcial of periodo['parcialesEvaluativos']">
+                  <th>{{parcial['PRCL_NOM']}}</th>
+                </ng-container>
+                <th>20%</th>
+                <!-- total -->
+                <th>Total</th>
+                <th>EC</th>
+              </ng-container>
+              <ng-container *ngFor="let periodo of periodosEvaluativos">
+                <ng-container *ngFor="let parcial of periodo['parcialesEvaluativos']">
+                  <th>{{parcial['PRCL_NOM']}}</th>
                 </ng-container>
               </ng-container>
             </tr>
           </thead>
           <tbody class="align-middle">
+            <!-- inicio fila -->
             <ng-container *ngFor="let item of estudiantes; index as i">
               <tr>
+                <!-- numero fila -->
                 <th scope="row" class="p-1">{{i+1}}</th>
+                <!-- nombre estudiante -->
                 <td>
                   <p class="w-text-table">{{item.EST_CRS_NOM}}</p>
                 </td>
-                <ng-container *ngFor="let periodo of periodos">
-                  <ng-container *ngIf="(periodo.PRD_TIPO==='Normal')">
-                    <ng-container *ngFor="let periodo of getRange(anio.NUM_PRCL)">
-                      <td>
-                        <input class="form-control p-0 m-0 w-input-table" type="number">
-                      </td>
-                    </ng-container>
-                    <td></td>
-                    <td></td>
-                    <ng-container *ngFor="let periodo of getRange(anio.NUM_EXAM)">
-                      <td><input class="form-control p-0 m-0 w-input-table" type="number"
-                          (input)="addCalificacion(item,$event)"></td>
-                    </ng-container>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                <!-- inicio calificaciones -->
+                <ng-container *ngFor="let periodo of periodosNormales">
+                  <!-- se crean dinamicamente en base al numero de parciales -->
+                  <ng-container *ngFor="let parcial of periodo['parcialesNormales']">
+                    <td><input class="w-input-table form-control m-0 p-0" type="number"
+                        (input)="addCalificacion(item,parcial,$event)"></td>
                   </ng-container>
-                  <ng-container *ngIf="(periodo.PRD_TIPO!=='Normal')">
-                    <ng-container *ngFor="let periodo of getRange(anio.NUM_SUSP)">
-                      <td><input class="form-control p-0 m-0 w-input-table" type="number"
-                          (input)="addCalificacion(item,$event)"></td>
-                    </ng-container>
+                  <!-- total por parcial -->
+                  <td>prom</td>
+                  <!-- 80% total por parcial -->
+                  <td>80</td>
+                  <!-- se crean dinamicamente en base al numero de parciales evaluativos -->
+                  <ng-container *ngFor="let parcial of periodo['parcialesEvaluativos']">
+                    <td><input class="w-input-table form-control m-0 p-0" type="number"
+                        (input)="addCalificacion(item,parcial,$event)"></td>
+                  </ng-container>
+                  <!-- 20% por parcial evaluativo -->
+                  <td>20</td>
+                  <!-- suma de 20 y 80 -->
+                  <td>total</td>
+                  <!-- equivalencia -->
+                  <td>ec</td>
+                </ng-container>
+                <!-- inicio calificaciones suspenso -->
+                <ng-container *ngFor="let periodo of periodosEvaluativos">
+                  <!-- se crean dinamicamente en base al numero de parciales de suspenso-->
+                  <ng-container *ngFor="let parcial of periodo['parcialesEvaluativos']">
+                    <td><input class="w-input-table form-control m-0 p-0" type="number"
+                        (input)="addCalificacion(item,parcial,$event)"></td>
                   </ng-container>
                 </ng-container>
               </tr>

@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
+import { Parcial } from 'src/app/interfaces/Parcial.interface';
 import { Periodo } from 'src/app/interfaces/Periodo.interface';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 import { EstudianteCursoParaleloService } from 'src/app/servicios/estudiante-curso-paralelo.service';
@@ -13,7 +14,7 @@ import { ProfesorAsignaturaService } from 'src/app/servicios/profesor-asignatura
   templateUrl: './calificaciones.component.html',
   styleUrls: ['./calificaciones.component.scss']
 })
-export class CalificacionesComponent {
+export class CalificacionesComponent implements OnInit {
   constructor(private route: ActivatedRoute,
     private service: ProfesorAsignaturaService,
     private estudianteCursoParaleloservice: EstudianteCursoParaleloService,
@@ -27,7 +28,8 @@ export class CalificacionesComponent {
   PRLL_ID: string = '';
   CRS_ID: string = '';
   anio: AnioLectivo = {} as AnioLectivo;
-  periodos: Periodo[] = [];  
+  periodosNormales: Periodo[] = [];
+  periodosEvaluativos: Periodo[] = [];
   estudiantes: any[] = [];
 
   ngOnInit(): void {
@@ -53,7 +55,6 @@ export class CalificacionesComponent {
           this.PRLL_ID = value.data.PRLL_ID;
           this.loadTablaEstudiantes();
           this.loadAnio();
-          //this.loadParciales();
           this.loadPeriodos();
         } else {
           console.log(value.message);
@@ -96,48 +97,68 @@ export class CalificacionesComponent {
     });
   }
 
+
   loadPeriodos() {
     this.periodoService.getEnabled().subscribe({
       next: (value) => {
         if (value.response) {
-         this.periodos= value.data;
+          const periodos = value.data as Periodo[];
+          this.periodosNormales = periodos.filter(periodo => periodo.PRD_TIPO === 'Normal');
+          this.periodosEvaluativos = periodos.filter(periodo => periodo.PRD_TIPO !== 'Normal');
+          this.loadParcialesByPeriodo();
         } else {
           console.log(value.message);
         }
       },
       error: (error) => {
         console.log(error);
-      },
+      }
     });
+
   }
 
-  loadParciales() {
-    this.parcialService.getEnabled().subscribe({
-      next: (value) => {
-        if (value.response) {
-          console.log(value.data);
-          
-        } else {
-          console.log(value.message);
+  loadParcialesByPeriodo() {
+    this.periodosNormales.map(periodo =>
+      this.parcialService.getByPeriodo(periodo.PRD_ID).subscribe({
+        next: (value) => {
+          if (value.response) {
+            const parciales = value.data as Parcial[];
+            periodo['colspan'] = parciales.length + 5;
+            periodo["parcialesNormales"] = parciales.filter(parcial => parcial.PRCL_TIPO === 'Normal');
+            periodo["parcialesEvaluativos"] = parciales.filter(parcial => parcial.PRCL_TIPO !== 'Normal');
+          } else {
+            console.log(value.message);
+          }
+        },
+        error: (error) => {
+          console.log(error);
         }
-      },
-      error: (error) => {
-        console.log(error);
-      },
-    });
+      })
+    );
+
+    this.periodosEvaluativos.map(periodo =>
+      this.parcialService.getByPeriodo(periodo.PRD_ID).subscribe({
+        next: (value) => {
+          if (value.response) {
+            const parciales = value.data as Parcial[];
+            periodo['colspan'] = parciales.length + 5;
+            periodo['parcialesNormales'] = parciales.filter(parcial => parcial.PRCL_TIPO === 'Normal');
+            periodo['parcialesEvaluativos'] = parciales.filter(parcial => parcial.PRCL_TIPO !== 'Normal');
+          } else {
+            console.log(value.message);
+          }
+        },
+        error: (error) => {
+          console.log(error);
+        }
+      })
+    );
   }
 
-  addCalificacion(data: any, event: any) {
+  addCalificacion(estudiante: any, parcial: any, event: any) {
     const calificacion = Number(event.target.value);
-    data.CALIFICACION = calificacion;
-    console.log(data);
-
-  }
-  getRange(num: number): number[] {
-    return Array.from({ length: num }, (_, index) => index);
-  }
-  getColspan(): number {
-    return this.anio.NUM_PRCL + this.anio.NUM_EXAM + 5;
+    estudiante[parcial.PRCL_NOM] = calificacion;
+    estudiante['PRCL_ID'] = parcial.PRCL_ID;
   }
 
 }
