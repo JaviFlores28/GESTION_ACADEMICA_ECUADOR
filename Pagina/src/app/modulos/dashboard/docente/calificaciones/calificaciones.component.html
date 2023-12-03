@@ -15,23 +15,31 @@
             <tr>
               <th rowspan="2">#</th>
               <th rowspan="2">Nombres</th>
-              <ng-container *ngFor="let periodo of getRange(anio.NUM_PRD);let i = index;">
-                <th [attr.colspan]="getColspan()">{{anio.PRD_NOM}} {{i+1}}</th>
+              <ng-container *ngFor="let periodo of periodos;let i = index;">
+                <th [attr.colspan]="getColspan()">{{(periodo.PRD_TIPO==='Normal')? periodo.PRD_NOM: 'Suspenso'}}
+                </th>
               </ng-container>
             </tr>
             <tr>
-              <ng-container *ngFor="let periodo of getRange(anio.NUM_PRD)">
-                <ng-container *ngFor="let periodo of getRange(anio.NUM_PRCL);let i = index;">
-                  <th>P {{i+1}}</th>
+              <ng-container *ngFor="let periodo of periodos">
+                <ng-container *ngIf="(periodo.PRD_TIPO==='Normal')">
+                  <ng-container *ngFor="let periodo of getRange(anio.NUM_PRCL);let i = index;">
+                    <th>P {{i+1}}</th>
+                  </ng-container>
+                  <th>PROM</th>
+                  <th>80%</th>
+                  <ng-container *ngFor="let periodo of getRange(anio.NUM_EXAM);let i = index;">
+                    <th>EX {{i+1}}</th>
+                  </ng-container>
+                  <th>20%</th>
+                  <th>Total</th>
+                  <th>EC</th>
                 </ng-container>
-                <th>PROM</th>
-                <th>80%</th>
-                <ng-container *ngFor="let periodo of getRange(anio.NUM_EXAM);let i = index;">
-                  <th>EX {{i+1}}</th>
+                <ng-container *ngIf="(periodo.PRD_TIPO!=='Normal')">
+                  <ng-container *ngFor="let periodo of getRange(anio.NUM_SUSP);let i = index;">
+                    <th>EX {{i+1}}</th>
+                  </ng-container>
                 </ng-container>
-                <th>20%</th>
-                <th>Total</th>
-                <th>EC</th>
               </ng-container>
             </tr>
           </thead>
@@ -39,21 +47,32 @@
             <ng-container *ngFor="let item of estudiantes; index as i">
               <tr>
                 <th scope="row" class="p-1">{{i+1}}</th>
-                <td><p class="w-text-table">{{item.EST_CRS_NOM}}</p></td>
-                <ng-container *ngFor="let periodo of getRange(anio.NUM_PRD)">
-                  <ng-container *ngFor="let periodo of getRange(anio.NUM_PRCL)">
-                    <td>
-                      <input class="form-control p-0 m-0 w-input-table" type="number">
-                    </td>
+                <td>
+                  <p class="w-text-table">{{item.EST_CRS_NOM}}</p>
+                </td>
+                <ng-container *ngFor="let periodo of periodos">
+                  <ng-container *ngIf="(periodo.PRD_TIPO==='Normal')">
+                    <ng-container *ngFor="let periodo of getRange(anio.NUM_PRCL)">
+                      <td>
+                        <input class="form-control p-0 m-0 w-input-table" type="number">
+                      </td>
+                    </ng-container>
+                    <td></td>
+                    <td></td>
+                    <ng-container *ngFor="let periodo of getRange(anio.NUM_EXAM)">
+                      <td><input class="form-control p-0 m-0 w-input-table" type="number"
+                          (input)="addCalificacion(item,$event)"></td>
+                    </ng-container>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                   </ng-container>
-                  <td></td>
-                  <td></td>
-                  <ng-container *ngFor="let periodo of getRange(anio.NUM_EXAM)">
-                    <td><input class="form-control p-0 m-0 w-input-table" type="number" (input)="addCalificacion(item,$event)"></td>
+                  <ng-container *ngIf="(periodo.PRD_TIPO!=='Normal')">
+                    <ng-container *ngFor="let periodo of getRange(anio.NUM_SUSP)">
+                      <td><input class="form-control p-0 m-0 w-input-table" type="number"
+                          (input)="addCalificacion(item,$event)"></td>
+                    </ng-container>
                   </ng-container>
-                  <td></td>
-                  <td></td>
-                  <td></td>
                 </ng-container>
               </tr>
             </ng-container>

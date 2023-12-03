@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
+import { Periodo } from 'src/app/interfaces/Periodo.interface';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 import { EstudianteCursoParaleloService } from 'src/app/servicios/estudiante-curso-paralelo.service';
+import { ParcialService } from 'src/app/servicios/parcial.service';
+import { PeriodoService } from 'src/app/servicios/periodo.service';
 import { ProfesorAsignaturaService } from 'src/app/servicios/profesor-asignatura.service';
 
 @Component({
@@ -15,6 +18,8 @@ export class CalificacionesComponent {
     private service: ProfesorAsignaturaService,
     private estudianteCursoParaleloservice: EstudianteCursoParaleloService,
     private anioService: AnioLectivoService,
+    private periodoService: PeriodoService,
+    private parcialService: ParcialService
 
   ) { }
   title = 'Calificaciones';
@@ -22,6 +27,7 @@ export class CalificacionesComponent {
   PRLL_ID: string = '';
   CRS_ID: string = '';
   anio: AnioLectivo = {} as AnioLectivo;
+  periodos: Periodo[] = [];  
   estudiantes: any[] = [];
 
   ngOnInit(): void {
@@ -47,6 +53,8 @@ export class CalificacionesComponent {
           this.PRLL_ID = value.data.PRLL_ID;
           this.loadTablaEstudiantes();
           this.loadAnio();
+          //this.loadParciales();
+          this.loadPeriodos();
         } else {
           console.log(value.message);
         }
@@ -78,6 +86,37 @@ export class CalificacionesComponent {
       next: (value) => {
         if (value.response) {
           this.anio = value.data;
+        } else {
+          console.log(value.message);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
+  }
+
+  loadPeriodos() {
+    this.periodoService.getEnabled().subscribe({
+      next: (value) => {
+        if (value.response) {
+         this.periodos= value.data;
+        } else {
+          console.log(value.message);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
+  }
+
+  loadParciales() {
+    this.parcialService.getEnabled().subscribe({
+      next: (value) => {
+        if (value.response) {
+          console.log(value.data);
+          
         } else {
           console.log(value.message);
         }
