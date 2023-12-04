@@ -15,6 +15,7 @@ import { ProfesorAsignaturaService } from 'src/app/servicios/profesor-asignatura
   styleUrls: ['./calificaciones.component.scss']
 })
 export class CalificacionesComponent implements OnInit {
+
   constructor(private route: ActivatedRoute,
     private service: ProfesorAsignaturaService,
     private estudianteCursoParaleloservice: EstudianteCursoParaleloService,
@@ -97,7 +98,6 @@ export class CalificacionesComponent implements OnInit {
     });
   }
 
-
   loadPeriodos() {
     this.periodoService.getEnabled().subscribe({
       next: (value) => {
@@ -161,4 +161,8 @@ export class CalificacionesComponent implements OnInit {
     estudiante['PRCL_ID'] = parcial.PRCL_ID;
   }
 
+  guardar() {
+    console.log(this.estudiantes);
+    
+    }
 }
