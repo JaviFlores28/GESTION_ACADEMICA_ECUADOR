@@ -66,8 +66,15 @@
                 <ng-container *ngFor="let periodo of periodosNormales">
                   <!-- se crean dinamicamente en base al numero de parciales -->
                   <ng-container *ngFor="let parcial of periodo['parcialesNormales']">
-                    <td><input class="w-input-table form-control m-0 p-0" type="number"
-                        (input)="addCalificacion(item,parcial,$event)"></td>
+                    <ng-container *ngIf="isEnabledParcial(parcial)">
+                      <td>
+                        <input class="w-input-table form-control m-0 p-0 text-center" type="number" step="0.01" min="0" max="10" 
+                          (input)="addCalificacion(item,parcial,$event)">
+                      </td>
+                    </ng-container>
+                    <ng-container *ngIf="!isEnabledParcial(parcial)">
+                      <td class="text-center">-</td>
+                    </ng-container>
                   </ng-container>
                   <!-- total por parcial -->
                   <td>prom</td>
@@ -75,8 +82,15 @@
                   <td>80</td>
                   <!-- se crean dinamicamente en base al numero de parciales evaluativos -->
                   <ng-container *ngFor="let parcial of periodo['parcialesEvaluativos']">
-                    <td><input class="w-input-table form-control m-0 p-0" type="number"
-                        (input)="addCalificacion(item,parcial,$event)"></td>
+                    <ng-container *ngIf="isEnabledParcial(parcial)">
+                      <td>
+                        <input class="w-input-table form-control m-0 p-0" type="number" step="0.01" min="0" max="10"
+                          (input)="addCalificacion(item,parcial,$event)">
+                      </td>
+                    </ng-container>
+                    <ng-container *ngIf="!isEnabledParcial(parcial)">
+                      <td class="text-center">-</td>
+                    </ng-container>
                   </ng-container>
                   <!-- 20% por parcial evaluativo -->
                   <td>20</td>
@@ -89,8 +103,15 @@
                 <ng-container *ngFor="let periodo of periodosEvaluativos">
                   <!-- se crean dinamicamente en base al numero de parciales de suspenso-->
                   <ng-container *ngFor="let parcial of periodo['parcialesEvaluativos']">
-                    <td><input class="w-input-table form-control m-0 p-0" type="number"
-                        (input)="addCalificacion(item,parcial,$event)"></td>
+                    <ng-container *ngIf="isEnabledParcial(parcial)">
+                      <td>
+                        <input class="w-input-table form-control m-0 p-0" type="number" step="0.01" min="0" max="10"
+                          (input)="addCalificacion(item,parcial,$event)">
+                      </td>
+                    </ng-container>
+                    <ng-container *ngIf="!isEnabledParcial(parcial)">
+                      <td class="text-center">-</td>
+                    </ng-container>
                   </ng-container>
                 </ng-container>
               </tr>

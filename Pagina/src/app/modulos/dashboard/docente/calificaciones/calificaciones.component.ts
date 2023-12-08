@@ -157,12 +157,30 @@ export class CalificacionesComponent implements OnInit {
 
   addCalificacion(estudiante: any, parcial: any, event: any) {
     const calificacion = Number(event.target.value);
-    estudiante[parcial.PRCL_NOM] = calificacion;
-    estudiante['PRCL_ID'] = parcial.PRCL_ID;
+    if (calificacion > 10 || calificacion < 0) {
+      event.target.value = '';
+      event.target.style.border = '1px solid red'; // Agrega el estilo al input
+      estudiante['calificaciones'] = [];
+      console.log(estudiante.calificaciones);
+      return;
+    }else{
+      event.target.style.border = ''; // Agrega el estilo al input
+      estudiante['calificaciones'] = [{'parcial': parcial.PRCL_ID, 'calificacion': calificacion}];
+      console.log(estudiante.calificaciones);
+    }
+
+  }
+
+  isEnabledParcial(parcial: Parcial) {
+    const fechaActual = new Date();
+    const fechaInicio = new Date(parcial.PRCL_INI);
+    const fechaFin = new Date(parcial.PRCL_FIN);
+    const response = fechaActual >= fechaInicio && fechaActual <= fechaFin;
+    return response;
   }
 
   guardar() {
     console.log(this.estudiantes);
-    
-    }
+
+  }
 }
