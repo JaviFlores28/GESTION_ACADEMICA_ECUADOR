@@ -163,9 +163,9 @@ export class CalificacionesComponent implements OnInit {
       estudiante['calificaciones'] = [];
       console.log(estudiante.calificaciones);
       return;
-    }else{
+    } else {
       event.target.style.border = ''; // Agrega el estilo al input
-      estudiante['calificaciones'] = [{'parcial': parcial.PRCL_ID, 'calificacion': calificacion}];
+      estudiante['calificaciones'] = [{ 'parcial': parcial.PRCL_ID, 'calificacion': calificacion }];
       console.log(estudiante.calificaciones);
     }
 

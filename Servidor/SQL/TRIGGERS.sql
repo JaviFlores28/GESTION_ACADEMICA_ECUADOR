@@ -41,7 +41,7 @@ DELIMITER ;
 
 -- Creacion de periodos y subperiodos
 DELIMITER $$
-CREATE OR REPLACE TRIGGER `generar_periodo_subperiodo` AFTER INSERT ON `anio_lectivo` FOR EACH ROW BEGIN
+CREATE OR REPLACE TRIGGER generar_periodo_subperiodo AFTER INSERT ON anio_lectivo FOR EACH ROW BEGIN
     DECLARE i INT;
     DECLARE j INT;
     DECLARE k INT;
@@ -55,16 +55,16 @@ CREATE OR REPLACE TRIGGER `generar_periodo_subperiodo` AFTER INSERT ON `anio_lec
     WHILE i <= NEW.NUM_PRD DO
         SELECT UUID() INTO periodoId;
         -- Insertar en la tabla periodo tipo normal
-        INSERT INTO `periodo` (`PRD_ID`, `PRD_NOM`, `PRD_TIPO`, `AL_ID`, `ESTADO`, `CREADOR_ID`)
-        VALUES (periodoId, CONCAT('Periodo-', i),'1', anioId,'1', NEW.CREADOR_ID);
+        INSERT INTO periodo (PRD_ID, PRD_NOM,PRD_INI, PRD_FIN, PRD_TIPO, AL_ID, ESTADO, CREADOR_ID)
+        VALUES (periodoId, CONCAT(NEW.PRD_NOM, i),NEW.AL_INICIO, NEW.AL_FIN,'1', anioId,'1', NEW.CREADOR_ID);
         
         SET j = 1;
         
         WHILE j <= NEW.NUM_PRCL DO
             SELECT UUID() INTO parcialId;
             -- Insertar en la tabla subperiodo
-            INSERT INTO parcial (`PRCL_ID`, `PRCL_NOM`, `PRCL_INI`, `PRCL_FIN`, `ESTADO`, `PRCL_TIPO`, `PRD_ID`, `CREADOR_ID`)
-            VALUES (parcialId, CONCAT('Parcial-', j), NEW.AL_INICIO, NEW.AL_FIN, '1', '1', periodoId, NEW.CREADOR_ID);
+            INSERT INTO parcial (PRCL_ID, PRCL_NOM, PRCL_INI, PRCL_FIN, ESTADO, PRCL_TIPO, PRD_ID, CREADOR_ID)
+            VALUES (parcialId, CONCAT('P', j), NEW.AL_INICIO, NEW.AL_FIN, '1', '1', periodoId, NEW.CREADOR_ID);
             SET j = j + 1;
         END WHILE;
         
@@ -73,8 +73,8 @@ CREATE OR REPLACE TRIGGER `generar_periodo_subperiodo` AFTER INSERT ON `anio_lec
         WHILE j <= NEW.NUM_EXAM DO
             SELECT UUID() INTO parcialId;
             -- Insertar en la tabla subperiodo
-            INSERT INTO parcial (`PRCL_ID`, `PRCL_NOM`, `PRCL_INI`, `PRCL_FIN`, `ESTADO`, `PRCL_TIPO`, `PRD_ID`, `CREADOR_ID`)
-            VALUES (parcialId, CONCAT('Examen-', j), NEW.AL_INICIO, NEW.AL_FIN, '1', '2', periodoId, NEW.CREADOR_ID);
+            INSERT INTO parcial (PRCL_ID, PRCL_NOM, PRCL_INI, PRCL_FIN, ESTADO, PRCL_TIPO, PRD_ID, CREADOR_ID)
+            VALUES (parcialId, CONCAT('EX', j), NEW.AL_INICIO, NEW.AL_FIN, '1', '2', periodoId, NEW.CREADOR_ID);
             SET j = j + 1;
         END WHILE;
         
@@ -83,15 +83,14 @@ CREATE OR REPLACE TRIGGER `generar_periodo_subperiodo` AFTER INSERT ON `anio_lec
     
     -- Insertar en la tabla periodo tipo extra
     SELECT UUID() INTO periodoId;
-    INSERT INTO `periodo` (`PRD_ID`, `PRD_NOM`, `PRD_TIPO`, `AL_ID`, `ESTADO`, `CREADOR_ID`)
-    VALUES (periodoId,'Suspenso','1',anioId,'1', NEW.CREADOR_ID);
-    
+      INSERT INTO periodo (PRD_ID, PRD_NOM,PRD_INI, PRD_FIN, PRD_TIPO, AL_ID, ESTADO, CREADOR_ID)
+        VALUES (periodoId,'SUSP',NEW.AL_INICIO, NEW.AL_FIN,'1', anioId,'2', NEW.CREADOR_ID);
     SET k = 1;
     WHILE k <= NEW.NUM_SUSP DO
         SELECT UUID() INTO parcialId;
         -- Insertar en la tabla subperiodo
-        INSERT INTO parcial (`PRCL_ID`, `PRCL_NOM`, `PRCL_INI`, `PRCL_FIN`, `ESTADO`, `PRCL_TIPO`, `PRD_ID`, `CREADOR_ID`)
-        VALUES (parcialId, CONCAT('Suspenso-', k), NEW.AL_INICIO, NEW.AL_FIN, '1', '2', periodoId, NEW.CREADOR_ID);
+        INSERT INTO parcial (PRCL_ID, PRCL_NOM, PRCL_INI, PRCL_FIN, ESTADO, PRCL_TIPO, PRD_ID, CREADOR_ID)
+        VALUES (parcialId, CONCAT('SUSP', k), NEW.AL_INICIO, NEW.AL_FIN, '1', '2', periodoId, NEW.CREADOR_ID);
         SET k = k + 1;
     END WHILE;
 END

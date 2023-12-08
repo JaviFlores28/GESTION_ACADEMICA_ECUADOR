@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Curso } from 'src/app/interfaces/Curso.interface';
 import { Estudiante } from 'src/app/interfaces/Estudiante.interface';
 import { EstudianteCursoParalelo } from 'src/app/interfaces/EstudianteCursoParalelo.interface';
-import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 import { CursoService } from 'src/app/servicios/curso.service';
 import { EstudianteCursoService } from 'src/app/servicios/estudiante-curso.service';
 import { ModalService } from 'src/app/servicios/modal.service';
@@ -178,6 +176,7 @@ export class EstudianteCursoComponent implements OnInit {
       this.form.reset();
       this.loadMatriculados();
       this.loadNoMatriculados();
+      this.idsEstudiantes=[];
       // this.router.navigate(['../'], { relativeTo: this.route });
     }
   }
