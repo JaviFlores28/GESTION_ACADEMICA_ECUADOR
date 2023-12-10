@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
+import { CalificacionesCuantitativas } from 'src/app/interfaces/CalificacionesCuantitativas.interface';
 import { Parcial } from 'src/app/interfaces/Parcial.interface';
 import { Periodo } from 'src/app/interfaces/Periodo.interface';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
@@ -68,11 +69,13 @@ export class CalificacionesComponent implements OnInit {
   }
 
   loadTablaEstudiantes() {
-    const data = { PRLL_ID: this.PRLL_ID, CRS_ID: this.CRS_ID, AL_ID: this.anio.AL_ID }
+    const data = { PRLL_ID: this.PRLL_ID, CRS_ID: this.CRS_ID, AL_ID: this.anio.AL_ID, PRF_ASG_PRLL_ID: this.elementoId }
     this.estudianteCursoParaleloservice.getEstudiantesByCursoParalelo(data).subscribe({
       next: (value) => {
         if (value.response) {
           this.estudiantes = value.data;
+          console.log(this.estudiantes);
+
         } else {
           console.log(value.message);
         }
@@ -177,6 +180,18 @@ export class CalificacionesComponent implements OnInit {
     const fechaFin = new Date(parcial.PRCL_FIN);
     const response = fechaActual >= fechaInicio && fechaActual <= fechaFin;
     return response;
+  }
+
+  getCalificacion(estudiante: any, parcial: any) {
+    let calificacion = 0;
+    if (estudiante.CUANTITATIVAS) {
+      const filaEncontrada: CalificacionesCuantitativas = estudiante.CUANTITATIVAS.find((cualitativa: { PRCL_ID: any; }) => cualitativa.PRCL_ID === parcial.PRCL_ID);
+      if (filaEncontrada) {
+        calificacion=filaEncontrada.CALIFICACION;
+      }
+    }
+    return calificacion;
+
   }
 
   guardar() {

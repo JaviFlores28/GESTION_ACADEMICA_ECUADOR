@@ -68,7 +68,7 @@
                   <ng-container *ngFor="let parcial of periodo['parcialesNormales']">
                     <ng-container *ngIf="isEnabledParcial(parcial)">
                       <td>
-                        <input class="w-input-table form-control m-0 p-0 text-center" type="number" step="0.01" min="0" max="10" 
+                        <input class="w-input-table form-control m-0 p-0 text-center" type="number" step="0.01" min="0" max="10"  [value]="getCalificacion(item,parcial)"
                           (input)="addCalificacion(item,parcial,$event)">
                       </td>
                     </ng-container>
