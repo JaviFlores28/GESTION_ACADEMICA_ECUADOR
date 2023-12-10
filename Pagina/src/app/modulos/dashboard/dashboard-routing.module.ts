@@ -26,6 +26,7 @@ import { EstudianteParaleloComponent } from './admin/estudiante-paralelo/estudia
 import { ProfesorCursosAsignaturasComponent } from './docente/profesor-cursos-asignaturas/profesor-cursos-asignaturas.component';
 import { ProfesorHorariosComponent } from './docente/profesor-horarios/profesor-horarios.component';
 import { CalificacionesComponent } from './docente/calificaciones/calificaciones.component';
+import { PeriodosComponent } from './admin/periodos/periodos.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent, canActivate: [authGuardLogin] },
@@ -39,14 +40,15 @@ const routes: Routes = [
       {
         path: 'docente',
         children: [
-          { path: 'cursos',
-          children: [
-            { path: '', component: ProfesorCursosAsignaturasComponent},
-            { path: 'calificaciones/:id', component: CalificacionesComponent},
+          {
+            path: 'cursos',
+            children: [
+              { path: '', component: ProfesorCursosAsignaturasComponent },
+              { path: 'calificaciones/:id', component: CalificacionesComponent },
 
-          ]
-        },
-          { path: 'horarios', component: ProfesorHorariosComponent},
+            ]
+          },
+          { path: 'horarios', component: ProfesorHorariosComponent },
 
         ],
       },
@@ -141,7 +143,13 @@ const routes: Routes = [
         path: 'institucion',
         canActivate: [isAdmin],
         children: [
-          { path: 'iniciar-anio', component: AnioLectivoComponent },
+          {
+            path: 'anio-lectivo',
+            children: [
+              { path: 'inicializar', component: AnioLectivoComponent },
+              { path: 'periodos', component: PeriodosComponent },
+            ]
+          },
           { path: 'asignar-paralelo', component: EstudianteParaleloComponent },
           { path: 'asignar-profesor', component: ProfesorAsignaturaComponent },
         ],

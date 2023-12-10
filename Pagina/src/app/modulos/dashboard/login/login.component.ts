@@ -56,6 +56,7 @@ export class LoginComponent implements OnInit {
           }
         },
         error: (error) => {
+          this.openAlertModal(error, 'danger');
           console.error(error);
         },
       });

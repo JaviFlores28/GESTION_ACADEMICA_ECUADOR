@@ -19,7 +19,7 @@ export class AnioLectivoComponent implements OnInit {
     private usuarioService: UsuarioService,
     private service: AnioLectivoService,
     private modalService: ModalService,
-  ) {}
+  ) { }
 
   modoEdicion: boolean = false;
   elementoId: string = '';
@@ -30,7 +30,7 @@ export class AnioLectivoComponent implements OnInit {
     AL_NOM: ['', Validators.required],
     AL_INICIO: [getFormattedDate(new Date()), Validators.required],
     AL_FIN: [getFormattedDate(new Date()), Validators.required],
-    PRD_NOM:['Trimestre', Validators.required],
+    PRD_NOM: ['Trimestre', Validators.required],
     AL_POR_PRD: [70, Validators.required],
     AL_POR_EXAM: [30, Validators.required],
     CLFN_MIN_APR: [7, Validators.required],
@@ -43,23 +43,9 @@ export class AnioLectivoComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.validarEdicion();
+    this.validarAnioLectivo();
   }
 
-  validarEdicion() {
-    this.route.paramMap.subscribe((params) => {
-      const id = params.get('id');
-      if (id) {
-        this.modoEdicion = true;
-        this.elementoId = id;
-        this.msg = '¿Desea editar?';
-        this.loadDataEdit();
-      } else {
-        this.modoEdicion = false;
-        this.elementoId = '';
-      }
-    });
-  }
 
   onSubmit() {
     this.openConfirmationModal(this.msg);
@@ -67,7 +53,7 @@ export class AnioLectivoComponent implements OnInit {
 
   crear() {
     if (this.form.valid) {
-      const aniolectivo: AnioLectivo = this.buildObject();
+      const aniolectivo: AnioLectivo = this.buildObject();      
       this.service.post(aniolectivo).subscribe({
         next: (value) => {
           this.handleResponse(value);
@@ -82,7 +68,6 @@ export class AnioLectivoComponent implements OnInit {
   editar() {
     if (this.form.valid) {
       const aniolectivo: AnioLectivo = this.buildObjectEdit();
-
       this.service.put(aniolectivo).subscribe({
         next: (value) => {
           this.handleResponse(value);
@@ -136,11 +121,14 @@ export class AnioLectivoComponent implements OnInit {
     return aniolectivo;
   }
 
-  loadDataEdit() {
-    this.service.getById(this.elementoId).subscribe({
+  validarAnioLectivo() {
+    this.service.getEnabled().subscribe({
       next: (value) => {
         if (value.response) {
-          this.llenarForm(value.data);
+          this.modoEdicion = true;
+          this.elementoId = value.data[0].AL_ID;
+          this.msg = '¿Desea editar?';
+          this.llenarForm(value.data[0]);
         } else {
           console.log(value.message);
         }
@@ -148,7 +136,7 @@ export class AnioLectivoComponent implements OnInit {
       error: (error) => {
         console.log(error);
       },
-    });
+    })
   }
 
   llenarForm(data: AnioLectivo) {
@@ -170,6 +158,7 @@ export class AnioLectivoComponent implements OnInit {
 
   openAlertModal(content: string, alertType: string) {
     this.modalService.openAlertModal(content, alertType);
+
   }
 
   openConfirmationModal(message: string) {
@@ -196,13 +185,16 @@ export class AnioLectivoComponent implements OnInit {
     } else {
       if (this.modoEdicion) {
         this.openAlertModal(value.message, 'success');
-        console.log(value.message);
       } else {
         this.openAlertModal(value.message, 'success');
-        this.form.reset();
-       // this.router.navigate(['../'], { relativeTo: this.route });
+        this.reloadPage();
       }
     }
+  }
+  reloadPage() {
+    setTimeout(() => {
+      location.reload();
+    }, 2000); // Wait for 1 second before reloading the page
   }
 
   handleErrorResponse(error: any) {

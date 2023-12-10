@@ -117,7 +117,6 @@ export class CalificacionesComponent implements OnInit {
         console.log(error);
       }
     });
-
   }
 
   loadParcialesByPeriodo() {

@@ -63,8 +63,18 @@ export const navbarData: NavBarData[] = [
     rol: 'A',
     items: [
       {
-        routelink: 'iniciar-anio',
-        label: 'Iniciar Año lectivo',
+        routelink: 'institucion/anio-lectivo',
+        label: 'Año lectivo',
+        items: [
+          {
+            routelink: 'inicializar',
+            label: 'Inicializar',
+          },
+          {
+            routelink: 'periodos',
+            label: 'Periodos',
+          },
+        ],
       },
       {
         routelink: 'asignar-paralelo',

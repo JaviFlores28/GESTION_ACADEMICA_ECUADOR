@@ -37,6 +37,7 @@ import { EstudianteParaleloComponent } from './admin/estudiante-paralelo/estudia
 import { ProfesorCursosAsignaturasComponent } from './docente/profesor-cursos-asignaturas/profesor-cursos-asignaturas.component';
 import { ProfesorHorariosComponent } from './docente/profesor-horarios/profesor-horarios.component';
 import { CalificacionesComponent } from './docente/calificaciones/calificaciones.component';
+import { PeriodosComponent } from './admin/periodos/periodos.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { CalificacionesComponent } from './docente/calificaciones/calificaciones
     EstudianteParaleloComponent,
     ProfesorCursosAsignaturasComponent,
     ProfesorHorariosComponent,
-    CalificacionesComponent
+    CalificacionesComponent,
+    PeriodosComponent
   ],
   imports: [CommonModule, DashboardRoutingModule, FormsModule, ReactiveFormsModule, FontAwesomeModule, NgbModule, NgSelectModule, NgTableComponent],
 })

@@ -84,7 +84,7 @@ CREATE OR REPLACE TRIGGER generar_periodo_subperiodo AFTER INSERT ON anio_lectiv
     -- Insertar en la tabla periodo tipo extra
     SELECT UUID() INTO periodoId;
       INSERT INTO periodo (PRD_ID, PRD_NOM,PRD_INI, PRD_FIN, PRD_TIPO, AL_ID, ESTADO, CREADOR_ID)
-        VALUES (periodoId,'SUSP',NEW.AL_INICIO, NEW.AL_FIN,'1', anioId,'2', NEW.CREADOR_ID);
+        VALUES (periodoId,'SUSP',NEW.AL_INICIO, NEW.AL_FIN,'2', anioId,'1', NEW.CREADOR_ID);
     SET k = 1;
     WHILE k <= NEW.NUM_SUSP DO
         SELECT UUID() INTO parcialId;
