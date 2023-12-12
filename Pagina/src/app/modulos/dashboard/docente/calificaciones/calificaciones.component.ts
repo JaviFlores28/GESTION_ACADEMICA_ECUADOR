@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
+import { CalificacionesCualitativas } from 'src/app/interfaces/CalificacionesCualitativas.interface';
 import { CalificacionesCuantitativas } from 'src/app/interfaces/CalificacionesCuantitativas.interface';
 import { Parcial } from 'src/app/interfaces/Parcial.interface';
 import { Periodo } from 'src/app/interfaces/Periodo.interface';
@@ -9,6 +10,7 @@ import { EstudianteCursoParaleloService } from 'src/app/servicios/estudiante-cur
 import { ParcialService } from 'src/app/servicios/parcial.service';
 import { PeriodoService } from 'src/app/servicios/periodo.service';
 import { ProfesorAsignaturaService } from 'src/app/servicios/profesor-asignatura.service';
+import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
   selector: 'app-calificaciones',
@@ -22,13 +24,17 @@ export class CalificacionesComponent implements OnInit {
     private estudianteCursoParaleloservice: EstudianteCursoParaleloService,
     private anioService: AnioLectivoService,
     private periodoService: PeriodoService,
-    private parcialService: ParcialService
+    private parcialService: ParcialService,
+    private usuarioService: UsuarioService,
+
 
   ) { }
   title = 'Calificaciones';
   elementoId: string = '';
   PRLL_ID: string = '';
   CRS_ID: string = '';
+  USR_ID = this.usuarioService.getUserLoggedId();
+
   anio: AnioLectivo = {} as AnioLectivo;
   periodosNormales: Periodo[] = [];
   periodosEvaluativos: Periodo[] = [];
@@ -74,8 +80,6 @@ export class CalificacionesComponent implements OnInit {
       next: (value) => {
         if (value.response) {
           this.estudiantes = value.data;
-          console.log(this.estudiantes);
-
         } else {
           console.log(value.message);
         }
@@ -159,26 +163,50 @@ export class CalificacionesComponent implements OnInit {
 
   addCalificacion(estudiante: any, parcial: any, event: any) {
     const calificacion = Number(event.target.value);
+
     if (calificacion > 10 || calificacion < 0) {
       event.target.value = '';
       event.target.style.border = '1px solid red'; // Agrega el estilo al input
-      estudiante['calificaciones'] = [];
-      console.log(estudiante.calificaciones);
       return;
     } else {
       event.target.style.border = ''; // Agrega el estilo al input
-      estudiante['calificaciones'] = [{ 'parcial': parcial.PRCL_ID, 'calificacion': calificacion }];
-      console.log(estudiante.calificaciones);
-    }
 
+      // Check if estudiante['CUANTITATIVAS'] is null or undefined, and initialize it as an empty array if needed
+      if (!estudiante['CUANTITATIVAS']) {
+        estudiante['CUANTITATIVAS'] = [];
+      }
+
+      const filaEncontrada: CalificacionesCuantitativas = estudiante['CUANTITATIVAS'].find((cualitativa: { PRCL_ID: any; }) => cualitativa.PRCL_ID === parcial.PRCL_ID);
+
+      if (filaEncontrada) {
+        filaEncontrada.CALIFICACION = calificacion;
+        filaEncontrada.ESTADO = '1';
+      } else {
+        estudiante['CUANTITATIVAS'].push(this.buildobject(estudiante, parcial, calificacion));
+      }
+    }
+  }
+
+
+  buildobject(estudiante: any, parcial: any, calificacion: any) {
+    const objeto: CalificacionesCuantitativas = {
+      CAL_ID: '0',
+      PRF_ASG_PRLL_ID: this.elementoId,
+      EST_CRS_PRLL_ID: estudiante.EST_CRS_PRLL_ID,
+      PRCL_ID: parcial.PRCL_ID,
+      CALIFICACION: calificacion,
+      CREADOR_ID: this.USR_ID,
+      ESTADO: '1'
+    }
+    return objeto;
   }
 
   isEnabledParcial(parcial: Parcial) {
-    const fechaActual = new Date();
-    const fechaInicio = new Date(parcial.PRCL_INI);
-    const fechaFin = new Date(parcial.PRCL_FIN);
+    const fechaActual = new Date().setHours(0, 0, 0, 0);
+    const fechaInicio = new Date(parcial.PRCL_INI).setHours(0, 0, 0, 0);
+    const fechaFin = new Date(parcial.PRCL_FIN).setHours(0, 0, 0, 0);
     const response = fechaActual >= fechaInicio && fechaActual <= fechaFin;
-    return response;
+    return !response;
   }
 
   getCalificacion(estudiante: any, parcial: any) {
@@ -186,11 +214,35 @@ export class CalificacionesComponent implements OnInit {
     if (estudiante.CUANTITATIVAS) {
       const filaEncontrada: CalificacionesCuantitativas = estudiante.CUANTITATIVAS.find((cualitativa: { PRCL_ID: any; }) => cualitativa.PRCL_ID === parcial.PRCL_ID);
       if (filaEncontrada) {
-        calificacion=filaEncontrada.CALIFICACION;
+        calificacion = filaEncontrada.CALIFICACION;
       }
     }
     return calificacion;
 
+  }
+
+  calcularPromedio(periodo: any) {
+    if (periodo.PRD_TIPO === 'Normal') {
+      return periodo.PRD_NOMBRE;
+    } else {
+      return periodo.PRD_NOMBRE + ' ' + periodo.PRD_TIPO;
+    }
+
+  }
+  promedio(estudiante: any, periodo: any) {
+    console.log(periodo);
+    
+    if (estudiante.CUANTITATIVAS) {
+      let suma = 0;
+      let parciales = estudiante.CUANTITATIVAS.filter((cuantitativa: { PRD_ID: string; }) => cuantitativa.PRD_ID === periodo.PRD_ID);
+      
+      parciales.forEach((cuantitativa: CalificacionesCuantitativas) => {
+        suma += cuantitativa.CALIFICACION;
+      });
+      const average = suma / parciales.length;
+      return average.toFixed(2);
+    }
+    return '-';
   }
 
   guardar() {

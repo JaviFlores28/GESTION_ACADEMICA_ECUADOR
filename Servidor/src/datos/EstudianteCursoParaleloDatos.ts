@@ -14,7 +14,7 @@ class EstudianteCursoParaleloDatos {
   static sqlSelect: string = `SELECT * FROM vista_estudiante_curso_paralelo `;
   static sqlGetById: string = 'SELECT * FROM estudiante_curso_paralelo WHERE EST_CRS_PRLL_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM vista_estudiante_curso_paralelo WHERE ESTADO = 1 ';
-  static sqlGetByCursoParalelo: string = 'SELECT a.* FROM vista_estudiante_curso_paralelo AS a INNER JOIN estudiante_curso_paralelo AS b ON a.EST_CRS_PRLL_ID = b.EST_CRS_PRLL_ID INNER JOIN estudiante_curso AS c ON c.EST_CRS_ID = b.EST_CRS_ID WHERE b.PRLL_ID = ? AND b.AL_ID = ? AND b.ESTADO = 1 AND c.CRS_ID = ? AND c.ESTADO = 1;';
+  static sqlGetByCursoParalelo: string = 'SELECT a.* FROM vista_estudiante_curso_paralelo AS a INNER JOIN estudiante_curso_paralelo AS b ON a.EST_CRS_PRLL_ID = b.EST_CRS_PRLL_ID INNER JOIN estudiante_curso AS c ON c.EST_CRS_ID = b.EST_CRS_ID WHERE b.PRLL_ID = ? AND b.AL_ID = ? AND b.ESTADO = 1 AND c.CRS_ID = ? AND c.ESTADO = 1 ORDER BY A.EST_CRS_NOM ASC;';
 
   static async insert(estudiante_curso_paralelo: EstudianteCursoParaleloEntidad): Promise<Respuesta> {
     try {

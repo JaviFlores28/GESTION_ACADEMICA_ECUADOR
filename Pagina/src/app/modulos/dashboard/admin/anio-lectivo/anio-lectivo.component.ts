@@ -186,15 +186,14 @@ export class AnioLectivoComponent implements OnInit {
       if (this.modoEdicion) {
         this.openAlertModal(value.message, 'success');
       } else {
-        this.openAlertModal(value.message, 'success');
         this.reloadPage();
+        this.openAlertModal(value.message, 'success');
+
       }
     }
   }
   reloadPage() {
-    setTimeout(() => {
-      location.reload();
-    }, 2000); // Wait for 1 second before reloading the page
+    location.reload();
   }
 
   handleErrorResponse(error: any) {
