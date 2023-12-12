@@ -5,6 +5,9 @@ import EstudianteCursoParaleloEntidad from '../entidades/EstudianteCursoParalelo
 import { v4 as uuidv4 } from 'uuid';
 import CalificacionesCualitativasDatos from './CalificacionesCualitativasDatos';
 import CalificacionesCuantitativasDatos from './CalificacionesCuantitativasDatos';
+import PeriodoDatos from './PeriodoDatos';
+import ParcialDatos from './ParcialDatos';
+import CalificacionesCuantitativasEntidad from '../entidades/CalificacionesCuantitativasEntidad';
 
 class EstudianteCursoParaleloDatos {
   static sqlInsert: string = `INSERT INTO estudiante_curso_paralelo (EST_CRS_PRLL_ID, EST_CRS_ID, AL_ID, PRLL_ID, PASE, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?, ?);`;
@@ -163,25 +166,68 @@ class EstudianteCursoParaleloDatos {
 
   static async getByCursoParalelo(data: any): Promise<Respuesta> {
     try {
+      // obtiene los estudiantes por curso y paralelo
       const pool = await BaseDatos.getInstanceDataBase();
       let sql = this.sqlGetByCursoParalelo;
       const [rows] = await pool.execute<any>(sql, [data.PRLL_ID, data.AL_ID, data.CRS_ID]);
-  
-      const promesasCalificaciones = rows.map(async (element: any) => {
-        const request = { 'EST_CRS_PRLL_ID': element.EST_CRS_PRLL_ID, 'PRF_ASG_PRLL_ID': data.PRF_ASG_PRLL_ID }
-        const respuestaCualitativas = await CalificacionesCualitativasDatos.getByEstAsg(request);
-        const respuestaCuantitativas = await CalificacionesCuantitativasDatos.getByEstAsg(request);
-        element.CUALITATIVAS = respuestaCualitativas.data;
-        element.CUANTITATIVAS = respuestaCuantitativas.data;
-      });
-  
-      await Promise.all(promesasCalificaciones);
-  
-      return { response: true, data: rows as any[], message: '' };
+
+      // obtiene los periodos
+      const periodos = await PeriodoDatos.getEnabled();
+
+      // asigna los periodos a los estudiantes
+      const estudiantes = await Promise.all(
+        rows.map(async (estudiante: any) => {
+          // use Promise.all to wait for all the asynchronous operations
+          estudiante['periodos'] = await Promise.all(
+            periodos.data.map(async (periodo: any) => {
+              //setea las notas cuantitativas
+              const parciales = await ParcialDatos.getByPeriodo(periodo.PRD_ID);
+              let promedioNormal = 0;
+              let numParcialesNormal = 0;
+              let numParcialesEvaluativos = 0;
+              let promedioEvaluativo = 0;
+              // use Promise.all for the inner map
+              periodo['parciales'] = await Promise.all(
+                parciales.data.map(async (parcial: any) => {
+                  const request = { 'EST_CRS_PRLL_ID': estudiante.EST_CRS_PRLL_ID, 'PRF_ASG_PRLL_ID': data.PRF_ASG_PRLL_ID, 'PRCL_ID': parcial.PRCL_ID };
+                  const calificacionesCuantitativas = await CalificacionesCuantitativasDatos.getByEstAsg(request);
+                  if (calificacionesCuantitativas.data) {
+                    if (parcial.PRCL_TIPO == 'Normal') {
+                      numParcialesNormal++;
+                      promedioNormal += calificacionesCuantitativas.data.CALIFICACION;
+                    } else {
+                      numParcialesEvaluativos++;
+                      promedioEvaluativo += calificacionesCuantitativas.data.CALIFICACION;
+                    }
+                    parcial['calificacionesCuantitativas'] = calificacionesCuantitativas.data.CALIFICACION;
+                  } else {
+                    parcial['calificacionesCuantitativas'] = '-';
+                  }
+                  return parcial;
+                })
+              );
+              //setea promedios
+              periodo['promedioNormal'] = numParcialesNormal > 0 ? (promedioNormal / numParcialesNormal).toFixed(2) : '-';
+              periodo['promedioEvaluativo'] = numParcialesEvaluativos > 0 ? (promedioEvaluativo / numParcialesEvaluativos).toFixed(2) : '-';
+              //setea las notas cualitativas
+              const request = { 'EST_CRS_PRLL_ID': estudiante.EST_CRS_PRLL_ID, 'PRF_ASG_PRLL_ID': data.PRF_ASG_PRLL_ID, 'PRCL_ID': periodo.PRCL_ID };
+              const calificacionesCualitativas = await CalificacionesCualitativasDatos.getByEstAsg(request);
+              periodo['calificacionesCualitativas'] = calificacionesCualitativas.data?.CALIFICACION || '-';
+              return periodo;
+            })
+          );
+
+          return estudiante;
+        })
+      );
+
+      return { response: true, data: estudiantes as any[], message: '' };
     } catch (error: any) {
       return { response: false, data: null, message: error.message };
     }
   }
-  
+
+
+
 }
 export default EstudianteCursoParaleloDatos;

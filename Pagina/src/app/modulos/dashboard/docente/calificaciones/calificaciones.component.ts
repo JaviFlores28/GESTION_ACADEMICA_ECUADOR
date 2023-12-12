@@ -80,6 +80,8 @@ export class CalificacionesComponent implements OnInit {
       next: (value) => {
         if (value.response) {
           this.estudiantes = value.data;
+          console.log(this.estudiantes);
+          
         } else {
           console.log(value.message);
         }
@@ -221,29 +223,7 @@ export class CalificacionesComponent implements OnInit {
 
   }
 
-  calcularPromedio(periodo: any) {
-    if (periodo.PRD_TIPO === 'Normal') {
-      return periodo.PRD_NOMBRE;
-    } else {
-      return periodo.PRD_NOMBRE + ' ' + periodo.PRD_TIPO;
-    }
-
-  }
-  promedio(estudiante: any, periodo: any) {
-    console.log(periodo);
-    
-    if (estudiante.CUANTITATIVAS) {
-      let suma = 0;
-      let parciales = estudiante.CUANTITATIVAS.filter((cuantitativa: { PRD_ID: string; }) => cuantitativa.PRD_ID === periodo.PRD_ID);
-      
-      parciales.forEach((cuantitativa: CalificacionesCuantitativas) => {
-        suma += cuantitativa.CALIFICACION;
-      });
-      const average = suma / parciales.length;
-      return average.toFixed(2);
-    }
-    return '-';
-  }
+ 
 
   guardar() {
     console.log(this.estudiantes);

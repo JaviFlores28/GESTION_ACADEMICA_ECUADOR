@@ -12,7 +12,7 @@ class ParcialDatos {
   static sqlSelect: string = `SELECT * FROM parcial ORDER BY ESTADO DESC`;
   static sqlGetById: string = 'SELECT * FROM parcial WHERE PRCL_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM parcial WHERE ESTADO = 1 ORDER BY ESTADO DESC';
-  static sqlGetByPeriodo: string = 'SELECT * FROM parcial WHERE PRD_ID = ?';
+  static sqlGetByPeriodo: string = 'SELECT * FROM parcial WHERE PRD_ID = ? AND ESTADO = 1 ';
 
   static async insert(parcial: ParcialEntidad): Promise<Respuesta> {
     try {

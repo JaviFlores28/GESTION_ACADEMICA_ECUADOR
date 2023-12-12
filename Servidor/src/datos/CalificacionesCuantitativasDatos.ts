@@ -12,7 +12,7 @@ class CalificacionesCuantitativasDatos {
   static sqlSelect: string = `SELECT * FROM calificaciones_cuantitativas ORDER BY ESTADO DESC`;
   static sqlGetById: string = 'SELECT * FROM calificaciones_cuantitativas WHERE CAL_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM calificaciones_cuantitativas WHERE ESTADO = 1 ORDER BY ESTADO DESC';
-  static sqlGetByEstAsg: string = `SELECT * FROM calificaciones_cuantitativas WHERE PRF_ASG_PRLL_ID =? AND EST_CRS_PRLL_ID =?`;
+  static sqlGetByEstAsg: string = `SELECT * FROM calificaciones_cuantitativas WHERE PRF_ASG_PRLL_ID =? AND EST_CRS_PRLL_ID =? AND PRCL_ID =?`;
 
 
   static async insert(calificaciones_cuantitativas: CalificacionesCuantitativasEntidad): Promise<Respuesta> {
@@ -136,12 +136,12 @@ class CalificacionesCuantitativasDatos {
       const pool = await BaseDatos.getInstanceDataBase();
       let sql = this.sqlGetByEstAsg;
 
-      const [rows] = await pool.execute<any>(sql, [data.PRF_ASG_PRLL_ID, data.EST_CRS_PRLL_ID]);
+      const [rows] = await pool.execute<any>(sql, [data.PRF_ASG_PRLL_ID, data.EST_CRS_PRLL_ID, data.PRCL_ID]);
 
       if (rows.length <= 0) {
         throw new Error('No se encontraron datos para CalificacionesCualitativas.');
       }
-      return { response: true, data: rows as CalificacionesCuantitativasDatos[], message: '' };
+      return { response: true, data: rows[0] as CalificacionesCuantitativasDatos, message: '' };
     } catch (error: any) {
       return { response: false, data: null, message: error.message };
     }
