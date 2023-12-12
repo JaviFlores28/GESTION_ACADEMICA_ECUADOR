@@ -114,11 +114,8 @@ export class UsuarioComponent {
 
   crear() {
     if (this.form.valid) {
-      const usuario: Usuario = this.buildObject();
-      console.log(usuario);
-      
+      const usuario: Usuario = this.buildObject();      
       const detalle = this.isProf ? this.buildUsuarioProfesorObject() : undefined;
-
       this.service.post(usuario, detalle).subscribe({
         next: (response) => {
           this.handleResponse(response);
@@ -133,8 +130,6 @@ export class UsuarioComponent {
   editar() {
     if (this.form.valid) {
       const usuario: Usuario = this.buildObjectEdit();
-      console.log(usuario);
-
       this.service.put(usuario).subscribe({
         next: (response) => {
           this.handleResponse(response);

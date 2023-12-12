@@ -1,5 +1,5 @@
 export interface Estudiante {
-          EST_ID: string;
+    EST_ID: string;
     EST_DNI: string;
     EST_NOM: string;
     EST_NOM2: string;
@@ -29,4 +29,4 @@ export interface Estudiante {
     REL_EST_REP: string;
     ESTADO: number;
     CREADOR_ID: string;
-        }
+}

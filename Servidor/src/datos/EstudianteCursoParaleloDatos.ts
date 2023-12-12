@@ -182,37 +182,27 @@ class EstudianteCursoParaleloDatos {
             periodos.data.map(async (periodo: any) => {
               //setea las notas cuantitativas
               const parciales = await ParcialDatos.getByPeriodo(periodo.PRD_ID);
-              let promedioNormal = 0;
-              let numParcialesNormal = 0;
-              let numParcialesEvaluativos = 0;
-              let promedioEvaluativo = 0;
+
               // use Promise.all for the inner map
               periodo['parciales'] = await Promise.all(
                 parciales.data.map(async (parcial: any) => {
                   const request = { 'EST_CRS_PRLL_ID': estudiante.EST_CRS_PRLL_ID, 'PRF_ASG_PRLL_ID': data.PRF_ASG_PRLL_ID, 'PRCL_ID': parcial.PRCL_ID };
                   const calificacionesCuantitativas = await CalificacionesCuantitativasDatos.getByEstAsg(request);
                   if (calificacionesCuantitativas.data) {
-                    if (parcial.PRCL_TIPO == 'Normal') {
-                      numParcialesNormal++;
-                      promedioNormal += calificacionesCuantitativas.data.CALIFICACION;
-                    } else {
-                      numParcialesEvaluativos++;
-                      promedioEvaluativo += calificacionesCuantitativas.data.CALIFICACION;
-                    }
-                    parcial['calificacionesCuantitativas'] = calificacionesCuantitativas.data.CALIFICACION;
+                    parcial['CALIFICACION'] = calificacionesCuantitativas.data.CALIFICACION;
+                    parcial['CAL_ID'] = calificacionesCuantitativas.data.CAL_ID;
                   } else {
-                    parcial['calificacionesCuantitativas'] = '-';
+                    parcial['CALIFICACION'] = '-';
+                    parcial['CAL_ID'] = '0';
                   }
                   return parcial;
                 })
               );
-              //setea promedios
-              periodo['promedioNormal'] = numParcialesNormal > 0 ? (promedioNormal / numParcialesNormal).toFixed(2) : '-';
-              periodo['promedioEvaluativo'] = numParcialesEvaluativos > 0 ? (promedioEvaluativo / numParcialesEvaluativos).toFixed(2) : '-';
               //setea las notas cualitativas
               const request = { 'EST_CRS_PRLL_ID': estudiante.EST_CRS_PRLL_ID, 'PRF_ASG_PRLL_ID': data.PRF_ASG_PRLL_ID, 'PRCL_ID': periodo.PRCL_ID };
               const calificacionesCualitativas = await CalificacionesCualitativasDatos.getByEstAsg(request);
-              periodo['calificacionesCualitativas'] = calificacionesCualitativas.data?.CALIFICACION || '-';
+              periodo['CALIFICACION'] = calificacionesCualitativas.data?.CALIFICACION || '-';
+              periodo['CAL_ID'] = calificacionesCualitativas.data?.CAL_ID || '0';
               return periodo;
             })
           );
