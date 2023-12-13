@@ -53,4 +53,3 @@ async function generateOne(tableName: string) {
   }
 }
 
-generateAll();

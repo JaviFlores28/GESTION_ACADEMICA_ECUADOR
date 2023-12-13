@@ -7,7 +7,6 @@ import CalificacionesCualitativasDatos from './CalificacionesCualitativasDatos';
 import CalificacionesCuantitativasDatos from './CalificacionesCuantitativasDatos';
 import PeriodoDatos from './PeriodoDatos';
 import ParcialDatos from './ParcialDatos';
-import CalificacionesCuantitativasEntidad from '../entidades/CalificacionesCuantitativasEntidad';
 
 class EstudianteCursoParaleloDatos {
   static sqlInsert: string = `INSERT INTO estudiante_curso_paralelo (EST_CRS_PRLL_ID, EST_CRS_ID, AL_ID, PRLL_ID, PASE, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?, ?);`;
@@ -164,60 +163,73 @@ class EstudianteCursoParaleloDatos {
     }
   }
 
+
   static async getByCursoParalelo(data: any): Promise<Respuesta> {
     try {
-      // obtiene los estudiantes por curso y paralelo
       const pool = await BaseDatos.getInstanceDataBase();
-      let sql = this.sqlGetByCursoParalelo;
-      const [rows] = await pool.execute<any>(sql, [data.PRLL_ID, data.AL_ID, data.CRS_ID]);
+      const sql = this.sqlGetByCursoParalelo;
+      let [estudiantes] = await pool.execute<any>(sql, [data.PRLL_ID, data.AL_ID, data.CRS_ID]);
+      const allPeridos = (await PeriodoDatos.getEnabled()).data;
+      const resultados = await Promise.all(
+        estudiantes.map(async (estudiante: any) => {
+        const res = await this.asignarParciales(allPeridos, estudiante, data);
+        const resultado = {
+          ...estudiante,
+          'periodos': [...res]
+        }
+        return resultado;
+      }));
 
-      // obtiene los periodos
-      const periodos = await PeriodoDatos.getEnabled();
-
-      // asigna los periodos a los estudiantes
-      const estudiantes = await Promise.all(
-        rows.map(async (estudiante: any) => {
-          // use Promise.all to wait for all the asynchronous operations
-          estudiante['periodos'] = await Promise.all(
-            periodos.data.map(async (periodo: any) => {
-              //setea las notas cuantitativas
-              const parciales = await ParcialDatos.getByPeriodo(periodo.PRD_ID);
-
-              // use Promise.all for the inner map
-              periodo['parciales'] = await Promise.all(
-                parciales.data.map(async (parcial: any) => {
-                  const request = { 'EST_CRS_PRLL_ID': estudiante.EST_CRS_PRLL_ID, 'PRF_ASG_PRLL_ID': data.PRF_ASG_PRLL_ID, 'PRCL_ID': parcial.PRCL_ID };
-                  const calificacionesCuantitativas = await CalificacionesCuantitativasDatos.getByEstAsg(request);
-                  if (calificacionesCuantitativas.data) {
-                    parcial['CALIFICACION'] = calificacionesCuantitativas.data.CALIFICACION;
-                    parcial['CAL_ID'] = calificacionesCuantitativas.data.CAL_ID;
-                  } else {
-                    parcial['CALIFICACION'] = '-';
-                    parcial['CAL_ID'] = '0';
-                  }
-                  return parcial;
-                })
-              );
-              //setea las notas cualitativas
-              const request = { 'EST_CRS_PRLL_ID': estudiante.EST_CRS_PRLL_ID, 'PRF_ASG_PRLL_ID': data.PRF_ASG_PRLL_ID, 'PRCL_ID': periodo.PRCL_ID };
-              const calificacionesCualitativas = await CalificacionesCualitativasDatos.getByEstAsg(request);
-              periodo['CALIFICACION'] = calificacionesCualitativas.data?.CALIFICACION || '-';
-              periodo['CAL_ID'] = calificacionesCualitativas.data?.CAL_ID || '0';
-              return periodo;
-            })
-          );
-
-          return estudiante;
-        })
-      );
-
-      return { response: true, data: estudiantes as any[], message: '' };
+      return { response: true, data: resultados as any[], message: '' };
     } catch (error: any) {
       return { response: false, data: null, message: error.message };
     }
   }
 
+  static async asignarParciales(periodos: any, estudiante: any, data: any): Promise<any> {
+    try {
+      const resultados =
+        await Promise.all(periodos.map(async (periodo: any) => {
+          const calificacionesCualitativas = (await CalificacionesCualitativasDatos.getByEstAsg({ 'EST_CRS_PRLL_ID': estudiante.EST_CRS_PRLL_ID, 'PRF_ASG_PRLL_ID': data.PRF_ASG_PRLL_ID, 'PRCL_ID': periodo.PRCL_ID })).data;
+          let CALIFICACION = calificacionesCualitativas?.CALIFICACION || '-';
+          let CAL_ID = calificacionesCualitativas?.CAL_ID || '0';
+          const parciales = (await ParcialDatos.getByPeriodo(periodo.PRD_ID)).data;
+          const calificaciones = await this.asignarCalificacionesParciales(parciales, estudiante, data);
+          const resultado = {
+            ...periodo,
+            'parciales': [...calificaciones],
+            'CALIFICACION': CALIFICACION,
+            'CAL_ID': CAL_ID
+          };
+          return resultado;
+        }));
+      return resultados;
+    } catch (error) {
+      console.log(error);
+      return periodos;
+    }
+  }
 
-
+  static async asignarCalificacionesParciales(parciales: any, estudiante: any, data: any) {
+    try {
+      const resultados = await Promise.all(
+        parciales.map(async (parcial: any) => {
+          const calificacionesCuantitativas = (await CalificacionesCuantitativasDatos.getByEstAsg({ 'EST_CRS_PRLL_ID': estudiante.EST_CRS_PRLL_ID, 'PRF_ASG_PRLL_ID': data.PRF_ASG_PRLL_ID, 'PRCL_ID': parcial.PRCL_ID })).data;
+          let CALIFICACION = calificacionesCuantitativas?.CALIFICACION || '-';
+          let CAL_ID = calificacionesCuantitativas?.CAL_ID || '0';
+          const resultado = {
+            ...parcial,
+            'CALIFICACION': CALIFICACION,
+            'CAL_ID': CAL_ID
+          };
+          return resultado;
+        })
+      );
+      return resultados;
+    } catch (error) {
+      console.error(error);
+      return parciales;
+    }
+  }
 }
 export default EstudianteCursoParaleloDatos;

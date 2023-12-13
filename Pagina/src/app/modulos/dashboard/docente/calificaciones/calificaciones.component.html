@@ -10,7 +10,7 @@
   <div class="card text-start border-0 rounded shadow">
     <div class="card-body">
       <div class="d-flex py-3 flex-lg-row-reverse">
-        <button type="button" class="btn btn-dark" (click)="guardar()">Guardar</button>
+        <button type="button" class="btn btn-dark" (click)="true" >Generar PDF</button>
       </div>
       <div class="table-responsive">
         <table class="table table-sm table-bordered table-hover text-center">
@@ -81,8 +81,8 @@
                       <ng-container *ngIf="parcial.PRCL_TIPO==='Normal'">
                         <td>
                           <input class="w-input-table form-control m-0 p-0 text-center" type="number" step="0.01"
-                            min="0" max="10" [(ngModel)]="parcial.CALIFICACION" [disabled]="false"
-                            (input)="addCalificacion(parcial,estudiante.EST_CRS_PRLL_ID,$event,'cuantitativa')">
+                            min="0" max="10" [(ngModel)]="parcial.CALIFICACION" [disabled]="isEnabledParcial(parcial)"
+                            (change)="addCalificacion(parcial,estudiante.EST_CRS_PRLL_ID,$event,'cuantitativa')">
                         </td>
                       </ng-container>
                     </ng-container>
@@ -114,3 +114,4 @@
     </div>
   </div>
 </div>
+<ngb-toast *ngIf="mostrarToast" class="position-fixed top-right end-0 {{backgroundToast}} text-light" aria-live="alert" [delay]="2000" [autohide]="true" (hidden)="showToast(false)">{{mensajeToast}}</ngb-toast>

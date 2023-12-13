@@ -6,10 +6,9 @@ import { Parcial } from 'src/app/interfaces/Parcial.interface';
 
 import { Periodo } from 'src/app/interfaces/Periodo.interface';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
+import { CalififcacionCuantitativaService } from 'src/app/servicios/calififcacion-cuantitativa.service';
 import { EstudianteCursoParaleloService } from 'src/app/servicios/estudiante-curso-paralelo.service';
 import { ModalService } from 'src/app/servicios/modal.service';
-import { ParcialService } from 'src/app/servicios/parcial.service';
-import { PeriodoService } from 'src/app/servicios/periodo.service';
 import { ProfesorAsignaturaService } from 'src/app/servicios/profesor-asignatura.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 
@@ -24,19 +23,18 @@ export class CalificacionesComponent implements OnInit {
     private service: ProfesorAsignaturaService,
     private estudianteCursoParaleloservice: EstudianteCursoParaleloService,
     private anioService: AnioLectivoService,
-    private periodoService: PeriodoService,
-    private parcialService: ParcialService,
     private usuarioService: UsuarioService,
-    private modalService: ModalService,
-
+    private calificacioncuantitativaService: CalififcacionCuantitativaService,
+    private modalService: ModalService
   ) { }
-
   title = 'Calificaciones';
   elementoId: string = '';
   PRLL_ID: string = '';
   CRS_ID: string = '';
   USR_ID = this.usuarioService.getUserLoggedId();
-
+  mostrarToast: boolean = false;
+  mensajeToast: string = '';
+  backgroundToast: string = 'bg-success';
   anio: AnioLectivo = {} as AnioLectivo;
   periodosNormales: Periodo[] = [];
   periodosEvaluativos: Periodo[] = [];
@@ -55,7 +53,6 @@ export class CalificacionesComponent implements OnInit {
       }
     });
   }
-
 
   loadDatos() {
     this.service.getById(this.elementoId).subscribe({
@@ -98,8 +95,6 @@ export class CalificacionesComponent implements OnInit {
       next: (value) => {
         if (value.response) {
           this.estudiantes = value.data;
-          console.log(this.estudiantes);
-
         } else {
           console.log(value.message);
         }
@@ -110,26 +105,36 @@ export class CalificacionesComponent implements OnInit {
     })
   }
 
+  isEnabledParcial(parcial: Parcial) {
+    const fechaActual = new Date().setHours(0, 0, 0, 0);
+    const fechaInicio = new Date(parcial.PRCL_INI).setHours(0, 0, 0, 0);
+    const fechaFin = new Date(parcial.PRCL_FIN).setHours(0, 0, 0, 0);
+    const response = fechaActual >= fechaInicio && fechaActual <= fechaFin;
+    return !response;
+  }
+
   addCalificacion(parcial: any, estudiante: any, event: any, tipo: string) {
-    if (event.target.value > 10 || event.target.value < 0 || !event.target.value) {
-      parcial.CALIFICACION = '-';
-      event.target.value = '';
-      event.target.style.border = '1px solid red'; // Agrega el estilo al input
-      console.log(parcial);
+    const valor = parseFloat(event.target.value);
+
+    if (this.isEnabledParcial(parcial)) {
+      this.handleInvalidInput(event, 'El parcial se encuentra cerrado');
+      event.target.style.border = '';
+      event.target.disabled = true;
       return;
     }
+    if (isNaN(valor) || valor < 0 || valor > 10) {
+      this.handleInvalidInput(event);
+      return;
+    }
+
     if (tipo === 'cuantitativa') {
-      const calificacion = this.buildobject(parcial, estudiante)
-      if (calificacion.CAL_ID === '0') {
-        this.crear(calificacion);
-      } else {
-        this.editar(calificacion);
-      }
+      const calificacion = this.buildobject(parcial, estudiante);
+      calificacion.CAL_ID === '0' ? this.crear(calificacion) : this.editar(calificacion);
     }
   }
 
   crear(calificacion: any) {
-    this.service.post(calificacion).subscribe({
+    this.calificacioncuantitativaService.post(calificacion).subscribe({
       next: (response) => {
         this.handleResponse(response);
       },
@@ -140,7 +145,7 @@ export class CalificacionesComponent implements OnInit {
   }
 
   editar(calificacion: any) {
-    this.service.put(calificacion).subscribe({
+    this.calificacioncuantitativaService.put(calificacion).subscribe({
       next: (response) => {
         this.handleResponse(response);
       },
@@ -162,58 +167,66 @@ export class CalificacionesComponent implements OnInit {
     return objeto;
   }
 
-
-  isEnabledParcial(parcial: Parcial) {
-    const fechaActual = new Date().setHours(0, 0, 0, 0);
-    const fechaInicio = new Date(parcial.PRCL_INI).setHours(0, 0, 0, 0);
-    const fechaFin = new Date(parcial.PRCL_FIN).setHours(0, 0, 0, 0);
-    const response = fechaActual >= fechaInicio && fechaActual <= fechaFin;
-    return !response;
-  }
-
-
   calcularPromedio(periodo: any, tipo: string): number | string {
-    let suma: number = 0;
-    let divisor: number = (tipo === 'Normal') ? this.anio.NUM_PRCL : this.anio.NUM_EXAM;
-    let contador: number = 0;
-    if (periodo.parciales) {
-      periodo.parciales.filter((parcial: any) => parcial.PRCL_TIPO === tipo).forEach((parcial: any) => {
-        if (parcial.CALIFICACION !== '-') {
-          suma += parseFloat(parcial.CALIFICACION);
-          contador++;
-        }
-      });
-      if ((tipo === 'Normal' && contador !== this.anio.NUM_PRCL) || (tipo !== 'Normal' && contador !== this.anio.NUM_EXAM)) {
+    try {
+      const divisor: number = (tipo === 'Normal') ? this.anio.NUM_PRCL : this.anio.NUM_EXAM;
+
+      if (!periodo.parciales) {
         return '-';
       }
-      let calculo = parseFloat((suma / divisor).toFixed(2));
-      let promedio = isNaN(calculo) || calculo === 0 ? '-' : calculo.toFixed(2);
-      return promedio;
+
+      const calificaciones = periodo.parciales.filter((parcial: any) => parcial.PRCL_TIPO === tipo && parcial.CALIFICACION !== '-');
+
+      if (calificaciones.length !== divisor) {
+        return '-';
+      }
+
+      const suma: number = calificaciones.reduce((acc: number, parcial: any) => acc + parseFloat(parcial.CALIFICACION), 0);
+
+      const calculo: number = parseFloat((suma / divisor).toFixed(2));
+
+      return isNaN(calculo) || calculo === 0 ? '-' : calculo.toFixed(2);
+    } catch (error) {
+      return '-';
     }
-    return '-';
   }
 
   calcularPorcentaje(periodo: any, tipo: string): number | string {
-    if (periodo.parciales) {
-      let porcentaje: number = (tipo === 'Normal') ? Number(this.anio.AL_POR_PRD) : Number(this.anio.AL_POR_EXAM);
-      let promedio = this.calcularPromedio(periodo, tipo);
+    try {
+      if (!periodo.parciales) {
+        return '-';
+      }
+
+      const porcentaje: number = (tipo === 'Normal') ? Number(this.anio.AL_POR_PRD) : Number(this.anio.AL_POR_EXAM);
+      const promedio = this.calcularPromedio(periodo, tipo);
+
       if (promedio === '-' || promedio === 0) {
         return '-';
       }
-      let respuesta = (Number(promedio) * porcentaje / 100).toFixed(2);
+
+      const respuesta = (Number(promedio) * porcentaje / 100).toFixed(2);
       return respuesta;
+    } catch (error) {
+      return '-';
     }
-    return '-';
   }
 
-  calcularTotal(periodo: any) {
-    let totalNormal = Number(this.calcularPorcentaje(periodo, 'Normal')) || 0;
-    let totalEvaluativo = Number(this.calcularPorcentaje(periodo, 'Evaluativo')) || 0;
-    let total: number = totalNormal + totalEvaluativo;
-    return (isNaN(total) || total === 0) ? '-' : total.toFixed(2);
+  calcularTotal(periodo: any): number | string {
+    try {
+      const totalNormal = Number(this.calcularPorcentaje(periodo, 'Normal')) || 0;
+      const totalEvaluativo = Number(this.calcularPorcentaje(periodo, 'Evaluativo')) || 0;
+
+      const total: number = totalNormal + totalEvaluativo;
+
+      return (isNaN(total) || total === 0) ? '-' : total.toFixed(2);
+    } catch (error) {
+      return '-';
+    }
   }
 
-  guardar() { }
+  showToast(valor: boolean) {
+    this.mostrarToast = valor;
+  }
 
   openAlertModal(content: string, alertType: string) {
     this.modalService.openAlertModal(content, alertType);
@@ -223,12 +236,23 @@ export class CalificacionesComponent implements OnInit {
     if (!response.data) {
       this.handleErrorResponse(response.message)
     } else {
-      this.openAlertModal(response.message, 'success');
+      this.showToast(true);
+      this.mensajeToast = response.message;
+      this.loadTablaEstudiantes();
     }
   }
 
   handleErrorResponse(error: any) {
     this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    this.loadTablaEstudiantes();
     console.log(error);
+  }
+
+  handleInvalidInput(event: any, msg: string = 'La calificación debe ser entre 0 y 10') {
+    event.target.value = '';
+    event.target.style.border = '1px solid red';
+    this.backgroundToast = 'bg-danger';
+    this.mensajeToast = msg;
+    this.showToast(true);
   }
 }
