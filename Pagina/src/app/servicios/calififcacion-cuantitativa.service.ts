@@ -10,7 +10,7 @@ import { ErrorHandlerService } from './error-handler.service';
   providedIn: 'root'
 })
 export class CalififcacionCuantitativaService extends ErrorHandlerService {
-  private apiUrl = variables.URL_API + '/calificacionesCuantitativas'; // Reemplaza con tu URL
+  private apiUrl = variables.URL_API + '/calificacionescuantitativas'; // Reemplaza con tu URL
 
   constructor(private http: HttpClient) {
     super();

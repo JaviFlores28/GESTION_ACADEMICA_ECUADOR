@@ -111,7 +111,7 @@ class BaseDatos {
   }
 
   static async getTableInfo(tableName: string): Promise<any> {
-    const [results] = await BaseDatos.getInstance().execute(`DESCRIBE ${tableName}`);
+    const [results] = await (await BaseDatos.getInstanceDataBase()).execute(`DESCRIBE ${tableName}`);
     return results;
   }
 

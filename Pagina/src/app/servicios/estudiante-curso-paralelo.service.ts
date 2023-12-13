@@ -9,7 +9,7 @@ import { ErrorHandlerService } from './error-handler.service';
   providedIn: 'root',
 })
 export class EstudianteCursoParaleloService extends ErrorHandlerService {
-  private apiUrl = variables.URL_API + '/estudianteCursoParalelo'; // Reemplaza con tu URL
+  private apiUrl = variables.URL_API + '/estudiantecursoparalelo'; // Reemplaza con tu URL
 
   constructor(private http: HttpClient) {
     super();

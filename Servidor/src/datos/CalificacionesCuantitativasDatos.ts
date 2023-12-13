@@ -14,7 +14,6 @@ class CalificacionesCuantitativasDatos {
   static sqlGetEnabled: string = 'SELECT * FROM calificaciones_cuantitativas WHERE ESTADO = 1 ORDER BY ESTADO DESC';
   static sqlGetByEstAsg: string = `SELECT * FROM calificaciones_cuantitativas WHERE PRF_ASG_PRLL_ID =? AND EST_CRS_PRLL_ID =? AND PRCL_ID =?`;
 
-
   static async insert(calificaciones_cuantitativas: CalificacionesCuantitativasEntidad): Promise<Respuesta> {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
@@ -129,7 +128,6 @@ class CalificacionesCuantitativasDatos {
       return { response: false, data: null, message: error.message };
     }
   }
-
 
   static async getByEstAsg(data: any): Promise<Respuesta> {
     try {

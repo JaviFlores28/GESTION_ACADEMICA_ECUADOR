@@ -44,7 +44,7 @@ async function generateAll() {
 async function generateOne(tableName: string) {
   try {
     await generateFilesForTable(tableName);
-    // execSync(`npx prettier src/ --write --print-width 1000 --single-quote`);
+    execSync(`npx prettier src/ --write --print-width 1000 --single-quote`);
     console.info('Archivos creados correctamente');
   } catch (error: any) {
     console.error('Error: ' + error);
@@ -53,3 +53,4 @@ async function generateOne(tableName: string) {
   }
 }
 
+generateOne('escalas_referenciales_calificaciones');

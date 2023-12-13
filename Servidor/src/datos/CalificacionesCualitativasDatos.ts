@@ -144,6 +144,5 @@ class CalificacionesCualitativasDatos {
       return { response: false, data: null, message: error.message };
     }
   }
-
 }
 export default CalificacionesCualitativasDatos;

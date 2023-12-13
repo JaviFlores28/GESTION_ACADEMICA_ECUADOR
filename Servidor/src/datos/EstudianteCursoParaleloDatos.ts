@@ -163,7 +163,6 @@ class EstudianteCursoParaleloDatos {
     }
   }
 
-
   static async getByCursoParalelo(data: any): Promise<Respuesta> {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
@@ -172,13 +171,14 @@ class EstudianteCursoParaleloDatos {
       const allPeridos = (await PeriodoDatos.getEnabled()).data;
       const resultados = await Promise.all(
         estudiantes.map(async (estudiante: any) => {
-        const res = await this.asignarParciales(allPeridos, estudiante, data);
-        const resultado = {
-          ...estudiante,
-          'periodos': [...res]
-        }
-        return resultado;
-      }));
+          const res = await this.asignarParciales(allPeridos, estudiante, data);
+          const resultado = {
+            ...estudiante,
+            periodos: [...res],
+          };
+          return resultado;
+        }),
+      );
 
       return { response: true, data: resultados as any[], message: '' };
     } catch (error: any) {
@@ -188,21 +188,22 @@ class EstudianteCursoParaleloDatos {
 
   static async asignarParciales(periodos: any, estudiante: any, data: any): Promise<any> {
     try {
-      const resultados =
-        await Promise.all(periodos.map(async (periodo: any) => {
-          const calificacionesCualitativas = (await CalificacionesCualitativasDatos.getByEstAsg({ 'EST_CRS_PRLL_ID': estudiante.EST_CRS_PRLL_ID, 'PRF_ASG_PRLL_ID': data.PRF_ASG_PRLL_ID, 'PRCL_ID': periodo.PRCL_ID })).data;
+      const resultados = await Promise.all(
+        periodos.map(async (periodo: any) => {
+          const calificacionesCualitativas = (await CalificacionesCualitativasDatos.getByEstAsg({ EST_CRS_PRLL_ID: estudiante.EST_CRS_PRLL_ID, PRF_ASG_PRLL_ID: data.PRF_ASG_PRLL_ID, PRCL_ID: periodo.PRCL_ID })).data;
           let CALIFICACION = calificacionesCualitativas?.CALIFICACION || '-';
           let CAL_ID = calificacionesCualitativas?.CAL_ID || '0';
           const parciales = (await ParcialDatos.getByPeriodo(periodo.PRD_ID)).data;
           const calificaciones = await this.asignarCalificacionesParciales(parciales, estudiante, data);
           const resultado = {
             ...periodo,
-            'parciales': [...calificaciones],
-            'CALIFICACION': CALIFICACION,
-            'CAL_ID': CAL_ID
+            parciales: [...calificaciones],
+            CALIFICACION: CALIFICACION,
+            CAL_ID: CAL_ID,
           };
           return resultado;
-        }));
+        }),
+      );
       return resultados;
     } catch (error) {
       console.log(error);
@@ -214,16 +215,16 @@ class EstudianteCursoParaleloDatos {
     try {
       const resultados = await Promise.all(
         parciales.map(async (parcial: any) => {
-          const calificacionesCuantitativas = (await CalificacionesCuantitativasDatos.getByEstAsg({ 'EST_CRS_PRLL_ID': estudiante.EST_CRS_PRLL_ID, 'PRF_ASG_PRLL_ID': data.PRF_ASG_PRLL_ID, 'PRCL_ID': parcial.PRCL_ID })).data;
+          const calificacionesCuantitativas = (await CalificacionesCuantitativasDatos.getByEstAsg({ EST_CRS_PRLL_ID: estudiante.EST_CRS_PRLL_ID, PRF_ASG_PRLL_ID: data.PRF_ASG_PRLL_ID, PRCL_ID: parcial.PRCL_ID })).data;
           let CALIFICACION = calificacionesCuantitativas?.CALIFICACION || '-';
           let CAL_ID = calificacionesCuantitativas?.CAL_ID || '0';
           const resultado = {
             ...parcial,
-            'CALIFICACION': CALIFICACION,
-            'CAL_ID': CAL_ID
+            CALIFICACION: CALIFICACION,
+            CAL_ID: CAL_ID,
           };
           return resultado;
-        })
+        }),
       );
       return resultados;
     } catch (error) {
