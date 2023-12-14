@@ -191,7 +191,7 @@ class EstudianteCursoParaleloDatos {
       const resultados = await Promise.all(
         periodos.map(async (periodo: any) => {
           const calificacionesCualitativas = (await CalificacionesCualitativasDatos.getByEstAsg({ EST_CRS_PRLL_ID: estudiante.EST_CRS_PRLL_ID, PRF_ASG_PRLL_ID: data.PRF_ASG_PRLL_ID, PRCL_ID: periodo.PRCL_ID })).data;
-          let CALIFICACION = calificacionesCualitativas?.CALIFICACION || '-';
+          let CALIFICACION = calificacionesCualitativas?.CALIFICACION || '';
           let CAL_ID = calificacionesCualitativas?.CAL_ID || '0';
           const parciales = (await ParcialDatos.getByPeriodo(periodo.PRD_ID)).data;
           const calificaciones = await this.asignarCalificacionesParciales(parciales, estudiante, data);
@@ -216,7 +216,7 @@ class EstudianteCursoParaleloDatos {
       const resultados = await Promise.all(
         parciales.map(async (parcial: any) => {
           const calificacionesCuantitativas = (await CalificacionesCuantitativasDatos.getByEstAsg({ EST_CRS_PRLL_ID: estudiante.EST_CRS_PRLL_ID, PRF_ASG_PRLL_ID: data.PRF_ASG_PRLL_ID, PRCL_ID: parcial.PRCL_ID })).data;
-          let CALIFICACION = calificacionesCuantitativas?.CALIFICACION || '-';
+          let CALIFICACION = calificacionesCuantitativas?.CALIFICACION || '';
           let CAL_ID = calificacionesCuantitativas?.CAL_ID || '0';
           const resultado = {
             ...parcial,

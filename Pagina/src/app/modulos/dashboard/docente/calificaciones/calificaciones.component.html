@@ -10,10 +10,10 @@
   <div class="card text-start border-0 rounded shadow">
     <div class="card-body">
       <div class="d-flex py-3 flex-lg-row-reverse">
-        <button type="button" class="btn btn-dark" (click)="true">Generar PDF</button>
+        <button type="button" class="btn btn-dark" (click)="generarPdf()">Generar PDF</button>
       </div>
-      <div class="table-responsive">
-        <table class="table table-sm table-bordered table-hover text-center">
+      <div class="table-responsive" >
+        <table class="table table-sm table-bordered table-hover text-center border-dark" id='table'>
           <thead class="align-middle">
             <tr>
               <th rowspan="2">#</th>
@@ -51,8 +51,8 @@
                   </ng-container>
                   <th>{{anio.AL_POR_EXAM}}%</th>
                   <!-- totales -->
-                  <th>Total</th>
-                  <th>EC</th>
+                  <th class="bg-body-secondary">Total</th>
+                  <th class="bg-body-secondary">EC</th>
                 </ng-container>
                 <!-- encabezados parciales evaluativos -->
                 <ng-container *ngIf="periodo.PRD_TIPO!=='Normal'">
@@ -82,47 +82,50 @@
                     <ng-container *ngFor="let parcial of periodo.parciales">
                       <ng-container *ngIf="parcial.PRCL_TIPO==='Normal'">
                         <td>
-                          <input class="w-input-table form-control m-0 p-0 text-center" type="number" step="0.01"
-                            min="0" max="10" [(ngModel)]="parcial.CALIFICACION" [disabled]="isEnabledParcial(parcial)"
+                          <input class="w-input-table form-control m-0 p-0 text-center {{inputClass(parcial)}}"
+                            type="number" step="0.01" min="0" max="10" [(ngModel)]="parcial.CALIFICACION"
+                            [disabled]="isEnabledParcial(parcial)"
                             (change)="addCalificacion(parcial,estudiante.EST_CRS_PRLL_ID,$event,'cuantitativa')"
                             (input)="validarCalificacion(parcial,'cuantitativa',$event)">
                         </td>
                       </ng-container>
                     </ng-container>
-                    <td>{{calcularPromedio(periodo,'Normal')}}</td>
-                    <td>{{calcularPorcentaje(periodo,'Normal')}}</td>
+                    <td>{{calcularPromedio(periodo,'Normal') || '-'}}</td>
+                    <td>{{calcularPorcentaje(periodo,'Normal') || '-'}}</td>
                     <!-- examenes -->
                     <ng-container *ngFor="let parcial of periodo.parciales">
                       <ng-container *ngIf="parcial.PRCL_TIPO!=='Normal'">
                         <td>
-                          <input class="w-input-table form-control m-0 p-0 text-center" type="number" step="0.01"
-                            min="0" max="10" [(ngModel)]="parcial.CALIFICACION" [disabled]="isEnabledParcial(parcial)"
+                          <input class="w-input-table form-control m-0 p-0 text-center {{inputClass(parcial)}}"
+                            type="number" step="0.01" min="0" max="10" [(ngModel)]="parcial.CALIFICACION"
+                            [disabled]="isEnabledParcial(parcial)"
                             (change)="addCalificacion(parcial,estudiante.EST_CRS_PRLL_ID,$event,'cuantitativa')"
                             (input)="validarCalificacion(parcial,'cuantitativa',$event)">
                         </td>
                       </ng-container>
                     </ng-container>
-                    <td>{{calcularPorcentaje(periodo,'Evaluativo')}}</td>
+                    <td>{{calcularPorcentaje(periodo,'Evaluativo')|| '-'}}</td>
                     <!-- totales -->
-                    <td>{{calcularTotal(periodo)}}</td>
-                    <td>{{asignarEscalaReferencial(periodo)}}</td>
+                    <td class="bg-body-secondary">{{calcularTotal(periodo)|| '-'}}</td>
+                    <td class="bg-body-secondary">{{asignarEscalaReferencial(periodo)}}</td>
                   </ng-container>
                   <ng-container *ngIf="periodo.PRD_TIPO!=='Normal'">
                     <!-- examenes -->
                     <ng-container *ngFor="let parcial of periodo.parciales">
                       <ng-container *ngIf="parcial.PRCL_TIPO!=='Normal'">
                         <td>
-                          <input class="w-input-table form-control m-0 p-0 text-center" type="number" step="0.01"
-                            min="0" max="10" [(ngModel)]="parcial.CALIFICACION" [disabled]="isEnabledParcial(parcial)"
-                            (change)="addCalificacion(parcial,estudiante.EST_CRS_PRLL_ID,$event,'cuantitativa')"
+                          <input class="w-input-table form-control m-0 p-0 text-center {{inputClass(parcial)}}"
+                            type="number" step="0.01" min="0" max="10" [value]="parcial.CALIFICACION || '-'"
+                            [disabled]="isEnabledParcial(parcial) ||!tieneSuspenso(estudiante.periodos,parcial).response"
+                            (change)="addCalificacion(parcial,estudiante.EST_CRS_PRLL_ID,$event,'cuantitativa',estudiante.periodos)"
                             (input)="validarCalificacion(parcial,'cuantitativa',$event)">
                         </td>
                       </ng-container>
                     </ng-container>
                   </ng-container>
                 </ng-container>
-                <td></td>
-                <td></td>
+                <td>{{calcularPromedioAnual(estudiante.periodos).promedio|| '-'}}</td>
+                <td>{{asignarEscalaReferencial(calcularPromedioAnual(estudiante.periodos).promedio|| '-','calculado')}}</td>
               </tr>
             </ng-container>
           </tbody>
@@ -133,3 +136,5 @@
 </div>
 <ngb-toast *ngIf="mostrarToast" class="position-fixed top-right end-0 {{backgroundToast}} text-light" aria-live="alert"
   [delay]="2000" [autohide]="true" (hidden)="showToast(false)">{{mensajeToast}}</ngb-toast>
+
+<div id="agregar"></div>

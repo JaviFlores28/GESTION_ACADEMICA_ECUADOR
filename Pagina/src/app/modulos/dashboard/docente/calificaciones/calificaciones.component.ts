@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
 import { CalificacionesCuantitativas } from 'src/app/interfaces/CalificacionesCuantitativas.interface';
@@ -19,7 +19,7 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
   templateUrl: './calificaciones.component.html',
   styleUrls: ['./calificaciones.component.scss']
 })
-export class CalificacionesComponent implements OnInit {
+export class CalificacionesComponent implements OnInit, AfterViewInit {
 
   constructor(private route: ActivatedRoute,
     private service: ProfesorAsignaturaService,
@@ -28,7 +28,7 @@ export class CalificacionesComponent implements OnInit {
     private usuarioService: UsuarioService,
     private calificacioncuantitativaService: CalififcacionCuantitativaService,
     private modalService: ModalService,
-    private escalasService: EscalasReferencialesCalificacionesService
+    private escalasService: EscalasReferencialesCalificacionesService,
   ) { }
   title = 'Calificaciones';
   elementoId: string = '';
@@ -38,6 +38,7 @@ export class CalificacionesComponent implements OnInit {
   mostrarToast: boolean = false;
   mensajeToast: string = '';
   backgroundToast: string = 'bg-success';
+  htmlTable: HTMLElement = {} as HTMLElement;
   anio: AnioLectivo = {} as AnioLectivo;
   periodosNormales: Periodo[] = [];
   periodosEvaluativos: Periodo[] = [];
@@ -124,6 +125,13 @@ export class CalificacionesComponent implements OnInit {
     })
   }
 
+  inputClass(parcial: Parcial) {
+    if (this.isEnabledParcial(parcial)) {
+      return 'bg-white border-0';
+    }
+    return 'border border-dark-subtle';
+  }
+
   isEnabledParcial(parcial: Parcial) {
     const fechaActual = new Date().setHours(0, 0, 0, 0);
     const fechaInicio = new Date(parcial.PRCL_INI).setHours(0, 0, 0, 0);
@@ -132,18 +140,161 @@ export class CalificacionesComponent implements OnInit {
     return !response;
   }
 
-  addCalificacion(parcial: any, estudiante: any, event: any, tipo: string) {
-    if (!this.validarCalificacion(parcial, tipo,event)) {
+  calcularPromedio(periodo: any, tipo: string): number {
+    try {
+      const divisor: number = (tipo === 'Normal') ? this.anio.NUM_PRCL : this.anio.NUM_EXAM;
+
+      if (!periodo.parciales) {
+        return 0;
+      }
+
+      const calificaciones = periodo.parciales.filter((parcial: any) => parcial.PRCL_TIPO === tipo && parcial.CALIFICACION !== '-');
+
+      if (calificaciones.length !== divisor) {
+        return 0;
+      }
+
+      const suma: number = calificaciones.reduce((acc: number, parcial: any) => acc + parseFloat(parcial.CALIFICACION), 0);
+
+      const calculo: number = parseFloat((suma / divisor).toFixed(2));
+      return isNaN(calculo) || calculo === 0 ? 0 : calculo;
+    } catch (error) {
+      return 0;
+    }
+  }
+
+  calcularPorcentaje(periodo: any, tipo: string): number {
+    try {
+      if (!periodo.parciales) {
+        return 0;
+      }
+
+      const porcentaje: number = (tipo === 'Normal') ? Number(this.anio.AL_POR_PRD) : Number(this.anio.AL_POR_EXAM);
+      const promedio = this.calcularPromedio(periodo, tipo);
+
+      if (promedio === 0) {
+        return promedio;
+      }
+
+      const respuesta = (promedio * porcentaje / 100).toFixed(2);
+      return respuesta === 'NaN' ? 0 : Number(respuesta);
+    } catch (error) {
+      return 0;
+    }
+  }
+
+  calcularTotal(periodo: any): number {
+    try {
+      const totalNormal = Number(this.calcularPorcentaje(periodo, 'Normal')) || 0;
+      const totalEvaluativo = Number(this.calcularPorcentaje(periodo, 'Evaluativo')) || 0;
+
+      const total: number = totalNormal + totalEvaluativo;
+
+      return (isNaN(total) || total === 0) ? 0 : parseFloat(total.toFixed(2));
+    } catch (error) {
+      return 0;
+    }
+  }
+
+  asignarEscalaReferencial(periodo: any, tipo?: string) {
+    let total = (tipo) ? periodo : Number(this.calcularTotal(periodo));
+    let resultado = '-';
+    if (total === 0) {
+      return resultado;
+    }
+    this.escalas.forEach(escala => {
+      if (total >= escala.ESCL_INI && total <= escala.ESCL_FIN) {
+        resultado = escala.ESCL_ABRV
+      }
+    });
+    return resultado;
+  }
+
+  calcularPromedioAnual(periodos: any): { promedio: number, tipo: string } {
+    // Filtrar los periodos normales
+    const normales = periodos.filter((periodo: any) => periodo.PRD_TIPO === 'Normal');
+
+    // Filtrar los periodos suspensos
+    const evaluativos = periodos.filter((periodo: any) => periodo.PRD_TIPO === 'Suspenso');
+
+    let totalNormal = 0;
+
+    // Calcular el total para los periodos 'Normal'
+    normales.forEach((periodo: any) => {
+      totalNormal += Number(this.calcularTotal(periodo)) || 0;
+    });
+
+    // Calcular el promedio para los periodos 'Normal'
+    const promedioNormal = normales.length > 0 ? totalNormal / normales.length : 0;
+    // Validar 'Suspenso'
+    if (promedioNormal >= this.anio.CLFN_MIN_PERD && promedioNormal < this.anio.CLFN_MIN_APR) {
+      // Calcular el total para los periodos 'Suspenso'
+      let existePase = this.validarPaseSuspenso(evaluativos[0]);
+      // Verificar si el promedio de 'Suspenso' cumple con el requisito mínimo
+      if (existePase) {
+        return { promedio: parseFloat(this.anio.CLFN_MIN_APR.toFixed(2)), tipo: 'suspenso' };
+      }
+
+      // Si no cumple, devolver el promedio de 'Normal'
+      return { promedio: parseFloat(promedioNormal.toFixed(2)), tipo: 'normal' };
+
+
+    } else if (promedioNormal < this.anio.CLFN_MIN_PERD) {
+      // Validar 'Perdida'
+      return { promedio: parseFloat(promedioNormal.toFixed(2)), tipo: 'normal' };
+    }
+
+    // Devolver el promedio de 'Normal' por defecto
+    return { promedio: parseFloat(promedioNormal.toFixed(2)), tipo: 'normal' };
+  }
+
+  validarPaseSuspenso(periodo: any) {
+    try {
+      const divisor: number = this.anio.NUM_SUSP;
+
+      if (!periodo.parciales) {
+        return false;
+      }
+
+      const calificaciones = periodo.parciales;
+
+      if (calificaciones.length !== divisor) {
+        return false;
+      }
+      return calificaciones.some((parcial: any) => parseFloat(parcial.CALIFICACION) >= this.anio.CLFN_MIN_APR);
+    } catch (error) {
+      return false;
+    }
+  }
+
+  addCalificacion(parcial: any, estudiante: any, event: any, tipo: string, periodos?: any) {
+    if (!this.validarCalificacion(parcial, tipo, event)) {
       return;
     }
 
+    const reprobadoSuspenso = this.tieneSuspenso(periodos, parcial);
+    if (!reprobadoSuspenso.response) {
+      this.handleInvalidInput(event, reprobadoSuspenso.msg);
+      event.target.style.border = '';
+      event.target.disabled = true;
+      return;
+    }
+    if (this.isEnabledParcial(parcial)) {
+      this.handleInvalidInput(event, 'El parcial se encuentra cerrado');
+      event.target.style.border = '';
+      event.target.disabled = true;
+      return;
+    }
     if (tipo === 'cuantitativa') {
+      if (periodos) {
+        parcial.CALIFICACION = event.target.value;
+      }
       const calificacion = this.buildobject(parcial, estudiante);
       calificacion.CAL_ID === '0' ? this.crear(calificacion) : this.editar(calificacion);
     }
   }
 
-  validarCalificacion(parcial: any, tipo: string,event:any) {
+  validarCalificacion(parcial: any, tipo: string, event: any) {
     const valor = parcial.CALIFICACION
     if (isNaN(valor) || valor < 0 || valor > 10) {
       this.handleInvalidInput(event);
@@ -151,6 +302,21 @@ export class CalificacionesComponent implements OnInit {
     }
     return true;
   }
+
+  tieneSuspenso(periodos: any, parcial: any) {
+    const respuesta = this.calcularPromedioAnual(periodos);
+    const promedio = respuesta.promedio;
+    const tipoPromedio = respuesta.tipo;
+    
+    if (promedio <= this.anio.CLFN_MIN_PERD) {
+      return { response: false, msg: 'El estudiante se encuentra reprobado' };
+    }
+    if ((tipoPromedio === 'normal' && promedio >= this.anio.CLFN_MIN_APR) || parcial.CALIFICACION === 0) {
+      return { response: false, msg: 'El estudiante no se encuentra en suspenso' };
+    }
+    return { response: true, msg: 'El estudiante se encuentra en suspenso' };
+  }
+
 
   crear(calificacion: any) {
     this.calificacioncuantitativaService.post(calificacion).subscribe({
@@ -186,74 +352,6 @@ export class CalificacionesComponent implements OnInit {
     return objeto;
   }
 
-  calcularPromedio(periodo: any, tipo: string): number | string {
-    try {
-      const divisor: number = (tipo === 'Normal') ? this.anio.NUM_PRCL : this.anio.NUM_EXAM;
-
-      if (!periodo.parciales) {
-        return '-';
-      }
-
-      const calificaciones = periodo.parciales.filter((parcial: any) => parcial.PRCL_TIPO === tipo && parcial.CALIFICACION !== '-');
-
-      if (calificaciones.length !== divisor) {
-        return '-';
-      }
-
-      const suma: number = calificaciones.reduce((acc: number, parcial: any) => acc + parseFloat(parcial.CALIFICACION), 0);
-
-      const calculo: number = parseFloat((suma / divisor).toFixed(2));
-
-      return isNaN(calculo) || calculo === 0 ? '-' : calculo.toFixed(2);
-    } catch (error) {
-      return '-';
-    }
-  }
-
-  calcularPorcentaje(periodo: any, tipo: string): number | string {
-    try {
-      if (!periodo.parciales) {
-        return '-';
-      }
-
-      const porcentaje: number = (tipo === 'Normal') ? Number(this.anio.AL_POR_PRD) : Number(this.anio.AL_POR_EXAM);
-      const promedio = this.calcularPromedio(periodo, tipo);
-
-      if (promedio === '-' || promedio === 0) {
-        return '-';
-      }
-
-      const respuesta = (Number(promedio) * porcentaje / 100).toFixed(2);
-      return respuesta;
-    } catch (error) {
-      return '-';
-    }
-  }
-
-  calcularTotal(periodo: any): number | string {
-    try {
-      const totalNormal = Number(this.calcularPorcentaje(periodo, 'Normal')) || 0;
-      const totalEvaluativo = Number(this.calcularPorcentaje(periodo, 'Evaluativo')) || 0;
-
-      const total: number = totalNormal + totalEvaluativo;
-
-      return (isNaN(total) || total === 0) ? '-' : total.toFixed(2);
-    } catch (error) {
-      return '-';
-    }
-  }
-
-  asignarEscalaReferencial(periodo: any) {
-    let total = Number(this.calcularTotal(periodo));
-    let resultado = '-';
-    this.escalas.forEach(escala => {
-      if (total >= escala.ESCL_INI && total <= escala.ESCL_FIN) {
-        resultado = escala.ESCL_ABRV
-      }
-    });
-    return resultado;
-  }
-
   showToast(valor: boolean) {
     this.mostrarToast = valor;
   }
@@ -286,5 +384,13 @@ export class CalificacionesComponent implements OnInit {
     this.mensajeToast = msg;
     this.showToast(true);
     this.loadTablaEstudiantes();
+  }
+
+  ngAfterViewInit() {
+    this.htmlTable = document.getElementById('table')!;
+  }
+  generarPdf() {
+    console.log(this.htmlTable);
+
   }
 }
