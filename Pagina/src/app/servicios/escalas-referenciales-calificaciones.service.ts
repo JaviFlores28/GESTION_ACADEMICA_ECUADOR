@@ -16,7 +16,7 @@ export class EscalasReferencialesCalificacionesService  extends ErrorHandlerServ
     super();
   }
 
-  get(): Observable<any> {
+  get(): Observable<any> {    
     return this.http.get(`${this.apiUrl}?by=all`).pipe(catchError(this.handleError));
   }
 

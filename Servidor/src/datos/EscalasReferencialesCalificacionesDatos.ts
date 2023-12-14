@@ -87,7 +87,6 @@ class EscalasReferencialesCalificacionesDatos {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
       let sql = this.sqlSelect;
-
       const [rows] = await pool.execute<any>(sql);
       if (rows.length <= 0) {
         throw new Error('No se encontraron datos para EscalasReferencialesCalificaciones.');

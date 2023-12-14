@@ -18,6 +18,7 @@ import PeriodoServicio from './servicios/PeriodoServicio';
 import ProfesorAsignaturaParaleloServicio from './servicios/ProfesorAsignaturaParaleloServicio';
 import UsuarioServicio from './servicios/UsuarioServicio';
 import UsuarioProfesorServicio from './servicios/UsuarioProfesorServicio';
+import EscalasReferencialesCalificacionesServicio from './servicios/EscalasReferencialesCalificacionesServicio';
 
 dotenv.config();
 const { SERVER_PORT, SERVER_URL, PAGE_URL } = process.env;
@@ -48,6 +49,8 @@ app.use('/api', PeriodoServicio);
 app.use('/api', ProfesorAsignaturaParaleloServicio);
 app.use('/api', UsuarioProfesorServicio);
 app.use('/api', UsuarioServicio);
+app.use('/api', EscalasReferencialesCalificacionesServicio);
+
 
 app.listen(SERVER_PORT, () => {
   console.log(`Servidor iniciado url consumo: ${SERVER_URL}:${SERVER_PORT}/api`);

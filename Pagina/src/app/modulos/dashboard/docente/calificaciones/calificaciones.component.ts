@@ -2,11 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
 import { CalificacionesCuantitativas } from 'src/app/interfaces/CalificacionesCuantitativas.interface';
+import { EscalasReferencialesCalificaciones } from 'src/app/interfaces/EscalasReferencialesCalificaciones.interface';
 import { Parcial } from 'src/app/interfaces/Parcial.interface';
 
 import { Periodo } from 'src/app/interfaces/Periodo.interface';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 import { CalififcacionCuantitativaService } from 'src/app/servicios/calififcacion-cuantitativa.service';
+import { EscalasReferencialesCalificacionesService } from 'src/app/servicios/escalas-referenciales-calificaciones.service';
 import { EstudianteCursoParaleloService } from 'src/app/servicios/estudiante-curso-paralelo.service';
 import { ModalService } from 'src/app/servicios/modal.service';
 import { ProfesorAsignaturaService } from 'src/app/servicios/profesor-asignatura.service';
@@ -25,7 +27,8 @@ export class CalificacionesComponent implements OnInit {
     private anioService: AnioLectivoService,
     private usuarioService: UsuarioService,
     private calificacioncuantitativaService: CalififcacionCuantitativaService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private escalasService: EscalasReferencialesCalificacionesService
   ) { }
   title = 'Calificaciones';
   elementoId: string = '';
@@ -39,10 +42,11 @@ export class CalificacionesComponent implements OnInit {
   periodosNormales: Periodo[] = [];
   periodosEvaluativos: Periodo[] = [];
   estudiantes: any[] = [];
+  escalas: EscalasReferencialesCalificaciones[] = [];
 
   ngOnInit(): void {
     this.getId();
-    this.loadDatos();
+    this.loadProfesorAsignatura();
   }
 
   getId() {
@@ -54,7 +58,7 @@ export class CalificacionesComponent implements OnInit {
     });
   }
 
-  loadDatos() {
+  loadProfesorAsignatura() {
     this.service.getById(this.elementoId).subscribe({
       next: (value) => {
         if (value.response) {
@@ -63,7 +67,7 @@ export class CalificacionesComponent implements OnInit {
           this.PRLL_ID = value.data.PRLL_ID;
           this.loadAnio();
           this.loadTablaEstudiantes();
-
+          this.loadEscalas();
         } else {
           console.log(value.message);
         }
@@ -79,6 +83,21 @@ export class CalificacionesComponent implements OnInit {
       next: (value) => {
         if (value.response) {
           this.anio = value.data;
+        } else {
+          console.log(value.message);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
+  }
+
+  loadEscalas() {
+    this.escalasService.get().subscribe({
+      next: (value) => {
+        if (value.response) {
+          this.escalas = value.data;
         } else {
           console.log(value.message);
         }
@@ -114,16 +133,7 @@ export class CalificacionesComponent implements OnInit {
   }
 
   addCalificacion(parcial: any, estudiante: any, event: any, tipo: string) {
-    const valor = parseFloat(event.target.value);
-
-    if (this.isEnabledParcial(parcial)) {
-      this.handleInvalidInput(event, 'El parcial se encuentra cerrado');
-      event.target.style.border = '';
-      event.target.disabled = true;
-      return;
-    }
-    if (isNaN(valor) || valor < 0 || valor > 10) {
-      this.handleInvalidInput(event);
+    if (!this.validarCalificacion(parcial, tipo,event)) {
       return;
     }
 
@@ -131,6 +141,15 @@ export class CalificacionesComponent implements OnInit {
       const calificacion = this.buildobject(parcial, estudiante);
       calificacion.CAL_ID === '0' ? this.crear(calificacion) : this.editar(calificacion);
     }
+  }
+
+  validarCalificacion(parcial: any, tipo: string,event:any) {
+    const valor = parcial.CALIFICACION
+    if (isNaN(valor) || valor < 0 || valor > 10) {
+      this.handleInvalidInput(event);
+      return false;
+    }
+    return true;
   }
 
   crear(calificacion: any) {
@@ -224,6 +243,17 @@ export class CalificacionesComponent implements OnInit {
     }
   }
 
+  asignarEscalaReferencial(periodo: any) {
+    let total = Number(this.calcularTotal(periodo));
+    let resultado = '-';
+    this.escalas.forEach(escala => {
+      if (total >= escala.ESCL_INI && total <= escala.ESCL_FIN) {
+        resultado = escala.ESCL_ABRV
+      }
+    });
+    return resultado;
+  }
+
   showToast(valor: boolean) {
     this.mostrarToast = valor;
   }
@@ -236,8 +266,9 @@ export class CalificacionesComponent implements OnInit {
     if (!response.data) {
       this.handleErrorResponse(response.message)
     } else {
-      this.showToast(true);
+      this.backgroundToast = 'bg-success';
       this.mensajeToast = response.message;
+      this.showToast(true);
       this.loadTablaEstudiantes();
     }
   }
@@ -254,5 +285,6 @@ export class CalificacionesComponent implements OnInit {
     this.backgroundToast = 'bg-danger';
     this.mensajeToast = msg;
     this.showToast(true);
+    this.loadTablaEstudiantes();
   }
 }
