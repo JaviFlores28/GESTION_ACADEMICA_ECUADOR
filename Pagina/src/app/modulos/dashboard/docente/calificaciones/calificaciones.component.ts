@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
 import { CalificacionesCuantitativas } from 'src/app/interfaces/CalificacionesCuantitativas.interface';
@@ -12,6 +12,7 @@ import { EscalasReferencialesCalificacionesService } from 'src/app/servicios/esc
 import { EstudianteCursoParaleloService } from 'src/app/servicios/estudiante-curso-paralelo.service';
 import { ModalService } from 'src/app/servicios/modal.service';
 import { ProfesorAsignaturaService } from 'src/app/servicios/profesor-asignatura.service';
+import { ReporteService } from 'src/app/servicios/reporte.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
@@ -19,7 +20,7 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
   templateUrl: './calificaciones.component.html',
   styleUrls: ['./calificaciones.component.scss']
 })
-export class CalificacionesComponent implements OnInit, AfterViewInit {
+export class CalificacionesComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
     private service: ProfesorAsignaturaService,
@@ -29,6 +30,7 @@ export class CalificacionesComponent implements OnInit, AfterViewInit {
     private calificacioncuantitativaService: CalififcacionCuantitativaService,
     private modalService: ModalService,
     private escalasService: EscalasReferencialesCalificacionesService,
+    private reporteServicio: ReporteService
   ) { }
   title = 'Calificaciones';
   elementoId: string = '';
@@ -38,7 +40,6 @@ export class CalificacionesComponent implements OnInit, AfterViewInit {
   mostrarToast: boolean = false;
   mensajeToast: string = '';
   backgroundToast: string = 'bg-success';
-  htmlTable: HTMLElement = {} as HTMLElement;
   anio: AnioLectivo = {} as AnioLectivo;
   periodosNormales: Periodo[] = [];
   periodosEvaluativos: Periodo[] = [];
@@ -271,13 +272,16 @@ export class CalificacionesComponent implements OnInit, AfterViewInit {
     if (!this.validarCalificacion(parcial, tipo, event)) {
       return;
     }
+    if (periodos) {
+      const reprobadoSuspenso = this.tieneSuspenso(periodos, parcial);
+      if (!reprobadoSuspenso.response) {
+        this.handleInvalidInput(event, reprobadoSuspenso.msg);
+        event.target.style.border = '';
+        event.target.disabled = true;
+        return;
+      }
+      parcial.CALIFICACION = event.target.value;
 
-    const reprobadoSuspenso = this.tieneSuspenso(periodos, parcial);
-    if (!reprobadoSuspenso.response) {
-      this.handleInvalidInput(event, reprobadoSuspenso.msg);
-      event.target.style.border = '';
-      event.target.disabled = true;
-      return;
     }
     if (this.isEnabledParcial(parcial)) {
       this.handleInvalidInput(event, 'El parcial se encuentra cerrado');
@@ -286,9 +290,6 @@ export class CalificacionesComponent implements OnInit, AfterViewInit {
       return;
     }
     if (tipo === 'cuantitativa') {
-      if (periodos) {
-        parcial.CALIFICACION = event.target.value;
-      }
       const calificacion = this.buildobject(parcial, estudiante);
       calificacion.CAL_ID === '0' ? this.crear(calificacion) : this.editar(calificacion);
     }
@@ -307,7 +308,7 @@ export class CalificacionesComponent implements OnInit, AfterViewInit {
     const respuesta = this.calcularPromedioAnual(periodos);
     const promedio = respuesta.promedio;
     const tipoPromedio = respuesta.tipo;
-    
+
     if (promedio <= this.anio.CLFN_MIN_PERD) {
       return { response: false, msg: 'El estudiante se encuentra reprobado' };
     }
@@ -386,11 +387,50 @@ export class CalificacionesComponent implements OnInit, AfterViewInit {
     this.loadTablaEstudiantes();
   }
 
-  ngAfterViewInit() {
-    this.htmlTable = document.getElementById('table')!;
-  }
   generarPdf() {
-    console.log(this.htmlTable);
+    const table = document.getElementById('table');
+    const clonedTable = table?.cloneNode(true) as HTMLElement;
+    clonedTable.style.fontSize = '0.7rem';
+    clonedTable.style.width = '100%';
+    clonedTable.style.borderSpacing = '0';
+    clonedTable.style.borderCollapse = 'collapse';
+    const trElements = clonedTable?.querySelectorAll('th, td');
+
+    trElements?.forEach((element: any) => {
+      element.style.borderColor = 'black';
+      element.style.borderStyle = 'solid';
+      element.style.borderWidth = '1px';
+      element.style.fontFamily = 'Arial, sans-serif';
+      element.style.overflow = 'hidden';
+      element.style.wordBreak = 'normal';
+      element.style.textAlign = 'center';
+      if (element.classList.contains('bg-body-secondary')) {
+        element.style.backgroundColor = '#C0C0C0'; // Cambia el color de fondo a un tono más oscuro
+      }
+    });
+
+
+    const inputs = clonedTable?.querySelectorAll('td input');
+
+    inputs?.forEach((input: any) => {
+      const inputValue = input.value; // Obtener el valor del atributo value
+      const newContent = document.createTextNode(inputValue); // Crear un nodo de texto con el valor
+      // Reemplazar el input con el nodo de texto
+      input.parentNode.replaceChild(newContent, input);
+    });
+
+    const html = clonedTable?.outerHTML;
+
+    this.reporteServicio.post(html).subscribe({
+      next: (response: Blob) => {
+        const blobUrl = URL.createObjectURL(response);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = 'reporte.pdf';
+        link.click();
+      },
+      error: (error) => this.handleErrorResponse(error),
+    });
 
   }
 }

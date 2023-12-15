@@ -19,6 +19,7 @@ import ProfesorAsignaturaParaleloServicio from './servicios/ProfesorAsignaturaPa
 import UsuarioServicio from './servicios/UsuarioServicio';
 import UsuarioProfesorServicio from './servicios/UsuarioProfesorServicio';
 import EscalasReferencialesCalificacionesServicio from './servicios/EscalasReferencialesCalificacionesServicio';
+import ReporteServicio from './servicios/ReporteServicio';
 
 dotenv.config();
 const { SERVER_PORT, SERVER_URL, PAGE_URL } = process.env;
@@ -50,6 +51,8 @@ app.use('/api', ProfesorAsignaturaParaleloServicio);
 app.use('/api', UsuarioProfesorServicio);
 app.use('/api', UsuarioServicio);
 app.use('/api', EscalasReferencialesCalificacionesServicio);
+app.use('/api', ReporteServicio);
+
 
 
 app.listen(SERVER_PORT, () => {
