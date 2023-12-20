@@ -1,111 +1,67 @@
-import express from 'express';
-import puppeteer from 'puppeteer';
-const app = express();
-const port = 3000;
+import 'dotenv/config';
+import BaseDatos from '../src/sistema/conexion/BaseDatos';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import path from 'path';
 
-app.get('/generate-pdf', async (req, res) => {
-  const browser = await puppeteer.launch({ headless: 'new' });
-  const page = await browser.newPage();
+async function generaarTriggers(tableName: string) {
 
-  // Lógica para generar el PDF
-  await page.setContent(`
-  <html>
+    const properties = await BaseDatos.getTableInfo('usuario');
+    const fields = BaseDatos.mapProperties(properties);
 
-  <head>
-      <title>Ejemplo de PDF con Bootstrap</title>
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-  </head>
-  
-  <body>
-      <div class="container-fluid m-3">
-      <div class="table-responsive">
-          <table class="table-sm table-bordered text-center">
-              <thead class="align-middle">
-                  <tr>
-                      <th rowspan="2">#</th>
-                      <th rowspan="2">Cédula</th>
-                      <th rowspan="2">Nombres</th>
-                      <th colspan="8">Periodo 1</th>
-                      <th colspan="8">Periodo 2</th>
-                      <th colspan="8">Periodo 3</th>
-                  </tr>
-                  <tr>
-                      <th>P1</th>
-                      <th>P2</th>
-                      <th>PROM</th>
-                      <th>80%</th>
-                      <th>Ex</th>
-                      <th>20%</th>
-                      <th>Total</th>
-                      <th>EC</th>
-                      <th>P1</th>
-                      <th>P2</th>
-                      <th>PROM</th>
-                      <th>80%</th>
-                      <th>Ex</th>
-                      <th>20%</th>
-                      <th>Total</th>
-                      <th>EC</th>
-                      <th>P1</th>
-                      <th>P2</th>
-                      <th>PROM</th>
-                      <th>80%</th>
-                      <th>Ex</th>
-                      <th>20%</th>
-                      <th>Total</th>
-                      <th>EC</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr>
-                      <th scope="row">1</th>
-                      <td>12345456678</td>
-                      <td>Mark</td>
-                      <td>3</td>
-                      <td>6</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                      <td>7</td>
-                  </tr>
-              </tbody>
-          </table>
-      </div>
-      </div>
+    const generateAuditTriggerCode = (action: string) => {
+        return `
 
-  </body>
-  
-  </html>
-  `);
+  DELIMITER //
+  CREATE TRIGGER usuario_${action.toLowerCase()}
+  AFTER ${action} ON ${tableName}
+  FOR EACH ROW
+  BEGIN
+    ${action === 'INSERT' || action === 'DELETE' ?
+                `INSERT INTO AUDITORIA_USUARIO (AUDIT_ID, USR_ID, ACCION, FECHA_MODIFICACION)
+      VALUES (UUID(), ${action === 'INSERT' ? 'NEW' : 'OLD'}.USR_ID, '${action}', current_timestamp());` :
+                fields
+                    .map(
+                        field => `  IF NEW.${field.name} != OLD.${field.name} THEN
+      INSERT INTO AUDITORIA_USUARIO (AUDIT_ID, USR_ID, ACCION, CAMPO_MODIFICADO, VALOR_ANTIGUO, VALOR_NUEVO, FECHA_MODIFICACION)
+      VALUES (UUID(), NEW.USR_ID, 'UPDATE', '${field.name}', OLD.${field.name}, NEW.${field.name}, current_timestamp());
+    END IF;`
+                    )
+                    .join('\n\n')}
+  END;
+  //
+  DELIMITER ;
+  `;
+    };
 
-  const pdfBuffer = await page.pdf({ format: 'A4', landscape: true });
+    const insertTriggerCode = generateAuditTriggerCode('INSERT');
+    const updateTriggerCode = generateAuditTriggerCode('UPDATE');
+    const deleteTriggerCode = generateAuditTriggerCode('DELETE');
+    const carpeta = path.join(__dirname, '../../triggers');
+    const content = insertTriggerCode + updateTriggerCode + deleteTriggerCode;
+    const archivo = path.join(carpeta, `${tableName}.SQL`);
 
-  await browser.close();
+    if (!existsSync(carpeta)) {
+        mkdirSync(carpeta, { recursive: true });
+    }
+    writeFileSync(archivo, content, 'utf8');
+}
 
-  res.setHeader('Content-Type', 'application/pdf');
-  res.setHeader('Content-Disposition', 'attachment; filename=example.pdf');
-  res.send(pdfBuffer);
-});
 
-app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
-});
+async function generateAll() {
+    try {
+        const pool = await BaseDatos.getInstanceDataBase();
+        const [tables] = await pool.execute<any>('SHOW FULL TABLES WHERE Table_type = "BASE TABLE"');
+        for (const table of tables) {
+            const tableName = table[`Tables_in_${process.env.DB_DATABASE}`];
+            await generaarTriggers(tableName);
+        }
+        // execSync(`npx prettier src/ --write --print-width 1000 --single-quote`);
+        console.info('Archivos creados correctamente');
+    } catch (error: any) {
+        console.error('Error: ' + error);
+    } finally {
+        process.exit();
+    }
+}
+
+generateAll();

@@ -9,7 +9,7 @@
     "generate": "ts-node-dev src/create.ts",
     "database": "ts-node-dev src/database.ts",
     "dev": "ts-node-dev src/app.ts",
-    "test": "ts-node-dev src/test.ts"
+    "test": "ts-node-dev test/test.ts"
   },
   "keywords": [],
   "author": "",
