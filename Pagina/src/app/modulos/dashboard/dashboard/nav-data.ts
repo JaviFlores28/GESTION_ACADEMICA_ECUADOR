@@ -154,7 +154,7 @@ export const navbarData: NavBarData[] = [
     routelink: 'reporte',
     icon: faLaptopFile,
     label: 'Reportes',
-    rol: 'T',
+    rol: 'A',
     items: [
       {
         routelink: 'calificaciones',

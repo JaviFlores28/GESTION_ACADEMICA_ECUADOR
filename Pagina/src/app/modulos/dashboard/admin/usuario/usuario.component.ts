@@ -68,10 +68,12 @@ export class UsuarioComponent {
 
   determinarRolDesdeRuta() {
     this.rutaActual = this.router.url.split('/');
-    this.titulo = this.rutaActual[3].charAt(0).toUpperCase() + this.rutaActual[3].slice(1);
+    
+    this.titulo = this.rutaActual[2].charAt(0).toUpperCase() + this.rutaActual[2].slice(1);
+console.log(this.rutaActual);
 
-    if (this.rutaActual[4] === 'nuevo') {
-      const rol = this.rutaActual[3];
+    if (this.rutaActual[3] === 'nuevo') {
+      const rol = this.rutaActual[2];
       this.isAdmin = rol === 'usuarios';
       this.isRep = rol === 'representantes';
       this.isProf = rol === 'profesores';
