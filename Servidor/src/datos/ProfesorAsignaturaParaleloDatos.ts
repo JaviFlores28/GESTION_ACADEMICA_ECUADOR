@@ -19,7 +19,7 @@ class ProfesorAsignaturaParaleloDatos {
       const pool = await BaseDatos.getInstanceDataBase();
 
       profesor_asignatura_paralelo.PRF_ASG_PRLL_ID = uuidv4();
-      const newProfesorAsignaturaParalelo = new ProfesorAsignaturaParaleloEntidad(profesor_asignatura_paralelo.PRF_ASG_PRLL_ID, profesor_asignatura_paralelo.ASG_ID, profesor_asignatura_paralelo.PRF_ID, profesor_asignatura_paralelo.AL_ID, profesor_asignatura_paralelo.CRS_ID, profesor_asignatura_paralelo.PRLL_ID, profesor_asignatura_paralelo.ESTADO, profesor_asignatura_paralelo.CREADOR_ID);
+      const newProfesorAsignaturaParalelo = new ProfesorAsignaturaParaleloEntidad(profesor_asignatura_paralelo.PRF_ASG_PRLL_ID, profesor_asignatura_paralelo.ASG_ID, profesor_asignatura_paralelo.PRF_ID, profesor_asignatura_paralelo.AL_ID, profesor_asignatura_paralelo.CRS_ID, profesor_asignatura_paralelo.PRLL_ID, profesor_asignatura_paralelo.ESTADO);
       let sql = this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newProfesorAsignaturaParalelo.toArrayInsert());
       if (result.affectedRows !== 1) {
@@ -35,7 +35,7 @@ class ProfesorAsignaturaParaleloDatos {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
 
-      const newProfesorAsignaturaParalelo = new ProfesorAsignaturaParaleloEntidad(profesor_asignatura_paralelo.PRF_ASG_PRLL_ID, profesor_asignatura_paralelo.ASG_ID, profesor_asignatura_paralelo.PRF_ID, profesor_asignatura_paralelo.AL_ID, profesor_asignatura_paralelo.CRS_ID, profesor_asignatura_paralelo.PRLL_ID, profesor_asignatura_paralelo.ESTADO, profesor_asignatura_paralelo.CREADOR_ID);
+      const newProfesorAsignaturaParalelo = new ProfesorAsignaturaParaleloEntidad(profesor_asignatura_paralelo.PRF_ASG_PRLL_ID, profesor_asignatura_paralelo.ASG_ID, profesor_asignatura_paralelo.PRF_ID, profesor_asignatura_paralelo.AL_ID, profesor_asignatura_paralelo.CRS_ID, profesor_asignatura_paralelo.PRLL_ID, profesor_asignatura_paralelo.ESTADO);
       let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newProfesorAsignaturaParalelo.toArrayUpdate());
       if (result.affectedRows !== 1) {

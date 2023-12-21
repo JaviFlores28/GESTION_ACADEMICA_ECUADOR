@@ -17,14 +17,13 @@ class UsuarioProfesorDatos {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
 
-      usuario_profesor.DTLL_PRF_ID = uuidv4();
-      const newUsuarioProfesor = new UsuarioProfesorEntidad(usuario_profesor.DTLL_PRF_ID, usuario_profesor.PRF_FECH_INGR_INST, usuario_profesor.PRF_FECH_INGR_MAG, usuario_profesor.USR_ID);
+      const newUsuarioProfesor = new UsuarioProfesorEntidad(usuario_profesor.USR_ID, usuario_profesor.PRF_FECH_INGR_INST, usuario_profesor.PRF_FECH_INGR_MAG);
       let sql = this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newUsuarioProfesor.toArrayInsert());
       if (result.affectedRows !== 1) {
         throw new Error('No se pudo agregar UsuarioProfesor');
       }
-      return { response: true, data: newUsuarioProfesor.DTLL_PRF_ID, message: 'Se creo correctamente' };
+      return { response: true, data: newUsuarioProfesor.USR_ID, message: 'Se creo correctamente' };
     } catch (error: any) {
       return { response: false, data: null, message: error.message };
     }
@@ -34,7 +33,7 @@ class UsuarioProfesorDatos {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
 
-      const newUsuarioProfesor = new UsuarioProfesorEntidad(usuario_profesor.DTLL_PRF_ID, usuario_profesor.PRF_FECH_INGR_INST, usuario_profesor.PRF_FECH_INGR_MAG, usuario_profesor.USR_ID);
+      const newUsuarioProfesor = new UsuarioProfesorEntidad(usuario_profesor.USR_ID, usuario_profesor.PRF_FECH_INGR_INST, usuario_profesor.PRF_FECH_INGR_MAG);
       let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newUsuarioProfesor.toArrayUpdate());
       if (result.affectedRows !== 1) {

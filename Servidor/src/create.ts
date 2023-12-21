@@ -13,15 +13,15 @@ async function generateFilesForTable(tableName: string) {
 
   const entityCreator = new EntityCreator(tableName, propertiesData);
   const interfaceCreator = new InterfaceCreator(tableName, propertiesData);
-  const dataCreator = new DataCreator(tableName, propertiesData);
+  /*   const dataCreator = new DataCreator(tableName, propertiesData);
   const businessCreator = new BusinessCreator(tableName);
-  const servicesCreator = new ServicesCreator(tableName);
+  const servicesCreator = new ServicesCreator(tableName); */
 
   await interfaceCreator.generateInterfaceFile();
   await entityCreator.generateEntityFile();
-  await dataCreator.generateDataFile();
+  /* await dataCreator.generateDataFile();
   await businessCreator.generateBusinessFile();
-  await servicesCreator.generateServiceFile();
+  await servicesCreator.generateServiceFile(); */
 }
 
 async function generateAll() {
@@ -53,4 +53,4 @@ async function generateOne(tableName: string) {
   }
 }
 
-generateOne('escalas_referenciales_calificaciones');
+generateAll()

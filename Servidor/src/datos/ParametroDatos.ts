@@ -18,7 +18,7 @@ class ParametroDatos {
       const pool = await BaseDatos.getInstanceDataBase();
 
       parametro.PRMT_ID = uuidv4();
-      const newParametro = new ParametroEntidad(parametro.PRMT_ID, parametro.PRMT_NOM, parametro.PRMT_DESCR, parametro.PRMT_URL_IMG, parametro.ESTADO, parametro.CREADOR_ID);
+      const newParametro = new ParametroEntidad(parametro.PRMT_ID, parametro.PRMT_NOM, parametro.PRMT_DESCR, parametro.PRMT_URL_IMG, parametro.ESTADO);
       let sql = this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newParametro.toArrayInsert());
       if (result.affectedRows !== 1) {
@@ -34,7 +34,7 @@ class ParametroDatos {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
 
-      const newParametro = new ParametroEntidad(parametro.PRMT_ID, parametro.PRMT_NOM, parametro.PRMT_DESCR, parametro.PRMT_URL_IMG, parametro.ESTADO, parametro.CREADOR_ID);
+      const newParametro = new ParametroEntidad(parametro.PRMT_ID, parametro.PRMT_NOM, parametro.PRMT_DESCR, parametro.PRMT_URL_IMG, parametro.ESTADO);
       let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newParametro.toArrayUpdate());
       if (result.affectedRows !== 1) {

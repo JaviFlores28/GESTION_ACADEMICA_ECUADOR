@@ -19,7 +19,7 @@ class ParcialDatos {
       const pool = await BaseDatos.getInstanceDataBase();
 
       parcial.PRCL_ID = uuidv4();
-      const newParcial = new ParcialEntidad(parcial.PRCL_ID, parcial.PRCL_NOM, parcial.PRCL_INI, parcial.PRCL_FIN, parcial.ESTADO, parcial.PRCL_TIPO, parcial.PRD_ID, parcial.CREADOR_ID);
+      const newParcial = new ParcialEntidad(parcial.PRCL_ID, parcial.PRCL_NOM, parcial.PRCL_INI, parcial.PRCL_FIN, parcial.ESTADO, parcial.PRCL_TIPO, parcial.PRD_ID);
       let sql = this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newParcial.toArrayInsert());
       if (result.affectedRows !== 1) {
@@ -35,7 +35,7 @@ class ParcialDatos {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
 
-      const newParcial = new ParcialEntidad(parcial.PRCL_ID, parcial.PRCL_NOM, parcial.PRCL_INI, parcial.PRCL_FIN, parcial.ESTADO, parcial.PRCL_TIPO, parcial.PRD_ID, parcial.CREADOR_ID);
+      const newParcial = new ParcialEntidad(parcial.PRCL_ID, parcial.PRCL_NOM, parcial.PRCL_INI, parcial.PRCL_FIN, parcial.ESTADO, parcial.PRCL_TIPO, parcial.PRD_ID);
       let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newParcial.toArrayUpdate());
       if (result.affectedRows !== 1) {

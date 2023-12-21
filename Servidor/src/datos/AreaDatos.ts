@@ -5,7 +5,7 @@ import AreaEntidad from '../entidades/AreaEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class AreaDatos {
-  static sqlInsert: string = `INSERT INTO area (AREA_ID, AREA_NOM, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?);`;
+  static sqlInsert: string = `INSERT INTO area (AREA_ID, AREA_NOM, ESTADO)VALUES(?, ?, ?);`;
   static sqlUpdate: string = `UPDATE area SET AREA_NOM=?,ESTADO=? WHERE AREA_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE area SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  AREA_ID IN';
   static sqlDelete: string = `DELETE FROM area WHERE AREA_ID = ?`;
@@ -18,7 +18,7 @@ class AreaDatos {
       const pool = await BaseDatos.getInstanceDataBase();
 
       area.AREA_ID = uuidv4();
-      const newArea = new AreaEntidad(area.AREA_ID, area.AREA_NOM, area.ESTADO, area.CREADOR_ID);
+      const newArea = new AreaEntidad(area.AREA_ID, area.AREA_NOM, area.ESTADO);
       let sql = this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newArea.toArrayInsert());
       if (result.affectedRows !== 1) {
@@ -34,7 +34,7 @@ class AreaDatos {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
 
-      const newArea = new AreaEntidad(area.AREA_ID, area.AREA_NOM, area.ESTADO, area.CREADOR_ID);
+      const newArea = new AreaEntidad(area.AREA_ID, area.AREA_NOM, area.ESTADO);
       let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newArea.toArrayUpdate());
       if (result.affectedRows !== 1) {

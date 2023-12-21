@@ -23,7 +23,7 @@ class EstudianteCursoParaleloDatos {
       const pool = await BaseDatos.getInstanceDataBase();
 
       estudiante_curso_paralelo.EST_CRS_PRLL_ID = uuidv4();
-      const newEstudianteCursoParalelo = new EstudianteCursoParaleloEntidad(estudiante_curso_paralelo.EST_CRS_PRLL_ID, estudiante_curso_paralelo.EST_CRS_ID, estudiante_curso_paralelo.AL_ID, estudiante_curso_paralelo.PRLL_ID, estudiante_curso_paralelo.PASE, estudiante_curso_paralelo.ESTADO, estudiante_curso_paralelo.CREADOR_ID);
+      const newEstudianteCursoParalelo = new EstudianteCursoParaleloEntidad(estudiante_curso_paralelo.EST_CRS_PRLL_ID, estudiante_curso_paralelo.EST_CRS_ID, estudiante_curso_paralelo.AL_ID, estudiante_curso_paralelo.PRLL_ID, estudiante_curso_paralelo.PASE, estudiante_curso_paralelo.ESTADO);
       let sql = this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newEstudianteCursoParalelo.toArrayInsert());
       if (result.affectedRows !== 1) {
@@ -39,7 +39,7 @@ class EstudianteCursoParaleloDatos {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
 
-      const newEstudianteCursoParalelo = new EstudianteCursoParaleloEntidad(estudiante_curso_paralelo.EST_CRS_PRLL_ID, estudiante_curso_paralelo.EST_CRS_ID, estudiante_curso_paralelo.AL_ID, estudiante_curso_paralelo.PRLL_ID, estudiante_curso_paralelo.PASE, estudiante_curso_paralelo.ESTADO, estudiante_curso_paralelo.CREADOR_ID);
+      const newEstudianteCursoParalelo = new EstudianteCursoParaleloEntidad(estudiante_curso_paralelo.EST_CRS_PRLL_ID, estudiante_curso_paralelo.EST_CRS_ID, estudiante_curso_paralelo.AL_ID, estudiante_curso_paralelo.PRLL_ID, estudiante_curso_paralelo.PASE, estudiante_curso_paralelo.ESTADO);
       let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newEstudianteCursoParalelo.toArrayUpdate());
       if (result.affectedRows !== 1) {

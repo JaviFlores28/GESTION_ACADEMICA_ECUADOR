@@ -53,8 +53,6 @@ app.use('/api', UsuarioServicio);
 app.use('/api', EscalasReferencialesCalificacionesServicio);
 app.use('/api', ReporteServicio);
 
-
-
 app.listen(SERVER_PORT, () => {
   console.log(`Servidor iniciado url consumo: ${SERVER_URL}:${SERVER_PORT}/api`);
 });

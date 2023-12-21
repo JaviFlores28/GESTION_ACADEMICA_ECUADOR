@@ -16,9 +16,8 @@ class EscalasReferencialesCalificacionesDatos {
   static async insert(escalas_referenciales_calificaciones: EscalasReferencialesCalificacionesEntidad): Promise<Respuesta> {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
-
       escalas_referenciales_calificaciones.ESCL_ID = uuidv4();
-      const newEscalasReferencialesCalificaciones = new EscalasReferencialesCalificacionesEntidad(escalas_referenciales_calificaciones.ESCL_ID, escalas_referenciales_calificaciones.ESCL_ABRV, escalas_referenciales_calificaciones.ESCL_DESCR, escalas_referenciales_calificaciones.ESCL_INI, escalas_referenciales_calificaciones.ESCL_FIN);
+      const newEscalasReferencialesCalificaciones = new EscalasReferencialesCalificacionesEntidad(escalas_referenciales_calificaciones.ESCL_ID, escalas_referenciales_calificaciones.ESCL_ABRV, escalas_referenciales_calificaciones.ESCL_DESCR, escalas_referenciales_calificaciones.ESCL_INI, escalas_referenciales_calificaciones.ESCL_FIN, escalas_referenciales_calificaciones.ESTADO);
       let sql = this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newEscalasReferencialesCalificaciones.toArrayInsert());
       if (result.affectedRows !== 1) {
@@ -34,7 +33,7 @@ class EscalasReferencialesCalificacionesDatos {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
 
-      const newEscalasReferencialesCalificaciones = new EscalasReferencialesCalificacionesEntidad(escalas_referenciales_calificaciones.ESCL_ID, escalas_referenciales_calificaciones.ESCL_ABRV, escalas_referenciales_calificaciones.ESCL_DESCR, escalas_referenciales_calificaciones.ESCL_INI, escalas_referenciales_calificaciones.ESCL_FIN);
+      const newEscalasReferencialesCalificaciones = new EscalasReferencialesCalificacionesEntidad(escalas_referenciales_calificaciones.ESCL_ID, escalas_referenciales_calificaciones.ESCL_ABRV, escalas_referenciales_calificaciones.ESCL_DESCR, escalas_referenciales_calificaciones.ESCL_INI, escalas_referenciales_calificaciones.ESCL_FIN,escalas_referenciales_calificaciones.ESTADO);
       let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newEscalasReferencialesCalificaciones.toArrayUpdate());
       if (result.affectedRows !== 1) {

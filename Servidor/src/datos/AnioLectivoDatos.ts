@@ -5,7 +5,7 @@ import AnioLectivoEntidad from '../entidades/AnioLectivoEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class AnioLectivoDatos {
-  static sqlInsert: string = `INSERT INTO anio_lectivo (AL_ID, AL_NOM, AL_INICIO, AL_FIN, AL_POR_PRD, AL_POR_EXAM, CLFN_MIN_APR, CLFN_MIN_PERD, PRD_NOM, NUM_PRD, NUM_EXAM, NUM_PRCL, NUM_SUSP, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+  static sqlInsert: string = `INSERT INTO anio_lectivo (AL_ID, AL_NOM, AL_INICIO, AL_FIN, AL_POR_PRD, AL_POR_EXAM, CLFN_MIN_APR, CLFN_MIN_PERD, PRD_NOM, NUM_PRD, NUM_EXAM, NUM_PRCL, NUM_SUSP, ESTADO)VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE anio_lectivo SET AL_NOM=?,AL_INICIO=?,AL_FIN=?,AL_POR_PRD=?,AL_POR_EXAM=?,CLFN_MIN_APR=?,CLFN_MIN_PERD=?,PRD_NOM=?,NUM_PRD=?,NUM_EXAM=?,NUM_PRCL=?,NUM_SUSP=?,ESTADO=? WHERE AL_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE anio_lectivo SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  AL_ID IN';
   static sqlDelete: string = `DELETE FROM anio_lectivo WHERE AL_ID = ?`;
@@ -18,7 +18,7 @@ class AnioLectivoDatos {
       const pool = await BaseDatos.getInstanceDataBase();
 
       anio_lectivo.AL_ID = uuidv4();
-      const newAnioLectivo = new AnioLectivoEntidad(anio_lectivo.AL_ID, anio_lectivo.AL_NOM, anio_lectivo.AL_INICIO, anio_lectivo.AL_FIN, anio_lectivo.AL_POR_PRD, anio_lectivo.AL_POR_EXAM, anio_lectivo.CLFN_MIN_APR, anio_lectivo.CLFN_MIN_PERD, anio_lectivo.PRD_NOM, anio_lectivo.NUM_PRD, anio_lectivo.NUM_EXAM, anio_lectivo.NUM_PRCL, anio_lectivo.NUM_SUSP, anio_lectivo.ESTADO, anio_lectivo.CREADOR_ID);
+      const newAnioLectivo = new AnioLectivoEntidad(anio_lectivo.AL_ID, anio_lectivo.AL_NOM, anio_lectivo.AL_INICIO, anio_lectivo.AL_FIN, anio_lectivo.AL_POR_PRD, anio_lectivo.AL_POR_EXAM, anio_lectivo.CLFN_MIN_APR, anio_lectivo.CLFN_MIN_PERD, anio_lectivo.PRD_NOM, anio_lectivo.NUM_PRD, anio_lectivo.NUM_EXAM, anio_lectivo.NUM_PRCL, anio_lectivo.NUM_SUSP, anio_lectivo.ESTADO);
       let sql = this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newAnioLectivo.toArrayInsert());
       if (result.affectedRows !== 1) {
@@ -34,7 +34,7 @@ class AnioLectivoDatos {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
 
-      const newAnioLectivo = new AnioLectivoEntidad(anio_lectivo.AL_ID, anio_lectivo.AL_NOM, anio_lectivo.AL_INICIO, anio_lectivo.AL_FIN, anio_lectivo.AL_POR_PRD, anio_lectivo.AL_POR_EXAM, anio_lectivo.CLFN_MIN_APR, anio_lectivo.CLFN_MIN_PERD, anio_lectivo.PRD_NOM, anio_lectivo.NUM_PRD, anio_lectivo.NUM_EXAM, anio_lectivo.NUM_PRCL, anio_lectivo.NUM_SUSP, anio_lectivo.ESTADO, anio_lectivo.CREADOR_ID);
+      const newAnioLectivo = new AnioLectivoEntidad(anio_lectivo.AL_ID, anio_lectivo.AL_NOM, anio_lectivo.AL_INICIO, anio_lectivo.AL_FIN, anio_lectivo.AL_POR_PRD, anio_lectivo.AL_POR_EXAM, anio_lectivo.CLFN_MIN_APR, anio_lectivo.CLFN_MIN_PERD, anio_lectivo.PRD_NOM, anio_lectivo.NUM_PRD, anio_lectivo.NUM_EXAM, anio_lectivo.NUM_PRCL, anio_lectivo.NUM_SUSP, anio_lectivo.ESTADO);
       let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newAnioLectivo.toArrayUpdate());
       if (result.affectedRows !== 1) {

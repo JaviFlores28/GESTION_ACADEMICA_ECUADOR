@@ -18,7 +18,7 @@ class PeriodoDatos {
       const pool = await BaseDatos.getInstanceDataBase();
 
       periodo.PRD_ID = uuidv4();
-      const newPeriodo = new PeriodoEntidad(periodo.PRD_ID, periodo.PRD_NOM, periodo.PRD_INI, periodo.PRD_FIN, periodo.PRD_TIPO, periodo.AL_ID, periodo.ESTADO, periodo.CREADOR_ID);
+      const newPeriodo = new PeriodoEntidad(periodo.PRD_ID, periodo.PRD_NOM, periodo.PRD_INI, periodo.PRD_FIN, periodo.PRD_TIPO, periodo.AL_ID, periodo.ESTADO);
       let sql = this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newPeriodo.toArrayInsert());
       if (result.affectedRows !== 1) {
@@ -34,7 +34,7 @@ class PeriodoDatos {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
 
-      const newPeriodo = new PeriodoEntidad(periodo.PRD_ID, periodo.PRD_NOM, periodo.PRD_INI, periodo.PRD_FIN, periodo.PRD_TIPO, periodo.AL_ID, periodo.ESTADO, periodo.CREADOR_ID);
+      const newPeriodo = new PeriodoEntidad(periodo.PRD_ID, periodo.PRD_NOM, periodo.PRD_INI, periodo.PRD_FIN, periodo.PRD_TIPO, periodo.AL_ID, periodo.ESTADO);
       let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newPeriodo.toArrayUpdate());
       if (result.affectedRows !== 1) {

@@ -18,7 +18,7 @@ class EstudianteDatos {
       const pool = await BaseDatos.getInstanceDataBase();
 
       estudiante.EST_ID = uuidv4();
-      const newEstudiante = new EstudianteEntidad(estudiante.EST_ID, estudiante.EST_DNI, estudiante.EST_NOM, estudiante.EST_NOM2, estudiante.EST_APE, estudiante.EST_APE2, estudiante.EST_FECH_NAC, estudiante.EST_GEN, estudiante.EST_PRV, estudiante.EST_CAN, estudiante.EST_PARR, estudiante.EST_DIR, estudiante.EST_NAC, estudiante.EST_ETN, estudiante.EST_NAC_ETN, estudiante.EST_COM_ETN, estudiante.EST_COD_ELE, estudiante.EST_NEC_ASO_DIS, estudiante.EST_NEC_NO_ASO_DIS, estudiante.EST_ENF_CAT, estudiante.EST_NUM_CONA, estudiante.EST_INTE, estudiante.EST_TV, estudiante.EST_RAD, estudiante.EST_PC, estudiante.EST_CEL, estudiante.REPR_ID, estudiante.REL_EST_REP, estudiante.ESTADO, estudiante.CREADOR_ID);
+      const newEstudiante = new EstudianteEntidad(estudiante.EST_ID, estudiante.EST_DNI, estudiante.EST_NOM, estudiante.EST_NOM2, estudiante.EST_APE, estudiante.EST_APE2, estudiante.EST_FECH_NAC, estudiante.EST_GEN, estudiante.EST_PRV, estudiante.EST_CAN, estudiante.EST_PARR, estudiante.EST_DIR, estudiante.EST_NAC, estudiante.EST_ETN, estudiante.EST_NAC_ETN, estudiante.EST_COM_ETN, estudiante.EST_COD_ELE, estudiante.EST_NEC_ASO_DIS, estudiante.EST_NEC_NO_ASO_DIS, estudiante.EST_ENF_CAT, estudiante.EST_NUM_CONA, estudiante.EST_INTE, estudiante.EST_TV, estudiante.EST_RAD, estudiante.EST_PC, estudiante.EST_CEL, estudiante.REPR_ID, estudiante.REL_EST_REP, estudiante.ESTADO);
       let sql = this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newEstudiante.toArrayInsert());
       if (result.affectedRows !== 1) {
@@ -34,7 +34,7 @@ class EstudianteDatos {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
 
-      const newEstudiante = new EstudianteEntidad(estudiante.EST_ID, estudiante.EST_DNI, estudiante.EST_NOM, estudiante.EST_NOM2, estudiante.EST_APE, estudiante.EST_APE2, estudiante.EST_FECH_NAC, estudiante.EST_GEN, estudiante.EST_PRV, estudiante.EST_CAN, estudiante.EST_PARR, estudiante.EST_DIR, estudiante.EST_NAC, estudiante.EST_ETN, estudiante.EST_NAC_ETN, estudiante.EST_COM_ETN, estudiante.EST_COD_ELE, estudiante.EST_NEC_ASO_DIS, estudiante.EST_NEC_NO_ASO_DIS, estudiante.EST_ENF_CAT, estudiante.EST_NUM_CONA, estudiante.EST_INTE, estudiante.EST_TV, estudiante.EST_RAD, estudiante.EST_PC, estudiante.EST_CEL, estudiante.REPR_ID, estudiante.REL_EST_REP, estudiante.ESTADO, estudiante.CREADOR_ID);
+      const newEstudiante = new EstudianteEntidad(estudiante.EST_ID, estudiante.EST_DNI, estudiante.EST_NOM, estudiante.EST_NOM2, estudiante.EST_APE, estudiante.EST_APE2, estudiante.EST_FECH_NAC, estudiante.EST_GEN, estudiante.EST_PRV, estudiante.EST_CAN, estudiante.EST_PARR, estudiante.EST_DIR, estudiante.EST_NAC, estudiante.EST_ETN, estudiante.EST_NAC_ETN, estudiante.EST_COM_ETN, estudiante.EST_COD_ELE, estudiante.EST_NEC_ASO_DIS, estudiante.EST_NEC_NO_ASO_DIS, estudiante.EST_ENF_CAT, estudiante.EST_NUM_CONA, estudiante.EST_INTE, estudiante.EST_TV, estudiante.EST_RAD, estudiante.EST_PC, estudiante.EST_CEL, estudiante.REPR_ID, estudiante.REL_EST_REP, estudiante.ESTADO);
       let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newEstudiante.toArrayUpdate());
       if (result.affectedRows !== 1) {

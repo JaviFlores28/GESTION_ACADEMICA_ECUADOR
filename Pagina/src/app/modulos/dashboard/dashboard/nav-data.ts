@@ -1,4 +1,4 @@
-import { faChalkboardTeacher, faGears, faHome, faLaptopFile, faSchool, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faBookOpen, faChalkboardTeacher, faChildren, faGears, faGraduationCap, faHome, faLaptopFile, faPenRuler, faPeopleGroup, faPeopleLine, faPeopleRoof, faPerson, faPersonChalkboard, faSchool, faSubscript, faUser, faUserGear, faUsers, faUsersLine, faUsersRectangle } from '@fortawesome/free-solid-svg-icons';
 import { NavBarData } from 'src/app/sistema/interfaces/NavBarData.interface';
 
 export const navbarData: NavBarData[] = [
@@ -10,71 +10,87 @@ export const navbarData: NavBarData[] = [
   },
   {
     routelink: 'sistema',
-    icon: faGears,
     label: 'Sistema',
     rol: 'A',
+    icon: faGears,
+  },
+  {
+    routelink: 'anios',
+    label: 'Años lectivos',
+    rol: 'A',
+    icon: faGraduationCap,
     items: [
       {
-        routelink: 'anios',
-        label: 'Años lectivos',
+        routelink: 'all',
+        label: 'Todos',
       },
       {
-        routelink: 'areas',
-        label: 'Areas',
+        routelink: 'inicializar',
+        label: 'Inicializar',
       },
       {
-        routelink: 'paralelos',
-        label: 'Paralelos',
-      },
-      {
-        routelink: 'cursos',
-        label: 'Cursos',
-      },
-      {
-        routelink: 'asignaturas',
-        label: 'Asignaturas',
-      },
-      {
-        routelink: 'representantes',
-        label: 'Representantes',
-      },
-      {
-        routelink: 'estudiantes',
-        label: 'Estudiantes',
-      },
-      {
-        routelink: 'matriculas',
-        label: 'Matrículas',
-      },
-      {
-        routelink: 'profesores',
-        label: 'Profesores',
-      },
-      {
-        routelink: 'usuarios',
-        label: 'Administradores',
+        routelink: 'periodos',
+        label: 'Periodos',
       },
     ],
   },
   {
-    routelink: 'institucion',
-    icon: faSchool,
-    label: 'Institución',
+    routelink: 'areas',
+    label: 'Areas',
     rol: 'A',
+    icon: faPenRuler,
+  }, 
+  {
+    routelink: 'asignaturas',
+    label: 'Asignaturas',
+    rol: 'A',
+    icon: faSubscript,
+  },
+  {
+    routelink: 'cursos',
+    label: 'Cursos',
+    rol: 'A',
+    icon: faPeopleRoof,
+  },
+  {
+    routelink: 'paralelos',
+    label: 'Paralelos',
+    rol: 'A',
+    icon: faUsersRectangle,
+  },
+  {
+    routelink: 'representantes',
+    label: 'Representantes',
+    rol: 'A',
+    icon: faUser,
+  },
+  {
+    routelink: 'estudiantes',
+    label: 'Estudiantes',
+    rol: 'A',
+    icon: faPeopleLine,
+  },
+  {
+    routelink: 'profesores',
+    label: 'Profesores',
+    rol: 'A',
+    icon: faPersonChalkboard,
+  },
+  {
+    routelink: 'usuarios',
+    label: 'Administradores',
+    rol: 'A',
+    icon: faUserGear,
+  },
+  {
+    routelink: 'matriculas',
+    label: 'Matrículas',
+    rol: 'A',
+    icon: faBookOpen,
     items: [
       {
-        routelink: 'institucion/anio-lectivo',
-        label: 'Año lectivo',
-        items: [
-          {
-            routelink: 'inicializar',
-            label: 'Inicializar',
-          },
-          {
-            routelink: 'periodos',
-            label: 'Periodos',
-          },
-        ],
+        routelink: 'asignar-cursos',
+        label: 'Asignar Cursos',
       },
       {
         routelink: 'asignar-paralelo',
@@ -84,17 +100,13 @@ export const navbarData: NavBarData[] = [
         routelink: 'asignar-profesor',
         label: 'Asignar profesores',
       },
-      {
-        routelink: 'solicitudes',
-        label: 'Solicitudes',
-      },
-    ],
+    ]
   },
   {
     routelink: 'docente',
     icon: faChalkboardTeacher,
     label: 'Profesores',
-    rol: 'T',
+    rol: 'P',
     items: [
       {
         routelink: 'cursos',
@@ -103,18 +115,14 @@ export const navbarData: NavBarData[] = [
       {
         routelink: 'horarios',
         label: 'Horarios',
-      },
-      {
-        routelink: 'planes-tudios',
-        label: 'Planes de estudio',
-      },
+      }
     ],
   },
   {
     routelink: 'Representante',
     icon: faUsers,
     label: 'Representante',
-    rol: 'T',
+    rol: 'R',
     items: [
       {
         routelink: 'horarios',
@@ -123,14 +131,6 @@ export const navbarData: NavBarData[] = [
       {
         routelink: 'calificaciones',
         label: 'Calificaciones',
-      },
-      {
-        routelink: 'planestudios',
-        label: 'Planes de estudio',
-      },
-      {
-        routelink: 'solicitudes',
-        label: 'Solicitudes',
       },
     ],
   },

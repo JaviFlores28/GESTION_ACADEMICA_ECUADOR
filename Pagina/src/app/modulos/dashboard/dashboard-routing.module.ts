@@ -62,83 +62,83 @@ const routes: Routes = [
         ],
       },
       {
-        path: 'sistema',
-        canActivate: [isAdmin],
+        path: 'sistema', component: InicioComponent, canActivate: [isAdmin]
+      },
+      {
+        path: 'anios',
         children: [
-          {
-            path: 'anios',
-            children: [
-              { path: '', component: AniosLectivosComponent },
-              { path: 'editar/:id', component: AnioLectivoComponent },
-            ],
-          },
-          {
-            path: 'areas',
-            children: [
-              { path: '', component: AreasComponent },
-              { path: 'nuevo', component: AreaComponent },
-              { path: 'editar/:id', component: AreaComponent },
-            ],
-          },
-          {
-            path: 'asignaturas',
-            children: [
-              { path: '', component: AsignaturasComponent },
-              { path: 'nuevo', component: AsignaturaComponent },
-              { path: 'editar/:id', component: AsignaturaComponent },
-            ],
-          },
-          {
-            path: 'profesores',
-            children: [
-              { path: '', component: ProfesoresComponent },
-              { path: 'nuevo', component: UsuarioComponent },
-              { path: 'editar/:id', component: UsuarioComponent },
-            ],
-          },
-          {
-            path: 'cursos',
-            children: [
-              { path: '', component: CursosComponent },
-              { path: 'nuevo', component: CursoComponent },
-              { path: 'editar/:id', component: CursoComponent },
-            ],
-          },
-          {
-            path: 'representantes',
-            children: [
-              { path: '', component: RepresentantesComponent },
-              { path: 'nuevo', component: UsuarioComponent },
-              { path: 'editar/:id', component: UsuarioComponent },
-            ],
-          },
-          {
-            path: 'estudiantes',
-            children: [
-              { path: '', component: EstudiantesComponent },
-              { path: 'nuevo', component: EstudianteComponent },
-              { path: 'editar/:id', component: EstudianteComponent },
-            ],
-          },
-          { path: 'matriculas', component: EstudianteCursoComponent },
-          {
-            path: 'paralelos',
-            children: [
-              { path: '', component: ParalelosComponent },
-              { path: 'nuevo', component: ParaleloComponent },
-              { path: 'editar/:id', component: ParaleloComponent },
-            ],
-          },
-          {
-            path: 'usuarios',
-            children: [
-              { path: '', component: UsuariosComponent },
-              { path: 'nuevo', component: UsuarioComponent },
-              { path: 'editar/:id', component: UsuarioComponent },
-            ],
-          },
+          { path: 'all', component: AniosLectivosComponent },
+          { path: 'inicializar', component: AnioLectivoComponent },
+          { path: 'periodos', component: PeriodosComponent },
+          { path: 'editar/:id', component: AnioLectivoComponent },
         ],
       },
+      {
+        path: 'areas',
+        children: [
+          { path: '', component: AreasComponent },
+          { path: 'nuevo', component: AreaComponent },
+          { path: 'editar/:id', component: AreaComponent },
+        ],
+      },
+      {
+        path: 'asignaturas',
+        children: [
+          { path: '', component: AsignaturasComponent },
+          { path: 'nuevo', component: AsignaturaComponent },
+          { path: 'editar/:id', component: AsignaturaComponent },
+        ],
+      },
+      {
+        path: 'profesores',
+        children: [
+          { path: '', component: ProfesoresComponent },
+          { path: 'nuevo', component: UsuarioComponent },
+          { path: 'editar/:id', component: UsuarioComponent },
+        ],
+      },
+      {
+        path: 'cursos',
+        children: [
+          { path: '', component: CursosComponent },
+          { path: 'nuevo', component: CursoComponent },
+          { path: 'editar/:id', component: CursoComponent },
+        ],
+      },
+      {
+        path: 'representantes',
+        children: [
+          { path: '', component: RepresentantesComponent },
+          { path: 'nuevo', component: UsuarioComponent },
+          { path: 'editar/:id', component: UsuarioComponent },
+        ],
+      },
+      {
+        path: 'estudiantes',
+        children: [
+          { path: '', component: EstudiantesComponent },
+          { path: 'nuevo', component: EstudianteComponent },
+          { path: 'editar/:id', component: EstudianteComponent },
+        ],
+      },
+      { path: 'matriculas', component: EstudianteCursoComponent },
+      {
+        path: 'paralelos',
+        children: [
+          { path: '', component: ParalelosComponent },
+          { path: 'nuevo', component: ParaleloComponent },
+          { path: 'editar/:id', component: ParaleloComponent },
+        ],
+      },
+      {
+        path: 'usuarios',
+        children: [
+          { path: '', component: UsuariosComponent },
+          { path: 'nuevo', component: UsuarioComponent },
+          { path: 'editar/:id', component: UsuarioComponent },
+        ],
+      },
+
       {
         path: 'institucion',
         canActivate: [isAdmin],

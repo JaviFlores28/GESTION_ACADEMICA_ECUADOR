@@ -18,7 +18,7 @@ class ParaleloDatos {
       const pool = await BaseDatos.getInstanceDataBase();
 
       paralelo.PRLL_ID = uuidv4();
-      const newParalelo = new ParaleloEntidad(paralelo.PRLL_ID, paralelo.PRLL_NOM, paralelo.ESTADO, paralelo.CREADOR_ID);
+      const newParalelo = new ParaleloEntidad(paralelo.PRLL_ID, paralelo.PRLL_NOM, paralelo.ESTADO);
       let sql = this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newParalelo.toArrayInsert());
       if (result.affectedRows !== 1) {
@@ -34,7 +34,7 @@ class ParaleloDatos {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
 
-      const newParalelo = new ParaleloEntidad(paralelo.PRLL_ID, paralelo.PRLL_NOM, paralelo.ESTADO, paralelo.CREADOR_ID);
+      const newParalelo = new ParaleloEntidad(paralelo.PRLL_ID, paralelo.PRLL_NOM, paralelo.ESTADO);
       let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newParalelo.toArrayUpdate());
       if (result.affectedRows !== 1) {

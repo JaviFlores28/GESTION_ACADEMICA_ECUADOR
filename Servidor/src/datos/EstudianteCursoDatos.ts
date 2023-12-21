@@ -20,7 +20,7 @@ class EstudianteCursoDatos {
       const pool = await BaseDatos.getInstanceDataBase();
 
       estudiante_curso.EST_CRS_ID = uuidv4();
-      const newEstudianteCurso = new EstudianteCursoEntidad(estudiante_curso.EST_CRS_ID, estudiante_curso.EST_ID, estudiante_curso.CRS_ID, estudiante_curso.ESTADO, estudiante_curso.CREADOR_ID);
+      const newEstudianteCurso = new EstudianteCursoEntidad(estudiante_curso.EST_CRS_ID, estudiante_curso.EST_ID, estudiante_curso.CRS_ID, estudiante_curso.ESTADO);
       let sql = this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newEstudianteCurso.toArrayInsert());
       if (result.affectedRows !== 1) {
@@ -36,7 +36,7 @@ class EstudianteCursoDatos {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
 
-      const newEstudianteCurso = new EstudianteCursoEntidad(estudiante_curso.EST_CRS_ID, estudiante_curso.EST_ID, estudiante_curso.CRS_ID, estudiante_curso.ESTADO, estudiante_curso.CREADOR_ID);
+      const newEstudianteCurso = new EstudianteCursoEntidad(estudiante_curso.EST_CRS_ID, estudiante_curso.EST_ID, estudiante_curso.CRS_ID, estudiante_curso.ESTADO);
       let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newEstudianteCurso.toArrayUpdate());
       if (result.affectedRows !== 1) {

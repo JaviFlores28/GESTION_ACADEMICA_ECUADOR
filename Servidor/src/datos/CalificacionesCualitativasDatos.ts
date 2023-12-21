@@ -19,7 +19,7 @@ class CalificacionesCualitativasDatos {
       const pool = await BaseDatos.getInstanceDataBase();
 
       calificaciones_cualitativas.CAL_ID = uuidv4();
-      const newCalificacionesCualitativas = new CalificacionesCualitativasEntidad(calificaciones_cualitativas.CAL_ID, calificaciones_cualitativas.PRF_ASG_PRLL_ID, calificaciones_cualitativas.EST_CRS_PRLL_ID, calificaciones_cualitativas.PRD_ID, calificaciones_cualitativas.CALIFICACION, calificaciones_cualitativas.ESTADO, calificaciones_cualitativas.CREADOR_ID);
+      const newCalificacionesCualitativas = new CalificacionesCualitativasEntidad(calificaciones_cualitativas.CAL_ID, calificaciones_cualitativas.PRF_ASG_PRLL_ID, calificaciones_cualitativas.EST_CRS_PRLL_ID, calificaciones_cualitativas.PRD_ID, calificaciones_cualitativas.CALIFICACION, calificaciones_cualitativas.ESTADO);
       let sql = this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newCalificacionesCualitativas.toArrayInsert());
       if (result.affectedRows !== 1) {
@@ -35,7 +35,7 @@ class CalificacionesCualitativasDatos {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
 
-      const newCalificacionesCualitativas = new CalificacionesCualitativasEntidad(calificaciones_cualitativas.CAL_ID, calificaciones_cualitativas.PRF_ASG_PRLL_ID, calificaciones_cualitativas.EST_CRS_PRLL_ID, calificaciones_cualitativas.PRD_ID, calificaciones_cualitativas.CALIFICACION, calificaciones_cualitativas.ESTADO, calificaciones_cualitativas.CREADOR_ID);
+      const newCalificacionesCualitativas = new CalificacionesCualitativasEntidad(calificaciones_cualitativas.CAL_ID, calificaciones_cualitativas.PRF_ASG_PRLL_ID, calificaciones_cualitativas.EST_CRS_PRLL_ID, calificaciones_cualitativas.PRD_ID, calificaciones_cualitativas.CALIFICACION, calificaciones_cualitativas.ESTADO);
       let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newCalificacionesCualitativas.toArrayUpdate());
       if (result.affectedRows !== 1) {
