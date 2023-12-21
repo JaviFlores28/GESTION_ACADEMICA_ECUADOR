@@ -44,7 +44,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
   modoEdicion: boolean = false;
   elementoId: string = '';
 modaltitle: string = 'Agregar';
-  modalMsg: string = '¿Desea guardar?';  USR_ID: string = this.usuarioService.getUserLoggedId();
+  modalMsg: string = '¿Desea guardar el registro?';  USR_ID: string = this.usuarioService.getUserLoggedId();
   AL_ID: string = '0';
   ESTADO: number = 1;
   existeAnio: boolean = false;

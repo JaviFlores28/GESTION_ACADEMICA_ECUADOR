@@ -24,7 +24,7 @@ export class AreaComponent implements OnInit {
   modoEdicion: boolean = false;
   elementoId: string = '';
   modaltitle: string = 'Agregar';
-  modalMsg: string = '¿Desea guardar?';
+  modalMsg: string = '¿Desea guardar el registro?';
   USR_ID = this.usuarioService.getUserLoggedId();
 
   form = this.formBuilder.group({
@@ -43,7 +43,7 @@ export class AreaComponent implements OnInit {
         this.modoEdicion = true;
         this.elementoId = id;
         this.modaltitle = 'Editar';
-        this.modalMsg = '¿Desea editar?'; 
+        this.modalMsg = '¿Desea editar el registro?'; 
         this.loadDataEdit();
       } else {
         this.modoEdicion = false;

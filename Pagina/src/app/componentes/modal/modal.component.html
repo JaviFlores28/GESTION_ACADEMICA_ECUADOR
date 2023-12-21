@@ -4,10 +4,10 @@
   <fa-icon [icon]="setIcon()" [animation]="'shake'" size="6x" class="text-{{ color }} text-opacity-50"></fa-icon>
 </div>
 <div class="modal-body border-0 text-center">
-  <h4 class="modal-title mb-2 fs-1">{{ title }}</h4>
-  <p class="fs-4">{{contenido}}</p>
+  <h4 class="modal-title mb-2 fs-1 text-dark-emphasis">{{ title }}</h4>
+  <p class="fs-4 fw-light text-dark-emphasis">{{contenido}}</p>
 </div>
 <div class="modal-footer border-0 justify-content-center p-0 mb-3">
-  <button *ngIf="form" type="button" class="btn btn-primary" (click)="saveModal('save')">Aceptar</button>
-  <button type="button" class="btn btn-secondary" (click)="activeModal.close('Close')">Cerrar</button>
+  <button *ngIf="form" type="button" class="btn btn-primary fw-lighter" (click)="saveModal('save')">Aceptar</button>
+  <button type="button" class="btn btn-secondary fw-lighter" (click)="activeModal.close('Close')">Cerrar</button>
 </div>

@@ -28,7 +28,7 @@ export class UsuarioComponent {
   rutaActual: string[] = [];
   titulo: string = '';
 modaltitle: string = 'Agregar';
-  modalMsg: string = '¿Desea guardar?';  elementoId: string = '';
+  modalMsg: string = '¿Desea guardar el registro?';  elementoId: string = '';
   icon = faInfoCircle;
   fauser = faUser;
   fakey = faKey;
@@ -88,7 +88,7 @@ modaltitle: string = 'Agregar';
         this.modoEdicion = true;
         this.elementoId = id;
 this.modaltitle = 'Editar';
-        this.modalMsg = '¿Desea editar?';        this.loadDataEdit();
+        this.modalMsg = '¿Desea editar el registro?';        this.loadDataEdit();
       } else {
         this.modoEdicion = false;
         this.elementoId = '';

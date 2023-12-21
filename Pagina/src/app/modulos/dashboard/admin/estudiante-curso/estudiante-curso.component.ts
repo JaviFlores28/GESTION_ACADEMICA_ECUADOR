@@ -107,7 +107,7 @@ modaltitle: string = 'Agregar';
     if (value.action === 'desactivar') {
       this.action = value.action;
       this.modalMsg = '¿Desea desactivar los items seleccionados?';
-      this.openModal('Desactivar', this.modalMsg, 'warning', false);
+      this.openModal('Desactivar', this.modalMsg, 'warning', true);
     } else {
       console.log(value);
     }

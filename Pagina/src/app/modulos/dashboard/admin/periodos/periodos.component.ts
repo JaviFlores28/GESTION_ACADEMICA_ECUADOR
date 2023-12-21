@@ -104,7 +104,7 @@ export class PeriodosComponent implements OnInit {
       event.target.innerText = 'Guardar';
       objeto['inputsDisabled'] = false;
     } else {
-      this.openModal('Guardar', '¿Desea guardar los cambios?', 'warning', true, objeto, event, tipo);
+      this.openModal('Guardar', '¿Desea guardar el registro los cambios?', 'warning', true, objeto, event, tipo);
     }
   }
 

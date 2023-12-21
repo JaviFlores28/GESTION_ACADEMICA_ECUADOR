@@ -164,9 +164,11 @@ class ProfesorAsignaturaParaleloDatos {
       if (result.affectedRows < 1) {
         throw new Error('No se pudieron insertar los datos');
       }
-
       return { response: true, data: true, message: 'Datos insertados correctamente' };
     } catch (error: any) {
+      if (error.code === 'ER_DUP_ENTRY') {
+        error.message = 'Entrada duplicada. Ya existe un registro con ese valor.';
+      }
       return { response: false, data: false, message: error.message };
     }
   }

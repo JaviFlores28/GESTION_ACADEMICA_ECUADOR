@@ -28,7 +28,7 @@ export class CursoComponent {
   modoEdicion: boolean = false;
   elementoId: string = '';
 modaltitle: string = 'Agregar';
-  modalMsg: string = '¿Desea guardar?';  USR_ID = this.usuarioService.getUserLoggedId();
+  modalMsg: string = '¿Desea guardar el registro?';  USR_ID = this.usuarioService.getUserLoggedId();
 
   icon = faInfoCircle;
 
@@ -50,7 +50,7 @@ modaltitle: string = 'Agregar';
         this.modoEdicion = true;
         this.elementoId = id;
 this.modaltitle = 'Editar';
-        this.modalMsg = '¿Desea editar?';        this.loadDataEdit();
+        this.modalMsg = '¿Desea editar el registro?';        this.loadDataEdit();
       } else {
         this.modoEdicion = false;
         this.elementoId = '';

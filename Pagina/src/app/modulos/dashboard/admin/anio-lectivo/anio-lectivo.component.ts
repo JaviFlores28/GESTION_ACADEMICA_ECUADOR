@@ -22,7 +22,7 @@ export class AnioLectivoComponent implements OnInit {
   modoEdicion: boolean = false;
   elementoId: string = '';
 modaltitle: string = 'Agregar';
-  modalMsg: string = '¿Desea guardar?';  USR_ID = this.usuarioService.getUserLoggedId();
+  modalMsg: string = '¿Desea guardar el registro?';  USR_ID = this.usuarioService.getUserLoggedId();
 
   form = this.formBuilder.group({
     AL_NOM: ['', Validators.required],
@@ -123,7 +123,7 @@ modaltitle: string = 'Agregar';
           this.modoEdicion = true;
           this.elementoId = value.data[0].AL_ID;
   this.modaltitle = 'Editar';
-        this.modalMsg = '¿Desea editar?';          this.llenarForm(value.data[0]);
+        this.modalMsg = '¿Desea editar el registro?';          this.llenarForm(value.data[0]);
         } else {
           console.log(value.message);
         }

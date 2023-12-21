@@ -245,7 +245,7 @@ async function generateComponentFile(connection: any, tableName: any, primaryKey
     modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
   
     // Usa el operador Elvis para asegurarte de que activeModal y contenido estén definidos
-    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = (!this.modoEdicion) ? '¿Desea guardar?' : '¿Desea editar?');
+    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = (!this.modoEdicion) ? '¿Desea guardar el registro?' : '¿Desea editar el registro?');
     modalRef.componentInstance.icon = faInfoCircle;
     modalRef.componentInstance.color = 'warning';
     modalRef.result.then((result) => {
