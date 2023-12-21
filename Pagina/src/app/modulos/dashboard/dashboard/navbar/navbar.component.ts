@@ -14,14 +14,14 @@ export class NavbarComponent implements OnInit {
     private servicio: UsuarioService,
     private router: Router,
     private modalService: ModalService,
-  ) {}
+  ) { }
 
   @Input() collapsed = true;
   @Input() screenWidth = 0;
   nombre: string = '';
   USR_ID: string = '';
   icon = faUser;
-  msg: string = '¿Desea cerrar sesión?';
+  modalMsg: string = '¿Desea cerrar sesión?';
 
   ngOnInit(): void {
     this.getuserInfo();
@@ -45,12 +45,12 @@ export class NavbarComponent implements OnInit {
 
   openModal() {
     this.modalService
-      .openConfirmationModal(this.msg)
+      .openModal('Cerrar sesión', this.modalMsg, 'warning', true)
       .then((result) => {
         if (result === 'save') {
           this.servicio.removeLocal();
           // Redirigir al usuario al login
-         // this.router.navigate(['login']);
+          // this.router.navigate(['login']);
           // O recargar la página
           window.location.reload();
         }

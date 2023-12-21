@@ -22,13 +22,13 @@ export class UsuarioComponent {
     private service: UsuarioService,
     private detalleService: UsuarioProfesorService,
     private modalService: ModalService,
-  ) {}
+  ) { }
 
   modoEdicion: boolean = false;
   rutaActual: string[] = [];
   titulo: string = '';
-  msg: string = '¿Desea guardar?';
-  elementoId: string = '';
+modaltitle: string = 'Agregar';
+  modalMsg: string = '¿Desea guardar?';  elementoId: string = '';
   icon = faInfoCircle;
   fauser = faUser;
   fakey = faKey;
@@ -68,9 +68,9 @@ export class UsuarioComponent {
 
   determinarRolDesdeRuta() {
     this.rutaActual = this.router.url.split('/');
-    
+
     this.titulo = this.rutaActual[2].charAt(0).toUpperCase() + this.rutaActual[2].slice(1);
-console.log(this.rutaActual);
+    console.log(this.rutaActual);
 
     if (this.rutaActual[3] === 'nuevo') {
       const rol = this.rutaActual[2];
@@ -87,8 +87,8 @@ console.log(this.rutaActual);
       if (id) {
         this.modoEdicion = true;
         this.elementoId = id;
-        this.msg = '¿Desea editar?';
-        this.loadDataEdit();
+this.modaltitle = 'Editar';
+        this.modalMsg = '¿Desea editar?';        this.loadDataEdit();
       } else {
         this.modoEdicion = false;
         this.elementoId = '';
@@ -97,7 +97,7 @@ console.log(this.rutaActual);
   }
 
   onSubmit() {
-    this.openConfirmationModal(this.msg);
+    this.openModal(this.modaltitle, this.modalMsg, 'warning', true);
   }
 
   onSubmitPswd() {
@@ -116,7 +116,7 @@ console.log(this.rutaActual);
 
   crear() {
     if (this.form.valid) {
-      const usuario: Usuario = this.buildObject();      
+      const usuario: Usuario = this.buildObject();
       const detalle = this.isProf ? this.buildUsuarioProfesorObject() : undefined;
       this.service.post(usuario, detalle).subscribe({
         next: (response) => {
@@ -255,15 +255,10 @@ console.log(this.rutaActual);
     this.form.get('PRF_FECH_INGR_MAG')?.setValue(getFormattedDate(data.PRF_FECH_INGR_MAG));
   }
 
-  openAlertModal(content: string, alertType: string) {
-    this.modalService.openAlertModal(content, alertType);
-  }
-
-  openConfirmationModal(message: string) {
-    this.modalService
-      .openConfirmationModal(message)
+  openModal(tittle: string, message: string, alertType: string, form: boolean) {
+    this.modalService.openModal(tittle, message, alertType, form)
       .then((result) => {
-        if (result === 'save') {
+        if (result === 'save' && form) {
           if (this.modoEdicion) {
             this.editar();
           } else {
@@ -276,24 +271,29 @@ console.log(this.rutaActual);
       });
   }
 
-  handleResponse(response: any) {
-    if (!response.data) {
-      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
-      console.log(response.message);
+  handleResponse(value: any) {
+    if (!value.response) {
+      //'Ha ocurrido un error intente nuevamente.'
+      this.openModal('Oops...', value.message, 'danger', false);
+      console.log(value.message);
     } else {
       if (this.modoEdicion) {
-        this.openAlertModal(response.message, 'success');
-        console.log(response.message);
+        this.openModal('¡Completado!', value.message, 'success', false);
       } else {
-        this.openAlertModal(response.message, 'success');
-        this.form.reset();
-        this.router.navigate(['../editar/' + response.data], { relativeTo: this.route });
+        this.openModal('¡Completado!', value.message, 'success', false);
+        this.clear();
       }
     }
   }
 
   handleErrorResponse(error: any) {
-    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    this.openModal('Oops...', error, 'danger', false);
     console.log(error);
   }
+
+  clear() {
+    this.form.reset();
+    location.reload();
+  }
+
 }

@@ -275,7 +275,7 @@ export class CalificacionesComponent implements OnInit {
     if (periodos) {
       const reprobadoSuspenso = this.tieneSuspenso(periodos, parcial);
       if (!reprobadoSuspenso.response) {
-        this.handleInvalidInput(event, reprobadoSuspenso.msg);
+        this.handleInvalidInput(event, reprobadoSuspenso.modalMsg);
         event.target.style.border = '';
         event.target.disabled = true;
         return;
@@ -310,12 +310,12 @@ export class CalificacionesComponent implements OnInit {
     const tipoPromedio = respuesta.tipo;
 
     if (promedio <= this.anio.CLFN_MIN_PERD) {
-      return { response: false, msg: 'El estudiante se encuentra reprobado' };
+      return { response: false, modalMsg: 'El estudiante se encuentra reprobado' };
     }
     if ((tipoPromedio === 'normal' && promedio >= this.anio.CLFN_MIN_APR) || parcial.CALIFICACION === 0) {
-      return { response: false, msg: 'El estudiante no se encuentra en suspenso' };
+      return { response: false, modalMsg: 'El estudiante no se encuentra en suspenso' };
     }
-    return { response: true, msg: 'El estudiante se encuentra en suspenso' };
+    return { response: true, modalMsg: 'El estudiante se encuentra en suspenso' };
   }
 
 
@@ -356,9 +356,7 @@ export class CalificacionesComponent implements OnInit {
     this.mostrarToast = valor;
   }
 
-  openAlertModal(content: string, alertType: string) {
-    this.modalService.openAlertModal(content, alertType);
-  }
+
 
   handleResponse(response: any) {
     if (!response.data) {
@@ -372,16 +370,17 @@ export class CalificacionesComponent implements OnInit {
   }
 
   handleErrorResponse(error: any) {
-    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    this.modalService.openModal('Error', 'Ha ocurrido un error intente nuevamente.', 'danger', false)
+
     this.loadTablaEstudiantes();
     console.log(error);
   }
 
-  handleInvalidInput(event: any, msg: string = 'La calificación debe ser entre 0 y 10') {
+  handleInvalidInput(event: any, modalMsg: string = 'La calificación debe ser entre 0 y 10') {
     event.target.value = '';
     event.target.style.border = '1px solid red';
     this.backgroundToast = 'bg-danger';
-    this.mensajeToast = msg;
+    this.mensajeToast = modalMsg;
     this.showToast(true);
     this.loadTablaEstudiantes();
   }

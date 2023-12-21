@@ -42,8 +42,8 @@ export class EstudianteParaleloComponent implements OnInit {
   headersEstudianteCursoParalelo = ['CÉDULA', 'NOMBRES', 'CURSO', 'TIPO', 'PARALELO'];
   camposEstudianteCursoParalelo = ['EST_CRS_PRLL_ID', 'EST_DNI', 'EST_CRS_NOM', 'CRS_NOM', 'CRS_TIPO', 'PRLL_NOM'];
 
-  msg: string = '¿Desea guardar?';
-  USR_ID: string = this.usuarioService.getUserLoggedId();
+modaltitle: string = 'Agregar';
+  modalMsg: string = '¿Desea guardar?';  USR_ID: string = this.usuarioService.getUserLoggedId();
   AL_ID: string = '0';
   PASE: number = 4;
   ESTADO: number = 1;
@@ -71,7 +71,7 @@ export class EstudianteParaleloComponent implements OnInit {
 
   onSubmit() {
     this.action = 'create';
-    this.openModal('Guardar', this.msg, 'success', false);
+    this.openModal('Guardar', this.modalMsg, 'success', false);
   }
 
   loadCursos() {
@@ -160,8 +160,8 @@ export class EstudianteParaleloComponent implements OnInit {
     this.idsEstudianteCurso = value.data;
     if (value.action === 'desactivar') {
       this.action = value.action;
-      this.msg = '¿Desea desactivar los items seleccionados?';
-      this.openModal('Desactivar', this.msg, 'warning', false);
+      this.modalMsg = '¿Desea desactivar los items seleccionados?';
+      this.openModal('Desactivar', this.modalMsg, 'warning', false);
     }
   }
 
@@ -191,8 +191,8 @@ export class EstudianteParaleloComponent implements OnInit {
 
   desactivar() {
     if (this.idsEstudianteCurso.length === 0) {
-      this.msg = 'Debe seleccionar al menos un item.'
-      this.openModal('Error', this.msg, 'danger', false);
+      this.modalMsg = 'Debe seleccionar al menos un item.'
+      this.openModal('Error', this.modalMsg, 'danger', false);
       return;
     }
     this.service.updateEstado(this.idsEstudianteCurso).subscribe({
@@ -203,10 +203,10 @@ export class EstudianteParaleloComponent implements OnInit {
     });
   }
 
-  openModal(tittle: string, message: string, alertType: string, modal: boolean) {
-    this.modalService.openModal(tittle, message, alertType, modal)
+  openModal(tittle: string, message: string, alertType: string, form: boolean) {
+    this.modalService.openModal(tittle, message, alertType, form)
       .then((result) => {
-        if (result === 'save' && modal) {
+        if (result === 'save' && form) {
           if (this.action === 'create') {
             this.crear();
           } else {
@@ -225,7 +225,7 @@ export class EstudianteParaleloComponent implements OnInit {
       console.log(value.message);
     } else {
       this.clear();
-      this.openModal('Agregar', value.message, 'success', false);
+      this.openModal('¡Completado!', value.message, 'success', false);
     }
   }
 

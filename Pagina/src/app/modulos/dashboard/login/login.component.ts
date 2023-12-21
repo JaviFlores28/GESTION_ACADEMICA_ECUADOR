@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
     private renderer: Renderer2,
     private el: ElementRef,
     private modalService: ModalService,
-  ) {}
+  ) { }
 
   icon = faUserTie;
 
@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
       this.service.getByUser(usuario).subscribe({
         next: (value) => {
           if (!value.response) {
-            this.openAlertModal('Contraseña o usuario incorrecto.', 'danger');
+            this.openAlertModal('Error', 'Contraseña o usuario incorrecto.', 'danger', false);
           } else {
             this.service.setLocal(value.data);
             this.resetStyle();
@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit {
           }
         },
         error: (error) => {
-          this.openAlertModal(error, 'danger');
+          this.openAlertModal('Error', error, 'danger', false);
           console.error(error);
         },
       });
@@ -92,7 +92,7 @@ export class LoginComponent implements OnInit {
     this.renderer.removeStyle(appRootElement, 'justify-content');
   }
 
-  openAlertModal(content: string, alertType: string) {
-    this.modalService.openAlertModal(content, alertType);
+  openAlertModal(tittle: string, message: string, alertType: string, form: boolean) {
+    this.modalService.openModal(tittle, message, alertType, form);
   }
 }

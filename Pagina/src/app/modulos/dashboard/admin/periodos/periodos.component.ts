@@ -104,7 +104,7 @@ export class PeriodosComponent implements OnInit {
       event.target.innerText = 'Guardar';
       objeto['inputsDisabled'] = false;
     } else {
-      this.openConfirmationModal('¿Está seguro de que desea guardar los cambios?', objeto, event, tipo);
+      this.openModal('Guardar', '¿Desea guardar los cambios?', 'warning', true, objeto, event, tipo);
     }
   }
 
@@ -160,22 +160,18 @@ export class PeriodosComponent implements OnInit {
     });
   }
 
-  openAlertModal(content: string, alertType: string) {
-    this.modalService.openAlertModal(content, alertType);
-  }
-
-  openConfirmationModal(message: string, objeto: any, event: any, tipo: string) {
-    this.modalService
-      .openConfirmationModal(message)
-      .then((result) => {
-        if (result === 'save') {
-          if (tipo === 'periodo') {
-            this.editarPeriodo(objeto, event)
-          } else if (tipo === 'parcial') {
-            this.editarParcial(objeto, event);
-          }
+  openModal(tittle: string, message: string, alertType: string, form: boolean, objeto?: any, event?: any, tipo?: string) {
+    this.modalService.openModal(tittle, message, alertType, form).then((result) => {
+      if (result === 'save' && form) {
+        if (tipo === 'periodo') {
+          this.editarPeriodo(objeto, event)
+        } else if (tipo === 'parcial') {
+          this.editarParcial(objeto, event);
         }
-      })
+      }else{
+        location.reload();
+      }
+    })
       .catch((error) => {
         console.log(error);
       });
@@ -185,7 +181,7 @@ export class PeriodosComponent implements OnInit {
     if (!value.response) {
       this.handleErrorResponse(objeto, value, event);
     } else {
-      this.openAlertModal(value.message, 'success');
+      this.openModal('¡Completado!', value.message, 'success', false);
       event.target.innerText = 'Editar';
       objeto['inputsDisabled'] = true;
       this.loadPeriodos()
@@ -193,7 +189,7 @@ export class PeriodosComponent implements OnInit {
   }
 
   handleErrorResponse(objeto: any, error: any, event: any) {
-    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    this.openModal('Agregar', error.message, 'success', false);
     event.target.innerText = 'Editar';
     objeto['inputsDisabled'] = true;
     this.loadPeriodos();

@@ -43,8 +43,8 @@ export class ProfesorAsignaturaComponent implements OnInit {
 
   modoEdicion: boolean = false;
   elementoId: string = '';
-  msg: string = '¿Desea guardar?';
-  USR_ID: string = this.usuarioService.getUserLoggedId();
+modaltitle: string = 'Agregar';
+  modalMsg: string = '¿Desea guardar?';  USR_ID: string = this.usuarioService.getUserLoggedId();
   AL_ID: string = '0';
   ESTADO: number = 1;
   existeAnio: boolean = false;
@@ -66,7 +66,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
   }
 
   onSubmit() {
-    this.openModal('Guardar', this.msg, 'success', true);
+    this.openModal(this.modaltitle, this.modalMsg, 'warning', true);
   }
 
   loadAnioLectivo() {
@@ -241,10 +241,10 @@ export class ProfesorAsignaturaComponent implements OnInit {
     return profesorAsignaturaParalelo;
   }
 
-  openModal(tittle: string, message: string, alertType: string, modal: boolean) {
-    this.modalService.openModal(tittle, message, alertType, modal)
+  openModal(tittle: string, message: string, alertType: string, form: boolean) {
+    this.modalService.openModal(tittle, message, alertType, form)
       .then((result) => {
-        if (result === 'save' && modal) {
+        if (result === 'save' && form) {
           if (this.modoEdicion) {
             this.editar();
           } else {
@@ -263,10 +263,10 @@ export class ProfesorAsignaturaComponent implements OnInit {
       console.log(value.message);
     } else {
       if (this.modoEdicion) {
-        this.openModal('Editar', value.message, 'success', false);
+        this.openModal('¡Completado!', value.message, 'success', false);
         this.clear();
       } else {
-        this.openModal('Agregar', value.message, 'success', false);
+        this.openModal('¡Completado!', value.message, 'success', false);
         this.clear();
       }
     }
@@ -297,8 +297,8 @@ export class ProfesorAsignaturaComponent implements OnInit {
     } else if (data.option === 'eliminar') {
       this.modoEdicion = false;
       this.elementoId = data.elementoId;
-      this.msg = '¿Desea eliminar?';
-      this.openModal('Eliminar', this.msg, 'warning', true);
+      this.modalMsg = '¿Desea eliminar?';
+      this.openModal('Eliminar', this.modalMsg, 'warning', true);
     }
   }
 

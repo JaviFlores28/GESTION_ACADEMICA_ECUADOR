@@ -19,11 +19,12 @@ export class AreaComponent implements OnInit {
     private service: AreaService,
     private usuarioService: UsuarioService,
     private modalService: ModalService,
-  ) {}
+  ) { }
 
   modoEdicion: boolean = false;
   elementoId: string = '';
-  msg: string = '¿Desea guardar?';
+  modaltitle: string = 'Agregar';
+  modalMsg: string = '¿Desea guardar?';
   USR_ID = this.usuarioService.getUserLoggedId();
 
   form = this.formBuilder.group({
@@ -41,7 +42,8 @@ export class AreaComponent implements OnInit {
       if (id) {
         this.modoEdicion = true;
         this.elementoId = id;
-        this.msg = '¿Desea editar?';
+        this.modaltitle = 'Editar';
+        this.modalMsg = '¿Desea editar?'; 
         this.loadDataEdit();
       } else {
         this.modoEdicion = false;
@@ -51,8 +53,9 @@ export class AreaComponent implements OnInit {
   }
 
   onSubmit() {
-    this.openModal('Guardar', this.msg, 'success', true);
+    this.openModal(this.modaltitle, this.modalMsg, 'warning', true);
   }
+
   crear() {
     if (this.form.valid) {
       const area: Area = this.buildObject();
@@ -119,11 +122,11 @@ export class AreaComponent implements OnInit {
     this.form.get('nom')?.setValue(data.AREA_NOM);
   }
 
- 
-  openModal(tittle: string, message: string, alertType: string, modal: boolean) {
-    this.modalService.openModal(tittle, message, alertType, modal)
+
+  openModal(tittle: string, message: string, alertType: string, form: boolean) {
+    this.modalService.openModal(tittle, message, alertType, form)
       .then((result) => {
-        if (result === 'save' && modal) {
+        if (result === 'save' && form) {
           if (this.modoEdicion) {
             this.editar();
           } else {
@@ -143,9 +146,9 @@ export class AreaComponent implements OnInit {
       console.log(value.message);
     } else {
       if (this.modoEdicion) {
-        this.openModal('Editar', value.message, 'success', false);
+        this.openModal('¡Completado!', value.message, 'success', false);
       } else {
-        this.openModal('Agregar', value.message, 'success', false);
+        this.openModal('¡Completado!', value.message, 'success', false);
         this.clear();
       }
     }
@@ -154,11 +157,11 @@ export class AreaComponent implements OnInit {
   handleErrorResponse(error: any) {
     this.openModal('Oops...', error, 'danger', false);
     console.log(error);
-  } 
+  }
 
   clear() {
     this.form.reset();
-    this.router.navigate(['../'], { relativeTo: this.route });  
+    this.router.navigate(['../'], { relativeTo: this.route });
   }
 
 
