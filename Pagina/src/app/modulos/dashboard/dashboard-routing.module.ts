@@ -37,33 +37,7 @@ const routes: Routes = [
     children: [
       { path: '', component: InicioComponent },
       { path: 'home', component: CursoComponent },
-      {
-        path: 'docente',
-        children: [
-          {
-            path: 'cursos',
-            children: [
-              { path: '', component: ProfesorCursosAsignaturasComponent },
-              { path: 'calificaciones/:id', component: CalificacionesComponent },
-
-            ]
-          },
-          { path: 'horarios', component: ProfesorHorariosComponent },
-
-        ],
-      },
-      {
-        path: 'representante',
-        children: [
-          {
-            path: '',
-            component: CursosComponent,
-          },
-        ],
-      },
-      {
-        path: 'sistema', component: InicioComponent, canActivate: [isAdmin]
-      },
+      {path: 'sistema', component: InicioComponent, canActivate: [isAdmin]},
       {
         path: 'anios',
         children: [
@@ -157,6 +131,34 @@ const routes: Routes = [
         canActivate: [isAdmin]
       },
       { path: 'myinfo/:id', component: UsuarioComponent },
+      {
+        path: 'docente',
+        children: [
+          {
+            path: 'cursos',
+            children: [
+              { path: '', component: ProfesorCursosAsignaturasComponent },
+              { path: 'calificaciones/:id', component: CalificacionesComponent },
+
+            ]
+          },
+          { path: 'horarios', component: ProfesorHorariosComponent },
+
+        ],
+      },
+      {
+        path: 'representante',
+        children: [
+          {
+            path: 'horarios',
+            component: CursosComponent,
+          },
+          {
+            path: 'calificaciones',
+            component: CursosComponent,
+          },
+        ],
+      },
     ],
   },
   { path: '**', redirectTo: '' },

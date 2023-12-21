@@ -135,7 +135,7 @@ export const navbarData: NavBarData[] = [
     ],
   },
   {
-    routelink: 'Representante',
+    routelink: 'representante',
     icon: faUsers,
     label: 'Representante',
     rol: 'R',
