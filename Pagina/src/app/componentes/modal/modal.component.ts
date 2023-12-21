@@ -1,9 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons';
+import { faInfo, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-modal',
@@ -16,15 +16,33 @@ export class ModalComponent {
   @Input()
   contenido: string = '';
   @Input()
-  color: string = 'info';
+  title: string = '';
   @Input()
-  icon: IconProp = faCircleExclamation;
+  type = 'info';
   @Input()
-  modal: boolean = true;
+  form: boolean = true;
 
-  constructor(public activeModal: NgbActiveModal) {}
+  color: string = '';
+
+  constructor(public activeModal: NgbActiveModal) { }
 
   saveModal(action: string) {
     this.activeModal.close(action);
+  }
+
+  setIcon() {
+    if (this.type === 'success') {
+      this.color = 'success';
+      return faCircleQuestion;
+    } 
+    if (this.type === 'info') {
+      this.color = 'primary';
+      return faCircleQuestion;
+    } 
+    if (this.type === 'warning') {
+      this.color = 'warning'
+      return faInfoCircle;
+    }
+    return faCircleQuestion;
   }
 }

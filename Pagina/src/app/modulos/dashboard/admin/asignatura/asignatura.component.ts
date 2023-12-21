@@ -25,7 +25,7 @@ export class AsignaturaComponent {
     private areaService: AreaService,
     private modalService: ModalService,
     private usuarioService: UsuarioService,
-  ) {}
+  ) { }
 
   modoEdicion: boolean = false;
   elementoId: string = '';
@@ -64,7 +64,7 @@ export class AsignaturaComponent {
   }
 
   onSubmit() {
-    this.openConfirmationModal(this.msg);
+    this.openModal('Guardar', this.msg, 'success', true);
   }
 
   crear() {
@@ -154,15 +154,10 @@ export class AsignaturaComponent {
     this.form.get('estado')?.setValue(data.ESTADO === 1);
   }
 
-  openAlertModal(content: string, alertType: string) {
-    this.modalService.openAlertModal(content, alertType);
-  }
-
-  openConfirmationModal(message: string) {
-    this.modalService
-      .openConfirmationModal(message)
+  openModal(tittle: string, message: string, alertType: string, modal: boolean) {
+    this.modalService.openModal(tittle, message, alertType, modal)
       .then((result) => {
-        if (result === 'save') {
+        if (result === 'save' && modal) {
           if (this.modoEdicion) {
             this.editar();
           } else {
@@ -177,22 +172,27 @@ export class AsignaturaComponent {
 
   handleResponse(value: any) {
     if (!value.response) {
-      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+      //'Ha ocurrido un error intente nuevamente.'
+      this.openModal('Oops...', value.message, 'danger', false);
       console.log(value.message);
     } else {
       if (this.modoEdicion) {
-        this.openAlertModal(value.message, 'success');
-        console.log(value.message);
+        this.openModal('Editar', value.message, 'success', false);
       } else {
-        this.openAlertModal(value.message, 'success');
-        this.form.reset();
-        this.router.navigate(['../'], { relativeTo: this.route });
+        this.openModal('Agregar', value.message, 'success', false);
+        this.clear();
       }
     }
   }
 
   handleErrorResponse(error: any) {
-    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    this.openModal('Oops...', error, 'danger', false);
     console.log(error);
   }
+
+  clear() {
+    this.form.reset();
+    this.router.navigate(['../'], { relativeTo: this.route });
+  }
+
 }

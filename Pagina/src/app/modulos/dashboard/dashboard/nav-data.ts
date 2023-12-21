@@ -113,6 +113,10 @@ export const navbarData: NavBarData[] = [
         label: 'Todos',
       },
       {
+        routelink: 'all-asignaciones',
+        label: 'Asignaciones',
+      },
+      {
         routelink: 'asignar-paralelo',
         label: 'Asignar paralelos',
       }

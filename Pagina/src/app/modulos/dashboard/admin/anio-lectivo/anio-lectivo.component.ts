@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 import { getFormattedDate } from 'src/app/sistema/variables/variables';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
@@ -14,7 +13,6 @@ import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
 })
 export class AnioLectivoComponent implements OnInit {
   constructor(
-    private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private usuarioService: UsuarioService,
     private service: AnioLectivoService,
@@ -46,14 +44,13 @@ export class AnioLectivoComponent implements OnInit {
     this.validarAnioLectivo();
   }
 
-
   onSubmit() {
-    this.openConfirmationModal(this.msg);
+    this.openModal('Guardar', this.msg, 'success', true);
   }
 
   crear() {
     if (this.form.valid) {
-      const aniolectivo: AnioLectivo = this.buildObject();      
+      const aniolectivo: AnioLectivo = this.buildObject();
       this.service.post(aniolectivo).subscribe({
         next: (value) => {
           this.handleResponse(value);
@@ -153,16 +150,10 @@ export class AnioLectivoComponent implements OnInit {
     this.form.get('ESTADO')?.setValue(data.ESTADO === 1);
   }
 
-  openAlertModal(content: string, alertType: string) {
-    this.modalService.openAlertModal(content, alertType);
-
-  }
-
-  openConfirmationModal(message: string) {
-    this.modalService
-      .openConfirmationModal(message)
+  openModal(tittle: string, message: string, alertType: string, modal: boolean) {
+    this.modalService.openModal(tittle, message, alertType, modal)
       .then((result) => {
-        if (result === 'save') {
+        if (result === 'save' && modal) {
           if (this.modoEdicion) {
             this.editar();
           } else {
@@ -177,24 +168,24 @@ export class AnioLectivoComponent implements OnInit {
 
   handleResponse(value: any) {
     if (!value.response) {
-      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+      this.openModal('Oops...', 'Ha ocurrido un error intente nuevamente.', 'danger', false);
       console.log(value.message);
     } else {
       if (this.modoEdicion) {
-        this.openAlertModal(value.message, 'success');
+        this.openModal('Editar', value.message, 'success', false);
       } else {
-        this.reloadPage();
-        this.openAlertModal(value.message, 'success');
-
+        this.clear();
+        this.openModal('Agregar', value.message, 'success', false);
       }
     }
   }
-  reloadPage() {
-    location.reload();
-  }
 
   handleErrorResponse(error: any) {
-    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    this.openModal('Oops...', error, 'danger', false);
     console.log(error);
+  }
+
+  clear() {
+    location.reload();
   }
 }

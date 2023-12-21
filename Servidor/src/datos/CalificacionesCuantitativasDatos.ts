@@ -19,7 +19,7 @@ class CalificacionesCuantitativasDatos {
       const pool = await BaseDatos.getInstanceDataBase();
 
       calificaciones_cuantitativas.CAL_ID = uuidv4();
-      const newCalificacionesCuantitativas = new CalificacionesCuantitativasEntidad(calificaciones_cuantitativas.CAL_ID, calificaciones_cuantitativas.PRF_ASG_PRLL_ID, calificaciones_cuantitativas.EST_CRS_PRLL_ID, calificaciones_cuantitativas.PRCL_ID, calificaciones_cuantitativas.CALIFICACION);
+      const newCalificacionesCuantitativas = new CalificacionesCuantitativasEntidad(calificaciones_cuantitativas.CAL_ID, calificaciones_cuantitativas.PRF_ASG_PRLL_ID, calificaciones_cuantitativas.EST_CRS_PRLL_ID, calificaciones_cuantitativas.PRCL_ID, calificaciones_cuantitativas.CALIFICACION,calificaciones_cuantitativas.ESTADO);
       let sql = this.sqlInsert;
       const [result] = await pool.execute<any>(sql, newCalificacionesCuantitativas.toArrayInsert());
       if (result.affectedRows !== 1) {
@@ -35,7 +35,7 @@ class CalificacionesCuantitativasDatos {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
 
-      const newCalificacionesCuantitativas = new CalificacionesCuantitativasEntidad(calificaciones_cuantitativas.CAL_ID, calificaciones_cuantitativas.PRF_ASG_PRLL_ID, calificaciones_cuantitativas.EST_CRS_PRLL_ID, calificaciones_cuantitativas.PRCL_ID, calificaciones_cuantitativas.CALIFICACION);
+      const newCalificacionesCuantitativas = new CalificacionesCuantitativasEntidad(calificaciones_cuantitativas.CAL_ID, calificaciones_cuantitativas.PRF_ASG_PRLL_ID, calificaciones_cuantitativas.EST_CRS_PRLL_ID, calificaciones_cuantitativas.PRCL_ID, calificaciones_cuantitativas.CALIFICACION,calificaciones_cuantitativas.ESTADO);
       let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newCalificacionesCuantitativas.toArrayUpdate());
       if (result.affectedRows !== 1) {

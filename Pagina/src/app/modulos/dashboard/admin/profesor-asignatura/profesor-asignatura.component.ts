@@ -36,8 +36,8 @@ export class ProfesorAsignaturaComponent implements OnInit {
   asignaturas: Asignatura[] = [];
   table: ProfesorAsignaturaParalelo[] = [];
 
-  headers = ['PROFESOR', 'CURSO', 'TIPO','PARALELO', 'ASIGNATURA'];
-  campos = ['PRF_ASG_PRLL_ID', 'PRF_NOM', 'CRS_NOM','CRS_TIPO', 'PRLL_NOM', 'ASG_NOM'];
+  headers = ['PROFESOR', 'CURSO', 'TIPO', 'PARALELO', 'ASIGNATURA'];
+  campos = ['PRF_ASG_PRLL_ID', 'PRF_NOM', 'CRS_NOM', 'CRS_TIPO', 'PRLL_NOM', 'ASG_NOM'];
   headersAsg = ['NOMBRE'];
   camposAsg = ['ASG_ID', 'ASG_NOM'];
 
@@ -66,7 +66,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
   }
 
   onSubmit() {
-    this.openConfirmationModal(this.msg);
+    this.openModal('Guardar', this.msg, 'success', true);
   }
 
   loadAnioLectivo() {
@@ -91,7 +91,7 @@ export class ProfesorAsignaturaComponent implements OnInit {
       next: (value) => {
         if (value.response) {
           console.log(value.data);
-          
+
           this.table = value.data;
         } else {
           console.log(value.message);
@@ -241,21 +241,14 @@ export class ProfesorAsignaturaComponent implements OnInit {
     return profesorAsignaturaParalelo;
   }
 
-  openAlertModal(content: string, alertType: string) {
-    this.modalService.openAlertModal(content, alertType);
-  }
-
-  openConfirmationModal(message: string) {
-    this.modalService
-      .openConfirmationModal(message)
+  openModal(tittle: string, message: string, alertType: string, modal: boolean) {
+    this.modalService.openModal(tittle, message, alertType, modal)
       .then((result) => {
-        if (result === 'save') {
-          if (!this.modoEdicion) {
-
-            this.crear();
-
-          } else {
+        if (result === 'save' && modal) {
+          if (this.modoEdicion) {
             this.editar();
+          } else {
+            this.crear();
           }
         }
       })
@@ -263,20 +256,25 @@ export class ProfesorAsignaturaComponent implements OnInit {
         console.log(error);
       });
   }
-
   handleResponse(value: any) {
     if (!value.response) {
-      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+      //'Ha ocurrido un error intente nuevamente.'
+      this.openModal('Oops...', value.message, 'danger', false);
       console.log(value.message);
     } else {
       if (this.modoEdicion) {
-        this.openAlertModal(value.message, 'success');
+        this.openModal('Editar', value.message, 'success', false);
         this.clear();
       } else {
-        this.openAlertModal(value.message, 'success');
+        this.openModal('Agregar', value.message, 'success', false);
         this.clear();
       }
     }
+  }
+
+  handleErrorResponse(error: any) {
+    this.openModal('Oops...', error, 'danger', false);
+    console.log(error);
   }
 
   clear() {
@@ -286,15 +284,9 @@ export class ProfesorAsignaturaComponent implements OnInit {
     this.loadAnioLectivo();
   }
 
-  handleErrorResponse(error: any) {
-    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
-    console.log(error);
-  }
-
   eliminar(data: any) { }
   checkedsAction(data: any) {
     console.log(data);
-
   }
 
   filaAction(data: any) {
@@ -306,11 +298,11 @@ export class ProfesorAsignaturaComponent implements OnInit {
       this.modoEdicion = false;
       this.elementoId = data.elementoId;
       this.msg = '¿Desea eliminar?';
-      this.openConfirmationModal(this.msg);
+      this.openModal('Eliminar', this.msg, 'warning', true);
     }
   }
+
   checkAsg(data: any) {
     console.log(data);
-
   }
 }

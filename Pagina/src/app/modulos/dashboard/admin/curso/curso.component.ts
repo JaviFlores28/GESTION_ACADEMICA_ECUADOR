@@ -23,7 +23,7 @@ export class CursoComponent {
     private service: CursoService,
     private usuarioService: UsuarioService,
     private modalService: ModalService,
-  ) {}
+  ) { }
 
   modoEdicion: boolean = false;
   elementoId: string = '';
@@ -59,7 +59,7 @@ export class CursoComponent {
   }
 
   onSubmit() {
-    this.openConfirmationModal(this.msg);
+    this.openModal('Guardar', this.msg, 'success', true);
   }
 
   crear() {
@@ -134,15 +134,10 @@ export class CursoComponent {
     this.form.get('estado')?.setValue(data.ESTADO === 1);
   }
 
-  openAlertModal(content: string, alertType: string) {
-    this.modalService.openAlertModal(content, alertType);
-  }
-
-  openConfirmationModal(message: string) {
-    this.modalService
-      .openConfirmationModal(message)
+  openModal(tittle: string, message: string, alertType: string, modal: boolean) {
+    this.modalService.openModal(tittle, message, alertType, modal)
       .then((result) => {
-        if (result === 'save') {
+        if (result === 'save' && modal) {
           if (this.modoEdicion) {
             this.editar();
           } else {
@@ -157,22 +152,25 @@ export class CursoComponent {
 
   handleResponse(value: any) {
     if (!value.response) {
-      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+      this.openModal('Oops...', 'Ha ocurrido un error intente nuevamente.', 'danger', false);
       console.log(value.message);
     } else {
       if (this.modoEdicion) {
-        this.openAlertModal(value.message, 'success');
-        console.log(value.message);
+        this.openModal('Editar', value.message, 'success', false);
       } else {
-        this.openAlertModal(value.message, 'success');
-        this.form.reset();
-        this.router.navigate(['../'], { relativeTo: this.route });
+        this.clear();
+        this.openModal('Agregar', value.message, 'success', false);
       }
     }
   }
 
   handleErrorResponse(error: any) {
-    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    this.openModal('Oops...', error, 'danger', false);
     console.log(error);
+  }
+
+  clear() {
+    this.form.reset();
+    this.router.navigate(['../'], { relativeTo: this.route });
   }
 }

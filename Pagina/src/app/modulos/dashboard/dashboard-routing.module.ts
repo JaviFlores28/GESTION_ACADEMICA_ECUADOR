@@ -27,6 +27,11 @@ import { ProfesorCursosAsignaturasComponent } from './docente/profesor-cursos-as
 import { ProfesorHorariosComponent } from './docente/profesor-horarios/profesor-horarios.component';
 import { CalificacionesComponent } from './docente/calificaciones/calificaciones.component';
 import { PeriodosComponent } from './admin/periodos/periodos.component';
+import { ReporteCalificacionesComponent } from './admin/reporte-calificaciones/reporte-calificaciones.component';
+import { ReporteCursosComponent } from './admin/reporte-cursos/reporte-cursos.component';
+import { ParametrosComponent } from './admin/parametros/parametros.component';
+import { EstudiantesParalelosComponent } from './admin/estudiantes-paralelos/estudiantes-paralelos.component';
+import { EstudiantesCursosComponent } from './admin/estudiantes-cursos/estudiantes-cursos.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent, canActivate: [authGuardLogin] },
@@ -37,7 +42,7 @@ const routes: Routes = [
     children: [
       { path: '', component: InicioComponent },
       { path: 'home', component: CursoComponent },
-      {path: 'sistema', component: InicioComponent, canActivate: [isAdmin]},
+      { path: 'sistema', component: ParametrosComponent, canActivate: [isAdmin] },
       {
         path: 'anios',
         children: [
@@ -106,7 +111,7 @@ const routes: Routes = [
       {
         path: 'matriculas',
         children: [
-          { path: 'all', component: EstudianteCursoComponent },
+          { path: 'all', component: EstudiantesCursosComponent },
           { path: 'asignar-cursos', component: EstudianteCursoComponent },
         ],
         canActivate: [isAdmin]
@@ -117,6 +122,7 @@ const routes: Routes = [
           { path: 'all', component: ParalelosComponent },
           { path: 'nuevo', component: ParaleloComponent },
           { path: 'editar/:id', component: ParaleloComponent },
+          { path: 'all-asignaciones', component: EstudiantesParalelosComponent },
           { path: 'asignar-paralelo', component: EstudianteParaleloComponent },
         ],
         canActivate: [isAdmin]
@@ -127,6 +133,14 @@ const routes: Routes = [
           { path: '', component: UsuariosComponent },
           { path: 'nuevo', component: UsuarioComponent },
           { path: 'editar/:id', component: UsuarioComponent },
+        ],
+        canActivate: [isAdmin]
+      },
+      {
+        path: 'reporte',
+        children: [
+          { path: 'calificaciones', component: ReporteCalificacionesComponent },
+          { path: 'cursos', component: ReporteCursosComponent },
         ],
         canActivate: [isAdmin]
       },

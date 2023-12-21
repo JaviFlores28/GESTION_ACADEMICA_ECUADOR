@@ -34,7 +34,7 @@ export class EstudianteCursoComponent implements OnInit {
 
   elementoId: string = '';
   msg: string = '¿Desea guardar?';
-
+  action: string = '';
   USR_ID = this.usuarioService.getUserLoggedId();
   AL_ID: string = '0';
   ESTADO: number = 1;
@@ -49,7 +49,8 @@ export class EstudianteCursoComponent implements OnInit {
   }
 
   onSubmit() {
-    this.openConfirmationModal(this.msg, 'create');
+    this.action = 'create';
+    this.openModal('Guardar', this.msg, 'success', false);
   }
 
   loadCursos() {
@@ -87,8 +88,6 @@ export class EstudianteCursoComponent implements OnInit {
       next: (value) => {
         if (value.response) {
           this.matriculas = value.data;
-          console.log(this.matriculas);
-
         } else {
           console.log(value.message);
         }
@@ -106,12 +105,14 @@ export class EstudianteCursoComponent implements OnInit {
   matriculasAction(value: any) {
     this.idsEstudiantes = value.data;
     if (value.action === 'desactivar') {
-      this.openConfirmationModal('¿Desea desactivar los items seleccionados?', value.action);
-    }else{
+      this.action = value.action;
+      this.msg = '¿Desea desactivar los items seleccionados?';
+      this.openModal('Desactivar', this.msg, 'warning', false);
+    } else {
       console.log(value);
-      
     }
   }
+
 
   crear() {
     if (this.form.valid) {
@@ -133,7 +134,8 @@ export class EstudianteCursoComponent implements OnInit {
 
   desactivar() {
     if (this.idsEstudiantes.length === 0) {
-      this.openAlertModal('Debe seleccionar al menos un item.', 'danger');
+      this.msg = 'Debe seleccionar al menos un item.'
+      this.openModal('Error', this.msg, 'danger', false);
       return;
     }
     this.service.updateEstado(this.idsEstudiantes).subscribe({
@@ -144,16 +146,11 @@ export class EstudianteCursoComponent implements OnInit {
     });
   }
 
-  openAlertModal(content: string, alertType: string) {
-    this.modalService.openAlertModal(content, alertType);
-  }
-
-  openConfirmationModal(message: string, action: string) {
-    this.modalService
-      .openConfirmationModal(message)
+  openModal(tittle: string, message: string, alertType: string, modal: boolean) {
+    this.modalService.openModal(tittle, message, alertType, modal)
       .then((result) => {
-        if (result === 'save') {
-          if (action === 'create') {
+        if (result === 'save' && modal) {
+          if (this.action === 'create') {
             this.crear();
           } else {
             this.desactivar();
@@ -167,21 +164,24 @@ export class EstudianteCursoComponent implements OnInit {
 
   handleResponse(value: any) {
     if (!value.response) {
-      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+      this.openModal('Oops...', 'Ha ocurrido un error intente nuevamente.', 'danger', false);
       console.log(value.message);
     } else {
-      console.log(value.message);
-      this.openAlertModal(value.message, 'success');
-      this.form.reset();
-      this.loadMatriculados();
-      this.loadNoMatriculados();
-      this.idsEstudiantes=[];
-      // this.router.navigate(['../'], { relativeTo: this.route });
+      this.clear();
+      this.openModal('Agregar', value.message, 'success', false);
     }
   }
 
   handleErrorResponse(error: any) {
-    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    this.openModal('Oops...', error, 'danger', false);
     console.log(error);
+  }
+
+  clear() {
+    this.form.reset();
+    this.loadMatriculados();
+    this.loadNoMatriculados();
+    this.idsEstudiantes = [];
+    // this.router.navigate(['../'], { relativeTo: this.route });
   }
 }

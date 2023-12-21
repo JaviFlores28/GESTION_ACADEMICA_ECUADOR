@@ -39,8 +39,8 @@ export class EstudianteParaleloComponent implements OnInit {
 
   headersEstudianteCurso = ['CÉDULA', 'NOMBRES'];
   camposEstudianteCurso = ['EST_CRS_ID', 'EST_DNI', 'EST_NOM'];
-  headersEstudianteCursoParalelo = ['CÉDULA', 'NOMBRES','CURSO','TIPO', 'PARALELO'];
-  camposEstudianteCursoParalelo = ['EST_CRS_PRLL_ID', 'EST_DNI','EST_CRS_NOM', 'CRS_NOM', 'CRS_TIPO', 'PRLL_NOM'];
+  headersEstudianteCursoParalelo = ['CÉDULA', 'NOMBRES', 'CURSO', 'TIPO', 'PARALELO'];
+  camposEstudianteCursoParalelo = ['EST_CRS_PRLL_ID', 'EST_DNI', 'EST_CRS_NOM', 'CRS_NOM', 'CRS_TIPO', 'PRLL_NOM'];
 
   msg: string = '¿Desea guardar?';
   USR_ID: string = this.usuarioService.getUserLoggedId();
@@ -48,6 +48,7 @@ export class EstudianteParaleloComponent implements OnInit {
   PASE: number = 4;
   ESTADO: number = 1;
   existeAnio: boolean = false;
+  action: string = '';
 
   form = this.formBuilder.group({
     CRS_ID: [''],
@@ -69,7 +70,8 @@ export class EstudianteParaleloComponent implements OnInit {
   }
 
   onSubmit() {
-    this.openConfirmationModal(this.msg, 'create');
+    this.action = 'create';
+    this.openModal('Guardar', this.msg, 'success', false);
   }
 
   loadCursos() {
@@ -90,7 +92,7 @@ export class EstudianteParaleloComponent implements OnInit {
       },
     });
   }
-  
+
 
   loadParalelos() {
     this.paraleloService.getEnabled().subscribe({
@@ -127,7 +129,7 @@ export class EstudianteParaleloComponent implements OnInit {
   loadestudianteCurso(cursoId: string) {
     this.estudianteCursoService.getByCurso(cursoId).subscribe({
       next: (value) => {
-        if (value.response) {          
+        if (value.response) {
           this.estudianteCurso = value.data;
         } else {
           console.log(value.message);
@@ -157,11 +159,13 @@ export class EstudianteParaleloComponent implements OnInit {
   estudiantesParaleloAction(value: any) {
     this.idsEstudianteCurso = value.data;
     if (value.action === 'desactivar') {
-      this.openConfirmationModal('¿Desea desactivar los items seleccionados?', value.action);
+      this.action = value.action;
+      this.msg = '¿Desea desactivar los items seleccionados?';
+      this.openModal('Desactivar', this.msg, 'warning', false);
     }
   }
 
-  estudianteCursoAction(value: any) {    
+  estudianteCursoAction(value: any) {
     this.idsEstudianteCursoParalelo = value.data;
   }
 
@@ -187,7 +191,8 @@ export class EstudianteParaleloComponent implements OnInit {
 
   desactivar() {
     if (this.idsEstudianteCurso.length === 0) {
-      this.openAlertModal('Debe seleccionar al menos un item.', 'danger');
+      this.msg = 'Debe seleccionar al menos un item.'
+      this.openModal('Error', this.msg, 'danger', false);
       return;
     }
     this.service.updateEstado(this.idsEstudianteCurso).subscribe({
@@ -198,16 +203,11 @@ export class EstudianteParaleloComponent implements OnInit {
     });
   }
 
-  openAlertModal(content: string, alertType: string) {
-    this.modalService.openAlertModal(content, alertType);
-  }
-
-  openConfirmationModal(message: string, action: string) {
-    this.modalService
-      .openConfirmationModal(message)
+  openModal(tittle: string, message: string, alertType: string, modal: boolean) {
+    this.modalService.openModal(tittle, message, alertType, modal)
       .then((result) => {
-        if (result === 'save') {
-          if (action === 'create') {
+        if (result === 'save' && modal) {
+          if (this.action === 'create') {
             this.crear();
           } else {
             this.desactivar();
@@ -221,19 +221,23 @@ export class EstudianteParaleloComponent implements OnInit {
 
   handleResponse(value: any) {
     if (!value.response) {
-      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+      this.openModal('Oops...', 'Ha ocurrido un error intente nuevamente.', 'danger', false);
       console.log(value.message);
     } else {
-      console.log(value.message);
-      this.openAlertModal(value.message, 'success');
-      this.form.reset();
-      this.loadEstudianteParalelo();
-      // this.router.navigate(['../'], { relativeTo: this.route });
+      this.clear();
+      this.openModal('Agregar', value.message, 'success', false);
     }
   }
 
   handleErrorResponse(error: any) {
-    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
+    this.openModal('Oops...', error, 'danger', false);
     console.log(error);
   }
+
+  clear() {
+    this.form.reset();
+    this.loadEstudianteParalelo();
+    // this.router.navigate(['../'], { relativeTo: this.route });
+  }
+
 }
