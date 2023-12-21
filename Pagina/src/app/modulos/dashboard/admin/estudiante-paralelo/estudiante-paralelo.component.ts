@@ -71,7 +71,7 @@ modaltitle: string = 'Agregar';
 
   onSubmit() {
     this.action = 'create';
-    this.openModal('Guardar', this.modalMsg, 'success', false);
+    this.openModal('Guardar', this.modalMsg, 'warning', true);
   }
 
   loadCursos() {

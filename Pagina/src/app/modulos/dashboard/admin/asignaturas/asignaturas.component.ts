@@ -16,7 +16,7 @@ export class AsignaturasComponent {
   ) {}
 
   routerLink: string = 'nuevo';
-  title: string = 'Asignaturas';
+  titulo: string = 'Asignaturas';
 
   data: Asignatura[] = [];
   headers = ['NOMBRE', 'TIPO', 'ESTADO'];

@@ -10,7 +10,7 @@ import { EstudianteService } from 'src/app/servicios/estudiante.service';
 })
 export class EstudiantesComponent {
   routerLink: string = 'nuevo';
-  title: string = 'Estudiantes';
+  titulo: string = 'Estudiantes';
 
   table: Estudiante[] = [];
   headers = ['CÉDULA', 'NOMBRES', 'REPRESENTANTE', 'ESTADO'];

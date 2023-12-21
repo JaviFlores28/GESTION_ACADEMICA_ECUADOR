@@ -10,7 +10,7 @@ import { CursoService } from 'src/app/servicios/curso.service';
 })
 export class CursosComponent {
   routerLink: string = 'nuevo';
-  title: string = 'Cursos';
+  titulo: string = 'Cursos';
 
   data: Curso[] = [];
   headers = ['NOMBRE', 'TIPO', 'ORDEN', 'ESTADO'];

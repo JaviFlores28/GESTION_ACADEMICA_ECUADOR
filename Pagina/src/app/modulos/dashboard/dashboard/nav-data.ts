@@ -21,12 +21,12 @@ export const navbarData: NavBarData[] = [
     icon: faGraduationCap,
     items: [
       {
-        routelink: 'all',
-        label: 'Todos',
-      },
-      {
         routelink: 'inicializar',
         label: 'Inicializar',
+      },
+      {
+        routelink: 'all',
+        label: 'Todos',
       },
       {
         routelink: 'periodos',

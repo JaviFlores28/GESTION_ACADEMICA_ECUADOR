@@ -16,7 +16,7 @@ export class ParalelosComponent {
   ) {}
 
   routerLink: string = 'nuevo';
-  title: string = 'Paralelos';
+  titulo: string = 'Paralelos';
 
   data: Paralelo[] = [];
   headers = ['NOMBRE', 'ESTADO'];

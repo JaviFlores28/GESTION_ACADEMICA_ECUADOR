@@ -72,7 +72,7 @@ const routes: Routes = [
         canActivate: [isAdmin]
       },
       {
-        path: 'profesores',
+        path: 'profesores', component: ProfesoresComponent ,
         children: [
           { path: 'all', component: ProfesoresComponent },
           { path: 'nuevo', component: UsuarioComponent },
@@ -82,7 +82,7 @@ const routes: Routes = [
         canActivate: [isAdmin]
       },
       {
-        path: 'cursos',
+        path: 'cursos',component: CursosComponent,
         children: [
           { path: '', component: CursosComponent },
           { path: 'nuevo', component: CursoComponent },

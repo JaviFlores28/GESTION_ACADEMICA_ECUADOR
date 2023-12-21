@@ -16,7 +16,7 @@ export class ProfesoresComponent {
   ) {}
 
   routerLink: string = '../nuevo';
-  title: string = 'Profesores';
+  titulo: string = 'Profesores';
 
   data: Usuario[] = [];
   headers = ['CÉDULA', 'NOMBRES', 'USUARIO', 'CORREO', 'ESTADO'];

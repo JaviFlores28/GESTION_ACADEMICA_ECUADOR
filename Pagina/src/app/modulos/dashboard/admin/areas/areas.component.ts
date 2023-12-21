@@ -16,7 +16,7 @@ export class AreasComponent implements OnInit {
   ) { }
 
   routerLink: string = 'nuevo';
-  title: string = 'Áreas';
+  titulo: string = 'Áreas';
 
   data: Area[] = [];
   headers = ['NOMBRE', 'ESTADO'];

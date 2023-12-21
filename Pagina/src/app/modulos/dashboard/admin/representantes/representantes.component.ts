@@ -16,7 +16,7 @@ export class RepresentantesComponent {
   ) {}
 
   routerLink: string = 'nuevo';
-  title: string = 'Representantes';
+  titulo: string = 'Representantes';
 
   data: Usuario[] = [];
   headers = ['CÉDULA', 'NOMBRES', 'USUARIO', 'CORREO', 'ESTADO'];

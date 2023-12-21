@@ -16,7 +16,7 @@ export class AniosLectivosComponent implements OnInit {
   ) {}
 
   routerLink: string = 'nuevo';
-  title: string = 'Años lectivos';
+  titulo: string = 'Años lectivos';
   data: AnioLectivo[] = [];
   headers = ['NOMBRE', 'FECHA INICIO', 'FECHA FIN', 'PERIODOS', 'EXAMENES', 'ESTADO'];
   campos = ['AL_ID', 'AL_NOM', 'AL_INICIO', 'AL_FIN', 'NUM_PRD', 'NUM_EXAM'];

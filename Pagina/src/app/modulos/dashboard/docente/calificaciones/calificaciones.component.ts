@@ -32,7 +32,7 @@ export class CalificacionesComponent implements OnInit {
     private escalasService: EscalasReferencialesCalificacionesService,
     private reporteServicio: ReporteService
   ) { }
-  title = 'Calificaciones';
+  titulo: string = 'Calificaciones';
   elementoId: string = '';
   PRLL_ID: string = '';
   CRS_ID: string = '';

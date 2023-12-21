@@ -23,7 +23,7 @@ export class ProfesorCursosAsignaturasComponent implements OnInit {
   campos: any[] = ['PRF_ASG_PRLL_ID', 'AL_NOM', 'ASG_NOM', 'CRS_NOM', 'CRS_TIPO', 'PRLL_NOM', 'PRF_NOM'];
   headers: any[] = ['Año lectivo', 'Asignatura', 'Curso', 'Tipo', 'Paralelo', 'Profesor'];
 
-  title = 'Asignaturas';
+  titulo: string = 'Asignaturas';
   USR_ID: string = this.usuarioService.getUserLoggedId();
   AL_ID: string = '0';
   existeAnio: boolean = false;
