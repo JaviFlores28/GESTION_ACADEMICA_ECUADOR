@@ -4,6 +4,5 @@ export interface CalificacionesCuantitativas {
     EST_CRS_PRLL_ID: string;
     PRCL_ID: string;
     CALIFICACION: number;
-    CREADOR_ID: string;
-    ESTADO?: string;
+    ESTADO: number;
 }

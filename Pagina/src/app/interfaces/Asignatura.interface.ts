@@ -4,5 +4,4 @@ export interface Asignatura {
     ASG_TIPO: string;
     AREA_ID: string;
     ESTADO: number;
-    CREADOR_ID: string;
         }

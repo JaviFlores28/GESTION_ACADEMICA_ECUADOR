@@ -4,5 +4,4 @@ export interface Parametro {
     PRMT_DESCR: string;
     PRMT_URL_IMG: string;
     ESTADO: number;
-    CREADOR_ID: string;
         }

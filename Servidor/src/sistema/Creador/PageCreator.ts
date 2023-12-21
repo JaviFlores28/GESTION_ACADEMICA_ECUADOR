@@ -7,7 +7,7 @@ import EntityCreator from './EntityCreator';
 
 //no son parte del sistema
 function generateFormReactive(propertiesData: MappedProperty[]) {
-  const excludedProperties = ['USR_ID', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID'];
+  const excludedProperties = ['USR_ID', 'USR_PSWD'];
   return propertiesData
     .filter((property) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
     .map((property) => {
@@ -25,7 +25,7 @@ function generateFormReactive(propertiesData: MappedProperty[]) {
 }
 
 function generateFormHTML(propertiesData: MappedProperty[]) {
-  const excludedProperties = ['USR_ID', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID'];
+  const excludedProperties = ['USR_ID', 'USR_PSWD'];
   return propertiesData
     .filter((property) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
     .map((property) => {
@@ -58,7 +58,7 @@ function generateFormHTML(propertiesData: MappedProperty[]) {
 }
 
 function generateObjectComponet(propertiesData: MappedProperty[]) {
-  const excludedProperties = ['USR_ID', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID', 'USUARIO', 'ROL_ADMIN', 'ROL_REPR', 'ROL_PRF'];
+  const excludedProperties = ['USR_ID', 'USR_PSWD', 'USUARIO', 'ROL_ADMIN', 'ROL_REPR', 'ROL_PRF'];
   return propertiesData
     .filter((property) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
     .map((property) => {
@@ -76,7 +76,7 @@ function generateObjectComponet(propertiesData: MappedProperty[]) {
 }
 
 function generateFillFormReactive(propertiesData: MappedProperty[]) {
-  const excludedProperties = ['USR_ID', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID', 'ROL_ADMIN', 'ROL_REPR', 'ROL_PRF'];
+  const excludedProperties = ['USR_ID', 'USR_PSWD', 'ROL_ADMIN', 'ROL_REPR', 'ROL_PRF'];
   return propertiesData
     .filter((property: { name: string; key: string }) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
     .map((property) => {

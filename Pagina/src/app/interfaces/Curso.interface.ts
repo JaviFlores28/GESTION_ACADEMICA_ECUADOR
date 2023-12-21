@@ -4,5 +4,4 @@ export interface Curso {
     CRS_TIPO: string;
     CRS_ORDEN: number;
     ESTADO: number;
-    CREADOR_ID: string;
         }

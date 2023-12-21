@@ -9,7 +9,7 @@ import PeriodoDatos from './PeriodoDatos';
 import ParcialDatos from './ParcialDatos';
 
 class EstudianteCursoParaleloDatos {
-  static sqlInsert: string = `INSERT INTO estudiante_curso_paralelo (EST_CRS_PRLL_ID, EST_CRS_ID, AL_ID, PRLL_ID, PASE, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?, ?);`;
+  static sqlInsert: string = `INSERT INTO estudiante_curso_paralelo (EST_CRS_PRLL_ID, EST_CRS_ID, AL_ID, PRLL_ID, PASE, ESTADO)VALUES( ?, ?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE estudiante_curso_paralelo SET EST_CRS_ID=?,AL_ID=?,PRLL_ID=?,PASE=?,ESTADO=? WHERE EST_CRS_PRLL_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE estudiante_curso_paralelo SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  EST_CRS_PRLL_ID IN';
   static sqlDelete: string = `DELETE FROM estudiante_curso_paralelo WHERE EST_CRS_PRLL_ID = ?`;
@@ -139,12 +139,12 @@ class EstudianteCursoParaleloDatos {
       const arrayIds = data.arrayIds;
 
       // Crear un array de valores para todos los registros utilizando map
-      const valores = arrayIds.map((id: any) => [uuidv4(), id, data.AL_ID, data.PRLL_ID, data.PASE, data.ESTADO, data.CREADOR_ID]);
+      const valores = arrayIds.map((id: any) => [uuidv4(), id, data.AL_ID, data.PRLL_ID, data.PASE, data.ESTADO]);
 
       // Crear una cadena de marcadores de posición y una cadena de campos
       const placeholders = valores.map((fila: string | any[]) => `(${Array.from({ length: fila.length }, () => '?').join(',')})`).join(',');
 
-      const campos = ['EST_CRS_PRLL_ID', 'EST_CRS_ID', 'AL_ID', 'PRLL_ID', 'PASE', 'ESTADO', 'CREADOR_ID'].join(',');
+      const campos = ['EST_CRS_PRLL_ID', 'EST_CRS_ID', 'AL_ID', 'PRLL_ID', 'PASE', 'ESTADO'].join(',');
 
       // Consulta SQL con la cláusula INSERT INTO y VALUES
       const sql = `INSERT INTO estudiante_curso_paralelo (${campos}) VALUES ${placeholders};`;

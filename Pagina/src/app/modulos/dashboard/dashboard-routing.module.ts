@@ -121,7 +121,14 @@ const routes: Routes = [
           { path: 'editar/:id', component: EstudianteComponent },
         ],
       },
-      { path: 'matriculas', component: EstudianteCursoComponent },
+      {
+        path: 'matriculas',
+        children: [
+          { path: 'asignar-cursos', component: EstudianteCursoComponent },
+          { path: 'asignar-paralelo', component: EstudianteParaleloComponent },
+          { path: 'asignar-profesor', component: ProfesorAsignaturaComponent },
+        ],
+      },
       {
         path: 'paralelos',
         children: [

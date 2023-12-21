@@ -5,7 +5,7 @@ import AsignaturaEntidad from '../entidades/AsignaturaEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class AsignaturaDatos {
-  static sqlInsert: string = `INSERT INTO asignatura (ASG_ID, ASG_NOM, ASG_TIPO, AREA_ID, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?);`;
+  static sqlInsert: string = `INSERT INTO asignatura (ASG_ID, ASG_NOM, ASG_TIPO, AREA_ID, ESTADO)VALUES(?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE asignatura SET ASG_NOM=?,ASG_TIPO=?,AREA_ID=?,ESTADO=? WHERE ASG_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE asignatura SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  ASG_ID IN';
   static sqlDelete: string = `DELETE FROM asignatura WHERE ASG_ID = ?`;

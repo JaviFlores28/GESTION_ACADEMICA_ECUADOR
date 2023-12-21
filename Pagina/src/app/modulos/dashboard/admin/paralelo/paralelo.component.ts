@@ -90,7 +90,6 @@ export class ParaleloComponent implements OnInit {
       PRLL_ID: '0',
       PRLL_NOM: this.form.value.PRLL_NOM || '',
       ESTADO: this.form.value.ESTADO ? 1 : 0,
-      CREADOR_ID: this.USR_ID || '',
     };
     return paralelo;
   }
@@ -100,7 +99,6 @@ export class ParaleloComponent implements OnInit {
       PRLL_ID: this.elementoId,
       PRLL_NOM: this.form.value.PRLL_NOM || '',
       ESTADO: this.form.value.ESTADO ? 1 : 0,
-      CREADOR_ID: this.USR_ID,
     };
     return paralelo;
   }
@@ -123,7 +121,6 @@ export class ParaleloComponent implements OnInit {
   llenarForm(data: Paralelo) {
     this.form.get('PRLL_NOM')?.setValue(data.PRLL_NOM);
     this.form.get('ESTADO')?.setValue(data.ESTADO === 1);
-    this.USR_ID = data.CREADOR_ID;
   }
 
   openAlertModal(content: string, alertType: string) {

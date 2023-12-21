@@ -5,7 +5,7 @@ import PeriodoEntidad from '../entidades/PeriodoEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class PeriodoDatos {
-  static sqlInsert: string = `INSERT INTO periodo (PRD_ID, PRD_NOM, PRD_INI, PRD_FIN, PRD_TIPO, AL_ID, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?, ?, ?);`;
+  static sqlInsert: string = `INSERT INTO periodo (PRD_ID, PRD_NOM, PRD_INI, PRD_FIN, PRD_TIPO, AL_ID, ESTADO)VALUES(?, ?, ?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE periodo SET PRD_NOM=?,PRD_INI=?,PRD_FIN=?,PRD_TIPO=?,AL_ID=?,ESTADO=? WHERE PRD_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE periodo SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  PRD_ID IN';
   static sqlDelete: string = `DELETE FROM periodo WHERE PRD_ID = ?`;

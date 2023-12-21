@@ -117,7 +117,6 @@ export class PeriodosComponent implements OnInit {
       ESTADO: parcial.ESTADO,
       PRD_ID: parcial.PRD_ID,
       PRCL_TIPO: parcial.PRCL_TIPO,
-      CREADOR_ID: parcial.CREADOR_ID
     };
     return parcialEditado;
   }
@@ -131,7 +130,6 @@ export class PeriodosComponent implements OnInit {
       PRD_TIPO: periodo.PRD_TIPO,
       AL_ID: periodo.AL_ID,
       ESTADO: periodo.ESTADO,
-      CREADOR_ID: periodo.CREADOR_ID
     };
     return parcialEditado;
   }

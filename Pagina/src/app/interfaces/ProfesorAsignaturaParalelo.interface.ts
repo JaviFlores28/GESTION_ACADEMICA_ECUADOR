@@ -6,5 +6,4 @@ export interface ProfesorAsignaturaParalelo {
     CRS_ID: string;
     PRLL_ID: string;
     ESTADO: number;
-    CREADOR_ID: string;
         }

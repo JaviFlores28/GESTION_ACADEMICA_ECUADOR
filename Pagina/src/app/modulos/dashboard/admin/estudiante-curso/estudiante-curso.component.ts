@@ -119,7 +119,6 @@ export class EstudianteCursoComponent implements OnInit {
         arrayIds: this.idsEstudiantes,
         CRS_ID: this.form.value.CRS_ID,
         ESTADO: this.ESTADO,
-        CREADOR_ID: this.USR_ID,
       };
       this.service.postMasivo(estudiantes).subscribe({
         next: (value) => {

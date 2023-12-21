@@ -52,7 +52,7 @@ class EntityCreator {
   
   async generateEntityFile(): Promise<void> {
     const excludedPropertiesInsert = ['FECHA_CREACION'];
-    const excludedPropertiesUpdate = ['USUARIO', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID', this.primaryKey];
+    const excludedPropertiesUpdate = ['USUARIO', 'USR_PSWD', 'FECHA_CREACION', this.primaryKey];
 
     const content = `
       class ${this.capitalizedTableName}Entidad {

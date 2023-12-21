@@ -5,7 +5,7 @@ import ParametroEntidad from '../entidades/ParametroEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class ParametroDatos {
-  static sqlInsert: string = `INSERT INTO parametro (PRMT_ID, PRMT_NOM, PRMT_DESCR, PRMT_URL_IMG, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?);`;
+  static sqlInsert: string = `INSERT INTO parametro (PRMT_ID, PRMT_NOM, PRMT_DESCR, PRMT_URL_IMG, ESTADO)VALUES(?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE parametro SET PRMT_NOM=?,PRMT_DESCR=?,PRMT_URL_IMG=?,ESTADO=? WHERE PRMT_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE parametro SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  PRMT_ID IN';
   static sqlDelete: string = `DELETE FROM parametro WHERE PRMT_ID = ?`;

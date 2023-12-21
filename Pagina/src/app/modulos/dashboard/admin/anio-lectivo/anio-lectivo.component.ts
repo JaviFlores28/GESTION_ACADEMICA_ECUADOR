@@ -94,8 +94,7 @@ export class AnioLectivoComponent implements OnInit {
       NUM_EXAM: this.form.value.NUM_EXAM || 1,
       NUM_PRCL: this.form.value.NUM_PRCL || 3,
       NUM_SUSP: this.form.value.NUM_SUSP || 1,
-      ESTADO: this.form.value.ESTADO ? 1 : 0,
-      CREADOR_ID: this.USR_ID || '',
+      ESTADO: this.form.value.ESTADO ? 1 : 0
     };
     return aniolectivo;
   }
@@ -116,7 +115,6 @@ export class AnioLectivoComponent implements OnInit {
       NUM_PRCL: this.form.value.NUM_PRCL || 3,
       NUM_SUSP: this.form.value.NUM_SUSP || 1,
       ESTADO: this.form.value.ESTADO ? 1 : 0,
-      CREADOR_ID: this.USR_ID,
     };
     return aniolectivo;
   }
@@ -153,7 +151,6 @@ export class AnioLectivoComponent implements OnInit {
     this.form.get('NUM_PRCL')?.setValue(data.NUM_PRCL);
     this.form.get('NUM_SUSP')?.setValue(data.NUM_SUSP);
     this.form.get('ESTADO')?.setValue(data.ESTADO === 1);
-    this.USR_ID = data.CREADOR_ID;
   }
 
   openAlertModal(content: string, alertType: string) {

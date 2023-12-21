@@ -5,7 +5,7 @@ import CursoEntidad from '../entidades/CursoEntidad';
 import { v4 as uuidv4 } from 'uuid';
 
 class CursoDatos {
-  static sqlInsert: string = `INSERT INTO curso (CRS_ID, CRS_NOM, CRS_TIPO, CRS_ORDEN, ESTADO, CREADOR_ID)VALUES(?, ?, ?, ?, ?, ?);`;
+  static sqlInsert: string = `INSERT INTO curso (CRS_ID, CRS_NOM, CRS_TIPO, CRS_ORDEN, ESTADO)VALUES( ?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE curso SET CRS_NOM=?,CRS_TIPO=?,CRS_ORDEN=?,ESTADO=? WHERE CRS_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE curso SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  CRS_ID IN';
   static sqlDelete: string = `DELETE FROM curso WHERE CRS_ID = ?`;

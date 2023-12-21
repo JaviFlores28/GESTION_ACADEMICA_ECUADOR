@@ -184,7 +184,6 @@ export class ProfesorAsignaturaComponent implements OnInit {
     this.form.get('CRS_ID')?.setValue(data.CRS_ID);
     this.form.get('PRLL_ID')?.setValue(data.PRLL_ID);
     this.AL_ID = data.AL_ID;
-    this.USR_ID = data.CREADOR_ID;
     this.ESTADO = data.ESTADO;
   }
 
@@ -225,7 +224,6 @@ export class ProfesorAsignaturaComponent implements OnInit {
       CRS_ID: this.form.value.CRS_ID || '',
       PRLL_ID: this.form.value.PRLL_ID || '',
       ESTADO: this.ESTADO,
-      CREADOR_ID: this.USR_ID,
     };
     return profesorAsignaturaParalelo;
   }
@@ -239,7 +237,6 @@ export class ProfesorAsignaturaComponent implements OnInit {
       CRS_ID: this.form.value.CRS_ID || '',
       PRLL_ID: this.form.value.PRLL_ID || '',
       ESTADO: this.ESTADO,
-      CREADOR_ID: this.USR_ID,
     };
     return profesorAsignaturaParalelo;
   }

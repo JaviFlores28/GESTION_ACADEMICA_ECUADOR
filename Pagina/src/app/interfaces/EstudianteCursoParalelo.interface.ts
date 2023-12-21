@@ -5,5 +5,4 @@ export interface EstudianteCursoParalelo {
     PRLL_ID: string;
     PASE: string;
     ESTADO: number;
-    CREADOR_ID: string;
         }

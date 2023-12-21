@@ -1,5 +1,5 @@
 export interface Usuario {
-    USR_ID: string;
+          USR_ID: string;
     USR_DNI: string;
     USR_NOM: string;
     USR_NOM2: string;
@@ -17,4 +17,4 @@ export interface Usuario {
     ROL_REPR: number;
     ROL_ADMIN: number;
     ESTADO: number;
-}
+        }

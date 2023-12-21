@@ -413,7 +413,7 @@ class DataCreator {
   }
 
   generarSQLUpdate(): string {
-    const excludedProperties = ['USUARIO', 'USR_PSWD', 'FECHA_CREACION', 'CREADOR_ID'];
+    const excludedProperties = ['USUARIO', 'USR_PSWD', 'FECHA_CREACION'];
     return this.propertiesTable
       .filter((property) => !excludedProperties.includes(property.name) && property.key !== 'PRI')
       .map((property) => `${property.name}=?`)

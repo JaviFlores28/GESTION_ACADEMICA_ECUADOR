@@ -97,7 +97,6 @@ export class CursoComponent {
       CRS_TIPO: this.form.value.tip || '',
       CRS_ORDEN: this.form.value.orden || 0,
       ESTADO: this.form.value.estado ? 1 : 0,
-      CREADOR_ID: this.USR_ID || '',
     };
     return curso;
   }
@@ -109,7 +108,6 @@ export class CursoComponent {
       CRS_TIPO: this.form.value.tip || '',
       CRS_ORDEN: this.form.value.orden || 0,
       ESTADO: this.form.value.estado ? 1 : 0,
-      CREADOR_ID: this.USR_ID,
     };
     return curso;
   }
@@ -134,7 +132,6 @@ export class CursoComponent {
     this.form.get('tip')?.setValue(data.CRS_TIPO);
     this.form.get('orden')?.setValue(data.CRS_ORDEN);
     this.form.get('estado')?.setValue(data.ESTADO === 1);
-    this.USR_ID = data.CREADOR_ID;
   }
 
   openAlertModal(content: string, alertType: string) {

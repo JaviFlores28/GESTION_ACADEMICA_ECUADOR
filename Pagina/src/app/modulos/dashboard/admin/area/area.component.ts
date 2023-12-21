@@ -87,7 +87,6 @@ export class AreaComponent implements OnInit {
       AREA_ID: '0',
       AREA_NOM: this.form.value.nom || '',
       ESTADO: this.form.value.estado ? 1 : 0,
-      CREADOR_ID: this.USR_ID,
     };
     return area;
   }
@@ -97,7 +96,6 @@ export class AreaComponent implements OnInit {
       AREA_ID: this.elementoId,
       AREA_NOM: this.form.value.nom || '',
       ESTADO: this.form.value.estado ? 1 : 0,
-      CREADOR_ID: this.USR_ID,
     };
     return area;
   }
@@ -120,7 +118,6 @@ export class AreaComponent implements OnInit {
   llenarForm(data: Area) {
     this.form.get('estado')?.setValue(data.ESTADO === 1);
     this.form.get('nom')?.setValue(data.AREA_NOM);
-    this.USR_ID = data.CREADOR_ID;
   }
 
   openAlertModal(content: string, alertType: string) {

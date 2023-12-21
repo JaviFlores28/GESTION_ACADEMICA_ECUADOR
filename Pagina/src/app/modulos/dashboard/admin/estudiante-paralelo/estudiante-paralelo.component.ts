@@ -173,7 +173,6 @@ export class EstudianteParaleloComponent implements OnInit {
         PRLL_ID: this.form.value.PRLL_ID,
         PASE: this.PASE,
         ESTADO: this.ESTADO,
-        CREADOR_ID: this.USR_ID,
       };
       this.service.postMasivo(estudiantes).subscribe({
         next: (value) => {

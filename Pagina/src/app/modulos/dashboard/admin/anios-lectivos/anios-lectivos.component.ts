@@ -50,7 +50,7 @@ export class AniosLectivosComponent implements OnInit {
 
   filaAction(data: any) {
     if (data.option === 'ver') {
-      this.router.navigate(['editar/' + data.id], { relativeTo: this.route });
+      this.router.navigate(['../editar/' + data.id], { relativeTo: this.route });
     } else if (data.option === 'eliminar') {
       console.log(data.id);
     }

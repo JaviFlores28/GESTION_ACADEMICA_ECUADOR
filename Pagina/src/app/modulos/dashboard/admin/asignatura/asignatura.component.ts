@@ -102,7 +102,6 @@ export class AsignaturaComponent {
       ASG_TIPO: this.form.value.cltv ? '1' : '2',
       AREA_ID: this.form.value.area || '',
       ESTADO: this.form.value.estado ? 1 : 0,
-      CREADOR_ID: this.USR_ID || '',
     };
     return asignatura;
   }
@@ -114,7 +113,6 @@ export class AsignaturaComponent {
       ASG_TIPO: this.form.value.cltv ? '1' : '2',
       AREA_ID: this.form.value.area || '',
       ESTADO: this.form.value.estado ? 1 : 0,
-      CREADOR_ID: this.USR_ID,
     };
     return asignatura;
   }
@@ -154,7 +152,6 @@ export class AsignaturaComponent {
     this.form.get('cltv')?.setValue(data.ASG_TIPO === 'CUALITATIVA');
     this.form.get('area')?.setValue(data.AREA_ID);
     this.form.get('estado')?.setValue(data.ESTADO === 1);
-    this.USR_ID = data.CREADOR_ID;
   }
 
   openAlertModal(content: string, alertType: string) {

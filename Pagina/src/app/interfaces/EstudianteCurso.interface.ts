@@ -3,5 +3,4 @@ export interface EstudianteCurso {
     EST_ID: string;
     CRS_ID: string;
     ESTADO: number;
-    CREADOR_ID: string;
         }
