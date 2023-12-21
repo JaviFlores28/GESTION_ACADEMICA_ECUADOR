@@ -92,9 +92,10 @@ const routes: Routes = [
       {
         path: 'profesores',
         children: [
-          { path: '', component: ProfesoresComponent },
+          { path: 'all', component: ProfesoresComponent },
           { path: 'nuevo', component: UsuarioComponent },
           { path: 'editar/:id', component: UsuarioComponent },
+          { path: 'asignar-profesor', component: ProfesorAsignaturaComponent },
         ],
       },
       {
@@ -124,17 +125,17 @@ const routes: Routes = [
       {
         path: 'matriculas',
         children: [
+          { path: 'all', component: EstudianteCursoComponent },
           { path: 'asignar-cursos', component: EstudianteCursoComponent },
-          { path: 'asignar-paralelo', component: EstudianteParaleloComponent },
-          { path: 'asignar-profesor', component: ProfesorAsignaturaComponent },
         ],
       },
       {
         path: 'paralelos',
         children: [
-          { path: '', component: ParalelosComponent },
+          { path: 'all', component: ParalelosComponent },
           { path: 'nuevo', component: ParaleloComponent },
           { path: 'editar/:id', component: ParaleloComponent },
+          { path: 'asignar-paralelo', component: EstudianteParaleloComponent },
         ],
       },
       {
@@ -143,22 +144,6 @@ const routes: Routes = [
           { path: '', component: UsuariosComponent },
           { path: 'nuevo', component: UsuarioComponent },
           { path: 'editar/:id', component: UsuarioComponent },
-        ],
-      },
-
-      {
-        path: 'institucion',
-        canActivate: [isAdmin],
-        children: [
-          {
-            path: 'anio-lectivo',
-            children: [
-              { path: 'inicializar', component: AnioLectivoComponent },
-              { path: 'periodos', component: PeriodosComponent },
-            ]
-          },
-          { path: 'asignar-paralelo', component: EstudianteParaleloComponent },
-          { path: 'asignar-profesor', component: ProfesorAsignaturaComponent },
         ],
       },
       { path: 'myinfo/:id', component: UsuarioComponent },

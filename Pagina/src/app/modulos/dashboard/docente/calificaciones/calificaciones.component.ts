@@ -347,7 +347,7 @@ export class CalificacionesComponent implements OnInit {
       EST_CRS_PRLL_ID: estudiante,
       PRCL_ID: parcial.PRCL_ID,
       CALIFICACION: parcial.CALIFICACION,
-      ESTADO: '1'
+      ESTADO: 1
     }
     return objeto;
   }

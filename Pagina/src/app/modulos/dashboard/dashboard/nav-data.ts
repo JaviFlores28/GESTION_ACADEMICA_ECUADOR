@@ -1,4 +1,4 @@
-import { faBookOpen, faChalkboardTeacher, faChildren, faGears, faGraduationCap, faHome, faLaptopFile, faPenRuler, faPeopleGroup, faPeopleLine, faPeopleRoof, faPerson, faPersonChalkboard, faSchool, faSubscript, faUser, faUserGear, faUsers, faUsersLine, faUsersRectangle } from '@fortawesome/free-solid-svg-icons';
+import { faBookOpen, faChalkboardTeacher, faChildren, faFlaskVial, faGears, faGraduationCap, faHome, faLaptopFile, faPenRuler, faPeopleGroup, faPeopleLine, faPeopleRoof, faPerson, faPersonChalkboard, faSchool, faSubscript, faUser, faUserGear, faUsers, faUsersLine, faUsersRectangle } from '@fortawesome/free-solid-svg-icons';
 import { NavBarData } from 'src/app/sistema/interfaces/NavBarData.interface';
 
 export const navbarData: NavBarData[] = [
@@ -36,27 +36,21 @@ export const navbarData: NavBarData[] = [
   },
   {
     routelink: 'areas',
-    label: 'Areas',
+    label: 'Áreas',
     rol: 'A',
-    icon: faPenRuler,
-  }, 
+    icon: faFlaskVial,
+  },
   {
     routelink: 'asignaturas',
     label: 'Asignaturas',
     rol: 'A',
-    icon: faSubscript,
+    icon: faPenRuler,
   },
   {
     routelink: 'cursos',
     label: 'Cursos',
     rol: 'A',
     icon: faPeopleRoof,
-  },
-  {
-    routelink: 'paralelos',
-    label: 'Paralelos',
-    rol: 'A',
-    icon: faUsersRectangle,
   },
   {
     routelink: 'representantes',
@@ -75,6 +69,16 @@ export const navbarData: NavBarData[] = [
     label: 'Profesores',
     rol: 'A',
     icon: faPersonChalkboard,
+    items: [
+      {
+        routelink: 'all',
+        label: 'Todos',
+      },
+      {
+        routelink: 'asignar-profesor',
+        label: 'Asignar profesores',
+      },
+    ]
   },
   {
     routelink: 'usuarios',
@@ -89,17 +93,29 @@ export const navbarData: NavBarData[] = [
     icon: faBookOpen,
     items: [
       {
+        routelink: 'all',
+        label: 'Todos',
+      },
+      {
         routelink: 'asignar-cursos',
         label: 'Asignar Cursos',
+      }
+    ]
+  },
+  {
+    routelink: 'paralelos',
+    label: 'Paralelos',
+    rol: 'A',
+    icon: faUsersRectangle,
+    items: [
+      {
+        routelink: 'all',
+        label: 'Todos',
       },
       {
         routelink: 'asignar-paralelo',
         label: 'Asignar paralelos',
-      },
-      {
-        routelink: 'asignar-profesor',
-        label: 'Asignar profesores',
-      },
+      }
     ]
   },
   {

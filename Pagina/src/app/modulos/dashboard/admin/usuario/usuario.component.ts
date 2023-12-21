@@ -191,10 +191,9 @@ export class UsuarioComponent {
 
   buildUsuarioProfesorObject() {
     const detalle: UsuarioProfesor = {
-      DTLL_PRF_ID: '0',
+      USR_ID: '0',
       PRF_FECH_INGR_INST: this.form.value.PRF_FECH_INGR_INST ? new Date(this.form.value.PRF_FECH_INGR_INST) : new Date(),
       PRF_FECH_INGR_MAG: this.form.value.PRF_FECH_INGR_MAG ? new Date(this.form.value.PRF_FECH_INGR_MAG) : new Date(),
-      USR_ID: '0',
     };
     return detalle;
   }
