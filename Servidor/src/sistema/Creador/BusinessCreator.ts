@@ -87,17 +87,17 @@ class BusinessCreator {
     return functiongetById;
   }
 
-  getByUser(): string {
-    const functionGetByUser = `
-    static async getByUser(data:any): Promise<Respuesta> {
+  login(): string {
+    const functionlogin = `
+    static async login(data:any): Promise<Respuesta> {
       try {
-        return ${this.capitalizedTableName}Datos.getByUser(data);
+        return ${this.capitalizedTableName}Datos.login(data);
   
       } catch (error: any) {
         return { response: false, data: null, message:error.message } // Devuelve una Promise rechazada con el error
       }
     }`;
-    return functionGetByUser;
+    return functionlogin;
   }
 
   getByCurso(): string {
@@ -189,7 +189,7 @@ class BusinessCreator {
     const otherFun = () => {
       switch (this.tableName) {
         case 'usuario':
-          return this.getByUser();
+          return this.login();
         case 'estudiante_curso':
           return this.getNoMatriculados() + this.getByCurso() + this.insertMasivo();
         case 'estudiante_curso_paralelo':

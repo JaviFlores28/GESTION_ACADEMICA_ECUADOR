@@ -1,9 +1,9 @@
 <div class="container-fluid pb-3">
-  <nav aria-label="breadcrumb" *ngIf="!myinfo">
-    <h3 class="fw-custom-semibold">{{ titulo }}</h3>
+  <nav aria-label="breadcrumb" *ngIf="!isMyInfo">
+    <h3 class="fw-custom-semibold">Sistema</h3>
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-        <a class="text-black fw-custom-semibold" routerLink="{{modoEdicion?'../../':'../'}}">Todos</a>
+        <a class="text-black fw-custom-semibold" [routerLink]="routerLink">{{ titulo }}</a>
       </li>
       <li class="breadcrumb-item active">{{ modoEdicion ? 'Editar' : 'Crear' }}</li>
     </ol>
@@ -71,8 +71,8 @@
     </div>
     <div class="col">
       <div class="row row-cols-1 g-3">
-        <div class="col">
-          <div class="card text-start border-0 rounded shadow" *ngIf="isProf">
+        <div class="col" *ngIf="isProf">
+          <div class="card text-start border-0 rounded shadow" >
             <div class="card-body">
               <h5 class="card-title"><fa-icon [icon]="faperson" size="1x"></fa-icon> Datos institucionales</h5>
               <hr />
@@ -98,13 +98,12 @@
             <div class="card-body">
               <h5 class="card-title"><fa-icon [icon]="fauser" size="1x"></fa-icon> Datos de usuario</h5>
               <hr />
-              <div
-                class="row row-cols-lg-auto row-cols-1 g-3 justify-content-center justify-content-md-start align-items-center">
+              <div class="row row-cols-lg-auto row-cols-1 g-3 justify-content-center justify-content-md-start align-items-center">
                 <div class="col">
                   <label class="form-label" for="USUARIO">Usuario:</label>
                   <input class="form-control" type="text" formControlName="USUARIO" />
                 </div>
-                <div class="col">
+                <div class="col"  *ngIf="!isMyInfo">
                   <label for="ESTADO" class="form-label pb-2">Estado</label>
                   <div class="form-check form-switch">
                     <input class="form-check-input" id="ESTADO" type="checkbox" role="switch"

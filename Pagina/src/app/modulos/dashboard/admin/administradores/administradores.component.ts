@@ -4,20 +4,20 @@ import { Usuario } from 'src/app/interfaces/Usuario.interface';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
-  selector: 'app-profesores',
-  templateUrl: './profesores.component.html',
-  styleUrls: ['./profesores.component.scss'],
+  selector: 'app-administradores',
+  templateUrl: './administradores.component.html',
+  styleUrls: ['./administradores.component.scss']
 })
-export class ProfesoresComponent {
+export class AdministradoresComponent {
+
   constructor(
     private service: UsuarioService,
     private router: Router,
     private route: ActivatedRoute,
   ) {}
 
-  routerLink: string = '../nuevo';
-  titulo: string = 'Profesores';
-
+  routerLink: string = 'nuevo';
+  titulo: string = 'Administradores';
   data: Usuario[] = [];
   headers = ['CÉDULA', 'NOMBRES', 'USUARIO', 'CORREO', 'ESTADO'];
   campos = ['USR_ID', 'USR_DNI', 'USR_NOM', 'USUARIO', 'USR_EMAIL'];
@@ -27,7 +27,7 @@ export class ProfesoresComponent {
   }
 
   loadData() {
-    this.service.get('P').subscribe({
+    this.service.get('A').subscribe({
       next: (value) => {
         if (value.response) {
           this.data = value.data;
@@ -51,7 +51,7 @@ export class ProfesoresComponent {
 
   filaAction(data: any) {
     if (data.option === 'editar') {
-     this.router.navigate(['../editar/' + data.id], { relativeTo: this.route });
+      this.router.navigate(['editar/' + data.id], { relativeTo: this.route });
     } else if (data.option === 'eliminar') {
       console.log(data.id);
     }

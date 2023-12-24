@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { faInfoCircle, faKey, faPersonChalkboard, faUser } from '@fortawesome/free-solid-svg-icons';
 import { UsuarioProfesor } from 'src/app/interfaces/UsuarioProfesor.interface';
 import { Usuario } from 'src/app/interfaces/Usuario.interface';
@@ -26,9 +26,10 @@ export class UsuarioComponent {
 
   modoEdicion: boolean = false;
   rutaActual: string[] = [];
+  routerLink: string = '../';
   titulo: string = '';
-modaltitle: string = 'Agregar';
-  modalMsg: string = '¿Desea guardar el registro?';  elementoId: string = '';
+  modaltitle: string = 'Agregar';
+  modalMsg: string = '¿Desea guardar el registro?'; elementoId: string = '';
   icon = faInfoCircle;
   fauser = faUser;
   fakey = faKey;
@@ -36,7 +37,7 @@ modaltitle: string = 'Agregar';
   isRep = false;
   isAdmin = false;
   isProf = false;
-  myinfo = false;
+  isMyInfo = false;
 
   form = this.formBuilder.group({
     USR_DNI: ['', Validators.required],
@@ -62,39 +63,52 @@ modaltitle: string = 'Agregar';
   });
 
   ngOnInit(): void {
-    this.determinarRolDesdeRuta();
     this.validarEdicion();
   }
 
-  determinarRolDesdeRuta() {
-    this.rutaActual = this.router.url.split('/');
-
-    this.titulo = this.rutaActual[2].charAt(0).toUpperCase() + this.rutaActual[2].slice(1);
-    console.log(this.rutaActual);
-
-    if (this.rutaActual[3] === 'nuevo') {
-      const rol = this.rutaActual[2];
-      this.isAdmin = rol === 'usuarios';
-      this.isRep = rol === 'representantes';
-      this.isProf = rol === 'profesores';
-    }
-  }
 
   validarEdicion() {
+    this.rutaActual = this.router.url.split('/');
     this.route.paramMap.subscribe((params) => {
-      const id = this.rutaActual[2] === 'myinfo' ? this.service.getUserLoggedId() : params.get('id');
-      this.myinfo = this.rutaActual[2] === 'myinfo' ? true : false;
+      const id = this.getIdFromParams(params);
+      this.determinarRolDesdeRuta();
       if (id) {
-        this.modoEdicion = true;
-        this.elementoId = id;
-this.modaltitle = 'Editar';
-        this.modalMsg = '¿Desea editar el registro?';        this.loadDataEdit();
+        this.setupEdicion(id);
       } else {
-        this.modoEdicion = false;
-        this.elementoId = '';
+        this.setupNuevo();
       }
     });
   }
+
+  private getIdFromParams(params: ParamMap): string {
+    return this.rutaActual[2] === 'myinfo' ? this.service.getUserLoggedId() : params.get('id');
+  }
+
+  determinarRolDesdeRuta() {
+    this.titulo = this.rutaActual[2].charAt(0).toUpperCase() + this.rutaActual[2].slice(1);
+    const rol = this.rutaActual[2];
+    this.isAdmin = rol === 'administradores';
+    this.isRep = rol === 'representantes';
+    this.isProf = rol === 'profesores';
+    this.isMyInfo = this.rutaActual[2] === 'myinfo';
+    this.routerLink += this.isProf ? 'all' : '';
+  }
+
+
+  private setupEdicion(id: string): void {
+    this.modoEdicion = true;
+    this.elementoId = id;
+    this.modaltitle = 'Editar';
+    this.modalMsg = '¿Desea editar el registro?';
+    this.routerLink = this.isProf ? '../../all' : '../../';
+    this.loadDataEdit();
+  }
+
+  private setupNuevo(): void {
+    this.modoEdicion = false;
+    this.elementoId = '';
+  }
+
 
   onSubmit() {
     this.openModal(this.modaltitle, this.modalMsg, 'warning', true);
@@ -248,6 +262,8 @@ this.modaltitle = 'Editar';
     this.isAdmin = data.ROL_ADMIN !== 0;
     this.isProf = data.ROL_PRF !== 0;
     this.isRep = data.ROL_REPR !== 0;
+    console.log(this.form.valid);
+
   }
 
   llenarFormDetalle(data: any) {
@@ -279,6 +295,8 @@ this.modaltitle = 'Editar';
     } else {
       if (this.modoEdicion) {
         this.openModal('¡Completado!', value.message, 'success', false);
+        this.loadDataEdit();
+        this.form.get('USUARIO')?.disable();
       } else {
         this.openModal('¡Completado!', value.message, 'success', false);
         this.clear();

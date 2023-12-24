@@ -36,9 +36,6 @@ router.patch('/usuario', async (req, res) => {
       case 'delete':
         // Handle delete case
         break;
-      case 'getByUser':
-        response = await UsuarioNegocio.getByUser(data);
-        break;
       default:
         return res.status(400).json({ message: 'Tipo de solicitud inválida.' });
     }

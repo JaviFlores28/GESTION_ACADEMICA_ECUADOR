@@ -110,8 +110,8 @@ class ServicesCreator {
     const gets = () => {
       switch (this.tableName) {
         case 'usuario':
-          return `case 'getByUser':
-          response = await ${this.capitalizedTableName}Negocio.getByUser(data);
+          return `case 'login':
+          response = await ${this.capitalizedTableName}Negocio.login(data);
           break;`;
         case 'profesor_asignatura_paralelo':
           return `case 'getByPrf':

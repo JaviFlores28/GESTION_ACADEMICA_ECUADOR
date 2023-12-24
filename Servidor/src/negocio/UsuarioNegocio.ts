@@ -60,13 +60,6 @@ class UsuarioNegocio {
     }
   }
 
-  static async getByUser(data: any): Promise<Respuesta> {
-    try {
-      return UsuarioDatos.getByUser(data);
-    } catch (error: any) {
-      return { response: false, data: null, message: error.message }; // Devuelve una Promise rechazada con el error
-    }
-  }
 }
 
 export default UsuarioNegocio;

@@ -193,12 +193,12 @@ class DataCreator {
     return functiongetById;
   }
 
-  getByUser(): string {
-    const functionGetByUser = `
-    static async getByUser(data:any): Promise<Respuesta> {
+  login(): string {
+    const functionlogin = `
+    static async login(data:any): Promise<Respuesta> {
       try {
         const pool = await BaseDatos.getInstanceDataBase();
-        let sql = this.sqlGetByUser;
+        let sql = this.sqllogin;
         const [rows] = await pool.execute<any>(sql, [data.usuario]);
   
         if (rows.length <= 0) {
@@ -218,7 +218,7 @@ class DataCreator {
         return { response: false, data: null, message:error.message } // Devuelve una Promise rechazada con el error
       }
     }`;
-    return functionGetByUser;
+    return functionlogin;
   }
 
   getByCurso(): string {
@@ -425,7 +425,7 @@ class DataCreator {
     const generarSQLupdate = this.generarSQLUpdate();
     const sqlGetByCurso = `static sqlGetByCurso: string = 'SELECT A.* FROM vista_estudiante_curso A INNER JOIN estudiante_curso B ON A.EST_CRS_ID = B.EST_CRS_ID LEFT JOIN estudiante_curso_paralelo ECP ON A.EST_CRS_ID = ECP.EST_CRS_ID AND ECP.ESTADO = 1 WHERE A.ESTADO = 1 AND B.CRS_ID = ? AND ECP.EST_CRS_ID IS NULL;';`;
     const sqlGetNoMatriculados = `static sqlGetNoMatriculados: string = 'SELECT a.* FROM vista_estudiante AS a LEFT JOIN estudiante_curso AS b ON b.EST_ID = a.EST_ID AND (b.ESTADO = 1 OR b.CRS_ID = (SELECT CRS_ID FROM curso ORDER BY CRS_ORDEN DESC LIMIT 1)) WHERE A.ESTADO=1 AND b.EST_ID IS NULL;';`;
-    const sqlGetByUser = `static sqlGetByUser: string = 'SELECT * FROM ${this.tableName} WHERE USUARIO = ?';`;
+    const sqllogin = `static sqllogin: string = 'SELECT * FROM ${this.tableName} WHERE USUARIO = ?';`;
     const sqlGetByCursoParalelo = `static sqlGetByCursoParalelo: string = 'SELECT a.* FROM vista_estudiante_curso_paralelo AS a INNER JOIN estudiante_curso_paralelo AS b ON a.EST_CRS_PRLL_ID = b.EST_CRS_PRLL_ID INNER JOIN estudiante_curso AS c ON c.EST_CRS_ID = b.EST_CRS_ID WHERE b.PRLL_ID = ? AND b.AL_ID = ? AND b.ESTADO = 1 AND c.CRS_ID = ? AND c.ESTADO = 1;';`;
     const sqlGetByPrf = `static sqlGetByPrf: string = 'SELECT a.* FROM vista_profesor_asignatura_paralelo as a JOIN profesor_asignatura_paralelo as b ON a.PRF_ASG_PRLL_ID = b.PRF_ASG_PRLL_ID WHERE b.ESTADO = 1 AND b.AL_ID = ? AND b.PRF_ID = ?;';`;
     const sqlGetByPeriodo = `static sqlGetByPeriodo: string = 'SELECT * FROM ${this.tableName} WHERE PRD_ID = ?';`;
@@ -458,7 +458,7 @@ class DataCreator {
     const otherSql = () => {
       switch (this.tableName) {
         case 'usuario':
-          return sqlGetByUser;
+          return sqllogin;
         case 'estudiante_curso':
           return sqlGetNoMatriculados + '\n' + sqlGetByCurso;
         case 'estudiante_curso_paralelo':
@@ -475,7 +475,7 @@ class DataCreator {
     const otherFun = () => {
       switch (this.tableName) {
         case 'usuario':
-          return this.getByUser();
+          return this.login();
         case 'estudiante_curso':
           return this.getNoMatriculados() + this.getByCurso() + this.insertMasivo();
         case 'estudiante_curso_paralelo':

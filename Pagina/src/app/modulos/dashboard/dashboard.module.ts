@@ -22,7 +22,6 @@ import { ParalelosComponent } from './admin/paralelos/paralelos.component';
 import { ProfesoresComponent } from './admin/profesores/profesores.component';
 import { RepresentantesComponent } from './admin/representantes/representantes.component';
 import { UsuarioComponent } from './admin/usuario/usuario.component';
-import { UsuariosComponent } from './admin/usuarios/usuarios.component';
 import { BodyComponent } from './dashboard/body/body.component';
 import { NavbarComponent } from './dashboard/navbar/navbar.component';
 import { SidenavComponent } from './dashboard/sidenav/sidenav.component';
@@ -43,6 +42,7 @@ import { ReporteCalificacionesComponent } from './admin/reporte-calificaciones/r
 import { ReporteCursosComponent } from './admin/reporte-cursos/reporte-cursos.component';
 import { EstudiantesParalelosComponent } from './admin/estudiantes-paralelos/estudiantes-paralelos.component';
 import { EstudiantesCursosComponent } from './admin/estudiantes-cursos/estudiantes-cursos.component';
+import { AdministradoresComponent } from './admin/administradores/administradores.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +63,6 @@ import { EstudiantesCursosComponent } from './admin/estudiantes-cursos/estudiant
     ProfesoresComponent,
     RepresentantesComponent,
     UsuarioComponent,
-    UsuariosComponent,
     BodyComponent,
     NavbarComponent,
     SidenavComponent,
@@ -80,7 +79,8 @@ import { EstudiantesCursosComponent } from './admin/estudiantes-cursos/estudiant
     ReporteCalificacionesComponent,
     ReporteCursosComponent,
     EstudiantesParalelosComponent,
-    EstudiantesCursosComponent
+    EstudiantesCursosComponent,
+    AdministradoresComponent
   ],
   imports: [CommonModule, DashboardRoutingModule, FormsModule, ReactiveFormsModule, FontAwesomeModule, NgbModule, NgSelectModule, NgTableComponent],
 })

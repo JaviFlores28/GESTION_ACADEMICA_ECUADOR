@@ -81,7 +81,7 @@ export const navbarData: NavBarData[] = [
     ]
   },
   {
-    routelink: 'usuarios',
+    routelink: 'administradores',
     label: 'Administradores',
     rol: 'A',
     icon: faUserGear,

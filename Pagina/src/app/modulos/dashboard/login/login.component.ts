@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
         usuario: this.formulario.value.usuario || '', // Si es null o undefined, se asigna una cadena vacía.
         pswd: this.formulario.value.pswd || '', // Igual aquí para pswd
       };
-      this.service.getByUser(usuario).subscribe({
+      this.service.login(usuario).subscribe({
         next: (value) => {
           if (!value.response) {
             this.openAlertModal('Error', 'Contraseña o usuario incorrecto.', 'danger', false);

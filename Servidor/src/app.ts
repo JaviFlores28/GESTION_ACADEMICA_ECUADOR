@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
+import session from 'express-session';
 
 import AnioLectivoServicio from './servicios/AnioLectivoServicio';
 import AreaServicio from './servicios/AreaServicio';
@@ -20,9 +21,9 @@ import UsuarioServicio from './servicios/UsuarioServicio';
 import UsuarioProfesorServicio from './servicios/UsuarioProfesorServicio';
 import EscalasReferencialesCalificacionesServicio from './servicios/EscalasReferencialesCalificacionesServicio';
 import ReporteServicio from './servicios/ReporteServicio';
+import AutentificacionServicio from './servicios/AutentificacionServicio';
 
-dotenv.config();
-const { SERVER_PORT, SERVER_URL, PAGE_URL } = process.env;
+const { SERVER_PORT, SERVER_URL, PAGE_URL, KEY_ENCRYPT } = process.env;
 const app = express();
 app.use(express.json());
 
@@ -34,6 +35,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+app.use('/api', AutentificacionServicio);
 app.use('/api', AnioLectivoServicio);
 app.use('/api', AreaServicio);
 app.use('/api', AsignaturaServicio);

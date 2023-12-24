@@ -1,8 +1,6 @@
 import CryptoJS from 'crypto-js';
-import * as dotenv from 'dotenv';
 /* import winston from 'winston';
  */
-dotenv.config();
 const { KEY_ENCRYPT } = process.env;
 
 class Funciones {

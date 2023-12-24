@@ -11,7 +11,6 @@ import { AsignaturasComponent } from './admin/asignaturas/asignaturas.component'
 import { ProfesoresComponent } from './admin/profesores/profesores.component';
 import { RepresentantesComponent } from './admin/representantes/representantes.component';
 import { EstudiantesComponent } from './admin/estudiantes/estudiantes.component';
-import { UsuariosComponent } from './admin/usuarios/usuarios.component';
 import { UsuarioComponent } from './admin/usuario/usuario.component';
 import { AsignaturaComponent } from './admin/asignatura/asignatura.component';
 import { EstudianteComponent } from './admin/estudiante/estudiante.component';
@@ -32,6 +31,7 @@ import { ReporteCursosComponent } from './admin/reporte-cursos/reporte-cursos.co
 import { ParametrosComponent } from './admin/parametros/parametros.component';
 import { EstudiantesParalelosComponent } from './admin/estudiantes-paralelos/estudiantes-paralelos.component';
 import { EstudiantesCursosComponent } from './admin/estudiantes-cursos/estudiantes-cursos.component';
+import { AdministradoresComponent } from './admin/administradores/administradores.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent, canActivate: [authGuardLogin] },
@@ -72,7 +72,7 @@ const routes: Routes = [
         canActivate: [isAdmin]
       },
       {
-        path: 'profesores', component: ProfesoresComponent ,
+        path: 'profesores',
         children: [
           { path: 'all', component: ProfesoresComponent },
           { path: 'nuevo', component: UsuarioComponent },
@@ -82,7 +82,7 @@ const routes: Routes = [
         canActivate: [isAdmin]
       },
       {
-        path: 'cursos',component: CursosComponent,
+        path: 'cursos',
         children: [
           { path: '', component: CursosComponent },
           { path: 'nuevo', component: CursoComponent },
@@ -128,9 +128,9 @@ const routes: Routes = [
         canActivate: [isAdmin]
       },
       {
-        path: 'usuarios',
+        path: 'administradores',
         children: [
-          { path: '', component: UsuariosComponent },
+          { path: '', component: AdministradoresComponent },
           { path: 'nuevo', component: UsuarioComponent },
           { path: 'editar/:id', component: UsuarioComponent },
         ],

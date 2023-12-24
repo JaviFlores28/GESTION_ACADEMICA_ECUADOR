@@ -24,8 +24,8 @@ export class ParaleloComponent implements OnInit {
 
   modoEdicion: boolean = false;
   elementoId: string = '';
-modaltitle: string = 'Agregar';
-  modalMsg: string = '¿Desea guardar el registro?';  icon = faInfoCircle;
+  modaltitle: string = 'Agregar';
+  modalMsg: string = '¿Desea guardar el registro?'; icon = faInfoCircle;
   USR_ID = this.usuarioService.getUserLoggedId();
 
   form = this.formBuilder.group({
@@ -43,8 +43,8 @@ modaltitle: string = 'Agregar';
       if (id) {
         this.modoEdicion = true;
         this.elementoId = id;
-this.modaltitle = 'Editar';
-        this.modalMsg = '¿Desea editar el registro?';        this.loadataEdit();
+        this.modaltitle = 'Editar';
+        this.modalMsg = '¿Desea editar el registro?'; this.loadataEdit();
       } else {
         this.modoEdicion = false;
         this.elementoId = '';

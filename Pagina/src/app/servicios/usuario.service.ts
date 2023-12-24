@@ -48,8 +48,8 @@ export class UsuarioService extends ErrorHandlerService {
     }
   }
 
-  getByUser(usuario: UsuarioLogin): Observable<Respuesta> {
-    const request = { type: 'getByUser', data: usuario };
+  login(usuario: UsuarioLogin): Observable<Respuesta> {
+    const request = { type: 'login', data: usuario };
     return this.http.patch<Respuesta>(this.apiUrl, request).pipe(catchError(this.handleError));
   }
 
