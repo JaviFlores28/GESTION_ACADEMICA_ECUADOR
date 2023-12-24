@@ -3,7 +3,7 @@ import { NavBarData } from 'src/app/sistema/interfaces/NavBarData.interface';
 
 export const navbarData: NavBarData[] = [
   {
-    routelink: '/dashboard',
+    routelink: '',
     icon: faHome,
     label: 'Inicio',
     rol: 'T',

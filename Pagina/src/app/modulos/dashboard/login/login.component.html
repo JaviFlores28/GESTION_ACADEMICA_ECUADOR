@@ -1,5 +1,5 @@
 <div class="container rounded shadow">
-  <div class="row row-cols-1 row-cols-md-2">
+  <div *ngIf="!HAS_2FA" class="row row-cols-1 row-cols-md-2">
     <div class="col bg-img"></div>
     <div class="col">
       <div class="row row-cols-1 g-2">
@@ -32,6 +32,25 @@
           </form>
         </div>
       </div>
+    </div>
+  </div>
+  <div *ngIf="HAS_2FA" class="row row-cols-1">
+    <div class="col">
+      <div class="verification-section pt-5 pb-3 px-5 text-center">
+        <h1 class="fw-bold py-3">Verificación necesaria</h1>
+        <p class="fw-light text-break">
+          Por favor, introduce el código generado en <br> la aplicación registrada del autenticador.
+        </p>
+      </div>
+      <form [formGroup]="formulario2AF" class="px-5 pb-3">
+        <div class="mb-3">
+          <label for="verificationCode" class="form-label" >Código:</label>
+          <input type="text" class="form-control" id="verificationCode" formControlName="TOKEN">
+        </div>
+        <div class="d-grid gap-2 pb-3">
+          <button class="btn btn-dark" [disabled]="!formulario2AF.valid" (click)="validar2FA()">Continuar</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

@@ -23,7 +23,7 @@ import EscalasReferencialesCalificacionesServicio from './servicios/EscalasRefer
 import ReporteServicio from './servicios/ReporteServicio';
 import AutentificacionServicio from './servicios/AutentificacionServicio';
 
-const { SERVER_PORT, SERVER_URL, PAGE_URL, KEY_ENCRYPT } = process.env;
+const { SERVER_PORT, SERVER_URL, PAGE_URL } = process.env;
 const app = express();
 app.use(express.json());
 
@@ -32,6 +32,7 @@ const corsOptions = {
   origin: PAGE_URL,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,  // Asegúrate de habilitar las credenciales
 };
 app.use(cors(corsOptions));
 

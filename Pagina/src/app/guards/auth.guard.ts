@@ -1,36 +1,44 @@
 import { CanActivateFn, Router } from '@angular/router';
-import { UsuarioService } from '../servicios/usuario.service';
 import { inject } from '@angular/core';
+import { AutentificacionService } from '../servicios/autentificacion.service';
+import { lastValueFrom } from 'rxjs';
 
-export const authGuard: CanActivateFn = (route, state) => {
-  const auth = inject(UsuarioService);
+export const authGuardDash: CanActivateFn = async (route, state) => {
+  const auth = inject(AutentificacionService);
   const router = inject(Router);
-  if (auth.isLoggedIn()) {
-    return true;
-  } else {
-    router.navigate(['']);
+  const response = await lastValueFrom(auth.isLoggedIn());
+  if (response) {
     return false;
+  } else {
+    return true;
   }
 };
 
-export const authGuardLogin: CanActivateFn = (route, state) => {
-  const auth = inject(UsuarioService);
+export const authGuardLogin: CanActivateFn = async (route, state) => {
+  const auth = inject(AutentificacionService);
   const router = inject(Router);
-  if (auth.isLoggedIn()) {
-    router.navigate(['dashboard']);
-    return false;
-  } else {
+  try {
+    const response = await lastValueFrom(auth.isLoggedIn());
+    if (response) {
+      router.navigate(['dashboard']);
+      return false;
+    } else {
+      return true;
+    }
+  } catch (error) {
     return true;
   }
+  
 };
 
 export const isAdmin: CanActivateFn = async (route, state) => {
-  const auth = inject(UsuarioService);
+  const auth = inject(AutentificacionService);
   const router = inject(Router);
-  if (await auth.hasRol('A')) {
+  return true
+  /* if (await auth.hasRol('A')) {
     return true;
   } else {
     router.navigate(['']);
     return false;
-  }
+  } */
 };

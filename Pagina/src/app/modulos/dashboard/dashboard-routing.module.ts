@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './dashboard/home/home.component';
 import { LoginComponent } from './login/login.component';
-import { authGuard, authGuardLogin, isAdmin } from 'src/app/guards/auth.guard';
+import { authGuardLogin, isAdmin } from 'src/app/guards/auth.guard';
 import { InicioComponent } from './inicio/inicio.component';
 import { CursoComponent } from './admin/curso/curso.component';
 import { CursosComponent } from './admin/cursos/cursos.component';
@@ -34,15 +34,12 @@ import { EstudiantesCursosComponent } from './admin/estudiantes-cursos/estudiant
 import { AdministradoresComponent } from './admin/administradores/administradores.component';
 
 const routes: Routes = [
-  { path: '', component: LoginComponent, canActivate: [authGuardLogin] },
+  { path: 'login', component: LoginComponent,canActivate: [authGuardLogin] },
   {
-    path: 'dashboard',
-    component: HomeComponent,
-    canActivate: [authGuard],
+    path: '', component: HomeComponent,
     children: [
       { path: '', component: InicioComponent },
-      { path: 'home', component: CursoComponent },
-      { path: 'sistema', component: ParametrosComponent, canActivate: [isAdmin] },
+      { path: 'sistema', component: ParametrosComponent },
       {
         path: 'anios',
         children: [
@@ -50,8 +47,7 @@ const routes: Routes = [
           { path: 'inicializar', component: AnioLectivoComponent },
           { path: 'periodos', component: PeriodosComponent },
           { path: 'editar/:id', component: AnioLectivoComponent },
-        ],
-        canActivate: [isAdmin]
+        ]
       },
       {
         path: 'areas',
@@ -59,8 +55,7 @@ const routes: Routes = [
           { path: '', component: AreasComponent },
           { path: 'nuevo', component: AreaComponent },
           { path: 'editar/:id', component: AreaComponent },
-        ],
-        canActivate: [isAdmin]
+        ]
       },
       {
         path: 'asignaturas',
@@ -68,8 +63,7 @@ const routes: Routes = [
           { path: '', component: AsignaturasComponent },
           { path: 'nuevo', component: AsignaturaComponent },
           { path: 'editar/:id', component: AsignaturaComponent },
-        ],
-        canActivate: [isAdmin]
+        ]
       },
       {
         path: 'profesores',
@@ -78,8 +72,7 @@ const routes: Routes = [
           { path: 'nuevo', component: UsuarioComponent },
           { path: 'editar/:id', component: UsuarioComponent },
           { path: 'asignar-profesor', component: ProfesorAsignaturaComponent },
-        ],
-        canActivate: [isAdmin]
+        ]
       },
       {
         path: 'cursos',
@@ -87,8 +80,7 @@ const routes: Routes = [
           { path: '', component: CursosComponent },
           { path: 'nuevo', component: CursoComponent },
           { path: 'editar/:id', component: CursoComponent },
-        ],
-        canActivate: [isAdmin]
+        ]
       },
       {
         path: 'representantes',
@@ -96,8 +88,7 @@ const routes: Routes = [
           { path: '', component: RepresentantesComponent },
           { path: 'nuevo', component: UsuarioComponent },
           { path: 'editar/:id', component: UsuarioComponent },
-        ],
-        canActivate: [isAdmin]
+        ]
       },
       {
         path: 'estudiantes',
@@ -105,16 +96,14 @@ const routes: Routes = [
           { path: '', component: EstudiantesComponent },
           { path: 'nuevo', component: EstudianteComponent },
           { path: 'editar/:id', component: EstudianteComponent },
-        ],
-        canActivate: [isAdmin]
+        ]
       },
       {
         path: 'matriculas',
         children: [
           { path: 'all', component: EstudiantesCursosComponent },
           { path: 'asignar-cursos', component: EstudianteCursoComponent },
-        ],
-        canActivate: [isAdmin]
+        ]
       },
       {
         path: 'paralelos',
@@ -124,8 +113,7 @@ const routes: Routes = [
           { path: 'editar/:id', component: ParaleloComponent },
           { path: 'all-asignaciones', component: EstudiantesParalelosComponent },
           { path: 'asignar-paralelo', component: EstudianteParaleloComponent },
-        ],
-        canActivate: [isAdmin]
+        ]
       },
       {
         path: 'administradores',
@@ -133,16 +121,14 @@ const routes: Routes = [
           { path: '', component: AdministradoresComponent },
           { path: 'nuevo', component: UsuarioComponent },
           { path: 'editar/:id', component: UsuarioComponent },
-        ],
-        canActivate: [isAdmin]
+        ]
       },
       {
         path: 'reporte',
         children: [
           { path: 'calificaciones', component: ReporteCalificacionesComponent },
           { path: 'cursos', component: ReporteCursosComponent },
-        ],
-        canActivate: [isAdmin]
+        ]
       },
       { path: 'myinfo/:id', component: UsuarioComponent },
       {
@@ -175,7 +161,7 @@ const routes: Routes = [
       },
     ],
   },
-  { path: '**', redirectTo: '' },
+  { path: '**', redirectTo: 'login' },
 ];
 
 @NgModule({

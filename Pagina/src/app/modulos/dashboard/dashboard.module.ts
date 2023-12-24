@@ -80,7 +80,7 @@ import { AdministradoresComponent } from './admin/administradores/administradore
     ReporteCursosComponent,
     EstudiantesParalelosComponent,
     EstudiantesCursosComponent,
-    AdministradoresComponent
+    AdministradoresComponent,
   ],
   imports: [CommonModule, DashboardRoutingModule, FormsModule, ReactiveFormsModule, FontAwesomeModule, NgbModule, NgSelectModule, NgTableComponent],
 })

@@ -11,7 +11,7 @@ class AutentificacionDatos {
     try {      
       const pool = await BaseDatos.getInstanceDataBase();
       let sql = this.sqllogin;
-      const [rows] = await pool.execute<any>(sql, [data.usuario]);
+      const [rows] = await pool.execute<any>(sql, [data.USUARIO]);
 
       if (rows.length <= 0) {
         throw new Error('Usuario no encontrado');
@@ -19,7 +19,7 @@ class AutentificacionDatos {
 
       const pswdDecrypt = Funciones.decrypt(rows[0].USR_PSWD);
 
-      if (!Funciones.pswdValid(pswdDecrypt, data.pswd)) {
+      if (!Funciones.pswdValid(pswdDecrypt, data.USR_PSWD)) {
         throw new Error('Contraseña incorrecta');
       }
       let newUsuario = rows[0] as Autentificacion;

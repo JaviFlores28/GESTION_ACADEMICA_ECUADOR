@@ -9,14 +9,15 @@ export class ErrorHandlerService {
   constructor() {}
 
   handleError(error: HttpErrorResponse) {
+    
     let errorMessage = 'Error desconocido';
 
     if (error.error instanceof ErrorEvent) {
       // Errores del lado del cliente
-      errorMessage = `Error: ${error.error.message}`;
+      errorMessage = `${error.error.message}`;
     } else {
       // Errores del lado del servidor
-      errorMessage = `Código del error: ${error.status}, ` + `mensaje: ${error.message}`;
+      errorMessage = `${error.error.message}`;
     }
 
     console.error(errorMessage);

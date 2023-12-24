@@ -1,4 +1,4 @@
 export interface UsuarioLogin {
-  usuario: string;
-  pswd: string;
+  USUARIO: string;
+  USR_PSWD: string;
 }

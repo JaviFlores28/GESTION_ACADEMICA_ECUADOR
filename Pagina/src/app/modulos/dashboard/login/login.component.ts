@@ -5,6 +5,7 @@ import { faUserTie } from '@fortawesome/free-solid-svg-icons';
 import { UsuarioLogin } from 'src/app/sistema/interfaces/usuario-Login.interface';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 import { ModalService } from 'src/app/servicios/modal.service';
+import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 
 @Component({
   selector: 'app-login',
@@ -15,17 +16,23 @@ export class LoginComponent implements OnInit {
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
-    private service: UsuarioService,
+    private service: AutentificacionService,
     private renderer: Renderer2,
     private el: ElementRef,
     private modalService: ModalService,
+    private serviceLocal: UsuarioService
   ) { }
 
   icon = faUserTie;
+  HAS_2FA = false;
 
   formulario = this.formBuilder.group({
     usuario: ['administrador', [Validators.required, Validators.minLength(8)]],
     pswd: ['admin', Validators.required],
+  });
+
+  formulario2AF = this.formBuilder.group({
+    TOKEN: ['', [Validators.required, Validators.minLength(6)]],
   });
 
   ngOnInit(): void {
@@ -42,17 +49,22 @@ export class LoginComponent implements OnInit {
   login() {
     if (this.formulario.valid) {
       const usuario: UsuarioLogin = {
-        usuario: this.formulario.value.usuario || '', // Si es null o undefined, se asigna una cadena vacía.
-        pswd: this.formulario.value.pswd || '', // Igual aquí para pswd
+        USUARIO: this.formulario.value.usuario || '', // Si es null o undefined, se asigna una cadena vacía.
+        USR_PSWD: this.formulario.value.pswd || '', // Igual aquí para pswd
       };
       this.service.login(usuario).subscribe({
         next: (value) => {
           if (!value.response) {
-            this.openAlertModal('Error', 'Contraseña o usuario incorrecto.', 'danger', false);
+            this.openAlertModal('Error', value.message, 'danger', false);
           } else {
-            this.service.setLocal(value.data);
-            this.resetStyle();
-            this.router.navigate(['/home']);
+            if (!value.data.AUTHENTICATED) {
+              this.HAS_2FA = true;
+            } else {
+              console.log(value);
+              
+             // this.resetStyle();
+             // this.router.navigate(['']);
+            }
           }
         },
         error: (error) => {
@@ -63,6 +75,30 @@ export class LoginComponent implements OnInit {
       this.formulario.reset();
     } else {
       this.formulario.markAllAsTouched();
+    }
+  }
+
+
+  validar2FA() {
+    if (this.formulario2AF.valid) {
+      const TOKEN = this.formulario2AF.value.TOKEN || '';
+      this.service.authentificated(TOKEN).subscribe({
+        next: (value) => {
+          if (!value.response) {
+            this.openAlertModal('Error', value.message, 'danger', false);
+          } else {
+            console.log(value.data);
+            
+            //this.resetStyle();
+           // this.router.navigate(['']);
+            // this.serviceLocal.setLocal(value.data);
+          }
+        },
+        error: (error) => {
+          this.openAlertModal('Error', error, 'danger', false);
+          console.error(error);
+        },
+      });
     }
   }
 

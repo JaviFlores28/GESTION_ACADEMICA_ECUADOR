@@ -1,54 +1,74 @@
 import speakeasy from 'speakeasy';
-import { Router, Request, Response, NextFunction } from 'express';
-import session, { Session } from 'express-session';
-import UsuarioEntidad from '../entidades/UsuarioEntidad';
+import { Router, Request, Response, } from 'express';
 import { Respuesta } from '../sistema/interfaces/Respuesta';
 import QRCode from 'qrcode';
 import AutentificacionNegocio from '../negocio/AutentificacionNegocio';
 import { Autentificacion } from '../sistema/interfaces/Autentificacion';
+import session from 'express-session';
 
-const router = Router();
-
-function requireAuth(req: Request, res: Response, next: NextFunction) {
-    const sesion = (req.session as CustomSession)?.user;
-    if (!sesion || !sesion.USR_ID) {
-        return res.status(401).json({ message: 'No autenticado.' });
+declare module 'express-session' {
+    interface Session {
+        user: Autentificacion;
     }
-    next();
 }
-
-interface CustomSession extends Session {
-    user?: UsuarioEntidad;
-}
-
+const router = Router();
 
 router.use(
     session({
         secret: process.env.KEY_ENCRYPT || 'UEFBC-2023-VF',
         resave: false,
         saveUninitialized: true,
+        name: 'uefbc',
         cookie: {
             maxAge: 3600000,
             secure: false,
         },
+
     })
 );
 
-router.post('/login', async (req: Request, res: Response) => {
-    const { USUARIO, USR_PSWD, TOKEN } = req.body;
+function requireAuth(req: Request, res: Response, next: () => void) {
+    const sesion = req.session.user;
+    if (!sesion || !sesion.USR_ID || (sesion.HAS_2FA && !sesion.AUTHENTICATED)) {
+        return res.status(401).json({ message: 'No autenticado.' });
+    }
+    return next();
+}
 
-    const respuesta: Respuesta = await AutentificacionNegocio.login({ usuario: USUARIO, pswd: USR_PSWD });
+router.post('/login', async (req: Request, res: Response) => {
+    const { USUARIO, USR_PSWD } = req.body;
+
+    const respuesta: Respuesta = await AutentificacionNegocio.login({ USUARIO: USUARIO, USR_PSWD: USR_PSWD });
+
     if (!respuesta.response) {
         return res.status(401).json(respuesta);
     }
-    const usuario = respuesta.data as UsuarioEntidad;
+    const usuario = respuesta.data as Autentificacion;
+    usuario.AUTHENTICATED = true;
+
     if (usuario.HAS_2FA) {
+        usuario.AUTHENTICATED = false;
+    }
+    req.session.user = usuario;
+
+    res.json({ response: true, message: 'Inicio de sesión exitoso.', data: { AUTHENTICATED: usuario.AUTHENTICATED,req: req.session } });
+});
+
+router.post('/authentificated', async (req: Request, res: Response) => {
+    const { TOKEN } = req.body;
+    const sesion = req.session.user;
+
+    if (!sesion) {
+        return res.status(401).json({ message: 'Usuario no autenticado.' });
+    }
+
+    if (sesion.HAS_2FA) {
         if (!TOKEN) {
             return res.status(400).json({ response: false, data: null, message: 'Se requiere un código de autenticación de dos factores.' });
         }
 
         const isValidToken = speakeasy.totp.verify({
-            secret: usuario.FA_KEY,
+            secret: sesion.FA_KEY,
             encoding: 'base32',
             token: TOKEN,
         });
@@ -57,14 +77,22 @@ router.post('/login', async (req: Request, res: Response) => {
             return res.status(401).json({ message: 'Código de autenticación inválido.' });
         }
     }
-    (req.session as CustomSession).user = usuario;
-
-    res.json({ message: 'Inicio de sesión exitoso.' });
+    req.session.user.AUTHENTICATED = true;
+    res.json({ response: true, data: req.session, message: 'Inicio de sesión exitoso.' });
 });
+
+router.get('/perfil', (req, res) => {
+    // Verificar si el usuario está autenticado consultando la sesión
+    if (req.session.user) {
+      res.json({data:`Bienvenido, ${req.session.user}`});
+    } else {
+      res.status(401).send('No autorizado');
+    }
+  });
 
 router.post('/enable-2fa', requireAuth, async (req: Request, res: Response) => {
     const { TOKEN } = req.body;
-    const sesion = (req.session as CustomSession).user as Autentificacion;
+    const sesion = req.session.user as Autentificacion;
     if (!sesion) {
         return res.status(404).json({ message: 'Usuario no encontrado.' });
     }
@@ -81,17 +109,14 @@ router.post('/enable-2fa', requireAuth, async (req: Request, res: Response) => {
     if (!isValidToken) {
         return res.status(401).json({ message: 'Código de autenticación inválido.' });
     }
-console.log(sesion);
-
     const response = await AutentificacionNegocio.update2FA(sesion.USR_ID);
     res.json(response);
-    //llamar funcion update HAS_2FA
 });
 
 
-router.get('/get-qr', requireAuth, async (req, res) => {
+router.get('/get-qr', requireAuth, async (req: Request, res: Response) => {
     try {
-        const sesion = (req.session as CustomSession).user;
+        const sesion = req.session.user;
         if (!sesion) {
             return res.status(404).json({ message: 'Usuario no encontrado.' });
         }
@@ -115,7 +140,7 @@ router.get('/get-qr', requireAuth, async (req, res) => {
 });
 
 
-router.post('/disable-2fa', (req, res) => {
+router.post('/disable-2fa', (req: Request, res: Response) => {
     /*  const { username } = req.session.userData;
  
      if (!users[username]) {
@@ -126,6 +151,17 @@ router.post('/disable-2fa', (req, res) => {
   */
     res.json({ message: 'Autenticación de dos factores deshabilitada.' });
 });
+
+router.post('/isLoggedIn', (req: Request, res: Response) => {
+    const sesion = req.session.user;
+    console.log(sesion);
+
+    if (!sesion) {
+        return res.status(401).json({ response: false, data: null, message: 'Usuario no autenticado.' });
+    }
+    res.json({ response: true, data: true, message: 'Existe un usuario logeado.' });
+});
+
 
 
 

@@ -48,11 +48,6 @@ export class UsuarioService extends ErrorHandlerService {
     }
   }
 
-  login(usuario: UsuarioLogin): Observable<Respuesta> {
-    const request = { type: 'login', data: usuario };
-    return this.http.patch<Respuesta>(this.apiUrl, request).pipe(catchError(this.handleError));
-  }
-
   updatePswd(data: any): Observable<any> {
     const request = { type: 'updatePswd', data: data };
     return this.http.patch(`${this.apiUrl}/${data.id}`, request).pipe(catchError(this.handleError));
@@ -76,10 +71,6 @@ export class UsuarioService extends ErrorHandlerService {
     return USR_ID ? JSON.parse(atob(USR_ID)) : '';
   }
 
-  isLoggedIn(): boolean {
-    const userString = localStorage.getItem(variables.KEY_NAME);
-    return !!userString;
-  }
 
   async getUserLogged(): Promise<Usuario | null> {
     const id = this.getUserLoggedId();
@@ -95,10 +86,5 @@ export class UsuarioService extends ErrorHandlerService {
     }
   }
 
-  async hasRol(rol: string): Promise<boolean> {
-    const user = await this.getUserLogged();
-    if (!user) return false;
-
-    return (user.ROL_PRF === 1 && rol === 'P') || (user.ROL_ADMIN === 1 && rol === 'A') || (user.ROL_REPR === 1 && rol === 'R');
-  }
+ 
 }

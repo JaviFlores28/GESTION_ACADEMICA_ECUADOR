@@ -1,11 +1,11 @@
 import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { NavBarData } from 'src/app/sistema/interfaces/NavBarData.interface';
 import { SidenavToogle } from 'src/app/sistema/interfaces/sideNav.interface';
 import { fadeInOut } from '../helper';
 import { navbarData } from '../nav-data';
 import { faAngleDown, faAngleRight, faBars, faSchoolFlag } from '@fortawesome/free-solid-svg-icons';
-import { UsuarioService } from 'src/app/servicios/usuario.service';
+import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -16,7 +16,7 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 export class SidenavComponent implements OnInit {
   constructor(
     public router: Router,
-    public servicio: UsuarioService,
+    public servicio: AutentificacionService,
   ) {}
 
   //pagina
