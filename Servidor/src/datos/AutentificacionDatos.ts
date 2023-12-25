@@ -5,10 +5,11 @@ import { Respuesta } from "../sistema/interfaces/Respuesta";
 
 class AutentificacionDatos {
   static sqllogin: string = 'SELECT * FROM vista_usuario WHERE USUARIO = ?';
-  static sqlUpdate2FA: string = 'UPDATE usuario SET HAS_2FA = 1 WHERE  USR_ID = ?';
+  static sqlEnable2FA: string = 'UPDATE usuario SET HAS_2FA = 1 WHERE  USR_ID = ?';
+  static sqlDisable2FA: string = 'UPDATE usuario SET HAS_2FA = 0 WHERE  USR_ID = ?';
 
   static async login(data: any): Promise<Respuesta> {
-    try {      
+    try {
       const pool = await BaseDatos.getInstanceDataBase();
       let sql = this.sqllogin;
       const [rows] = await pool.execute<any>(sql, [data.USUARIO]);
@@ -30,15 +31,29 @@ class AutentificacionDatos {
     }
   }
 
-  static async update2FA(USR_ID: string) {
+  static async enable2FA(USR_ID: string) {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
-      let sql = this.sqlUpdate2FA;
+      let sql = this.sqlEnable2FA;
       const [rows] = await pool.execute<any>(sql, [USR_ID]);
       if (rows.length <= 0) {
         throw new Error('No fue posible activar 2FA.');
       }
-      return { response: true, data: true, message: 'Activación completa.' };
+      return { response: true, data: true, message: 'Activación completada.' };
+    } catch (error: any) {
+      return { response: false, data: null, message: error.message }; // Devuelve una Promise rechazada con el error
+    }
+  }
+
+  static async disable2FA(USR_ID: string) {
+    try {
+      const pool = await BaseDatos.getInstanceDataBase();
+      let sql = this.sqlDisable2FA;
+      const [rows] = await pool.execute<any>(sql, [USR_ID]);
+      if (rows.length <= 0) {
+        throw new Error('No fue posible desactivar 2FA.');
+      }
+      return { response: true, data: true, message: 'desactivación completada.' };
     } catch (error: any) {
       return { response: false, data: null, message: error.message }; // Devuelve una Promise rechazada con el error
     }

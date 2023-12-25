@@ -104,7 +104,7 @@ async function generateComponentFile(connection: any, tableName: any, primaryKey
     constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private usuarioService: UsuarioService, private service: ${capitalizedTableName}Service) { }
   
     modoEdicion: boolean = false;
-    elementoId: string = '';
+    editItemId: string = '';
     icon = faInfoCircle;
    
     form = this.formBuilder.group({
@@ -121,11 +121,11 @@ async function generateComponentFile(connection: any, tableName: any, primaryKey
         const id = params.get('id');
         if (id) {
           this.modoEdicion = true;
-          this.elementoId = id;
+          this.editItemId = id;
           this.loadData();
         } else {
           this.modoEdicion = false;
-          this.elementoId = '';
+          this.editItemId = '';
         }
       });
     }
@@ -192,7 +192,7 @@ async function generateComponentFile(connection: any, tableName: any, primaryKey
     }
   
     buildObject() {
-      const userId = this.usuarioService.getUserLoggedId();
+      const userId = this.usuarioService.getUserIdLocal();
       const ${lowercaseTableName}: ${capitalizedTableName} = {
         ${primaryKeyColumn}: '0',
         ${generateObjectComponet(propertiesData)},
@@ -204,7 +204,7 @@ async function generateComponentFile(connection: any, tableName: any, primaryKey
   
     buildObjectEdit() {
       const ${lowercaseTableName}: ${capitalizedTableName} = {
-        ${primaryKeyColumn}: this.elementoId,
+        ${primaryKeyColumn}: this.editItemId,
         ${generateObjectComponet(propertiesData)},
         CREADOR_ID: '0'
       };
@@ -212,7 +212,7 @@ async function generateComponentFile(connection: any, tableName: any, primaryKey
     }
   
     loadData() {
-      this.service.getById(this.elementoId).subscribe({
+      this.service.getById(this.editItemId).subscribe({
         next: (value) => {
           if (value.data) {
             this.llenarForm(value.data);

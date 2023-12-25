@@ -1,8 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { ModalService } from 'src/app/servicios/modal.service';
-import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
   selector: 'app-navbar',
@@ -11,8 +10,7 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 })
 export class NavbarComponent implements OnInit {
   constructor(
-    private servicio: UsuarioService,
-    private router: Router,
+    private servicio: AutentificacionService,
     private modalService: ModalService,
   ) { }
 
@@ -37,10 +35,18 @@ export class NavbarComponent implements OnInit {
     return styleClass;
   }
 
-  async getuserInfo() {
-    let usuario = await this.servicio.getUserLogged();
-    this.nombre = usuario?.USR_NOM || '' + usuario?.USR_APE;
-    this.USR_ID = usuario?.USR_ID || '';
+  getuserInfo() {
+    this.servicio.getUser().subscribe({
+      next: (value) => {
+        if (value.response) {
+          this.nombre = value.data.USR_NOM || '' + value.data.USR_APE;
+          this.USR_ID = value.data.USR_ID || '';
+        }
+      },
+      error(err) {
+        console.log(err);
+      },
+    });
   }
 
   openModal() {
@@ -48,10 +54,7 @@ export class NavbarComponent implements OnInit {
       .openModal('Cerrar sesión', this.modalMsg, 'warning', true)
       .then((result) => {
         if (result === 'save') {
-          this.servicio.removeLocal();
-          // Redirigir al usuario al login
-          // this.router.navigate(['login']);
-          // O recargar la página
+          this.servicio.removeUserIdLocal();
           window.location.reload();
         }
       })

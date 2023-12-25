@@ -10,9 +10,16 @@ class AutentificacionNegocio {
         }
     }
     
-    static async update2FA(USR_ID: string): Promise<Respuesta> {
+    static async enable2FA(USR_ID: string): Promise<Respuesta> {
         try {
-            return AutentificacionDatos.update2FA(USR_ID);
+            return AutentificacionDatos.enable2FA(USR_ID);
+        } catch (error: any) {
+            return { response: false, data: null, message: error.message }; // Devuelve una Promise rechazada con el error
+        }
+    }
+    static async disable2FA(USR_ID: string): Promise<Respuesta> {
+        try {
+            return AutentificacionDatos.disable2FA(USR_ID);
         } catch (error: any) {
             return { response: false, data: null, message: error.message }; // Devuelve una Promise rechazada con el error
         }

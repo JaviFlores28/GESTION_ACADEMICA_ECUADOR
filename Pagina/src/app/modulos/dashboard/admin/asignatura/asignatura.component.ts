@@ -5,11 +5,10 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Area } from 'src/app/interfaces/Area.interface';
 import { Asignatura } from 'src/app/interfaces/Asignatura.interface';
 import { Curso } from 'src/app/interfaces/Curso.interface';
-
 import { AreaService } from 'src/app/servicios/area.service';
 import { AsignaturaService } from 'src/app/servicios/asignatura.service';
+import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { ModalService } from 'src/app/servicios/modal.service';
-import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
   selector: 'app-asignatura',
@@ -24,14 +23,15 @@ export class AsignaturaComponent {
     private service: AsignaturaService,
     private areaService: AreaService,
     private modalService: ModalService,
-    private usuarioService: UsuarioService,
+    private usuarioService: AutentificacionService,
   ) { }
 
   modoEdicion: boolean = false;
-  elementoId: string = '';
+  editItemId: string = '';
   icon = faInfoCircle;
 modaltitle: string = 'Agregar';
-  modalMsg: string = '¿Desea guardar el registro?';  USR_ID = this.usuarioService.getUserLoggedId();
+  modalMsg: string = '¿Desea guardar el registro?';  
+  USR_ID = this.usuarioService.getUserIdLocal();
 
   areas: Area[] = [];
   cursos: Curso[] = [];
@@ -53,12 +53,12 @@ modaltitle: string = 'Agregar';
       const id = params.get('id');
       if (id) {
         this.modoEdicion = true;
-        this.elementoId = id;
+        this.editItemId = id;
 this.modaltitle = 'Editar';
         this.modalMsg = '¿Desea editar el registro?';        this.loadDataEdit();
       } else {
         this.modoEdicion = false;
-        this.elementoId = '';
+        this.editItemId = '';
       }
     });
   }
@@ -108,7 +108,7 @@ this.modaltitle = 'Editar';
 
   buildObjectEdit() {
     const asignatura: Asignatura = {
-      ASG_ID: this.elementoId,
+      ASG_ID: this.editItemId,
       ASG_NOM: this.form.value.nom || '',
       ASG_TIPO: this.form.value.cltv ? '1' : '2',
       AREA_ID: this.form.value.area || '',
@@ -118,7 +118,7 @@ this.modaltitle = 'Editar';
   }
 
   loadDataEdit() {
-    this.service.getById(this.elementoId).subscribe({
+    this.service.getById(this.editItemId).subscribe({
       next: (value) => {
         if (value.response) {
           this.llenarForm(value.data);

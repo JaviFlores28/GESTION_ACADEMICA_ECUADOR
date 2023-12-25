@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faCircleCheck, faCircleXmark, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalComponent } from 'src/app/componentes/modal/modal.component';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Curso } from 'src/app/interfaces/Curso.interface';
+import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { CursoService } from 'src/app/servicios/curso.service';
 import { ModalService } from 'src/app/servicios/modal.service';
-import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
   selector: 'app-curso',
@@ -16,19 +14,19 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 })
 export class CursoComponent {
   constructor(
-    private ngBootstrap: NgbModal,
     private route: ActivatedRoute,
     private router: Router,
     private formBuilder: FormBuilder,
     private service: CursoService,
-    private usuarioService: UsuarioService,
+    private usuarioService: AutentificacionService,
     private modalService: ModalService,
   ) { }
 
   modoEdicion: boolean = false;
-  elementoId: string = '';
-modaltitle: string = 'Agregar';
-  modalMsg: string = '¿Desea guardar el registro?';  USR_ID = this.usuarioService.getUserLoggedId();
+  editItemId: string = '';
+  modaltitle: string = 'Agregar';
+  modalMsg: string = '¿Desea guardar el registro?';
+  USR_ID = this.usuarioService.getUserIdLocal();
 
   icon = faInfoCircle;
 
@@ -48,12 +46,12 @@ modaltitle: string = 'Agregar';
       const id = params.get('id');
       if (id) {
         this.modoEdicion = true;
-        this.elementoId = id;
-this.modaltitle = 'Editar';
-        this.modalMsg = '¿Desea editar el registro?';        this.loadDataEdit();
+        this.editItemId = id;
+        this.modaltitle = 'Editar';
+        this.modalMsg = '¿Desea editar el registro?'; this.loadDataEdit();
       } else {
         this.modoEdicion = false;
-        this.elementoId = '';
+        this.editItemId = '';
       }
     });
   }
@@ -103,7 +101,7 @@ this.modaltitle = 'Editar';
 
   buildObjectEdit() {
     const curso: Curso = {
-      CRS_ID: this.elementoId,
+      CRS_ID: this.editItemId,
       CRS_NOM: this.form.value.nom || '',
       CRS_TIPO: this.form.value.tip || '',
       CRS_ORDEN: this.form.value.orden || 0,
@@ -113,7 +111,7 @@ this.modaltitle = 'Editar';
   }
 
   loadDataEdit() {
-    this.service.getById(this.elementoId).subscribe({
+    this.service.getById(this.editItemId).subscribe({
       next: (value) => {
         if (value.data) {
           this.llenarForm(value.data);

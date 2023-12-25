@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './dashboard/home/home.component';
 import { LoginComponent } from './login/login.component';
-import { authGuardLogin, isAdmin } from 'src/app/guards/auth.guard';
+import { authGuardDash, authGuardLogin, isAdmin } from 'src/app/guards/auth.guard';
 import { InicioComponent } from './inicio/inicio.component';
 import { CursoComponent } from './admin/curso/curso.component';
 import { CursosComponent } from './admin/cursos/cursos.component';
@@ -36,7 +36,7 @@ import { AdministradoresComponent } from './admin/administradores/administradore
 const routes: Routes = [
   { path: 'login', component: LoginComponent,canActivate: [authGuardLogin] },
   {
-    path: '', component: HomeComponent,
+    path: '', component: HomeComponent, canActivate:[authGuardDash],
     children: [
       { path: '', component: InicioComponent },
       { path: 'sistema', component: ParametrosComponent },

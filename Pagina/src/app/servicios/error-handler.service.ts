@@ -20,7 +20,7 @@ export class ErrorHandlerService {
       errorMessage = `${error.error.message}`;
     }
 
-    console.error(errorMessage);
+   // console.error(errorMessage);
     return throwError(() => new Error(errorMessage)); // Utiliza una función de fábrica para crear el error
   }
 }

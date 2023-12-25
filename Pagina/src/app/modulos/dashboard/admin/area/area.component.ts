@@ -3,8 +3,8 @@ import { Validators, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Area } from 'src/app/interfaces/Area.interface';
 import { AreaService } from 'src/app/servicios/area.service';
+import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { ModalService } from 'src/app/servicios/modal.service';
-import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
   selector: 'app-area',
@@ -17,15 +17,15 @@ export class AreaComponent implements OnInit {
     private router: Router,
     private formBuilder: FormBuilder,
     private service: AreaService,
-    private usuarioService: UsuarioService,
+    private usuarioService: AutentificacionService,
     private modalService: ModalService,
   ) { }
 
   modoEdicion: boolean = false;
-  elementoId: string = '';
+  editItemId: string = '';
   modaltitle: string = 'Agregar';
   modalMsg: string = '¿Desea guardar el registro?';
-  USR_ID = this.usuarioService.getUserLoggedId();
+  USR_ID = this.usuarioService.getUserIdLocal();
 
   form = this.formBuilder.group({
     nom: ['', Validators.required],
@@ -41,13 +41,13 @@ export class AreaComponent implements OnInit {
       const id = params.get('id');
       if (id) {
         this.modoEdicion = true;
-        this.elementoId = id;
+        this.editItemId = id;
         this.modaltitle = 'Editar';
         this.modalMsg = '¿Desea editar el registro?'; 
         this.loadDataEdit();
       } else {
         this.modoEdicion = false;
-        this.elementoId = '';
+        this.editItemId = '';
       }
     });
   }
@@ -95,7 +95,7 @@ export class AreaComponent implements OnInit {
 
   buildObjectEdit() {
     const area: Area = {
-      AREA_ID: this.elementoId,
+      AREA_ID: this.editItemId,
       AREA_NOM: this.form.value.nom || '',
       ESTADO: this.form.value.estado ? 1 : 0,
     };
@@ -103,7 +103,7 @@ export class AreaComponent implements OnInit {
   }
 
   loadDataEdit() {
-    this.service.getById(this.elementoId).subscribe({
+    this.service.getById(this.editItemId).subscribe({
       next: (value) => {
         if (value.response) {
           this.llenarForm(value.data);

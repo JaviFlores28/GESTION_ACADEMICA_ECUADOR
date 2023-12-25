@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { getFormattedDate } from 'src/app/sistema/variables/variables';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
-import { UsuarioService } from 'src/app/servicios/usuario.service';
 import { ModalService } from 'src/app/servicios/modal.service';
 import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
+import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 
 @Component({
   selector: 'app-anio-lectivo',
@@ -14,15 +14,16 @@ import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
 export class AnioLectivoComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
-    private usuarioService: UsuarioService,
+    private usuarioService: AutentificacionService,
     private service: AnioLectivoService,
     private modalService: ModalService,
   ) { }
 
   modoEdicion: boolean = false;
-  elementoId: string = '';
+  editItemId: string = '';
 modaltitle: string = 'Agregar';
-  modalMsg: string = '¿Desea guardar el registro?';  USR_ID = this.usuarioService.getUserLoggedId();
+  modalMsg: string = '¿Desea guardar el registro?';  
+  USR_ID = this.usuarioService.getUserIdLocal();
 
   form = this.formBuilder.group({
     AL_NOM: ['', Validators.required],
@@ -98,7 +99,7 @@ modaltitle: string = 'Agregar';
 
   buildObjectEdit() {
     const aniolectivo: AnioLectivo = {
-      AL_ID: this.elementoId,
+      AL_ID: this.editItemId,
       AL_NOM: this.form.value.AL_NOM || '',
       AL_INICIO: this.form.value.AL_INICIO ? new Date(this.form.value.AL_INICIO) : new Date(),
       AL_FIN: this.form.value.AL_FIN ? new Date(this.form.value.AL_FIN) : new Date(),
@@ -121,7 +122,7 @@ modaltitle: string = 'Agregar';
       next: (value) => {
         if (value.response) {
           this.modoEdicion = true;
-          this.elementoId = value.data[0].AL_ID;
+          this.editItemId = value.data[0].AL_ID;
   this.modaltitle = 'Editar';
         this.modalMsg = '¿Desea editar el registro?';          this.llenarForm(value.data[0]);
         } else {

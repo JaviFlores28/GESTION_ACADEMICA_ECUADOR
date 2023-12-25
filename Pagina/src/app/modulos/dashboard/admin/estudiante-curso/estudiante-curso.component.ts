@@ -3,10 +3,10 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Curso } from 'src/app/interfaces/Curso.interface';
 import { Estudiante } from 'src/app/interfaces/Estudiante.interface';
 import { EstudianteCursoParalelo } from 'src/app/interfaces/EstudianteCursoParalelo.interface';
+import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { CursoService } from 'src/app/servicios/curso.service';
 import { EstudianteCursoService } from 'src/app/servicios/estudiante-curso.service';
 import { ModalService } from 'src/app/servicios/modal.service';
-import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
   selector: 'app-estudiante-curso',
@@ -17,7 +17,7 @@ export class EstudianteCursoComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private modalService: ModalService,
-    private usuarioService: UsuarioService,
+    private usuarioService: AutentificacionService,
     private service: EstudianteCursoService,
     private cursoService: CursoService
   ) { }
@@ -32,10 +32,10 @@ export class EstudianteCursoComponent implements OnInit {
   headersMatriculados = ['CÉDULA', 'NOMBRES', 'CURSO', 'TIPO'];
   camposMatriculados = ['EST_CRS_ID', 'EST_DNI', 'EST_NOM', 'CRS_NOM', 'CRS_TIPO'];
 
-  elementoId: string = '';
+  editItemId: string = '';
 modaltitle: string = 'Agregar';
   modalMsg: string = '¿Desea guardar?';  action: string = '';
-  USR_ID = this.usuarioService.getUserLoggedId();
+  USR_ID = this.usuarioService.getUserIdLocal();
   AL_ID: string = '0';
   ESTADO: number = 1;
   form = this.formBuilder.group({

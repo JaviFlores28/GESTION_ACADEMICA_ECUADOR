@@ -4,16 +4,15 @@ import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
 import { CalificacionesCuantitativas } from 'src/app/interfaces/CalificacionesCuantitativas.interface';
 import { EscalasReferencialesCalificaciones } from 'src/app/interfaces/EscalasReferencialesCalificaciones.interface';
 import { Parcial } from 'src/app/interfaces/Parcial.interface';
-
 import { Periodo } from 'src/app/interfaces/Periodo.interface';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
+import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { CalififcacionCuantitativaService } from 'src/app/servicios/calififcacion-cuantitativa.service';
 import { EscalasReferencialesCalificacionesService } from 'src/app/servicios/escalas-referenciales-calificaciones.service';
 import { EstudianteCursoParaleloService } from 'src/app/servicios/estudiante-curso-paralelo.service';
 import { ModalService } from 'src/app/servicios/modal.service';
 import { ProfesorAsignaturaService } from 'src/app/servicios/profesor-asignatura.service';
 import { ReporteService } from 'src/app/servicios/reporte.service';
-import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
   selector: 'app-calificaciones',
@@ -26,7 +25,7 @@ export class CalificacionesComponent implements OnInit {
     private service: ProfesorAsignaturaService,
     private estudianteCursoParaleloservice: EstudianteCursoParaleloService,
     private anioService: AnioLectivoService,
-    private usuarioService: UsuarioService,
+    private usuarioService: AutentificacionService,
     private calificacioncuantitativaService: CalififcacionCuantitativaService,
     private modalService: ModalService,
     private escalasService: EscalasReferencialesCalificacionesService,
@@ -36,7 +35,7 @@ export class CalificacionesComponent implements OnInit {
   elementoId: string = '';
   PRLL_ID: string = '';
   CRS_ID: string = '';
-  USR_ID = this.usuarioService.getUserLoggedId();
+  USR_ID = this.usuarioService.getUserIdLocal();
   mostrarToast: boolean = false;
   mensajeToast: string = '';
   backgroundToast: string = 'bg-success';

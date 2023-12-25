@@ -5,12 +5,12 @@ import { EstudianteCurso } from 'src/app/interfaces/EstudianteCurso.interface';
 import { EstudianteCursoParalelo } from 'src/app/interfaces/EstudianteCursoParalelo.interface';
 import { Paralelo } from 'src/app/interfaces/Paralelo.interface';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
+import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { CursoService } from 'src/app/servicios/curso.service';
 import { EstudianteCursoParaleloService } from 'src/app/servicios/estudiante-curso-paralelo.service';
 import { EstudianteCursoService } from 'src/app/servicios/estudiante-curso.service';
 import { ModalService } from 'src/app/servicios/modal.service';
 import { ParaleloService } from 'src/app/servicios/paralelo.service';
-import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
   selector: 'app-estudiante-paralelo',
@@ -25,7 +25,7 @@ export class EstudianteParaleloComponent implements OnInit {
     private cursoService: CursoService,
     private paraleloService: ParaleloService,
     private estudianteCursoService: EstudianteCursoService,
-    private usuarioService: UsuarioService,
+    private usuarioService: AutentificacionService,
     private anioService: AnioLectivoService
   ) { }
 
@@ -42,8 +42,9 @@ export class EstudianteParaleloComponent implements OnInit {
   headersEstudianteCursoParalelo = ['CÉDULA', 'NOMBRES', 'CURSO', 'TIPO', 'PARALELO'];
   camposEstudianteCursoParalelo = ['EST_CRS_PRLL_ID', 'EST_DNI', 'EST_CRS_NOM', 'CRS_NOM', 'CRS_TIPO', 'PRLL_NOM'];
 
-modaltitle: string = 'Agregar';
-  modalMsg: string = '¿Desea guardar?';  USR_ID: string = this.usuarioService.getUserLoggedId();
+  modaltitle: string = 'Agregar';
+  modalMsg: string = '¿Desea guardar?';
+  USR_ID: string = this.usuarioService.getUserIdLocal();
   AL_ID: string = '0';
   PASE: number = 4;
   ESTADO: number = 1;

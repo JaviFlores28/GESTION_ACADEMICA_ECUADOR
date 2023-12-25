@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
+import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { ProfesorAsignaturaService } from 'src/app/servicios/profesor-asignatura.service';
-import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
   selector: 'app-profesor-cursos-asignaturas',
@@ -12,7 +12,7 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 export class ProfesorCursosAsignaturasComponent implements OnInit {
   constructor(
     private service: ProfesorAsignaturaService,
-    private usuarioService: UsuarioService,
+    private usuarioService: AutentificacionService,
     private anioService: AnioLectivoService,
     private router: Router,
     private route: ActivatedRoute,
@@ -24,7 +24,7 @@ export class ProfesorCursosAsignaturasComponent implements OnInit {
   headers: any[] = ['Año lectivo', 'Asignatura', 'Curso', 'Tipo', 'Paralelo', 'Profesor'];
 
   titulo: string = 'Asignaturas';
-  USR_ID: string = this.usuarioService.getUserLoggedId();
+  USR_ID: string = this.usuarioService.getUserIdLocal();
   AL_ID: string = '0';
   existeAnio: boolean = false;
 

@@ -6,11 +6,18 @@ import { lastValueFrom } from 'rxjs';
 export const authGuardDash: CanActivateFn = async (route, state) => {
   const auth = inject(AutentificacionService);
   const router = inject(Router);
-  const response = await lastValueFrom(auth.isLoggedIn());
-  if (response) {
+  try {
+    const response = await lastValueFrom(auth.isLoggedIn());
+    if (response) {
+      return true;
+    } else {
+      router.navigate(['login']);
+      return false;
+    }
+  } catch (error) {
+    router.navigate(['login']);
+
     return false;
-  } else {
-    return true;
   }
 };
 

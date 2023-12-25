@@ -8,6 +8,7 @@ import { getFormattedDate } from 'src/app/sistema/variables/variables';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 import { UsuarioProfesorService } from 'src/app/servicios/usuario-profesor.service';
 import { ModalService } from 'src/app/servicios/modal.service';
+import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 
 @Component({
   selector: 'app-usuario',
@@ -22,6 +23,7 @@ export class UsuarioComponent {
     private service: UsuarioService,
     private detalleService: UsuarioProfesorService,
     private modalService: ModalService,
+    private authService:AutentificacionService
   ) { }
 
   modoEdicion: boolean = false;
@@ -81,7 +83,9 @@ export class UsuarioComponent {
   }
 
   private getIdFromParams(params: ParamMap): string {
-    return this.rutaActual[2] === 'myinfo' ? this.service.getUserLoggedId() : params.get('id');
+    console.log(this.rutaActual);
+    
+    return this.rutaActual[2] === 'myinfo' ? this.authService.getUserIdLocal() : params.get('id');
   }
 
   determinarRolDesdeRuta() {
@@ -262,8 +266,6 @@ export class UsuarioComponent {
     this.isAdmin = data.ROL_ADMIN !== 0;
     this.isProf = data.ROL_PRF !== 0;
     this.isRep = data.ROL_REPR !== 0;
-    console.log(this.form.valid);
-
   }
 
   llenarFormDetalle(data: any) {

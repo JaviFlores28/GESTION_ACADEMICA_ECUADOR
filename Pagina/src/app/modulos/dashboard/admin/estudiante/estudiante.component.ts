@@ -8,6 +8,7 @@ import { getFormattedDate } from 'src/app/sistema/variables/variables';
 import { EstudianteService } from 'src/app/servicios/estudiante.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 import { ModalService } from 'src/app/servicios/modal.service';
+import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 
 @Component({
   selector: 'app-estudiante',
@@ -22,12 +23,14 @@ export class EstudianteComponent {
     private usuarioService: UsuarioService,
     private service: EstudianteService,
     private modalService: ModalService,
-  ) {}
+    private authService: AutentificacionService
+  ) { }
 
   modoEdicion: boolean = false;
-  elementoId: string = '';
-modaltitle: string = 'Agregar';
-  modalMsg: string = '¿Desea guardar el registro?';  USR_ID = this.usuarioService.getUserLoggedId();
+  editItemId: string = '';
+  modaltitle: string = 'Agregar';
+  modalMsg: string = '¿Desea guardar el registro?';
+  USR_ID = this.authService.getUserIdLocal();
   icon = faInfoCircle;
 
   usuarios: Usuario[] = [];
@@ -82,12 +85,12 @@ modaltitle: string = 'Agregar';
       const id = params.get('id');
       if (id) {
         this.modoEdicion = true;
-        this.elementoId = id;
-this.modaltitle = 'Editar';
-        this.modalMsg = '¿Desea editar el registro?';        this.loadDataEdit();
+        this.editItemId = id;
+        this.modaltitle = 'Editar';
+        this.modalMsg = '¿Desea editar el registro?'; this.loadDataEdit();
       } else {
         this.modoEdicion = false;
-        this.elementoId = '';
+        this.editItemId = '';
       }
     });
   }
@@ -161,7 +164,7 @@ this.modaltitle = 'Editar';
 
   buildObjectEdit() {
     const estudiante: Estudiante = {
-      EST_ID: this.elementoId,
+      EST_ID: this.editItemId,
       EST_DNI: this.form.value.EST_DNI || '',
       EST_NOM: this.form.value.EST_NOM || '',
       EST_NOM2: this.form.value.EST_NOM2 || '',
@@ -195,7 +198,7 @@ this.modaltitle = 'Editar';
   }
 
   loadDataEdit() {
-    this.service.getById(this.elementoId).subscribe({
+    this.service.getById(this.editItemId).subscribe({
       next: (value) => {
         if (value.response) {
           this.llenarForm(value.data);

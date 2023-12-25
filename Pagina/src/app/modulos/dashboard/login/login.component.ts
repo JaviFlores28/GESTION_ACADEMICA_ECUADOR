@@ -3,7 +3,6 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { faUserTie } from '@fortawesome/free-solid-svg-icons';
 import { UsuarioLogin } from 'src/app/sistema/interfaces/usuario-Login.interface';
-import { UsuarioService } from 'src/app/servicios/usuario.service';
 import { ModalService } from 'src/app/servicios/modal.service';
 import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 
@@ -20,7 +19,6 @@ export class LoginComponent implements OnInit {
     private renderer: Renderer2,
     private el: ElementRef,
     private modalService: ModalService,
-    private serviceLocal: UsuarioService
   ) { }
 
   icon = faUserTie;
@@ -60,10 +58,10 @@ export class LoginComponent implements OnInit {
             if (!value.data.AUTHENTICATED) {
               this.HAS_2FA = true;
             } else {
-              console.log(value);
-              
-             // this.resetStyle();
-             // this.router.navigate(['']);
+              this.resetStyle();
+              this.service.setUserIdLocal(value.data.USER_ID);
+              this.router.navigate(['']);
+
             }
           }
         },
@@ -87,11 +85,9 @@ export class LoginComponent implements OnInit {
           if (!value.response) {
             this.openAlertModal('Error', value.message, 'danger', false);
           } else {
-            console.log(value.data);
-            
-            //this.resetStyle();
-           // this.router.navigate(['']);
-            // this.serviceLocal.setLocal(value.data);
+            this.resetStyle();
+            this.service.setUserIdLocal(value.data.USER_ID);
+            this.router.navigate(['']);
           }
         },
         error: (error) => {

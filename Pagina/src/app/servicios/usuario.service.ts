@@ -57,34 +57,5 @@ export class UsuarioService extends ErrorHandlerService {
     const request = {type: 'updateEstado', data: arrayData };
     return this.http.patch(this.apiUrl, request).pipe(catchError(this.handleError));
   }
-  
-  setLocal(usuario: Usuario): void {
-    localStorage.setItem(variables.KEY_NAME, btoa(JSON.stringify(usuario.USR_ID)));
-  }
-
-  removeLocal(): void {
-    localStorage.removeItem(variables.KEY_NAME);
-  }
-
-  getUserLoggedId() {
-    const USR_ID = localStorage.getItem(variables.KEY_NAME);
-    return USR_ID ? JSON.parse(atob(USR_ID)) : '';
-  }
-
-
-  async getUserLogged(): Promise<Usuario | null> {
-    const id = this.getUserLoggedId();
-    try {
-      const response = await lastValueFrom(this.getById(id));
-      if (!response) {
-        return null;
-      }
-      return response.data;
-    } catch (error) {
-      console.error('Error al obtener usuario:', error);
-      return null;
-    }
-  }
-
  
 }

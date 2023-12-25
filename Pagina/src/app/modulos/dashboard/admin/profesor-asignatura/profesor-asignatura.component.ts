@@ -7,6 +7,7 @@ import { ProfesorAsignaturaParalelo } from 'src/app/interfaces/ProfesorAsignatur
 import { Usuario } from 'src/app/interfaces/Usuario.interface';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 import { AsignaturaService } from 'src/app/servicios/asignatura.service';
+import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { CursoService } from 'src/app/servicios/curso.service';
 import { ModalService } from 'src/app/servicios/modal.service';
 import { ParaleloService } from 'src/app/servicios/paralelo.service';
@@ -27,7 +28,9 @@ export class ProfesorAsignaturaComponent implements OnInit {
     private paraleloService: ParaleloService,
     private asignaturaService: AsignaturaService,
     private modalService: ModalService,
-    private anioService: AnioLectivoService
+    private anioService: AnioLectivoService,
+    private authService: AutentificacionService
+
   ) { }
 
   profesores: Usuario[] = [];
@@ -43,8 +46,9 @@ export class ProfesorAsignaturaComponent implements OnInit {
 
   modoEdicion: boolean = false;
   elementoId: string = '';
-modaltitle: string = 'Agregar';
-  modalMsg: string = '¿Desea guardar el registro?';  USR_ID: string = this.usuarioService.getUserLoggedId();
+  modaltitle: string = 'Agregar';
+  modalMsg: string = '¿Desea guardar el registro?';
+  USR_ID: string = this.authService.getUserIdLocal();
   AL_ID: string = '0';
   ESTADO: number = 1;
   existeAnio: boolean = false;
