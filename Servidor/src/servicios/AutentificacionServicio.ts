@@ -67,7 +67,7 @@ router.post('/authentificated', async (req: Request, res: Response) => {
             return res.status(400).json({ response: false, data: null, message: 'Se requiere un código de autenticación de dos factores.' });
         }
 
-        const isValidToken = speakeasy.totp.verify({secret: sesion.FA_KEY,encoding: 'base32',token: TOKEN});
+        const isValidToken = speakeasy.totp.verify({ secret: sesion.FA_KEY, encoding: 'base32', token: TOKEN });
 
         if (!isValidToken) {
             return res.status(401).json({ message: 'Código de autenticación inválido.' });
@@ -87,7 +87,7 @@ router.post('/enable2fa', requireAuth, async (req: Request, res: Response) => {
         return res.status(400).json({ response: false, data: null, message: 'Se requiere un código de autenticación de dos factores.' });
     }
 
-    const isValidToken = speakeasy.totp.verify({ secret: sesion.FA_KEY, encoding: 'base32',token: TOKEN});
+    const isValidToken = speakeasy.totp.verify({ secret: sesion.FA_KEY, encoding: 'base32', token: TOKEN });
 
     if (!isValidToken) {
         return res.status(401).json({ response: false, data: null, message: 'Código de autenticación inválido.' });
@@ -148,10 +148,19 @@ router.get('/getqr', requireAuth, async (req: Request, res: Response) => {
 router.get('/isloggedin', (req: Request, res: Response) => {
     const sesion = req.session.user;
     if (!sesion) {
-        return res.status(401).json({ response: false, data: null, message: 'Usuario no autenticado.' });
+        return res.json({ response: false, data: null, message: 'Usuario no autenticado.' });
     }
     res.json({ response: true, data: true, message: 'Existe un usuario logeado.' });
 });
 
+router.get('/logout', requireAuth, (req: Request, res: Response) => {    
+    req.session.destroy((err) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ response: false, data: null, message: 'Error al cerrar sesión.' });
+        }
+        res.json({ response: true, data: null, message: 'Sesión cerrada correctamente.' });
+    });
+});
 
 export default router;

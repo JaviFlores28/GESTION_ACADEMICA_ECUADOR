@@ -44,6 +44,10 @@ export class AutentificacionService extends ErrorHandlerService {
     return this.http.get<Respuesta>(this.apiUrl + '/getqr', { withCredentials: true }).pipe(catchError(this.handleError));
   }
 
+  logout(): Observable<Respuesta> {
+    return this.http.get<Respuesta>(this.apiUrl + '/logout', { withCredentials: true }).pipe(catchError(this.handleError));
+  }
+
   setUserIdLocal(USR_ID: string): void {
     localStorage.setItem(variables.KEY_NAME, btoa(JSON.stringify(USR_ID)));
   }

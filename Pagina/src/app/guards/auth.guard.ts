@@ -8,7 +8,7 @@ export const authGuardDash: CanActivateFn = async (route, state) => {
   const router = inject(Router);
   try {
     const response = await lastValueFrom(auth.isLoggedIn());
-    if (response) {
+    if (response.response) {
       return true;
     } else {
       router.navigate(['login']);
@@ -16,7 +16,6 @@ export const authGuardDash: CanActivateFn = async (route, state) => {
     }
   } catch (error) {
     router.navigate(['login']);
-
     return false;
   }
 };
@@ -26,7 +25,7 @@ export const authGuardLogin: CanActivateFn = async (route, state) => {
   const router = inject(Router);
   try {
     const response = await lastValueFrom(auth.isLoggedIn());
-    if (response) {
+    if (response.response) {
       router.navigate(['dashboard']);
       return false;
     } else {
