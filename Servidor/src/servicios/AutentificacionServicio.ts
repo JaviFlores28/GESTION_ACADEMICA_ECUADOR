@@ -51,7 +51,7 @@ router.post('/login', async (req: Request, res: Response) => {
     }
     req.session.user = usuario;
 
-    res.json({ response: true, message: 'Inicio de sesión exitoso.', data: { AUTHENTICATED: usuario.AUTHENTICATED } });
+    res.json({ response: true, message: 'Inicio de sesión exitoso.', data: { AUTHENTICATED: usuario.AUTHENTICATED, USER_ID: usuario.USR_ID } });
 });
 
 router.post('/authentificated', async (req: Request, res: Response) => {
@@ -67,18 +67,14 @@ router.post('/authentificated', async (req: Request, res: Response) => {
             return res.status(400).json({ response: false, data: null, message: 'Se requiere un código de autenticación de dos factores.' });
         }
 
-        const isValidToken = speakeasy.totp.verify({
-            secret: sesion.FA_KEY,
-            encoding: 'base32',
-            token: TOKEN,
-        });
+        const isValidToken = speakeasy.totp.verify({secret: sesion.FA_KEY,encoding: 'base32',token: TOKEN});
 
         if (!isValidToken) {
             return res.status(401).json({ message: 'Código de autenticación inválido.' });
         }
     }
     req.session.user.AUTHENTICATED = true;
-    res.json({ response: true, data: req.session, message: 'Inicio de sesión exitoso.' });
+    res.json({ response: true, data: { USER_ID: sesion.USR_ID }, message: 'Inicio de sesión exitoso.' });
 });
 
 router.post('/enable2fa', requireAuth, async (req: Request, res: Response) => {
@@ -91,14 +87,10 @@ router.post('/enable2fa', requireAuth, async (req: Request, res: Response) => {
         return res.status(400).json({ response: false, data: null, message: 'Se requiere un código de autenticación de dos factores.' });
     }
 
-    const isValidToken = speakeasy.totp.verify({
-        secret: sesion.FA_KEY,
-        encoding: 'base32',
-        token: TOKEN,
-    });
+    const isValidToken = speakeasy.totp.verify({ secret: sesion.FA_KEY, encoding: 'base32',token: TOKEN});
 
     if (!isValidToken) {
-        return res.status(401).json({response: false, data: null, message: 'Código de autenticación inválido.' });
+        return res.status(401).json({ response: false, data: null, message: 'Código de autenticación inválido.' });
     }
     const response = await AutentificacionNegocio.enable2FA(sesion.USR_ID);
     if (response.response) {
@@ -132,7 +124,7 @@ router.get('/getqr', requireAuth, async (req: Request, res: Response) => {
     try {
         const sesion = req.session.user;
         if (!sesion) {
-            return res.status(404).json({ response: false, data: null,message: 'No autorizado.' });
+            return res.status(404).json({ response: false, data: null, message: 'No autorizado.' });
         }
 
         const options: speakeasy.OtpauthURLOptions = {
@@ -149,7 +141,7 @@ router.get('/getqr', requireAuth, async (req: Request, res: Response) => {
         res.json({ response: false, message: 'URL del código QR obtenida correctamente', data: { qrCodeUrl } });
     } catch (error) {
         console.error(error);
-        res.status(500).json({response: false, data: null, message: 'Error al generar el código QR.' });
+        res.status(500).json({ response: false, data: null, message: 'Error al generar el código QR.' });
     }
 });
 

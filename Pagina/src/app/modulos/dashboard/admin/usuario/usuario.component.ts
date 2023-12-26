@@ -75,16 +75,14 @@ export class UsuarioComponent {
       const id = this.getIdFromParams(params);
       this.determinarRolDesdeRuta();
       if (id) {
-        this.setupEdicion(id);
+        this.setupEdicion(id);        
       } else {
         this.setupNuevo();
       }
     });
   }
 
-  private getIdFromParams(params: ParamMap): string {
-    console.log(this.rutaActual);
-    
+  private getIdFromParams(params: ParamMap): string {    
     return this.rutaActual[2] === 'myinfo' ? this.authService.getUserIdLocal() : params.get('id');
   }
 

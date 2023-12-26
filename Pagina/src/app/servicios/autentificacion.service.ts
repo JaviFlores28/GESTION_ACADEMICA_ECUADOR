@@ -44,8 +44,8 @@ export class AutentificacionService extends ErrorHandlerService {
     return this.http.get<Respuesta>(this.apiUrl + '/getqr', { withCredentials: true }).pipe(catchError(this.handleError));
   }
 
-  setUserIdLocal(usuario: any): void {
-    localStorage.setItem(variables.KEY_NAME, btoa(JSON.stringify(usuario.USR_ID)));
+  setUserIdLocal(USR_ID: string): void {
+    localStorage.setItem(variables.KEY_NAME, btoa(JSON.stringify(USR_ID)));
   }
 
   getUserIdLocal() {
