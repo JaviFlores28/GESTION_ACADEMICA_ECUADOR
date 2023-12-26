@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { faInfoCircle, faKey, faPersonChalkboard, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faIdBadge, faInfoCircle, faKey, faPersonChalkboard, faUser } from '@fortawesome/free-solid-svg-icons';
 import { UsuarioProfesor } from 'src/app/interfaces/UsuarioProfesor.interface';
 import { Usuario } from 'src/app/interfaces/Usuario.interface';
 import { getFormattedDate } from 'src/app/sistema/variables/variables';
@@ -23,7 +23,7 @@ export class UsuarioComponent {
     private service: UsuarioService,
     private detalleService: UsuarioProfesorService,
     private modalService: ModalService,
-    private authService:AutentificacionService
+    private authService: AutentificacionService
   ) { }
 
   modoEdicion: boolean = false;
@@ -36,10 +36,12 @@ export class UsuarioComponent {
   fauser = faUser;
   fakey = faKey;
   faperson = faPersonChalkboard;
+  fa2fa = faIdBadge;
   isRep = false;
   isAdmin = false;
   isProf = false;
   isMyInfo = false;
+  QR = '';
 
   form = this.formBuilder.group({
     USR_DNI: ['', Validators.required],
@@ -64,6 +66,12 @@ export class UsuarioComponent {
     USR_PSWD: ['', Validators.required],
   });
 
+  form2FA = this.formBuilder.group({
+    HAS_2FA: [false],
+    TOKEN: ['']
+  }
+  )
+
   ngOnInit(): void {
     this.validarEdicion();
   }
@@ -75,14 +83,14 @@ export class UsuarioComponent {
       const id = this.getIdFromParams(params);
       this.determinarRolDesdeRuta();
       if (id) {
-        this.setupEdicion(id);        
+        this.setupEdicion(id);
       } else {
         this.setupNuevo();
       }
     });
   }
 
-  private getIdFromParams(params: ParamMap): string {    
+  private getIdFromParams(params: ParamMap): string {
     return this.rutaActual[2] === 'myinfo' ? this.authService.getUserIdLocal() : params.get('id');
   }
 
@@ -128,6 +136,36 @@ export class UsuarioComponent {
     } else {
       this.form.markAllAsTouched();
     }
+  }
+
+  disable2FA(){
+    this.authService.disable2FA().subscribe({
+      next: (value) => {
+        if (value.response) {
+          this.handleResponse(value);
+        } else {
+          this.handleErrorResponse(value.message)
+        }
+      },
+      error: (err) => {
+        this.handleErrorResponse(err)
+      },
+    })
+  }
+  enable2FA() {
+    const token = this.form2FA.value.TOKEN || ''
+    this.authService.enable2FA(token).subscribe({
+      next: (value) => {
+        if (value.response) {
+          this.handleResponse(value);
+        } else {
+          this.handleErrorResponse(value.message)
+        }
+      },
+      error: (err) => {
+        this.handleErrorResponse(err)
+      },
+    })
   }
 
   crear() {
@@ -179,6 +217,8 @@ export class UsuarioComponent {
       ROL_ADMIN: this.isAdmin ? 1 : 0,
       ESTADO: this.form.value.ESTADO ? 1 : 0,
       USR_PSWD: 'NO PSWD',
+      FA_KEY: '',
+      HAS_2FA: this.form2FA.value.HAS_2FA ? 1 : 0
     };
     return usuario;
   }
@@ -203,6 +243,8 @@ export class UsuarioComponent {
       ROL_ADMIN: this.isAdmin ? 1 : 0,
       ESTADO: this.form.value.ESTADO ? 1 : 0,
       USR_PSWD: 'NO PSWD',
+      FA_KEY: '',
+      HAS_2FA: 0
     };
     return usuario;
   }
@@ -264,6 +306,7 @@ export class UsuarioComponent {
     this.isAdmin = data.ROL_ADMIN !== 0;
     this.isProf = data.ROL_PRF !== 0;
     this.isRep = data.ROL_REPR !== 0;
+    this.form2FA.get('HAS_2FA')?.setValue(data.HAS_2FA !== 0);
   }
 
   llenarFormDetalle(data: any) {

@@ -37,7 +37,7 @@ export class AutentificacionService extends ErrorHandlerService {
   }
 
   disable2FA(): Observable<Respuesta> {
-    return this.http.get<Respuesta>(this.apiUrl + '/enable2fa', { withCredentials: true }).pipe(catchError(this.handleError));
+    return this.http.get<Respuesta>(this.apiUrl + '/disable2fa', { withCredentials: true }).pipe(catchError(this.handleError));
   }
 
   getQR(): Observable<Respuesta> {
