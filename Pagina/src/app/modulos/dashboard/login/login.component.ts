@@ -127,4 +127,8 @@ export class LoginComponent implements OnInit {
   openAlertModal(tittle: string, message: string, alertType: string, form: boolean) {
     this.modalService.openModal(tittle, message, alertType, form);
   }
+
+  reload() {
+    location.reload();
+  }
 }

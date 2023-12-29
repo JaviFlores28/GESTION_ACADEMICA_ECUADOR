@@ -9,7 +9,7 @@ class AreaDatos {
   static sqlUpdate: string = `UPDATE area SET AREA_NOM=?,ESTADO=? WHERE AREA_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE area SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  AREA_ID IN';
   static sqlDelete: string = `DELETE FROM area WHERE AREA_ID = ?`;
-  static sqlSelect: string = `SELECT * FROM area ORDER BY ESTADO DESC`;
+  static sqlSelect: string = `SELECT * FROM area ORDER BY AREA_NOM ASC`;
   static sqlGetById: string = 'SELECT * FROM area WHERE AREA_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM area WHERE ESTADO = 1 ORDER BY ESTADO DESC';
 

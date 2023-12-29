@@ -8,6 +8,8 @@ export const authGuardDash: CanActivateFn = async (route, state) => {
   const router = inject(Router);
   try {
     const response = await lastValueFrom(auth.isLoggedIn());
+    console.log(response);
+    
     if (response.response) {
       return true;
     } else {

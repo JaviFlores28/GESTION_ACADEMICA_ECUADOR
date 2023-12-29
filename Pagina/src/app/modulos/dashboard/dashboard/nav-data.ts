@@ -149,8 +149,8 @@ export const navbarData: NavBarData[] = [
         label: 'Horarios',
       },
       {
-        routelink: 'calificaciones',
-        label: 'Calificaciones',
+        routelink: 'estudiantes',
+        label: 'Estudiantes',
       },
     ],
   },

@@ -30,7 +30,7 @@ router.use(
 function requireAuth(req: Request, res: Response, next: () => void) {
     const sesion = req.session.user;
     if (!sesion || !sesion.USR_ID || (sesion.HAS_2FA && !sesion.AUTHENTICATED)) {
-        return res.status(401).json({ response: false, data: null, message: 'No autorizado.' });
+        return res.json({ response: false, data: null, message: 'No autorizado.' });
     }
     return next();
 }
@@ -50,7 +50,6 @@ router.post('/login', async (req: Request, res: Response) => {
         usuario.AUTHENTICATED = false;
     }
     req.session.user = usuario;
-
     res.json({ response: true, message: 'Inicio de sesión exitoso.', data: { AUTHENTICATED: usuario.AUTHENTICATED, USER_ID: usuario.USR_ID } });
 });
 
@@ -113,12 +112,17 @@ router.get('/disable2fa', requireAuth, async (req: Request, res: Response) => {
 });
 
 router.get('/getUser', requireAuth, (req: Request, res: Response) => {
-    if (req.session.user) {
-        res.json({ response: true, data: req.session.user, message: '' });
+    if (req.session.user) {        
+        if (req.session.user.AUTHENTICATED) {
+            res.json({ response: true, data: req.session.user, message: '' });
+        } else {
+            res.json({ response: false, data: null, message: 'No autorizado' });
+        }
     } else {
-        res.status(401).json({ response: false, data: null, message: 'No autorizado' });
+        res.json({ response: false, data: null, message: 'No autorizado' });
     }
 });
+
 
 router.get('/getqr', requireAuth, async (req: Request, res: Response) => {
     try {
@@ -147,13 +151,13 @@ router.get('/getqr', requireAuth, async (req: Request, res: Response) => {
 
 router.get('/isloggedin', (req: Request, res: Response) => {
     const sesion = req.session.user;
-    if (!sesion) {
+    if (!sesion || !sesion.AUTHENTICATED) {
         return res.json({ response: false, data: null, message: 'Usuario no autenticado.' });
     }
     res.json({ response: true, data: true, message: 'Existe un usuario logeado.' });
 });
 
-router.get('/logout', requireAuth, (req: Request, res: Response) => {    
+router.get('/logout', requireAuth, (req: Request, res: Response) => {
     req.session.destroy((err) => {
         if (err) {
             console.error(err);

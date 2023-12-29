@@ -48,7 +48,8 @@
           <input type="text" class="form-control" id="verificationCode" formControlName="TOKEN">
         </div>
         <div class="d-grid gap-2 pb-3">
-          <button class="btn btn-dark" [disabled]="!formulario2AF.valid" (click)="validar2FA()">Continuar</button>
+          <button class="btn btn-primary" [disabled]="!formulario2AF.valid" (click)="validar2FA()">Continuar</button>
+          <button type="button" class="btn btn-dark" (click)="reload()">Regresar</button>
         </div>
       </form>
     </div>

@@ -15,7 +15,7 @@ export class ParalelosComponent {
     private route: ActivatedRoute,
   ) {}
 
-  routerLink: string = 'nuevo';
+  routerLink: string = '../nuevo';
   titulo: string = 'Paralelos';
 
   data: Paralelo[] = [];
