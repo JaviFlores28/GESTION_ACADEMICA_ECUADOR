@@ -43,6 +43,8 @@ import { ReporteCursosComponent } from './admin/reporte-cursos/reporte-cursos.co
 import { EstudiantesParalelosComponent } from './admin/estudiantes-paralelos/estudiantes-paralelos.component';
 import { EstudiantesCursosComponent } from './admin/estudiantes-cursos/estudiantes-cursos.component';
 import { AdministradoresComponent } from './admin/administradores/administradores.component';
+import { ParametroComponent } from './admin/parametro/parametro.component';
+import { EscalaComponent } from './admin/escala/escala.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +83,8 @@ import { AdministradoresComponent } from './admin/administradores/administradore
     EstudiantesParalelosComponent,
     EstudiantesCursosComponent,
     AdministradoresComponent,
+    ParametroComponent,
+    EscalaComponent,
   ],
   imports: [CommonModule, DashboardRoutingModule, FormsModule, ReactiveFormsModule, FontAwesomeModule, NgbModule, NgSelectModule, NgTableComponent],
 })

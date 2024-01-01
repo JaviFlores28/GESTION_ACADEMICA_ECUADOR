@@ -1,0 +1,32 @@
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <h3 class="fw-custom-semibold">Sistema</h3>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a class="text-black fw-custom-semibold" routerLink="../../">Parametros</a></li>
+            <li class="breadcrumb-item active">Editar</li>
+        </ol>
+    </nav>
+    <div class="card text-start border-0 rounded shadow">
+        <div class="card-body">
+            <form
+                class="row row-cols-1 row-cols-sm-1 g-3 justify-content-center justify-content-md-start align-items-center">
+                <div class="col">
+                    <label for="PRLL_NOM" class="form-label">Nombre:</label>
+                    <input type="text" id="PRLL_NOM" formControlName="PRLL_NOM" class="form-control" />
+                </div>
+                <div class="col">
+                    <label for="PRLL_NOM" class="form-label">Descripción:</label>
+                        <textarea class="form-control" id="descripcion" style="height: 100px"></textarea>
+                </div>
+                <div class="col">
+                    <label for="formFile" class="form-label">Imagen: </label>
+                    <input class="form-control" type="file" id="formFile">
+                </div>
+
+                <div class="col-12 col-sm-12 text-center text-md-start">
+                    <button type="submit" [disabled]="false" class="btn btn-dark">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -329,7 +329,7 @@ export class CalificacionesComponent implements OnInit {
 
   }
 
-  editar(calificacion: any) {
+  editar(calificacion: any) {    
     this.calificacioncuantitativaService.put(calificacion).subscribe({
       next: (response) => {
         this.handleResponse(response);
@@ -370,7 +370,6 @@ export class CalificacionesComponent implements OnInit {
 
   handleErrorResponse(error: any) {
     this.modalService.openModal('Error', 'Ha ocurrido un error intente nuevamente.', 'danger', false)
-
     this.loadTablaEstudiantes();
     console.log(error);
   }

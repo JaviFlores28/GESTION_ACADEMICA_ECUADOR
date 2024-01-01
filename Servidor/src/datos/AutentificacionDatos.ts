@@ -31,7 +31,7 @@ class AutentificacionDatos {
     }
   }
 
-  static async enable2FA(USR_ID: string) {
+  static async enable2FA(USR_ID: string): Promise<Respuesta> {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
       let sql = this.sqlEnable2FA;
@@ -45,7 +45,7 @@ class AutentificacionDatos {
     }
   }
 
-  static async disable2FA(USR_ID: string) {
+  static async disable2FA(USR_ID: string): Promise<Respuesta> {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
       let sql = this.sqlDisable2FA;

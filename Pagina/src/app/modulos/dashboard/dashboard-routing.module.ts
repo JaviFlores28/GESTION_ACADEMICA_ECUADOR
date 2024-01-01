@@ -32,14 +32,23 @@ import { ParametrosComponent } from './admin/parametros/parametros.component';
 import { EstudiantesParalelosComponent } from './admin/estudiantes-paralelos/estudiantes-paralelos.component';
 import { EstudiantesCursosComponent } from './admin/estudiantes-cursos/estudiantes-cursos.component';
 import { AdministradoresComponent } from './admin/administradores/administradores.component';
+import { EscalaComponent } from './admin/escala/escala.component';
+import { ParametroComponent } from './admin/parametro/parametro.component';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent,canActivate: [authGuardLogin] },
+  { path: 'login', component: LoginComponent, canActivate: [authGuardLogin] },
   {
-    path: '', component: HomeComponent, canActivate:[authGuardDash],
+    path: '', component: HomeComponent, canActivate: [authGuardDash],
     children: [
       { path: '', component: InicioComponent },
-      { path: 'sistema', component: ParametrosComponent },
+      {
+        path: 'sistema',
+        children: [
+          { path: '', component: ParametrosComponent },
+          { path: 'editarEscala/:id', component: EscalaComponent },
+          { path: 'editarParametro/:id', component: ParametroComponent },
+        ]
+      },
       {
         path: 'anios',
         children: [

@@ -253,3 +253,18 @@ INSERT IGNORE INTO PARALELO (PRLL_ID, PRLL_NOM, ESTADO) values ('a8cd9ac1-f344-4
 
 UPDATE `usuario` SET `USR_PSWD`='U2FsdGVkX19VTz/GYGtYPxjERLIw8BIxPZvwL7m9J2E=';
 UPDATE `usuario` SET `FA_KEY`='IQWGIQKGPI4XEVD3O4XVWOD3EU3C452MMQ7EIPB4EUVE6MZ6FFBQ';
+-- Para DA (Domina los aprendizajes requeridos)
+INSERT INTO `escalas_referenciales_calificaciones` (`ESCL_ID`, `ESCL_ABRV`, `ESCL_DESCR`, `ESCL_INI`, `ESCL_FIN`, `ESTADO`)
+VALUES (UUID(), 'DA', 'Domina los aprendizajes requeridos', '9.00', '10.00', '1');
+
+-- Para AA (Alcanza los aprendizajes requeridos)
+INSERT INTO `escalas_referenciales_calificaciones` (`ESCL_ID`, `ESCL_ABRV`, `ESCL_DESCR`, `ESCL_INI`, `ESCL_FIN`, `ESTADO`)
+VALUES (UUID(), 'AA', 'Alcanza los aprendizajes requeridos', '7.00', '8.99', '1');
+
+-- Para PA (Próximo a alcanzar los aprendizajes requeridos)
+INSERT INTO `escalas_referenciales_calificaciones` (`ESCL_ID`, `ESCL_ABRV`, `ESCL_DESCR`, `ESCL_INI`, `ESCL_FIN`, `ESTADO`)
+VALUES (UUID(), 'PA', 'Próximo a alcanzar los aprendizajes requeridos', '4.01', '6.99', '1');
+
+-- Para NA (No alcanza los aprendizajes requeridos)
+INSERT INTO `escalas_referenciales_calificaciones` (`ESCL_ID`, `ESCL_ABRV`, `ESCL_DESCR`, `ESCL_INI`, `ESCL_FIN`, `ESTADO`)
+VALUES (UUID(), 'NA', 'No alcanza los aprendizajes requeridos', '0', '4.00', '1');
