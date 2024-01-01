@@ -1,4 +1,3 @@
-
 class AsignaturaEntidad {
   ASG_ID: string;
   ASG_NOM: string;

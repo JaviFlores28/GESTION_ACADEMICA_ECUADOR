@@ -59,7 +59,6 @@ class UsuarioNegocio {
       return { response: false, data: null, message: error.message };
     }
   }
-
 }
 
 export default UsuarioNegocio;

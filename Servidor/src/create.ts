@@ -32,7 +32,7 @@ async function generateAll() {
       const tableName = table[`Tables_in_${process.env.DB_DATABASE}`];
       await generateFilesForTable(tableName);
     }
-    // execSync(`npx prettier src/ --write --print-width 1000 --single-quote`);
+    //;
     console.info('Archivos creados correctamente');
   } catch (error: any) {
     console.error('Error: ' + error);
@@ -53,4 +53,4 @@ async function generateOne(tableName: string) {
   }
 }
 
-generateAll()
+generateAll();

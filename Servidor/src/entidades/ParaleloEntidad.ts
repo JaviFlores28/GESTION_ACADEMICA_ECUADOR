@@ -1,4 +1,3 @@
-
 class ParaleloEntidad {
   PRLL_ID: string;
   PRLL_NOM: string;

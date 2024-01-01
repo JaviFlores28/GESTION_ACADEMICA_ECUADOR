@@ -156,6 +156,5 @@ class UsuarioDatos {
       return { response: false, data: null, message: error.message };
     }
   }
-
 }
 export default UsuarioDatos;

@@ -32,7 +32,7 @@ const corsOptions = {
   origin: PAGE_URL,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,  // Asegúrate de habilitar las credenciales
+  credentials: true, // Asegúrate de habilitar las credenciales
 };
 app.use(cors(corsOptions));
 

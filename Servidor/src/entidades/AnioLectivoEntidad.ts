@@ -1,4 +1,3 @@
-
 class AnioLectivoEntidad {
   AL_ID: string;
   AL_NOM: string;

@@ -1,4 +1,3 @@
-
 class ParametroEntidad {
   PRMT_ID: string;
   PRMT_NOM: string;

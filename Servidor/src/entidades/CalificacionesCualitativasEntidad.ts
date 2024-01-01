@@ -1,4 +1,3 @@
-
 class CalificacionesCualitativasEntidad {
   CAL_ID: string;
   PRF_ASG_PRLL_ID: string;

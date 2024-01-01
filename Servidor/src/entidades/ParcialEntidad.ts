@@ -1,4 +1,3 @@
-
 class ParcialEntidad {
   PRCL_ID: string;
   PRCL_NOM: string;

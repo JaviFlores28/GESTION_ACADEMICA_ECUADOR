@@ -1,4 +1,3 @@
-
 class EscalasReferencialesCalificacionesEntidad {
   ESCL_ID: string;
   ESCL_ABRV: string;
