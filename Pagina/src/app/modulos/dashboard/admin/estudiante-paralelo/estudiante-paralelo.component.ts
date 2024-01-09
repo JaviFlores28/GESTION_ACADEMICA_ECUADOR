@@ -43,7 +43,7 @@ export class EstudianteParaleloComponent implements OnInit {
   camposEstudianteCursoParalelo = ['EST_CRS_PRLL_ID', 'EST_DNI', 'EST_CRS_NOM', 'CRS_NOM', 'CRS_TIPO', 'PRLL_NOM'];
 
   modaltitle: string = 'Agregar';
-  modalMsg: string = '¿Desea guardar?';
+  modalMsg: string = '¿Desea guardar el registro?';
   USR_ID: string = this.usuarioService.getUserIdLocal();
   AL_ID: string = '0';
   PASE: number = 4;

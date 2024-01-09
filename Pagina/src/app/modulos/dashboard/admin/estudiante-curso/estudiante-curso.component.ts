@@ -34,7 +34,8 @@ export class EstudianteCursoComponent implements OnInit {
 
   editItemId: string = '';
 modaltitle: string = 'Agregar';
-  modalMsg: string = '¿Desea guardar?';  action: string = '';
+  modalMsg: string = '¿Desea guardar el registro?';  
+  action: string = '';
   USR_ID = this.usuarioService.getUserIdLocal();
   AL_ID: string = '0';
   ESTADO: number = 1;
@@ -50,7 +51,7 @@ modaltitle: string = 'Agregar';
 
   onSubmit() {
     this.action = 'create';
-    this.openModal('Guardar', this.modalMsg, 'success', true);
+    this.openModal('Guardar', this.modalMsg, 'warning', true);
   }
 
   loadCursos() {
