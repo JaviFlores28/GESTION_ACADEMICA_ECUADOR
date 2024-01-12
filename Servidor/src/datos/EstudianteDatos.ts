@@ -11,7 +11,7 @@ class EstudianteDatos {
   static sqlDelete: string = `DELETE FROM estudiante WHERE EST_ID = ?`;
   static sqlSelect: string = `SELECT * FROM vista_estudiante ORDER BY ESTADO DESC`;
   static sqlGetById: string = 'SELECT * FROM estudiante WHERE EST_ID = ?';
-  static sqlGetEnabled: string = 'SELECT * FROM vista_estudiante WHERE ESTADO = 1 ORDER BY ESTADO DESC';
+  static sqlGetEnabled: string = 'SELECT * FROM vista_estudiante WHERE ESTADO = 1';
 
   static async insert(estudiante: EstudianteEntidad): Promise<Respuesta> {
     try {
