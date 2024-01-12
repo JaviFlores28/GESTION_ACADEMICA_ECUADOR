@@ -136,7 +136,7 @@ const routes: Routes = [
         path: 'reporte',
         children: [
           { path: 'calificaciones', component: ReporteCalificacionesComponent },
-          { path: 'cursos', component: ReporteCursosComponent },
+          { path: 'institucion', component: ReporteCursosComponent },
         ]
       },
       { path: 'myinfo/:id', component: UsuarioComponent },

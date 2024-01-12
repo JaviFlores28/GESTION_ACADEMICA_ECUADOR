@@ -1,1 +1,47 @@
-<p>reporte-calificaciones works!</p>
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <h3 class="fw-custom-semibold">Reportes</h3>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active">Calificaciones </li>
+        </ol>
+    </nav>
+    <form
+        class="row row-cols-1 g-3 justify-content-center justify-content-md-start align-items-md-start align-items-end">
+        <div class="card text-start shadow border-0">
+            <div class="card-body">
+                <div class="row g-3 justify-content-start align-items-end pt-2">
+                    <div class="col-12">
+                        <label for="tipo" class="form-label">Tipo:</label>
+                        <ng-select [items]="tipo" bindLabel="label" bindValue="id" id="tipo">
+                        </ng-select>
+                    </div>
+                    <div class="col">
+                        <label for="PRF_ID" class="form-label">Año lectivo:</label>
+                        <ng-select [items]="aniosLectivos" bindLabel="USR_NOM" bindValue="USR_ID" id="PRF_ID">
+                        </ng-select>
+                    </div>
+                    <div class="col">
+                        <label for="CRS_ID" class="form-label">Curso:</label>
+                        <ng-select [items]="null" bindLabel="CRS_NOM" bindValue="CRS_ID" id="CRS_ID">
+                        </ng-select>
+                    </div>
+                    <div class="col">
+                        <label for="PRLL_ID" class="form-label">Paralelo:</label>
+                        <ng-select [items]="null" bindLabel="PRLL_NOM" bindValue="PRLL_ID" id="PRLL_ID">
+                        </ng-select>
+                    </div>
+                    <div class="col-12">
+                        <label for="PRLL_ID" class="form-label">Estudiante:</label>
+                        <ng-select [items]="estudiantes" bindLabel="EST_NOM" bindValue="EST_ID" id="PRLL_ID">
+                        </ng-select>
+                    </div>
+                    <div class="col text-center text-md-end">
+                        <div class="input-group">
+                            <button type="submit" [disabled]="false" class="btn btn-dark">Generar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

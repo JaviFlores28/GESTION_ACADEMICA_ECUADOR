@@ -165,8 +165,8 @@ export const navbarData: NavBarData[] = [
         label: 'Calificaciones',
       },
       {
-        routelink: 'cursos',
-        label: 'Cursos',
+        routelink: 'institucion',
+        label: 'Institución',
       },
     ],
   },
