@@ -2,7 +2,7 @@ import { Router } from 'express';
 const router = Router();
 import AnioLectivoNegocio from '../negocio/AnioLectivoNegocio';
 import AnioLectivoEntidad from '../entidades/AnioLectivoEntidad';
-import { TypeRequest } from '../sistema/interfaces/TypeRequest';
+import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
 
 router.post('/aniolectivo', async (req, res) => {
   try {

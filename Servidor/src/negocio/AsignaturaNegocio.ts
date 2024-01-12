@@ -1,6 +1,6 @@
 import AsignaturaDatos from '../datos/AsignaturaDatos';
 import AsignaturaEntidad from '../entidades/AsignaturaEntidad';
-import { Respuesta } from '../sistema/interfaces/Respuesta';
+import { Respuesta } from '../sistema/Interfaces/Respuesta';
 
 class AsignaturaNegocio {
   static async insert(asignatura: AsignaturaEntidad): Promise<Respuesta> {

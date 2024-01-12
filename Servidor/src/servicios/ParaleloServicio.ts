@@ -2,7 +2,7 @@ import { Router } from 'express';
 const router = Router();
 import ParaleloNegocio from '../negocio/ParaleloNegocio';
 import ParaleloEntidad from '../entidades/ParaleloEntidad';
-import { TypeRequest } from '../sistema/interfaces/TypeRequest';
+import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
 
 router.post('/paralelo', async (req, res) => {
   try {

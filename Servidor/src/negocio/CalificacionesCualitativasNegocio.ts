@@ -1,6 +1,6 @@
 import CalificacionesCualitativasDatos from '../datos/CalificacionesCualitativasDatos';
 import CalificacionesCualitativasEntidad from '../entidades/CalificacionesCualitativasEntidad';
-import { Respuesta } from '../sistema/interfaces/Respuesta';
+import { Respuesta } from '../sistema/Interfaces/Respuesta';
 
 class CalificacionesCualitativasNegocio {
   static async insert(calificaciones_cualitativas: CalificacionesCualitativasEntidad): Promise<Respuesta> {

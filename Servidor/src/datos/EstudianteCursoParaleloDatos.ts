@@ -1,6 +1,6 @@
 import Funciones from '../sistema/funciones/Funciones';
 import BaseDatos from '../sistema/conexion/BaseDatos';
-import { Respuesta } from '../sistema/interfaces/Respuesta';
+import { Respuesta } from '../sistema/Interfaces/Respuesta';
 import EstudianteCursoParaleloEntidad from '../entidades/EstudianteCursoParaleloEntidad';
 import { v4 as uuidv4 } from 'uuid';
 import CalificacionesCualitativasDatos from './CalificacionesCualitativasDatos';

@@ -1,7 +1,7 @@
 import BaseDatos from '../sistema/conexion/BaseDatos';
 import Funciones from '../sistema/funciones/Funciones';
-import { Autentificacion } from '../sistema/interfaces/Autentificacion';
-import { Respuesta } from '../sistema/interfaces/Respuesta';
+import { Autentificacion } from '../sistema/Interfaces/Autentificacion';
+import { Respuesta } from '../sistema/Interfaces/Respuesta';
 
 class AutentificacionDatos {
   static sqllogin: string = 'SELECT * FROM vista_usuario WHERE USUARIO = ?';

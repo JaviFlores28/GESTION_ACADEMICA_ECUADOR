@@ -1,6 +1,6 @@
 import EscalasReferencialesCalificacionesDatos from '../datos/EscalasReferencialesCalificacionesDatos';
 import EscalasReferencialesCalificacionesEntidad from '../entidades/EscalasReferencialesCalificacionesEntidad';
-import { Respuesta } from '../sistema/interfaces/Respuesta';
+import { Respuesta } from '../sistema/Interfaces/Respuesta';
 
 class EscalasReferencialesCalificacionesNegocio {
   static async insert(escalas_referenciales_calificaciones: EscalasReferencialesCalificacionesEntidad): Promise<Respuesta> {

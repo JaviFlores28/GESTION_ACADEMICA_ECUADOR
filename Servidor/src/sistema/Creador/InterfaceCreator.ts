@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, writeFileSync } from "fs";
 import path from "path";
 import Funciones from "../funciones/Funciones";
 import EntityCreator from "./EntityCreator";
-import { MappedProperty } from "../interfaces/MappedProperty";
+import { MappedProperty } from "../Interfaces/MappedProperty";
 
 class InterfaceCreator {
     tableName: string;
@@ -25,7 +25,7 @@ class InterfaceCreator {
           ${EntityCreator.generatePropsDefinitions(this.propertiesTable)}
         }`;
 
-        const carpeta = path.join(__dirname, '../../interfaces');
+        const carpeta = path.join(__dirname, '../../Interfaces');
         const archivo = path.join(carpeta, `${capitalizedTableName}.interface.ts`);
 
         if (!existsSync(carpeta)) {

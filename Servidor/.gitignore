@@ -12,7 +12,7 @@
 
 /src/html
 /src/componentes
-/src/interfaces
+/src/Interfaces
 /test
 npm-debug.log
 yarn-error.log

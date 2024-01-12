@@ -206,7 +206,7 @@ class BusinessCreator {
     const content = `${this.tableName === 'usuario' ? `import UsuarioProfesorEntidad from '../entidades/UsuarioProfesorEntidad'; ` : ''}
       import ${this.capitalizedTableName}Datos from '../datos/${this.capitalizedTableName}Datos';
       import ${this.capitalizedTableName}Entidad from '../entidades/${this.capitalizedTableName}Entidad';
-      import { Respuesta } from '../sistema/interfaces/Respuesta';
+      import { Respuesta } from '../sistema/Interfaces/Respuesta';
       
       class ${this.capitalizedTableName}Negocio {
         ${this.insert()}

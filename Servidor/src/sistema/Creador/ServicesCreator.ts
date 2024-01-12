@@ -185,7 +185,7 @@ class ServicesCreator {
       const router = Router();
       import ${this.capitalizedTableName}Negocio from '../negocio/${this.capitalizedTableName}Negocio';
       import ${this.capitalizedTableName}Entidad from '../entidades/${this.capitalizedTableName}Entidad';
-      import { TypeRequest } from '../sistema/interfaces/TypeRequest';
+      import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
       ${this.createPostRoute()}
       ${this.createPutRoute()}
       ${this.createPatchRoute()}

@@ -1,9 +1,9 @@
 import speakeasy from 'speakeasy';
 import { Router, Request, Response } from 'express';
-import { Respuesta } from '../sistema/interfaces/Respuesta';
+import { Respuesta } from '../sistema/Interfaces/Respuesta';
 import QRCode from 'qrcode';
 import AutentificacionNegocio from '../negocio/AutentificacionNegocio';
-import { Autentificacion } from '../sistema/interfaces/Autentificacion';
+import { Autentificacion } from '../sistema/Interfaces/Autentificacion';
 import session from 'express-session';
 
 declare module 'express-session' {
