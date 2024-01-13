@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Estudiante } from 'src/app/interfaces/Estudiante.interface';
@@ -9,6 +9,9 @@ import { EstudianteService } from 'src/app/servicios/estudiante.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 import { ModalService } from 'src/app/servicios/modal.service';
 import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
+import { MyValidators } from 'src/app/utils/validators';
+import { ProvinciasService } from 'src/app/servicios/provincias.service';
+import { DatosJson, Provincia } from 'src/app/interfaces/Provincias.interface';
 
 @Component({
   selector: 'app-estudiante',
@@ -16,6 +19,8 @@ import { AutentificacionService } from 'src/app/servicios/autentificacion.servic
   styleUrls: ['./estudiante.component.scss'],
 })
 export class EstudianteComponent {
+
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -23,9 +28,11 @@ export class EstudianteComponent {
     private usuarioService: UsuarioService,
     private service: EstudianteService,
     private modalService: ModalService,
-    private authService: AutentificacionService
-  ) { }
-
+    private authService: AutentificacionService,
+    private provinciasService: ProvinciasService
+  ) {
+  }
+  listProv: any;
   modoEdicion: boolean = false;
   editItemId: string = '';
   modaltitle: string = 'Agregar';
@@ -43,23 +50,23 @@ export class EstudianteComponent {
     { id: 'EST_CEL', nombre: 'Celular', value: 4 },
   ];
 
-  form = this.formBuilder.group({
-    EST_DNI: ['', Validators.required],
-    EST_NOM: ['', Validators.required],
-    EST_NOM2: ['', Validators.required],
-    EST_APE: ['', Validators.required],
-    EST_APE2: ['', Validators.required],
-    EST_FECH_NAC: [getFormattedDate(new Date()), Validators.required],
-    EST_GEN: ['', Validators.required],
-    EST_PRV: ['', Validators.required],
-    EST_CAN: ['', Validators.required],
-    EST_PARR: ['', Validators.required],
-    EST_DIR: ['', Validators.required],
-    EST_NAC: ['', Validators.required],
-    EST_ETN: ['', Validators.required],
-    EST_NAC_ETN: ['', Validators.required],
-    EST_COM_ETN: ['', Validators.required],
-    EST_COD_ELE: ['', Validators.required],
+  form = this.formBuilder.nonNullable.group({
+    EST_DNI: ['', MyValidators.required, MyValidators.validateCedula],
+    EST_NOM: ['', MyValidators.required, MyValidators.soloLetras,MyValidators.minLength(3)],
+    EST_NOM2: ['', MyValidators.required,MyValidators.soloLetras],
+    EST_APE: ['', MyValidators.required, MyValidators.soloLetras],
+    EST_APE2: ['', MyValidators.required, MyValidators.soloLetras],
+    EST_FECH_NAC: [getFormattedDate(new Date()), MyValidators.required],
+    EST_GEN: ['', MyValidators.required],
+    EST_PRV: ['', MyValidators.required],
+    EST_CAN: ['', MyValidators.required],
+    EST_PARR: ['', MyValidators.required],
+    EST_DIR: ['', MyValidators.required],
+    EST_NAC: ['', MyValidators.required],
+    EST_ETN: ['', MyValidators.required],
+    EST_NAC_ETN: ['', MyValidators.required],
+    EST_COM_ETN: ['', MyValidators.required],
+    EST_COD_ELE: ['', MyValidators.required, MyValidators.soloNumeros],
     EST_NEC_ASO_DIS: [false],
     EST_NEC_NO_ASO_DIS: [false],
     EST_ENF_CAT: [false],
@@ -70,14 +77,30 @@ export class EstudianteComponent {
     EST_RAD: [false],
     EST_PC: [false],
     EST_CEL: [false],
-    REPR_ID: ['', Validators.required],
-    REL_EST_REP: ['', Validators.required],
+    REPR_ID: ['', MyValidators.required],
+    REL_EST_REP: ['', MyValidators.required],
     ESTADO: [true],
   });
 
   ngOnInit(): void {
     this.validarEdicion();
     this.loadUsuarios();
+    this.loadProvincias();
+  }
+
+  provincias: string[] =[] ;
+  cantones:any[] = []
+  async loadProvincias() {
+    await this.provinciasService.getAllDataProvincias().subscribe(data => {
+      if (data != null) {
+        this.listProv = data;
+        let i = 1;
+        do {
+          this.provincias.push(this.listProv[i].provincia);
+          i++;
+        } while (this.listProv[i+1] != null);
+      }
+    })    
   }
 
   validarEdicion() {
@@ -298,4 +321,33 @@ export class EstudianteComponent {
     this.form.reset();
     this.router.navigate(['../'], { relativeTo: this.route });
   }
-}
+  
+  keyCanton:number=0;
+
+  actualizarCantones(event:any){
+    const value = event.target.selectedIndex;
+    const can:any[] = this.listProv[value].cantones ;
+    this.cantones = [];
+    if (can != null) {
+      let i = value+'0'+1;
+      let index = parseInt(i);
+      this.keyCanton = value;
+      do {
+        this.cantones.push(can[index].canton);
+        index++;
+      } while (can[index+1] != null);
+    }
+  }
+  /*parroquias:any[] = []
+  actualizarParroquia(event: any) {
+    const value = event.target.selectedIndex;
+    console.log('desde parroquias '+ this.keyCanton+'0'+value+'51');
+    this.cantones[value]
+    if(this.cantones != null){
+      let i = this.keyCanton+'0'+value+'5'+0;
+      let j = parseInt(i);
+      //console.log('clave de las'+j);
+      
+    }
+  }*/
+  }
