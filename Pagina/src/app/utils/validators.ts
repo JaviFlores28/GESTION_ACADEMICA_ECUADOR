@@ -16,12 +16,17 @@ static validateCedula(control: AbstractControl):
   static validateCelular(control: AbstractControl): 
   Observable<ValidationErrors | null> {
     const cadena = control.value as string;
-    const celularRegExp = /^[0-9]{10}$/.test(cadena);
+    //const celularRegExp = /[0-9]/.test(cadena);
     const isNumeroCel = MyValidators.isNumeroCelular(cadena);
-    if (celularRegExp.valueOf() || isNumeroCel) {
+    //console.log('empieza en 0 y 10 numeors -->'+celularRegExp);
+    console.log('es celular --> '+isNumeroCel);
+    
+    if (!isNumeroCel) {
       return of( { celularInvalido: true, message: '*Número celular inválido' });
+    }else{
+      return of(null);
+
     }
-    return of(null);
   }
 
 static excluirNumero(control: AbstractControl): 
@@ -30,6 +35,16 @@ static excluirNumero(control: AbstractControl):
     const cedulaRegExp = /[0-9]/.test(cadena);
     if (cedulaRegExp) {
       return of( { existNumero: true, message: '*No puede contener números' });
+    }
+    return of(null);
+  }
+
+  static validarCorreo(control: AbstractControl): 
+  Observable<ValidationErrors | null> {
+    const cadena = control.value as string;
+    const patronCorreo = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!patronCorreo.test(cadena)) {
+      return of( { correoValido: true, message: '*Correo no válido' });
     }
     return of(null);
   }

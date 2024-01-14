@@ -9,6 +9,7 @@ import { UsuarioService } from 'src/app/servicios/usuario.service';
 import { UsuarioProfesorService } from 'src/app/servicios/usuario-profesor.service';
 import { ModalService } from 'src/app/servicios/modal.service';
 import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
+import { MyValidators } from 'src/app/utils/validators';
 
 @Component({
   selector: 'app-usuario',
@@ -44,18 +45,18 @@ export class UsuarioComponent {
   QR = '';
 
   form = this.formBuilder.group({
-    USR_DNI: ['', Validators.required],
-    USR_NOM: ['', Validators.required],
-    USR_NOM2: ['', Validators.required],
-    USR_APE: ['', Validators.required],
-    USR_APE2: ['', Validators.required],
-    USR_DIR: ['', Validators.required],
-    USR_TEL: ['', Validators.required],
-    USR_CEL: ['', Validators.required],
-    USR_EMAIL: ['', Validators.required],
-    USR_FECH_NAC: [getFormattedDate(new Date()), Validators.required],
-    USR_GEN: ['', Validators.required],
-    USUARIO: [{ value: '', disabled: true }, Validators.required],
+    USR_DNI: ['', MyValidators.required, MyValidators.validateCedula],
+    USR_NOM: ['', MyValidators.required,MyValidators.soloLetras],
+    USR_NOM2: ['', MyValidators.required,MyValidators.soloLetras],
+    USR_APE: ['', MyValidators.required,MyValidators.soloLetras],
+    USR_APE2: ['', MyValidators.required,MyValidators.soloLetras],
+    USR_DIR: ['', MyValidators.required],
+    USR_TEL: ['', MyValidators.required],
+    USR_CEL: ['', MyValidators.required,MyValidators.validateCelular],
+    USR_EMAIL: ['', MyValidators.required, MyValidators.validarCorreo],
+    USR_FECH_NAC: [getFormattedDate(new Date()), MyValidators.required],
+    USR_GEN: ['', MyValidators.required],
+    USUARIO: [{ value: '', disabled: true }, MyValidators.required],
     ESTADO: [true],
     PRF_FECH_INGR_INST: [getFormattedDate(new Date())],
     PRF_FECH_INGR_MAG: [getFormattedDate(new Date())],

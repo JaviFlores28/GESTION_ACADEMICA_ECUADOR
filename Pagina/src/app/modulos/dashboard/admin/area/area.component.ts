@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Validators, FormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Area } from 'src/app/interfaces/Area.interface';
 import { AreaService } from 'src/app/servicios/area.service';
 import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { ModalService } from 'src/app/servicios/modal.service';
+import { MyValidators } from 'src/app/utils/validators';
 
 @Component({
   selector: 'app-area',
@@ -28,7 +29,7 @@ export class AreaComponent implements OnInit {
   USR_ID = this.usuarioService.getUserIdLocal();
 
   form = this.formBuilder.group({
-    nom: ['', Validators.required],
+    nom: ['', MyValidators.required],
     estado: [true],
   });
 

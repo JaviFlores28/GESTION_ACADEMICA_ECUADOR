@@ -12,10 +12,20 @@
         <div class="col">
           <label for="nom" class="form-label">Nombre</label>
           <input type="text" id="nom" formControlName="nom" class="form-control" />
+          <div *ngIf="form.controls.nom.touched">
+            <p *ngIf="form.controls.nom.hasError('required')" class="mssg-wrng">
+              *Campo obligatorio
+            </p>
+          </div>
         </div>
         <div class="col">
           <label for="orden" class="form-label">Orden</label>
-          <input type="number" id="orden" formControlName="orden" class="form-control" min="1" pattern="^[0-9]+" />
+          <input type="number" id="orden" formControlName="orden" class="form-control" min="1" pattern="[0-9]+" />
+          <div *ngIf="form.controls.orden.touched">
+            <p *ngIf="form.controls.orden.hasError('required')" class="mssg-wrng">
+              *Campo obligatorio
+            </p>
+          </div>
         </div>
         <div class="col">
           <label for="tip" class="form-label pb-2">Tipo</label>

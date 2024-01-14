@@ -12,11 +12,16 @@
         <div class="col">
           <label for="nom" class="form-label">Nombre:</label>
           <input type="text" id="nom" formControlName="nom" class="form-control" />
+          <div *ngIf="form.controls.nom.touched">
+            <p *ngIf="form.controls.nom.hasError('required')" class="mssg-wrng">
+              *Campo obligatorio
+            </p>
+          </div>
         </div>
         <div class="col">
           <label for="area" class="form-label pb-2">Área:</label>
           <select class="form-select" id="area" formControlName="area">
-            <option disabled selected>Selecciona una opción</option>
+            <option disabled [selected]="true">Selecciona una opción</option>
             <option *ngFor="let option of areas" [value]="option.AREA_ID">{{ option.AREA_NOM }}</option>
           </select>
         </div>

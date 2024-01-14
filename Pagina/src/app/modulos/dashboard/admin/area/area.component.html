@@ -14,6 +14,11 @@
         <div class="col">
           <label for="nom" class="form-label">Nombre:</label>
           <input type="text" id="nom" formControlName="nom" class="form-control" />
+          <div *ngIf="form.controls.nom.touched">
+            <p *ngIf="form.controls.nom.hasError('required')" class="mssg-wrng">
+              *Campo obligatorio
+            </p>
+          </div>
         </div>
         <div class="col">
           <label for="estado" class="form-label pb-2">Estado:</label>

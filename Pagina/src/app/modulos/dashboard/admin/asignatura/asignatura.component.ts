@@ -9,6 +9,7 @@ import { AreaService } from 'src/app/servicios/area.service';
 import { AsignaturaService } from 'src/app/servicios/asignatura.service';
 import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { ModalService } from 'src/app/servicios/modal.service';
+import { MyValidators } from 'src/app/utils/validators';
 
 @Component({
   selector: 'app-asignatura',
@@ -37,9 +38,9 @@ modaltitle: string = 'Agregar';
   cursos: Curso[] = [];
 
   form = this.formBuilder.group({
-    nom: ['', Validators.required],
-    cltv: [false, Validators.required],
-    area: ['', Validators.required],
+    nom: ['', MyValidators.required],
+    cltv: [false, MyValidators.required],
+    area: ['', MyValidators.required],
     estado: [true],
   });
 

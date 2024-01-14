@@ -6,6 +6,7 @@ import { Curso } from 'src/app/interfaces/Curso.interface';
 import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { CursoService } from 'src/app/servicios/curso.service';
 import { ModalService } from 'src/app/servicios/modal.service';
+import { MyValidators } from 'src/app/utils/validators';
 
 @Component({
   selector: 'app-curso',
@@ -31,9 +32,9 @@ export class CursoComponent {
   icon = faInfoCircle;
 
   form = this.formBuilder.group({
-    nom: ['', Validators.required],
-    tip: ['', Validators.required],
-    orden: [1, Validators.required],
+    nom: ['', MyValidators.required],
+    tip: ['', MyValidators.required],
+    orden: [1, MyValidators.required],
     estado: [true],
   });
 

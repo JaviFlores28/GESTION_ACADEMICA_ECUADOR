@@ -20,6 +20,14 @@
                 <div class="col-md-12 col-lg-6">
                   <label class="form-label" for="USR_DNI">Cédula:</label>
                   <input class="form-control" id="USR_DNI" type="text" formControlName="USR_DNI" />
+                  <div *ngIf="form.controls.USR_DNI.touched">
+                    <p *ngIf="form.controls.USR_DNI.hasError('required')" class="mssg-wrng">
+                      *La cédula es obligatoria
+                    </p>
+                    <p *ngIf="form.get('USR_DNI')?.hasError('cedulaInvalida')" class="mssg-wrng">
+                      {{ form.get('USR_DNI')?.getError('message') }}
+                    </p>
+                  </div>
                 </div>
                 <div class="col-md-12 col-lg-6">
                   <label class="form-label" for="USR_FECH_NAC" class="form-label">Fecha de nacimiento:</label>
@@ -29,34 +37,104 @@
                 <div class="col-md-12 col-lg-6">
                   <label class="form-label" for="USR_NOM">Primer nombre:</label>
                   <input class="form-control" type="text" formControlName="USR_NOM" />
+                  <div *ngIf="form.controls.USR_NOM.touched && form.controls.USR_NOM.invalid" >
+                    <p *ngIf="form.controls.USR_NOM.hasError('required')" class="mssg-wrng">
+                      *Campo obligatorio
+                    </p>
+                    <p *ngIf=" form.controls.USR_NOM.hasError('minlength')" class="mssg-wrng">
+                      *Nombre no válido
+                    </p>
+                    <p *ngIf="form.get('USR_NOM')?.hasError('soloLetras')" class="mssg-wrng">
+                      {{ form.get('USR_NOM')?.getError('message') }}
+                    </p>
+                  </div>
                 </div>
                 <div class="col-md-12 col-lg-6">
                   <label class="form-label" for="USR_NOM2">Segundo nombre:</label>
                   <input class="form-control" type="atext" formControlName="USR_NOM2" />
+                  <div *ngIf="form.controls.USR_NOM2.touched && form.controls.USR_NOM2.invalid" >
+                    <p *ngIf="form.controls.USR_NOM2.hasError('required')" class="mssg-wrng">
+                      *Campo obligatorio
+                    </p>
+                    <p *ngIf=" form.controls.USR_NOM2.hasError('minlength')" class="mssg-wrng">
+                      *Nombre no válido
+                    </p>
+                    <p *ngIf="form.get('USR_NOM2')?.hasError('soloLetras')" class="mssg-wrng">
+                      {{ form.get('USR_NOM2')?.getError('message') }}
+                    </p>
+                  </div>
                 </div>
                 <div class="col-md-12 col-lg-6">
                   <label class="form-label" for="USR_APE">Primer apellido:</label>
                   <input class="form-control" type="text" formControlName="USR_APE" />
+                  <div *ngIf="form.controls.USR_APE.touched && form.controls.USR_APE.invalid" >
+                    <p *ngIf="form.controls.USR_APE.hasError('required')" class="mssg-wrng">
+                      *Campo obligatorio
+                    </p>
+                    <p *ngIf=" form.controls.USR_APE.hasError('minlength')" class="mssg-wrng">
+                      *Apellido no válido
+                    </p>
+                    <p *ngIf="form.get('USR_APE')?.hasError('soloLetras')" class="mssg-wrng">
+                      {{ form.get('USR_APE')?.getError('message') }}
+                    </p>
+                  </div>
                 </div>
                 <div class="col-md-12 col-lg-6">
                   <label class="form-label" for="USR_APE2">Segundo apellido:</label>
                   <input class="form-control" type="text" formControlName="USR_APE2" />
+                  <div *ngIf="form.controls.USR_APE2.touched && form.controls.USR_APE2.invalid" >
+                    <p *ngIf="form.controls.USR_APE2.hasError('required')" class="mssg-wrng">
+                      *Campo obligatorio
+                    </p>
+                    <p *ngIf=" form.controls.USR_APE2.hasError('minlength')" class="mssg-wrng">
+                      *Apellido no válido
+                    </p>
+                    <p *ngIf="form.get('USR_APE2')?.hasError('soloLetras')" class="mssg-wrng">
+                      {{ form.get('USR_APE2')?.getError('message') }}
+                    </p>
+                  </div>
                 </div>
                 <div class="col-md-12 col-12">
                   <label class="form-label" for="USR_DIR">Dirección domicilio:</label>
                   <input class="form-control" type="text" formControlName="USR_DIR" id="USR_DIR" />
+                  <div *ngIf="form.controls.USR_DIR.touched && form.controls.USR_DIR.invalid" >
+                    <p *ngIf="form.controls.USR_DIR.hasError('required')" class="mssg-wrng">
+                      *Campo obligatorio
+                    </p>
+                  </div>
                 </div>
                 <div class="col-md-12 col-lg-6">
                   <label class="form-label" for="USR_TEL">Teléfono:</label>
                   <input class="form-control" type="text" formControlName="USR_TEL" pattern="^[0-9]+" />
+                  <div *ngIf="form.controls.USR_TEL.touched && form.controls.USR_TEL.invalid" >
+                    <p *ngIf="form.controls.USR_TEL.hasError('required')" class="mssg-wrng">
+                      *Campo obligatorio
+                    </p>
+                  </div>
                 </div>
                 <div class="col-md-12 col-lg-6">
                   <label class="form-label" for="USR_CEL">Celular:</label>
-                  <input class="form-control" type="text" formControlName="USR_CEL" pattern="^[0-9]+" />
+                  <input class="form-control" type="text" formControlName="USR_CEL" />
+                  <div *ngIf="form.controls.USR_CEL.touched">
+                    <p *ngIf="form.controls.USR_CEL.hasError('required')" class="mssg-wrng">
+                      *Campo obligatorio
+                    </p>
+                    <p *ngIf="form.get('USR_CEL')?.hasError('celularInvalido')" class="mssg-wrng">
+                      {{ form.get('USR_CEL')?.getError('message') }}
+                    </p>
+                  </div>
                 </div>
                 <div class="col-md-12 col-lg-6">
                   <label class="form-label" for="USR_EMAIL">Correo:</label>
-                  <input class="form-control" id="USR_EMAIL" type="text" formControlName="USR_EMAIL" />
+                  <input class="form-control" id="USR_EMAIL" type="email" formControlName="USR_EMAIL" />
+                  <div *ngIf="form.controls.USR_EMAIL.touched && form.controls.USR_TEL.invalid" >
+                    <p *ngIf="form.controls.USR_EMAIL.hasError('required')" class="mssg-wrng">
+                      *Campo obligatorio
+                    </p>
+                    <p *ngIf="form.get('USR_EMAIL')?.hasError('correoValido')" class="mssg-wrng">
+                      {{ form.get('USR_EMAIL')?.getError('message') }}
+                    </p>
+                  </div>
                 </div>
                 <div class="col-md-12 col-lg-6">
                   <label class="form-label" for="USR_GEN">Género:</label>
