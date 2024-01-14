@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder} from '@angular/forms';
 import { getFormattedDate } from 'src/app/sistema/variables/variables';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 import { ModalService } from 'src/app/servicios/modal.service';
 import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
 import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
+import { MyValidators } from 'src/app/utils/validators';
 
 @Component({
   selector: 'app-anio-lectivo',
@@ -26,18 +27,18 @@ modaltitle: string = 'Agregar';
   USR_ID = this.usuarioService.getUserIdLocal();
 
   form = this.formBuilder.group({
-    AL_NOM: ['', Validators.required],
-    AL_INICIO: [getFormattedDate(new Date()), Validators.required],
-    AL_FIN: [getFormattedDate(new Date()), Validators.required],
-    PRD_NOM: ['Trimestre', Validators.required],
-    AL_POR_PRD: [70, Validators.required],
-    AL_POR_EXAM: [30, Validators.required],
-    CLFN_MIN_APR: [7, Validators.required],
-    CLFN_MIN_PERD: [5, Validators.required],
-    NUM_PRD: [2, Validators.required],
-    NUM_EXAM: [1, Validators.required],
-    NUM_PRCL: [3, Validators.required],
-    NUM_SUSP: [1, Validators.required],
+    AL_NOM: ['', MyValidators.required],
+    AL_INICIO: [getFormattedDate(new Date()), MyValidators.required],
+    AL_FIN: [getFormattedDate(new Date()), MyValidators.required],
+    PRD_NOM: ['Trimestre', MyValidators.required],
+    AL_POR_PRD: [70, MyValidators.required],
+    AL_POR_EXAM: [30, MyValidators.required],
+    CLFN_MIN_APR: [7, MyValidators.required,MyValidators.calificacion],
+    CLFN_MIN_PERD: [5, MyValidators.required,MyValidators.calificacion],
+    NUM_PRD: [2, MyValidators.required, MyValidators.soloNumeros],
+    NUM_EXAM: [1, MyValidators.required, MyValidators.soloNumeros],
+    NUM_PRCL: [3, MyValidators.required],
+    NUM_SUSP: [1, MyValidators.required, MyValidators.soloNumeros],
     ESTADO: [true],
   });
 

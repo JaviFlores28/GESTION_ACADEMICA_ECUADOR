@@ -62,12 +62,31 @@ static excluirNumero(control: AbstractControl):
         if (cedulaRegExp) {
             return of( { soloNumeros: true, message: '*Solo números' });
           }
-        if (cadena.length != 10) {
+        /*if (cadena.length != 10) {
             return of( { soloNumeros: true, message: '*Código inválido' });
-        }  
+        }  */
           return of(null);
       } 
     
+      static calificacion(control: AbstractControl): 
+  Observable<ValidationErrors | null> {
+    const cadena = control.value.toString();
+    //const caliRegExp = /[0-9.]/.test(cadena);
+    const isCali = MyValidators.isCalificacion(cadena);
+    if (!isCali) {
+      return of( { calificacionInvalida: true, message: '*Calificación inválida' });
+    }
+    return of(null);
+  } 
+  static isCalificacion(cadena: string) {
+    const nota = parseFloat(cadena);
+    if (nota <= 0 || nota > 10) {
+      return false;
+    }else {
+      return true;
+    }
+  }
+      
     private static isValidCedula(cedula: string): boolean {
         var total = 0;
         const longitud = cedula.length;
