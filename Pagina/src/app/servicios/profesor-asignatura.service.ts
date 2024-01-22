@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError } from 'rxjs';
 import { ProfesorAsignaturaParalelo } from '../interfaces/ProfesorAsignaturaParalelo.interface';
-import { Respuesta } from '../sistema/interfaces/respuesta.interface';
+import { Respuesta } from '../sistema/interfaces/Respuesta.interface';
 import { variables } from '../sistema/variables/variables';
 import { ErrorHandlerService } from './error-handler.service';
 

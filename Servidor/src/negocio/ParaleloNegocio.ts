@@ -1,6 +1,6 @@
 import ParaleloDatos from '../datos/ParaleloDatos';
 import ParaleloEntidad from '../entidades/ParaleloEntidad';
-import { Respuesta } from '../sistema/Interfaces/Respuesta';
+import { Respuesta } from '../sistema/interfaces/Respuesta';
 
 class ParaleloNegocio {
   static async insert(paralelo: ParaleloEntidad): Promise<Respuesta> {

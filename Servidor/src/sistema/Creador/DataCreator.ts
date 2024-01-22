@@ -508,7 +508,7 @@ class DataCreator {
     const content = `${importsTable()}
       import Funciones from '../sistema/funciones/Funciones';
       import BaseDatos from '../sistema/conexion/BaseDatos';
-      import { Respuesta } from '../sistema/Interfaces/Respuesta';
+      import { Respuesta } from '../sistema/interfaces/Respuesta';
       import ${this.capitalizedTableName}Entidad from '../entidades/${this.capitalizedTableName}Entidad';
       import { v4 as uuidv4 } from 'uuid';
       

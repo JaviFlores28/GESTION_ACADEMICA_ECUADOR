@@ -43,7 +43,7 @@
             <div class="col-12 col-md-3">
               <label for="EST_NOM" class="form-label">Primer nombre:</label>
               <input type="text" id="EST_NOM" formControlName="EST_NOM" class="form-control" />
-              <div *ngIf="form.controls.EST_NOM.touched && form.controls.EST_NOM.invalid" >
+              <div *ngIf="form.controls.EST_NOM.touched && form.controls.EST_NOM.invalid">
                 <p *ngIf="form.controls.EST_NOM.hasError('required')" class="mssg-wrng">
                   *Campo obligatorio
                 </p>
@@ -92,8 +92,6 @@
                 </p>
               </div>
             </div>
-
-
           </div>
         </div>
       </div>
@@ -105,30 +103,20 @@
           <hr />
           <div class="row g-3 row-cols-1">
 
-            <div class="col-12 col-md-6">
-              <label for="EST_PRV" class="form-label">Provincia</label>
-              <select class="form-select" (change)="actualizarCantones($event)">
+            <div class="col-12 col-md-3">
+              <label for="EST_PRV" class="form-label">Provincia:</label>
+              <select class="form-select" formControlName="EST_PRV">
                 <option value="0" disabled [selected]="true">Seleccione</option>
                 <option *ngFor="let item of provincias; let i = index" [value]=item>{{item}}</option>
               </select>
             </div>
 
-            <div class="col-12 col-md-6">
-              <label for="EST_PRV" class="form-label">Cantón</label>
-              <select class="form-select">
+            <div class="col-12 col-md-3">
+              <label for="EST_PRV" class="form-label">Cantón:</label>
+              <select class="form-select" formControlName="EST_CAN">
                 <option value="0" disabled [selected]="true">Seleccione</option>
                 <option *ngFor="let item of cantones; let i = index" [value]=item>{{item}}</option>
               </select>
-            </div>
-            
-
-            <div class="col-12 col-md-3">
-              <label for="EST_PRV" class="form-label">Provincia:</label>
-              <input type="text" id="EST_PRV" formControlName="EST_PRV" class="form-control" />
-            </div>
-            <div class="col-12 col-md-3">
-              <label for="EST_CAN" class="form-label">Cantón:</label>
-              <input type="text" id="EST_CAN" formControlName="EST_CAN" class="form-control" />
             </div>
             <div class="col-12 col-md-3">
               <label for="EST_PARR" class="form-label">Parroquia:</label>
@@ -149,7 +137,7 @@
             <div class="col-12">
               <label for="EST_DIR" class="form-label">Dirección:</label>
               <input type="text" id="EST_DIR" formControlName="EST_DIR" class="form-control" />
-              <div *ngIf="form.controls.EST_DIR.touched && form.controls.EST_DIR.invalid" >
+              <div *ngIf="form.controls.EST_DIR.touched && form.controls.EST_DIR.invalid">
                 <p *ngIf="form.controls.EST_DIR.hasError('required')" class="mssg-wrng">
                   *Campo obligatorio
                 </p>
@@ -158,7 +146,7 @@
             <div class="col-12 col-md-3">
               <label for="EST_NAC" class="form-label">Nacionalidad:</label>
               <input type="text" id="EST_NAC" formControlName="EST_NAC" class="form-control" />
-              <div *ngIf="form.controls.EST_NAC.touched && form.controls.EST_NAC.invalid" >
+              <div *ngIf="form.controls.EST_NAC.touched && form.controls.EST_NAC.invalid">
                 <p *ngIf="form.controls.EST_NAC.hasError('required')" class="mssg-wrng">
                   *Campo obligatorio
                 </p>
@@ -167,7 +155,7 @@
             <div class="col-12 col-md-3">
               <label for="EST_ETN" class="form-label">Autodefinición étnica:</label>
               <input type="text" id="EST_ETN" formControlName="EST_ETN" class="form-control" />
-              <div *ngIf="form.controls.EST_ETN.touched && form.controls.EST_ETN.invalid" >
+              <div *ngIf="form.controls.EST_ETN.touched && form.controls.EST_ETN.invalid">
                 <p *ngIf="form.controls.EST_ETN.hasError('required')" class="mssg-wrng">
                   *Campo obligatorio
                 </p>
@@ -176,7 +164,7 @@
             <div class="col-12 col-md-3">
               <label for="EST_NAC_ETN" class="form-label">Nacionalidad étnica:</label>
               <input type="text" id="EST_NAC_ETN" formControlName="EST_NAC_ETN" class="form-control" />
-              <div *ngIf="form.controls.EST_NAC_ETN.touched && form.controls.EST_NAC_ETN.invalid" >
+              <div *ngIf="form.controls.EST_NAC_ETN.touched && form.controls.EST_NAC_ETN.invalid">
                 <p *ngIf="form.controls.EST_NAC_ETN.hasError('required')" class="mssg-wrng">
                   *Campo obligatorio
                 </p>
@@ -185,7 +173,7 @@
             <div class="col-12 col-md-3">
               <label for="EST_COM_ETN" class="form-label">Comunidad étnica:</label>
               <input type="text" id="EST_COM_ETN" formControlName="EST_COM_ETN" class="form-control" />
-              <div *ngIf="form.controls.EST_COM_ETN.touched && form.controls.EST_COM_ETN.invalid" >
+              <div *ngIf="form.controls.EST_COM_ETN.touched && form.controls.EST_COM_ETN.invalid">
                 <p *ngIf="form.controls.EST_COM_ETN.hasError('required')" class="mssg-wrng">
                   *Campo obligatorio
                 </p>
@@ -200,31 +188,26 @@
         <div class="card-body">
           <h5 class="card-title"><fa-icon [icon]="icon" size="1x"></fa-icon> Accesibilidad y Tecnología Asociada</h5>
           <hr />
-          <div class="row g-3 row-cols-1">
-            <div class="col-12 col-md-4">
+          <div class="row row-cols-md-2 row-cols-1 g-3 row-cols-1">
+            <div class="col">
               <label for="EST_NEC_ASO_DIS" class="form-label pb-2">Necesidad educativa especial asociada a la
-                discapacidad:</label>
-              <input class="form-check-input" id="EST_NEC_ASO_DIS" type="checkbox" formControlName="EST_NEC_ASO_DIS" />
-              <label class="form-check-label" for="EST_NEC_ASO_DIS">Sí</label>
+                discapacidad: ¿Sí?</label>
+              <input class="form-check-input ms-md-2" id="EST_NEC_ASO_DIS" type="checkbox" formControlName="EST_NEC_ASO_DIS" />
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col">
               <label for="EST_NEC_NO_ASO_DIS" class="form-label pb-2">Necesidad educativa especial no asociada a la
-                discapacidad:</label>
-              <input class="form-check-input" id="EST_NEC_NO_ASO_DIS" type="checkbox"
-                formControlName="EST_NEC_NO_ASO_DIS" />
-              <label class="form-check-label" for="EST_NEC_NO_ASO_DIS">Sí</label>
+                discapacidad: ¿Sí?</label>
+              <input class="form-check-input ms-md-2" id="EST_NEC_NO_ASO_DIS" type="checkbox" formControlName="EST_NEC_NO_ASO_DIS" />
             </div>
-            <div class="col-12 col-md-4">
-              <label for="EST_ENF_CAT" class="form-label pb-2">Enfermedad catastrófica:</label>
-              <input class="form-check-input" id="EST_ENF_CAT" type="checkbox" formControlName="EST_ENF_CAT" />
-              <label class="form-check-label" for="EST_ENF_CAT">Sí</label>
+            <div class="col">
+              <label for="EST_ENF_CAT" class="form-label pb-2">Enfermedad catastrófica: ¿Sí?</label>
+              <input class="form-check-input ms-md-2" id="EST_ENF_CAT" type="checkbox" formControlName="EST_ENF_CAT" />
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col">
               <div class="row row-cols-1">
                 <div class="col">
-                  <label class="form-label" for="haveConadis">Carnet de CONADIS:</label>
-                  <input class="form-check-input" type="checkbox" id="haveConadis" formControlName="haveConadis" />
-                  <label class="form-check-label" for="haveConadis">Sí</label>
+                  <label class="form-label" for="haveConadis">Carnet de CONADIS: ¿Sí?</label>
+                  <input class="form-check-input ms-md-2" type="checkbox" id="haveConadis" formControlName="haveConadis" />
                 </div>
                 <div class="col" *ngIf="form.value.haveConadis">
                   <label for="EST_NUM_CONA" class="form-label">Numero de carnet:</label>
@@ -232,7 +215,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col">
               <label class="form-label">¿Qué equipos de comunicación dispone en su hogar?</label>
               <br />
               <div *ngFor="let equipo of listEquiposE">
@@ -259,7 +242,7 @@
             <div class="col">
               <label for="REL_EST_REP" class="form-label">Relación del representante:</label>
               <input type="text" id="REL_EST_REP" formControlName="REL_EST_REP" class="form-control" />
-              <div *ngIf="form.controls.REL_EST_REP.touched && form.controls.REL_EST_REP.invalid" >
+              <div *ngIf="form.controls.REL_EST_REP.touched && form.controls.REL_EST_REP.invalid">
                 <p *ngIf="form.controls.REL_EST_REP.hasError('required')" class="mssg-wrng">
                   *Campo obligatorio
                 </p>

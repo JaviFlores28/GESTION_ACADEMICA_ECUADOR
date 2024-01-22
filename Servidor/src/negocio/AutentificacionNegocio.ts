@@ -1,5 +1,5 @@
 import AutentificacionDatos from '../datos/AutentificacionDatos';
-import { Respuesta } from '../sistema/Interfaces/Respuesta';
+import { Respuesta } from '../sistema/interfaces/Respuesta';
 
 class AutentificacionNegocio {
   static async login(data: any): Promise<Respuesta> {

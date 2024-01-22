@@ -1,6 +1,6 @@
 import speakeasy from 'speakeasy';
 import { Router, Request, Response } from 'express';
-import { Respuesta } from '../sistema/Interfaces/Respuesta';
+import { Respuesta } from '../sistema/interfaces/Respuesta';
 import QRCode from 'qrcode';
 import AutentificacionNegocio from '../negocio/AutentificacionNegocio';
 import { Autentificacion } from '../sistema/Interfaces/Autentificacion';

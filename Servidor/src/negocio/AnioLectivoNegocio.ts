@@ -1,6 +1,6 @@
 import AnioLectivoDatos from '../datos/AnioLectivoDatos';
 import AnioLectivoEntidad from '../entidades/AnioLectivoEntidad';
-import { Respuesta } from '../sistema/Interfaces/Respuesta';
+import { Respuesta } from '../sistema/interfaces/Respuesta';
 
 class AnioLectivoNegocio {
   static async insert(anio_lectivo: AnioLectivoEntidad): Promise<Respuesta> {

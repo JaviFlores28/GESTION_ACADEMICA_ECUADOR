@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterContentInit, Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
@@ -11,16 +11,14 @@ import { ModalService } from 'src/app/servicios/modal.service';
 import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { MyValidators } from 'src/app/utils/validators';
 import { ProvinciasService } from 'src/app/servicios/provincias.service';
-import { DatosJson, Provincia } from 'src/app/interfaces/Provincias.interface';
+import { Provincia } from 'src/app/interfaces/Provincias.interface';
 
 @Component({
   selector: 'app-estudiante',
   templateUrl: './estudiante.component.html',
   styleUrls: ['./estudiante.component.scss'],
 })
-export class EstudianteComponent {
-
-
+export class EstudianteComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -30,9 +28,8 @@ export class EstudianteComponent {
     private modalService: ModalService,
     private authService: AutentificacionService,
     private provinciasService: ProvinciasService
-  ) {
-  }
-  listProv: any;
+  ) { }
+
   modoEdicion: boolean = false;
   editItemId: string = '';
   modaltitle: string = 'Agregar';
@@ -41,7 +38,8 @@ export class EstudianteComponent {
   icon = faInfoCircle;
 
   usuarios: Usuario[] = [];
-
+  provincias: string[] = [];
+  cantones: string[] = [];
   listEquiposE = [
     { id: 'EST_INTE', nombre: 'Internet', value: 5 },
     { id: 'EST_TV', nombre: 'TV', value: 1 },
@@ -49,11 +47,12 @@ export class EstudianteComponent {
     { id: 'EST_PC', nombre: 'Computador', value: 3 },
     { id: 'EST_CEL', nombre: 'Celular', value: 4 },
   ];
+  geografiaEC: Provincia = {};
 
   form = this.formBuilder.nonNullable.group({
     EST_DNI: ['', MyValidators.required, MyValidators.validateCedula],
-    EST_NOM: ['', MyValidators.required, MyValidators.soloLetras,MyValidators.minLength(3)],
-    EST_NOM2: ['', MyValidators.required,MyValidators.soloLetras],
+    EST_NOM: ['', MyValidators.required, MyValidators.soloLetras, MyValidators.minLength(3)],
+    EST_NOM2: ['', MyValidators.required, MyValidators.soloLetras],
     EST_APE: ['', MyValidators.required, MyValidators.soloLetras],
     EST_APE2: ['', MyValidators.required, MyValidators.soloLetras],
     EST_FECH_NAC: [getFormattedDate(new Date()), MyValidators.required],
@@ -83,24 +82,28 @@ export class EstudianteComponent {
   });
 
   ngOnInit(): void {
-    this.validarEdicion();
     this.loadUsuarios();
-    this.loadProvincias();
+    this.provinciaOnchange();
+    this.loadGeografia();
   }
 
-  provincias: string[] =[] ;
-  cantones:any[] = []
-  async loadProvincias() {
-    await this.provinciasService.getAllDataProvincias().subscribe(data => {
-      if (data != null) {
-        this.listProv = data;
-        let i = 1;
-        do {
-          this.provincias.push(this.listProv[i].provincia);
-          i++;
-        } while (this.listProv[i+1] != null);
+  provinciaOnchange() {
+    this.form.get('EST_PRV')?.valueChanges.subscribe((value) => {
+      this.actualizarCantones(value || '');
+    });
+  }
+
+  loadGeografia() {
+    this.provinciasService.getAllDataProvincias().subscribe(
+      {
+        next: (value) => {
+          this.geografiaEC = value as Provincia;
+          this.provincias = Object.values(this.geografiaEC).map(item => item.provincia).filter(provincia => provincia);
+          this.validarEdicion();
+        },
+        error: (error) => console.log(error),
       }
-    })    
+    );
   }
 
   validarEdicion() {
@@ -110,12 +113,14 @@ export class EstudianteComponent {
         this.modoEdicion = true;
         this.editItemId = id;
         this.modaltitle = 'Editar';
-        this.modalMsg = '¿Desea editar el registro?'; this.loadDataEdit();
+        this.modalMsg = '¿Desea editar el registro?';
+        this.loadDataEdit();
       } else {
         this.modoEdicion = false;
         this.editItemId = '';
       }
     });
+
   }
 
   onSubmit() {
@@ -251,6 +256,8 @@ export class EstudianteComponent {
   }
 
   llenarForm(data: Estudiante) {
+    console.log(data);
+    
     this.form.get('EST_DNI')?.setValue(data.EST_DNI);
     this.form.get('EST_NOM')?.setValue(data.EST_NOM);
     this.form.get('EST_NOM2')?.setValue(data.EST_NOM2);
@@ -321,33 +328,13 @@ export class EstudianteComponent {
     this.form.reset();
     this.router.navigate(['../'], { relativeTo: this.route });
   }
-  
-  keyCanton:number=0;
 
-  actualizarCantones(event:any){
-    const value = event.target.selectedIndex;
-    const can:any[] = this.listProv[value].cantones ;
-    this.cantones = [];
-    if (can != null) {
-      let i = value+'0'+1;
-      let index = parseInt(i);
-      this.keyCanton = value;
-      do {
-        this.cantones.push(can[index].canton);
-        index++;
-      } while (can[index+1] != null);
+  actualizarCantones(value: any) {
+    const provinciaEncontrada = Object.values(this.geografiaEC).find(item => item["provincia"] === value);
+    if (provinciaEncontrada) {
+      let cantones = provinciaEncontrada["cantones"];
+      this.cantones = Object.values(cantones).map(item => typeof item === 'string' ? item : item["canton"]).filter(canton => canton);
     }
   }
-  /*parroquias:any[] = []
-  actualizarParroquia(event: any) {
-    const value = event.target.selectedIndex;
-    console.log('desde parroquias '+ this.keyCanton+'0'+value+'51');
-    this.cantones[value]
-    if(this.cantones != null){
-      let i = this.keyCanton+'0'+value+'5'+0;
-      let j = parseInt(i);
-      //console.log('clave de las'+j);
-      
-    }
-  }*/
-  }
+
+}

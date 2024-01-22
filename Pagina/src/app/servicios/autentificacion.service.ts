@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, lastValueFrom } from 'rxjs';
-import { Respuesta } from '../sistema/interfaces/respuesta.interface';
+import { Respuesta } from '../sistema/interfaces/Respuesta.interface';
 import { UsuarioLogin } from '../sistema/interfaces/usuario-Login.interface';
 import { variables } from '../sistema/variables/variables';
 import { ErrorHandlerService } from './error-handler.service';
