@@ -19,9 +19,9 @@ class CalificacionesCualitativasNegocio {
     }
   }
 
-  static async updateEstado(ids: string[]): Promise<Respuesta> {
+  static async updateEstado(id: string): Promise<Respuesta> {
     try {
-      return CalificacionesCualitativasDatos.updateEstado(ids);
+      return CalificacionesCualitativasDatos.updateEstado(id);
     } catch (error: any) {
       return { response: false, data: null, message: error.message };
     }

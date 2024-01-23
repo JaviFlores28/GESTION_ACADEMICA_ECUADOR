@@ -17,9 +17,7 @@ class AutentificacionDatos {
       if (rows.length <= 0) {
         throw new Error('Usuario no encontrado');
       }
-
       const pswdDecrypt = Funciones.decrypt(rows[0].USR_PSWD);
-
       if (!Funciones.pswdValid(pswdDecrypt, data.USR_PSWD)) {
         throw new Error('Contraseña incorrecta');
       }
@@ -27,6 +25,7 @@ class AutentificacionDatos {
       newUsuario.USR_PSWD = 'pswd';
       return { response: true, data: newUsuario, message: 'Usuario Valido' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message }; // Devuelve una Promise rechazada con el error
     }
   }
@@ -41,6 +40,7 @@ class AutentificacionDatos {
       }
       return { response: true, data: true, message: 'Activación completada.' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message }; // Devuelve una Promise rechazada con el error
     }
   }
@@ -55,6 +55,7 @@ class AutentificacionDatos {
       }
       return { response: true, data: true, message: 'desactivación completada.' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message }; // Devuelve una Promise rechazada con el error
     }
   }

@@ -19,9 +19,9 @@ class EstudianteCursoNegocio {
     }
   }
 
-  static async updateEstado(ids: string[]): Promise<Respuesta> {
+  static async updateEstado(id: string): Promise<Respuesta> {
     try {
-      return EstudianteCursoDatos.updateEstado(ids);
+      return EstudianteCursoDatos.updateEstado(id);
     } catch (error: any) {
       return { response: false, data: null, message: error.message };
     }

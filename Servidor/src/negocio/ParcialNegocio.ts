@@ -19,9 +19,9 @@ class ParcialNegocio {
     }
   }
 
-  static async updateEstado(ids: string[]): Promise<Respuesta> {
+  static async updateEstado(id: string): Promise<Respuesta> {
     try {
-      return ParcialDatos.updateEstado(ids);
+      return ParcialDatos.updateEstado(id);
     } catch (error: any) {
       return { response: false, data: null, message: error.message };
     }

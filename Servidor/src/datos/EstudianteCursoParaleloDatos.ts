@@ -11,7 +11,7 @@ import ParcialDatos from './ParcialDatos';
 class EstudianteCursoParaleloDatos {
   static sqlInsert: string = `INSERT INTO estudiante_curso_paralelo (EST_CRS_PRLL_ID, EST_CRS_ID, AL_ID, PRLL_ID, PASE, ESTADO)VALUES( ?, ?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE estudiante_curso_paralelo SET EST_CRS_ID=?,AL_ID=?,PRLL_ID=?,PASE=?,ESTADO=? WHERE EST_CRS_PRLL_ID=?;`;
-  static sqlUpdateEstado: string = 'UPDATE estudiante_curso_paralelo SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  EST_CRS_PRLL_ID IN';
+  static sqlUpdateEstado: string = 'UPDATE estudiante_curso_paralelo SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  EST_CRS_PRLL_ID  =?;';
   static sqlDelete: string = `DELETE FROM estudiante_curso_paralelo WHERE EST_CRS_PRLL_ID = ?`;
   static sqlSelect: string = `SELECT * FROM vista_estudiante_curso_paralelo `;
   static sqlGetById: string = 'SELECT * FROM estudiante_curso_paralelo WHERE EST_CRS_PRLL_ID = ?';
@@ -31,6 +31,7 @@ class EstudianteCursoParaleloDatos {
       }
       return { response: true, data: newEstudianteCursoParalelo.EST_CRS_PRLL_ID, message: 'Se creo correctamente' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -47,29 +48,22 @@ class EstudianteCursoParaleloDatos {
       }
       return { response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
 
-  static async updateEstado(ids: string[]): Promise<Respuesta> {
+  static async updateEstado(id: string): Promise<Respuesta> {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
-      // Crear una cadena de marcadores de posición para la cantidad de IDs en el array
-      const placeholders = ids.map(() => '?').join(',');
-
-      // Consulta SQL con cláusula IN y actualización del estado
-      let sql = `${this.sqlUpdateEstado}(${placeholders});`;
-
-      // Ejecutar la consulta con el array de valores
-      const [result] = await pool.execute<any>(sql, ids);
-
-      // Verificar si se afectaron filas
+      let sql = this.sqlUpdateEstado;
+      const [result] = await pool.execute<any>(sql, [id]);
       if (result.affectedRows < 1) {
         throw new Error('No se pudo actualizar el estado');
       }
-
       return { response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -84,6 +78,7 @@ class EstudianteCursoParaleloDatos {
       }
       return { response: true, data: true, message: 'Objeto eliminado' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -99,6 +94,7 @@ class EstudianteCursoParaleloDatos {
       }
       return { response: true, data: rows as EstudianteCursoParaleloEntidad[], message: '' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -114,6 +110,7 @@ class EstudianteCursoParaleloDatos {
       let newEstudianteCursoParalelo = rows[0] as EstudianteCursoParaleloEntidad;
       return { response: true, data: newEstudianteCursoParalelo, message: 'Encontrado' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -129,6 +126,7 @@ class EstudianteCursoParaleloDatos {
       }
       return { response: true, data: rows as EstudianteCursoParaleloEntidad[], message: '' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -182,6 +180,7 @@ class EstudianteCursoParaleloDatos {
 
       return { response: true, data: resultados as any[], message: '' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }

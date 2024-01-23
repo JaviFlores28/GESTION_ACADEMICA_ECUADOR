@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 class CalificacionesCualitativasDatos {
   static sqlInsert: string = `INSERT INTO calificaciones_cualitativas (CAL_ID, PRF_ASG_PRLL_ID, EST_CRS_PRLL_ID, PRD_ID, CALIFICACION, ESTADO)VALUES(?, ?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE calificaciones_cualitativas SET PRF_ASG_PRLL_ID=?,EST_CRS_PRLL_ID=?,PRD_ID=?,CALIFICACION=?,ESTADO=? WHERE CAL_ID=?;`;
-  static sqlUpdateEstado: string = 'UPDATE calificaciones_cualitativas SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  CAL_ID IN';
+  static sqlUpdateEstado: string = 'UPDATE calificaciones_cualitativas SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  CAL_ID  =?;';
   static sqlDelete: string = `DELETE FROM calificaciones_cualitativas WHERE CAL_ID = ?`;
   static sqlSelect: string = `SELECT * FROM calificaciones_cualitativas ORDER BY ESTADO DESC`;
   static sqlGetById: string = 'SELECT * FROM calificaciones_cualitativas WHERE CAL_ID = ?';
@@ -27,6 +27,7 @@ class CalificacionesCualitativasDatos {
       }
       return { response: true, data: newCalificacionesCualitativas.CAL_ID, message: 'Se creo correctamente' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -43,29 +44,22 @@ class CalificacionesCualitativasDatos {
       }
       return { response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
 
-  static async updateEstado(ids: string[]): Promise<Respuesta> {
+  static async updateEstado(id: string): Promise<Respuesta> {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
-      // Crear una cadena de marcadores de posición para la cantidad de IDs en el array
-      const placeholders = ids.map(() => '?').join(',');
-
-      // Consulta SQL con cláusula IN y actualización del estado
-      let sql = `${this.sqlUpdateEstado}(${placeholders});`;
-
-      // Ejecutar la consulta con el array de valores
-      const [result] = await pool.execute<any>(sql, ids);
-
-      // Verificar si se afectaron filas
+      let sql = this.sqlUpdateEstado;
+      const [result] = await pool.execute<any>(sql, [id]);
       if (result.affectedRows < 1) {
         throw new Error('No se pudo actualizar el estado');
       }
-
       return { response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -80,6 +74,7 @@ class CalificacionesCualitativasDatos {
       }
       return { response: true, data: true, message: 'Objeto eliminado' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -95,6 +90,7 @@ class CalificacionesCualitativasDatos {
       }
       return { response: true, data: rows as CalificacionesCualitativasEntidad[], message: '' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -110,6 +106,7 @@ class CalificacionesCualitativasDatos {
       let newCalificacionesCualitativas = rows[0] as CalificacionesCualitativasEntidad;
       return { response: true, data: newCalificacionesCualitativas, message: 'Encontrado' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -125,6 +122,7 @@ class CalificacionesCualitativasDatos {
       }
       return { response: true, data: rows as CalificacionesCualitativasEntidad[], message: '' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -141,6 +139,7 @@ class CalificacionesCualitativasDatos {
       }
       return { response: true, data: rows[0] as CalificacionesCualitativasEntidad, message: '' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }

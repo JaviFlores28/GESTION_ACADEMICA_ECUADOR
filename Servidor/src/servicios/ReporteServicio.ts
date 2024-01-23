@@ -7,10 +7,10 @@ router.post('/generarpdf', async (req, res) => {
   let browser;
 
   try {
-    const { tipo,data, html } = req.body;
+    const { tipo, data, html } = req.body;
 
     // Validar y sanitizar el HTML si es necesario
-    obtenerHTML(tipo,data);
+    obtenerHTML(tipo, data);
     const contenido = `
             <html>
             <head>
@@ -47,7 +47,6 @@ router.post('/generarpdf', async (req, res) => {
     res.status(500).json({ message: 'Error al generar el PDF' });
   }
 });
-
 
 function obtenerHTML(tipo: string, data: any) {
   throw new Error('Function not implemented.');

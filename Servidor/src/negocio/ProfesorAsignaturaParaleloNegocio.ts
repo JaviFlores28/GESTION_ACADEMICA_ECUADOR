@@ -19,9 +19,9 @@ class ProfesorAsignaturaParaleloNegocio {
     }
   }
 
-  static async updateEstado(ids: string[]): Promise<Respuesta> {
+  static async updateEstado(id: string): Promise<Respuesta> {
     try {
-      return ProfesorAsignaturaParaleloDatos.updateEstado(ids);
+      return ProfesorAsignaturaParaleloDatos.updateEstado(id);
     } catch (error: any) {
       return { response: false, data: null, message: error.message };
     }

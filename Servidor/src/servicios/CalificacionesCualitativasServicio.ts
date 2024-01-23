@@ -32,9 +32,6 @@ router.patch('/calificacionescualitativas', async (req, res) => {
       case 'updateEstado':
         response = await CalificacionesCualitativasNegocio.updateEstado(data);
         break;
-      case 'delete':
-        // Handle delete case
-        break;
 
       default:
         return res.status(400).json({ message: 'Tipo de solicitud inválida.' });

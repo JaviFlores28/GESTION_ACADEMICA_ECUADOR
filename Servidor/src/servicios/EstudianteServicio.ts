@@ -32,9 +32,6 @@ router.patch('/estudiante', async (req, res) => {
       case 'updateEstado':
         response = await EstudianteNegocio.updateEstado(data);
         break;
-      case 'delete':
-        // Handle delete case
-        break;
 
       default:
         return res.status(400).json({ message: 'Tipo de solicitud inválida.' });

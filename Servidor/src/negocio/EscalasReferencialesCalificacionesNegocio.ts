@@ -19,9 +19,9 @@ class EscalasReferencialesCalificacionesNegocio {
     }
   }
 
-  static async updateEstado(ids: string[]): Promise<Respuesta> {
+  static async updateEstado(id: string): Promise<Respuesta> {
     try {
-      return EscalasReferencialesCalificacionesDatos.updateEstado(ids);
+      return EscalasReferencialesCalificacionesDatos.updateEstado(id);
     } catch (error: any) {
       return { response: false, data: null, message: error.message };
     }

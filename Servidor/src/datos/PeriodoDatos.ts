@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 class PeriodoDatos {
   static sqlInsert: string = `INSERT INTO periodo (PRD_ID, PRD_NOM, PRD_INI, PRD_FIN, PRD_TIPO, AL_ID, ESTADO)VALUES(?, ?, ?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE periodo SET PRD_NOM=?,PRD_INI=?,PRD_FIN=?,PRD_TIPO=?,AL_ID=?,ESTADO=? WHERE PRD_ID=?;`;
-  static sqlUpdateEstado: string = 'UPDATE periodo SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  PRD_ID IN';
+  static sqlUpdateEstado: string = 'UPDATE periodo SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  PRD_ID  =?;';
   static sqlDelete: string = `DELETE FROM periodo WHERE PRD_ID = ?`;
   static sqlSelect: string = `SELECT * FROM periodo ORDER BY ESTADO DESC`;
   static sqlGetById: string = 'SELECT * FROM periodo WHERE PRD_ID = ?';
@@ -26,6 +26,7 @@ class PeriodoDatos {
       }
       return { response: true, data: newPeriodo.PRD_ID, message: 'Se creo correctamente' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -42,29 +43,22 @@ class PeriodoDatos {
       }
       return { response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
 
-  static async updateEstado(ids: string[]): Promise<Respuesta> {
+  static async updateEstado(id: string): Promise<Respuesta> {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
-      // Crear una cadena de marcadores de posición para la cantidad de IDs en el array
-      const placeholders = ids.map(() => '?').join(',');
-
-      // Consulta SQL con cláusula IN y actualización del estado
-      let sql = `${this.sqlUpdateEstado}(${placeholders});`;
-
-      // Ejecutar la consulta con el array de valores
-      const [result] = await pool.execute<any>(sql, ids);
-
-      // Verificar si se afectaron filas
+      let sql = this.sqlUpdateEstado;
+      const [result] = await pool.execute<any>(sql, [id]);
       if (result.affectedRows < 1) {
         throw new Error('No se pudo actualizar el estado');
       }
-
       return { response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -79,6 +73,7 @@ class PeriodoDatos {
       }
       return { response: true, data: true, message: 'Objeto eliminado' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -94,6 +89,7 @@ class PeriodoDatos {
       }
       return { response: true, data: rows as PeriodoEntidad[], message: '' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -109,6 +105,7 @@ class PeriodoDatos {
       let newPeriodo = rows[0] as PeriodoEntidad;
       return { response: true, data: newPeriodo, message: 'Encontrado' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -124,6 +121,7 @@ class PeriodoDatos {
       }
       return { response: true, data: rows as PeriodoEntidad[], message: '' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }

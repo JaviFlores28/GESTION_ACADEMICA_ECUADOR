@@ -375,7 +375,7 @@ class DataCreator {
 
   updateEstado(): string {
     const functionupdateEstado = `  
-        static async updateEstado(ids: string[]): Promise<Respuesta> {
+        static async updateEstado(id: string): Promise<Respuesta> {
           try {
             const pool = await BaseDatos.getInstanceDataBase();
             // Crear una cadena de marcadores de posición para la cantidad de IDs en el array

@@ -10,7 +10,7 @@ import speakeasy from 'speakeasy';
 class UsuarioDatos {
   static sqlInsert: string = `INSERT INTO usuario (USR_ID, USR_DNI, USR_NOM, USR_NOM2, USR_APE, USR_APE2, USR_DIR, USR_TEL, USR_CEL, USR_EMAIL, USR_FECH_NAC, USR_GEN, USUARIO,FA_KEY,HAS_2FA, USR_PSWD, ROL_PRF, ROL_REPR, ROL_ADMIN, ESTADO)VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE usuario SET USR_DNI=?,USR_NOM=?,USR_NOM2=?,USR_APE=?,USR_APE2=?,USR_DIR=?,USR_TEL=?,USR_CEL=?,USR_EMAIL=?,USR_FECH_NAC=?,USR_GEN=?,ROL_PRF=?,ROL_REPR=?,ROL_ADMIN=?,ESTADO=? WHERE USR_ID=?;`;
-  static sqlUpdateEstado: string = 'UPDATE usuario SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  USR_ID IN';
+  static sqlUpdateEstado: string = 'UPDATE usuario SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  USR_ID  =?;';
   static sqlDelete: string = `DELETE FROM usuario WHERE USR_ID = ?`;
   static sqlSelect: string = `SELECT * FROM vista_usuario `;
   static sqlGetById: string = 'SELECT * FROM usuario WHERE USR_ID = ?';
@@ -40,6 +40,7 @@ class UsuarioDatos {
       }
       return { response: true, data: newUsuario.USR_ID, message: 'Se creo correctamente' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -55,29 +56,22 @@ class UsuarioDatos {
       }
       return { response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
 
-  static async updateEstado(ids: string[]): Promise<Respuesta> {
+  static async updateEstado(id: string): Promise<Respuesta> {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
-      // Crear una cadena de marcadores de posición para la cantidad de IDs en el array
-      const placeholders = ids.map(() => '?').join(',');
-
-      // Consulta SQL con cláusula IN y actualización del estado
-      let sql = `${this.sqlUpdateEstado}(${placeholders});`;
-
-      // Ejecutar la consulta con el array de valores
-      const [result] = await pool.execute<any>(sql, ids);
-
-      // Verificar si se afectaron filas
+      let sql = this.sqlUpdateEstado;
+      const [result] = await pool.execute<any>(sql, [id]);
       if (result.affectedRows < 1) {
         throw new Error('No se pudo actualizar el estado');
       }
-
       return { response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -92,6 +86,7 @@ class UsuarioDatos {
       }
       return { response: true, data: true, message: 'Objeto eliminado' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -115,6 +110,7 @@ class UsuarioDatos {
       }
       return { response: true, data: rows as UsuarioEntidad[], message: '' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -130,6 +126,7 @@ class UsuarioDatos {
       let newUsuario = rows[0] as UsuarioEntidad;
       return { response: true, data: newUsuario, message: 'Encontrado' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -153,6 +150,7 @@ class UsuarioDatos {
       }
       return { response: true, data: rows as UsuarioEntidad[], message: '' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }

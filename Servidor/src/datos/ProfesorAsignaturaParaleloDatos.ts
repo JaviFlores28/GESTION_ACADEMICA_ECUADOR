@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 class ProfesorAsignaturaParaleloDatos {
   static sqlInsert: string = `INSERT INTO profesor_asignatura_paralelo (PRF_ASG_PRLL_ID, ASG_ID, PRF_ID, AL_ID, CRS_ID, PRLL_ID, ESTADO)VALUES(?, ?, ?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE profesor_asignatura_paralelo SET ASG_ID=?,PRF_ID=?,AL_ID=?,CRS_ID=?,PRLL_ID=?,ESTADO=? WHERE PRF_ASG_PRLL_ID=?;`;
-  static sqlUpdateEstado: string = 'UPDATE profesor_asignatura_paralelo SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  PRF_ASG_PRLL_ID IN';
+  static sqlUpdateEstado: string = 'UPDATE profesor_asignatura_paralelo SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  PRF_ASG_PRLL_ID  =?;';
   static sqlDelete: string = `DELETE FROM profesor_asignatura_paralelo WHERE PRF_ASG_PRLL_ID = ?`;
   static sqlSelect: string = `SELECT * FROM vista_profesor_asignatura_paralelo `;
   static sqlGetById: string = 'SELECT * FROM profesor_asignatura_paralelo WHERE PRF_ASG_PRLL_ID = ?';
@@ -27,6 +27,7 @@ class ProfesorAsignaturaParaleloDatos {
       }
       return { response: true, data: newProfesorAsignaturaParalelo.PRF_ASG_PRLL_ID, message: 'Se creo correctamente' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -43,29 +44,22 @@ class ProfesorAsignaturaParaleloDatos {
       }
       return { response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
 
-  static async updateEstado(ids: string[]): Promise<Respuesta> {
+  static async updateEstado(id: string): Promise<Respuesta> {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
-      // Crear una cadena de marcadores de posición para la cantidad de IDs en el array
-      const placeholders = ids.map(() => '?').join(',');
-
-      // Consulta SQL con cláusula IN y actualización del estado
-      let sql = `${this.sqlUpdateEstado}(${placeholders});`;
-
-      // Ejecutar la consulta con el array de valores
-      const [result] = await pool.execute<any>(sql, ids);
-
-      // Verificar si se afectaron filas
+      let sql = this.sqlUpdateEstado;
+      const [result] = await pool.execute<any>(sql, [id]);
       if (result.affectedRows < 1) {
         throw new Error('No se pudo actualizar el estado');
       }
-
       return { response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -80,6 +74,7 @@ class ProfesorAsignaturaParaleloDatos {
       }
       return { response: true, data: true, message: 'Objeto eliminado' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -95,6 +90,7 @@ class ProfesorAsignaturaParaleloDatos {
       }
       return { response: true, data: rows as ProfesorAsignaturaParaleloEntidad[], message: '' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -110,6 +106,7 @@ class ProfesorAsignaturaParaleloDatos {
       let newProfesorAsignaturaParalelo = rows[0] as ProfesorAsignaturaParaleloEntidad;
       return { response: true, data: newProfesorAsignaturaParalelo, message: 'Encontrado' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -125,6 +122,7 @@ class ProfesorAsignaturaParaleloDatos {
       }
       return { response: true, data: rows as ProfesorAsignaturaParaleloEntidad[], message: '' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -138,6 +136,7 @@ class ProfesorAsignaturaParaleloDatos {
       }
       return { response: true, data: rows as ProfesorAsignaturaParaleloEntidad[], message: 'Encontrado' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }

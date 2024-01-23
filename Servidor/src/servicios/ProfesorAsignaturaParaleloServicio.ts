@@ -38,9 +38,6 @@ router.patch('/profesorasignaturaparalelo', async (req, res) => {
       case 'updateEstado':
         response = await ProfesorAsignaturaParaleloNegocio.updateEstado(data);
         break;
-      case 'delete':
-        // Handle delete case
-        break;
       case 'getByPrf':
         response = await ProfesorAsignaturaParaleloNegocio.getByPrf(data);
         break;

@@ -176,7 +176,7 @@ class BusinessCreator {
     const functionupdateEstado = `
         static async updateEstado(ids: string[]):Promise<Respuesta> {
           try {
-            return ${this.capitalizedTableName}Datos.updateEstado(ids);
+            return ${this.capitalizedTableName}Datos.updateEstado(id);
       
           } catch (error: any) {
             return {response: false, data: null, message:error.message }; 
