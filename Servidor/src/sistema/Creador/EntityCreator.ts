@@ -1,7 +1,7 @@
 import path from 'path';
 import Funciones from '../funciones/Funciones';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { MappedProperty } from '../Interfaces/MappedProperty';
+import { MappedProperty } from '../interfaces/MappedProperty';
 
 class EntityCreator {
   tableName: string;

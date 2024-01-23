@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import path from 'path';
 import Funciones from '../funciones/Funciones';
-import { MappedProperty } from '../Interfaces/MappedProperty';
+import { MappedProperty } from '../interfaces/MappedProperty';
 
 class DataCreator {
   tableName: string;

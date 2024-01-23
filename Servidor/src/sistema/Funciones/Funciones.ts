@@ -1,6 +1,6 @@
 import CryptoJS from 'crypto-js';
-/* import winston from 'winston';
- */
+import 'dotenv/config';
+//import winston from 'winston';
 const { KEY_ENCRYPT } = process.env;
 
 class Funciones {
@@ -53,13 +53,9 @@ class Funciones {
       'ER_DATA_TOO_LONG': 'Los datos son demasiado largos para el campo correspondiente.',
       'ER_ACCESS_DENIED_ERROR': 'Acceso denegado. El usuario no tiene los permisos necesarios para realizar la operación.',
       'ECONNREFUSED': 'Base de datos inaccesible.'
-      // Puedes agregar más códigos y mensajes según sea necesario
     };
-
-    return errorMessages[code] || 'Error ' + msg;
+    return errorMessages[code] || '' + msg;
   }
-
-
 
   /*  static logger = winston.createLogger({
     level: 'silly',

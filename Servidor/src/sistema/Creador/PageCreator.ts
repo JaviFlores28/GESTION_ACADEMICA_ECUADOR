@@ -1,6 +1,6 @@
 import BaseDatos from '../conexion/BaseDatos';
 import Funciones from '../funciones/Funciones';
-import { MappedProperty } from '../Interfaces/MappedProperty';
+import { MappedProperty } from '../interfaces/MappedProperty';
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import path from 'path';
 import EntityCreator from './EntityCreator';

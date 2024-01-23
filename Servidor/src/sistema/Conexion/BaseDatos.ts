@@ -1,7 +1,7 @@
 import mysql, { Pool, PoolOptions } from 'mysql2/promise';
 import 'dotenv/config';
-import { ColumnData } from '../Interfaces/ColumnData';
-import { MappedProperty } from '../Interfaces/MappedProperty';
+import { ColumnData } from '../interfaces/ColumnData';
+import { MappedProperty } from '../interfaces/MappedProperty';
 import { readFileSync } from 'fs';
 class BaseDatos {
   

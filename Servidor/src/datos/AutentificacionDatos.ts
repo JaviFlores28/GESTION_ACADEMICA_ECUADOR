@@ -26,7 +26,7 @@ class AutentificacionDatos {
       return { response: true, data: newUsuario, message: 'Usuario Valido' };
     } catch (error: any) {
       error.message = Funciones.mapErrorCodeToMessage(error.code, error);
-      return { response: false, data: null, message: error.message }; // Devuelve una Promise rechazada con el error
+      return { response: false, data: null, message: error.message };
     }
   }
 
@@ -56,7 +56,7 @@ class AutentificacionDatos {
       return { response: true, data: true, message: 'desactivación completada.' };
     } catch (error: any) {
       error.message = Funciones.mapErrorCodeToMessage(error.code, error);
-      return { response: false, data: null, message: error.message }; // Devuelve una Promise rechazada con el error
+      return { response: false, data: null, message: error.message };
     }
   }
 }
