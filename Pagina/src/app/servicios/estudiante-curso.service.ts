@@ -44,7 +44,7 @@ export class EstudianteCursoService extends ErrorHandlerService {
   }
 
    updateEstado(arrayData: any): Observable<any> {
-    const request = {type: 'updateEstado', data: arrayData };
+    const request = {type: 'updateEstadoMasivo', data: arrayData };
     return this.http.patch(this.apiUrl, request).pipe(catchError(this.handleError));
   }
 

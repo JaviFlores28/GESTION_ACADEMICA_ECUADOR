@@ -25,7 +25,7 @@ export class EstudianteCursoComponent implements OnInit {
   cursos: Curso[] = [];
   noMatriculados: Estudiante[] = [];
   matriculas: EstudianteCursoParalelo[] = [];
-  idsEstudiantes: string[] = [];
+  idsEstudiantes: { id: string, name: string }[] = [];
 
   headersNoMatriculados = ['CÉDULA', 'NOMBRES'];
   camposNoMatriculados = ['EST_ID', 'EST_DNI', 'EST_NOM'];
@@ -33,8 +33,8 @@ export class EstudianteCursoComponent implements OnInit {
   camposMatriculados = ['EST_CRS_ID', 'EST_DNI', 'EST_NOM', 'CRS_NOM', 'CRS_TIPO'];
 
   editItemId: string = '';
-modaltitle: string = 'Agregar';
-  modalMsg: string = '¿Desea guardar el registro?';  
+  modaltitle: string = 'Agregar';
+  modalMsg: string = '¿Desea guardar el registro?';
   action: string = '';
   USR_ID = this.usuarioService.getUserIdLocal();
   AL_ID: string = '0';
@@ -118,7 +118,7 @@ modaltitle: string = 'Agregar';
   crear() {
     if (this.form.valid) {
       let estudiantes = {
-        arrayIds: this.idsEstudiantes,
+        arrayIds: this.idsEstudiantes.map(item => item.id),
         CRS_ID: this.form.value.CRS_ID,
         ESTADO: this.ESTADO,
       };
@@ -139,7 +139,8 @@ modaltitle: string = 'Agregar';
       this.openModal('Error', this.modalMsg, 'danger', false);
       return;
     }
-    this.service.updateEstado(this.idsEstudiantes).subscribe({
+    let datos=this.idsEstudiantes.map(item => item.id);    
+    this.service.updateEstado(datos).subscribe({
       next: (value) => {
         this.handleResponse(value);
       },

@@ -26,6 +26,13 @@ class EstudianteCursoNegocio {
       return { response: false, data: null, message: error.message };
     }
   }
+  static async updateEstadoMasivo(ids: string[]): Promise<Respuesta> {
+    try {
+      return EstudianteCursoDatos.updateEstadoMasivo(ids);
+    } catch (error: any) {
+      return { response: false, data: null, message: error.message };
+    }
+  }
 
   static async delete(id: String): Promise<Respuesta> {
     try {
