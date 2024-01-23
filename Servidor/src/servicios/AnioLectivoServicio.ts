@@ -2,7 +2,7 @@ import { Router } from 'express';
 const router = Router();
 import AnioLectivoNegocio from '../negocio/AnioLectivoNegocio';
 import AnioLectivoEntidad from '../entidades/AnioLectivoEntidad';
-import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
+import { TypeRequest } from '../sistema/interfaces/TypeRequest';
 
 router.post('/aniolectivo', async (req, res) => {
   try {
@@ -32,10 +32,6 @@ router.patch('/aniolectivo', async (req, res) => {
       case 'updateEstado':
         response = await AnioLectivoNegocio.updateEstado(data);
         break;
-      case 'delete':
-        // Handle delete case
-        break;
-
       default:
         return res.status(400).json({ message: 'Tipo de solicitud inválida.' });
     }

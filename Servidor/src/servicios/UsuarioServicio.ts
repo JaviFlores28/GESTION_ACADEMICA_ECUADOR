@@ -2,7 +2,7 @@ import { Router } from 'express';
 const router = Router();
 import UsuarioNegocio from '../negocio/UsuarioNegocio';
 import UsuarioEntidad from '../entidades/UsuarioEntidad';
-import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
+import { TypeRequest } from '../sistema/interfaces/TypeRequest';
 
 router.post('/usuario', async (req, res) => {
   try {

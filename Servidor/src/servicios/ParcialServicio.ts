@@ -2,7 +2,7 @@ import { Router } from 'express';
 const router = Router();
 import ParcialNegocio from '../negocio/ParcialNegocio';
 import ParcialEntidad from '../entidades/ParcialEntidad';
-import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
+import { TypeRequest } from '../sistema/interfaces/TypeRequest';
 
 router.post('/parcial', async (req, res) => {
   try {

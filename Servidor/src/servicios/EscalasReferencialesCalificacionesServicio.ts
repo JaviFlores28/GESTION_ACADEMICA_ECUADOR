@@ -2,7 +2,7 @@ import { Router } from 'express';
 const router = Router();
 import EscalasReferencialesCalificacionesNegocio from '../negocio/EscalasReferencialesCalificacionesNegocio';
 import EscalasReferencialesCalificacionesEntidad from '../entidades/EscalasReferencialesCalificacionesEntidad';
-import { TypeRequest } from '../sistema/Interfaces/TypeRequest';
+import { TypeRequest } from '../sistema/interfaces/TypeRequest';
 
 router.post('/escalasreferencialescalificaciones', async (req, res) => {
   try {

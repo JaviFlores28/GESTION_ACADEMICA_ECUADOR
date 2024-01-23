@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 class AnioLectivoDatos {
   static sqlInsert: string = `INSERT INTO anio_lectivo (AL_ID, AL_NOM, AL_INICIO, AL_FIN, AL_POR_PRD, AL_POR_EXAM, CLFN_MIN_APR, CLFN_MIN_PERD, PRD_NOM, NUM_PRD, NUM_EXAM, NUM_PRCL, NUM_SUSP, ESTADO)VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
   static sqlUpdate: string = `UPDATE anio_lectivo SET AL_NOM=?,AL_INICIO=?,AL_FIN=?,AL_POR_PRD=?,AL_POR_EXAM=?,CLFN_MIN_APR=?,CLFN_MIN_PERD=?,PRD_NOM=?,NUM_PRD=?,NUM_EXAM=?,NUM_PRCL=?,NUM_SUSP=?,ESTADO=? WHERE AL_ID=?;`;
-  static sqlUpdateEstado: string = 'UPDATE anio_lectivo SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  AL_ID IN';
+  static sqlUpdateEstado: string = 'UPDATE anio_lectivo SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  AL_ID =?;';
   static sqlDelete: string = `DELETE FROM anio_lectivo WHERE AL_ID = ?`;
   static sqlSelect: string = `SELECT * FROM anio_lectivo ORDER BY ESTADO DESC`;
   static sqlGetById: string = 'SELECT * FROM anio_lectivo WHERE AL_ID = ?';
@@ -46,25 +46,17 @@ class AnioLectivoDatos {
     }
   }
 
-  static async updateEstado(ids: string[]): Promise<Respuesta> {
+  static async updateEstado(id: string): Promise<Respuesta> {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
-      // Crear una cadena de marcadores de posición para la cantidad de IDs en el array
-      const placeholders = ids.map(() => '?').join(',');
-
-      // Consulta SQL con cláusula IN y actualización del estado
-      let sql = `${this.sqlUpdateEstado}(${placeholders});`;
-
-      // Ejecutar la consulta con el array de valores
-      const [result] = await pool.execute<any>(sql, ids);
-
-      // Verificar si se afectaron filas
+      let sql = this.sqlUpdateEstado;
+      const [result] = await pool.execute<any>(sql, [id]);
       if (result.affectedRows < 1) {
         throw new Error('No se pudo actualizar el estado');
       }
-
       return { response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -79,7 +71,8 @@ class AnioLectivoDatos {
       }
       return { response: true, data: true, message: 'Objeto eliminado' };
     } catch (error: any) {
-      return { response: false, data: null, message: error.message };
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      return { response: false, data: false, message: error.message };
     }
   }
 
