@@ -6,8 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 class AreaDatos {
   static sqlInsert: string = `INSERT INTO area (AREA_ID, AREA_NOM, ESTADO)VALUES(?, ?, ?);`;
-  static sqlUpdate: string = `UPDATE area SET AREA_NOM=?,ESTADO=? WHERE AREA_ID=?;`;
-  static sqlUpdateEstado: string = 'UPDATE area SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  AREA_ID IN';
+  static sqlUpdate: string = `UPDATE area SET AREA_NOM=?,ESTADO=? WHERE AREA_ID= ?;`;
+  static sqlUpdateEstado: string = 'UPDATE area SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE AREA_ID = ?;';
   static sqlDelete: string = `DELETE FROM area WHERE AREA_ID = ?`;
   static sqlSelect: string = `SELECT * FROM area ORDER BY AREA_NOM ASC`;
   static sqlGetById: string = 'SELECT * FROM area WHERE AREA_ID = ?';
@@ -26,6 +26,7 @@ class AreaDatos {
       }
       return { response: true, data: newArea.AREA_ID, message: 'Se creo correctamente' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -42,21 +43,19 @@ class AreaDatos {
       }
       return { response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code);
       return { response: false, data: null, message: error.message };
     }
   }
 
-  static async updateEstado(ids: string[]): Promise<Respuesta> {
+  static async updateEstado(id: string): Promise<Respuesta> {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
-      // Crear una cadena de marcadores de posición para la cantidad de IDs en el array
-      const placeholders = ids.map(() => '?').join(',');
-
       // Consulta SQL con cláusula IN y actualización del estado
-      let sql = `${this.sqlUpdateEstado}(${placeholders});`;
+      let sql = this.sqlUpdateEstado;
 
       // Ejecutar la consulta con el array de valores
-      const [result] = await pool.execute<any>(sql, ids);
+      const [result] = await pool.execute<any>(sql, [id]);
 
       // Verificar si se afectaron filas
       if (result.affectedRows < 1) {
@@ -65,6 +64,7 @@ class AreaDatos {
 
       return { response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -79,7 +79,8 @@ class AreaDatos {
       }
       return { response: true, data: true, message: 'Objeto eliminado' };
     } catch (error: any) {
-      return { response: false, data: null, message: error.message };
+      error.message = Funciones.mapErrorCodeToMessage(error.code);
+      return { response: false, data: false, message: error.message };
     }
   }
 
@@ -94,6 +95,7 @@ class AreaDatos {
       }
       return { response: true, data: rows as AreaEntidad[], message: '' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -109,6 +111,7 @@ class AreaDatos {
       let newArea = rows[0] as AreaEntidad;
       return { response: true, data: newArea, message: 'Encontrado' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -124,6 +127,7 @@ class AreaDatos {
       }
       return { response: true, data: rows as AreaEntidad[], message: '' };
     } catch (error: any) {
+      error.message = Funciones.mapErrorCodeToMessage(error.code);
       return { response: false, data: null, message: error.message };
     }
   }

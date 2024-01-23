@@ -44,8 +44,21 @@ class Funciones {
     }
     return false;
   }
+  static mapErrorCodeToMessage(code: string): string {
+    const errorMessages: { [key: string]: string; } = {
+      'ER_DUP_ENTRY': 'Entrada duplicada. Ya existe un registro con ese valor.',
+      'ER_ROW_IS_REFERENCED_2': 'No se puede eliminar este objeto porque está siendo referenciado por otros registros.',
+      'ER_NO_REFERENCED_ROW_2': 'No se puede agregar o actualizar este registro hijo porque no existe el registro padre correspondiente.',
+      'ER_PARSE_ERROR': 'Error de sintaxis en la consulta SQL.',
+      'ER_DATA_TOO_LONG': 'Los datos son demasiado largos para el campo correspondiente.',
+      'ER_ACCESS_DENIED_ERROR': 'Acceso denegado. El usuario no tiene los permisos necesarios para realizar la operación.'
+      // Puedes agregar más códigos y mensajes según sea necesario
+    };
 
-  
+    return errorMessages[code] || 'Error desconocido'+ code;
+  }
+
+
 
   /*  static logger = winston.createLogger({
     level: 'silly',

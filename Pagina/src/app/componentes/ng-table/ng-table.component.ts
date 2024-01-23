@@ -206,7 +206,11 @@ export class NgTableComponent implements OnInit {
    */
   emitDataChecked(action: any) {
     const checkedData = this.dataAux.filter((item) => item.isChecked === true);
-    const checkedIds = checkedData.map((item) => item[this.campos[0]]);
+    const checkedIds = checkedData.map((item) => {
+      const id = item[this.campos[0]];
+      const name = item[this.campos[1]];
+      return { id, name };
+    });
     const response = { action, data: checkedIds };
     this.actionOnChecks.emit(response); // envia los datos al componente padre
   }

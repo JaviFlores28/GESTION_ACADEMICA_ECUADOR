@@ -1,6 +1,6 @@
 import BaseDatos from '../sistema/conexion/BaseDatos';
 import Funciones from '../sistema/funciones/Funciones';
-import { Autentificacion } from '../sistema/Interfaces/Autentificacion';
+import { Autentificacion } from '../sistema/interfaces/Autentificacion';
 import { Respuesta } from '../sistema/interfaces/Respuesta';
 
 class AutentificacionDatos {

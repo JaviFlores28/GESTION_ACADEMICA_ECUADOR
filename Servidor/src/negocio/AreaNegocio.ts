@@ -19,9 +19,9 @@ class AreaNegocio {
     }
   }
 
-  static async updateEstado(ids: string[]): Promise<Respuesta> {
+  static async updateEstado(id: string): Promise<Respuesta> {
     try {
-      return AreaDatos.updateEstado(ids);
+      return AreaDatos.updateEstado(id);
     } catch (error: any) {
       return { response: false, data: null, message: error.message };
     }
