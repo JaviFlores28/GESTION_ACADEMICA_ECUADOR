@@ -27,7 +27,7 @@ class ParcialDatos {
       }
       return { response: true, data: newParcial.PRCL_ID, message: 'Se creo correctamente' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -44,7 +44,7 @@ class ParcialDatos {
       }
       return { response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -59,7 +59,7 @@ class ParcialDatos {
       }
       return { response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -74,7 +74,7 @@ class ParcialDatos {
       }
       return { response: true, data: true, message: 'Objeto eliminado' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -90,7 +90,7 @@ class ParcialDatos {
       }
       return { response: true, data: rows as ParcialEntidad[], message: '' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -106,7 +106,7 @@ class ParcialDatos {
       let newParcial = rows[0] as ParcialEntidad;
       return { response: true, data: newParcial, message: 'Encontrado' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -122,7 +122,7 @@ class ParcialDatos {
       }
       return { response: true, data: rows as ParcialEntidad[], message: '' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -137,7 +137,7 @@ class ParcialDatos {
       }
       return { response: true, data: rows as ParcialEntidad[], message: 'Encontrado' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }

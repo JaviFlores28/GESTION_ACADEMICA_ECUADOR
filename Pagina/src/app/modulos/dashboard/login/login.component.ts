@@ -53,6 +53,8 @@ export class LoginComponent implements OnInit {
       this.service.login(usuario).subscribe({
         next: (value) => {
           if (!value.response) {
+            console.log(value.message);
+            
             this.openAlertModal('Error', value.message, 'danger', false);
           } else {
             if (!value.data.AUTHENTICATED) {

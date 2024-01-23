@@ -28,7 +28,7 @@ class EstudianteCursoDatos {
       }
       return { response: true, data: newEstudianteCurso.EST_CRS_ID, message: 'Se creo correctamente' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -45,7 +45,7 @@ class EstudianteCursoDatos {
       }
       return { response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -60,7 +60,7 @@ class EstudianteCursoDatos {
       }
       return { response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -75,7 +75,7 @@ class EstudianteCursoDatos {
       }
       return { response: true, data: true, message: 'Objeto eliminado' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -91,7 +91,7 @@ class EstudianteCursoDatos {
       }
       return { response: true, data: rows as EstudianteCursoEntidad[], message: '' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -107,7 +107,7 @@ class EstudianteCursoDatos {
       let newEstudianteCurso = rows[0] as EstudianteCursoEntidad;
       return { response: true, data: newEstudianteCurso, message: 'Encontrado' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -123,7 +123,7 @@ class EstudianteCursoDatos {
       }
       return { response: true, data: rows as EstudianteCursoEntidad[], message: '' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -135,7 +135,7 @@ class EstudianteCursoDatos {
       const [rows] = await pool.execute<any>(sql);
       return { response: true, data: rows as EstudianteCursoEntidad[], message: '' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -146,7 +146,7 @@ class EstudianteCursoDatos {
       const [rows] = await pool.execute<any>(sql, [id]);
       return { response: true, data: rows as EstudianteCursoEntidad[], message: '' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }

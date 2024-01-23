@@ -25,7 +25,7 @@ class AutentificacionDatos {
       newUsuario.USR_PSWD = 'pswd';
       return { response: true, data: newUsuario, message: 'Usuario Valido' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -40,7 +40,7 @@ class AutentificacionDatos {
       }
       return { response: true, data: true, message: 'Activación completada.' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message }; // Devuelve una Promise rechazada con el error
     }
   }
@@ -55,7 +55,7 @@ class AutentificacionDatos {
       }
       return { response: true, data: true, message: 'desactivación completada.' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }

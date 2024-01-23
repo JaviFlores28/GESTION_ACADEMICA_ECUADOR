@@ -26,7 +26,7 @@ class AnioLectivoDatos {
       }
       return { response: true, data: newAnioLectivo.AL_ID, message: 'Se creo correctamente' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -43,7 +43,7 @@ class AnioLectivoDatos {
       }
       return { response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -58,7 +58,7 @@ class AnioLectivoDatos {
       }
       return { response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -73,7 +73,7 @@ class AnioLectivoDatos {
       }
       return { response: true, data: true, message: 'Objeto eliminado' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: false, message: error.message };
     }
   }
@@ -89,7 +89,7 @@ class AnioLectivoDatos {
       }
       return { response: true, data: rows as AnioLectivoEntidad[], message: '' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -105,7 +105,7 @@ class AnioLectivoDatos {
       let newAnioLectivo = rows[0] as AnioLectivoEntidad;
       return { response: true, data: newAnioLectivo, message: 'Encontrado' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -121,7 +121,7 @@ class AnioLectivoDatos {
       }
       return { response: true, data: rows as AnioLectivoEntidad[], message: '' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }

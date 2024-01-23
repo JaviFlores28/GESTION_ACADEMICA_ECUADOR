@@ -26,7 +26,7 @@ class AsignaturaDatos {
       }
       return { response: true, data: newAsignatura.ASG_ID, message: 'Se creo correctamente' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -43,7 +43,7 @@ class AsignaturaDatos {
       }
       return { response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -58,7 +58,7 @@ class AsignaturaDatos {
       }
       return { response: true, data: true, message: 'Estado actualizado' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -73,7 +73,7 @@ class AsignaturaDatos {
       }
       return { response: true, data: true, message: 'Objeto eliminado' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -89,7 +89,7 @@ class AsignaturaDatos {
       }
       return { response: true, data: rows as AsignaturaEntidad[], message: '' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -105,7 +105,7 @@ class AsignaturaDatos {
       let newAsignatura = rows[0] as AsignaturaEntidad;
       return { response: true, data: newAsignatura, message: 'Encontrado' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }
@@ -121,7 +121,7 @@ class AsignaturaDatos {
       }
       return { response: true, data: rows as AsignaturaEntidad[], message: '' };
     } catch (error: any) {
-      error.message = Funciones.mapErrorCodeToMessage(error.code, error);
+      error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }
   }

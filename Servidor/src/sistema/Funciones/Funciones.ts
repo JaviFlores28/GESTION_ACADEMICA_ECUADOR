@@ -53,7 +53,7 @@ class Funciones {
       'ER_DATA_TOO_LONG': 'Los datos son demasiado largos para el campo correspondiente.',
       'ER_ACCESS_DENIED_ERROR': 'Acceso denegado. El usuario no tiene los permisos necesarios para realizar la operación.',
       'ECONNREFUSED': 'Base de datos inaccesible.'
-    };
+    };    
     return errorMessages[code] || '' + msg;
   }
 

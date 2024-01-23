@@ -40,7 +40,7 @@ router.post('/login', async (req: Request, res: Response) => {
   const respuesta: Respuesta = await AutentificacionNegocio.login({ USUARIO: USUARIO, USR_PSWD: USR_PSWD });
 
   if (!respuesta.response) {
-    return res.status(401).json(respuesta);
+    return res.json(respuesta);
   }
   const usuario = respuesta.data as Autentificacion;
   usuario.AUTHENTICATED = true;
