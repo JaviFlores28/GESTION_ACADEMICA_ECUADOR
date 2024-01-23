@@ -9,7 +9,7 @@ class AsignaturaDatos {
   static sqlUpdate: string = `UPDATE asignatura SET ASG_NOM=?,ASG_TIPO=?,AREA_ID=?,ESTADO=? WHERE ASG_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE asignatura SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  ASG_ID =?;';
   static sqlDelete: string = `DELETE FROM asignatura WHERE ASG_ID = ?`;
-  static sqlSelect: string = `SELECT * FROM asignatura ORDER BY ESTADO DESC`;
+  static sqlSelect: string = `SELECT * FROM asignatura ORDER BY ESTADO DESC, ASG_TIPO DESC, ASG_NOM ASC;`;
   static sqlGetById: string = 'SELECT * FROM asignatura WHERE ASG_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM asignatura WHERE ESTADO = 1 ORDER BY ESTADO DESC';
 

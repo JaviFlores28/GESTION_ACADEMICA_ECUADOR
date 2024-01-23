@@ -97,9 +97,9 @@ class UsuarioDatos {
       let sql = this.sqlSelect;
 
       const userMapping = {
-        R: ' WHERE ROL_REPR=1',
-        P: ' WHERE ROL_PRF=1',
-        A: ' WHERE ROL_ADMIN=1',
+        R: ' WHERE ROL_REPR=1 ORDER BY ESTADO DESC, USR_NOM ASC;',
+        P: ' WHERE ROL_PRF=1 ORDER BY ESTADO DESC, USR_NOM ASC;',
+        A: ' WHERE ROL_ADMIN=1 ORDER BY ESTADO DESC, USR_NOM ASC;',
       } as { [key: string]: string };
       const userClause = userMapping[tipo] || '';
       sql += userClause;
@@ -137,9 +137,9 @@ class UsuarioDatos {
       let sql = this.sqlGetEnabled;
 
       const userMapping = {
-        R: ' AND ROL_REPR=1',
-        P: ' AND ROL_PRF=1',
-        A: ' AND ROL_ADMIN=1',
+        R: ' AND ROL_REPR=1 ORDER BY USR_NOM ASC;',
+        P: ' AND ROL_PRF=1 ORDER BY USR_NOM ASC;',
+        A: ' AND ROL_ADMIN=1 ORDER BY USR_NOM ASC;',
       } as { [key: string]: string };
       const userClause = userMapping[tipo] || '';
       sql += userClause;

@@ -6,7 +6,6 @@ import { Paralelo } from 'src/app/interfaces/Paralelo.interface';
 import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { ModalService } from 'src/app/servicios/modal.service';
 import { ParaleloService } from 'src/app/servicios/paralelo.service';
-import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
   selector: 'app-paralelo',
@@ -164,6 +163,6 @@ export class ParaleloComponent implements OnInit {
 
   clear() {
     this.form.reset();
-    this.router.navigate(['../'], { relativeTo: this.route });
+    this.router.navigate(['../all'], { relativeTo: this.route });
   }
 }

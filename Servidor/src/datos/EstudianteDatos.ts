@@ -9,7 +9,7 @@ class EstudianteDatos {
   static sqlUpdate: string = `UPDATE estudiante SET EST_DNI=?,EST_NOM=?,EST_NOM2=?,EST_APE=?,EST_APE2=?,EST_FECH_NAC=?,EST_GEN=?,EST_PRV=?,EST_CAN=?,EST_PARR=?,EST_DIR=?,EST_NAC=?,EST_ETN=?,EST_NAC_ETN=?,EST_COM_ETN=?,EST_COD_ELE=?,EST_NEC_ASO_DIS=?,EST_NEC_NO_ASO_DIS=?,EST_ENF_CAT=?,EST_NUM_CONA=?,EST_INTE=?,EST_TV=?,EST_RAD=?,EST_PC=?,EST_CEL=?,REPR_ID=?,REL_EST_REP=?,ESTADO=? WHERE EST_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE estudiante SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  EST_ID  =?;';
   static sqlDelete: string = `DELETE FROM estudiante WHERE EST_ID = ?`;
-  static sqlSelect: string = `SELECT * FROM vista_estudiante ORDER BY ESTADO DESC`;
+  static sqlSelect: string = `SELECT * FROM vista_estudiante ORDER BY ESTADO DESC, EST_NOM  ASC`;
   static sqlGetById: string = 'SELECT * FROM estudiante WHERE EST_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM vista_estudiante WHERE ESTADO = 1';
 

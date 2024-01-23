@@ -44,6 +44,14 @@ export class AreasComponent implements OnInit {
     });
   }
 
+  filaAction(data: any) {
+    if (data.option === 'editar') {
+      this.router.navigate(['editar/' + data.id], { relativeTo: this.route });
+    } else if (data.option === 'eliminar') {
+      this.delete(data.id)
+    }
+  }
+
   async checkedsAction(values: any) {
 
     if (values.action === 'eliminar' && values.data.length > 0) {
@@ -90,15 +98,6 @@ export class AreasComponent implements OnInit {
       } catch (error) {
         console.log(error);
       }
-    }
-  }
-
-
-  filaAction(data: any) {
-    if (data.option === 'editar') {
-      this.router.navigate(['editar/' + data.id], { relativeTo: this.route });
-    } else if (data.option === 'eliminar') {
-      this.delete(data.id)
     }
   }
 
