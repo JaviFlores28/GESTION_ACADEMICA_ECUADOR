@@ -14,8 +14,8 @@ export class ParalelosComponent {
   constructor(
     private service: ParaleloService,
     private router: Router,
-    private route: ActivatedRoute,    private modalService: ModalService,
-
+    private route: ActivatedRoute,
+    private modalService: ModalService,
   ) {}
 
   routerLink: string = '../nuevo';
@@ -46,7 +46,7 @@ export class ParalelosComponent {
 
   filaAction(data: any) {
     if (data.option === 'editar') {
-      this.router.navigate(['editar/' + data.id], { relativeTo: this.route });
+      this.router.navigate(['../editar/' + data.id], { relativeTo: this.route });
     } else if (data.option === 'eliminar') {
       this.delete(data.id)
     }

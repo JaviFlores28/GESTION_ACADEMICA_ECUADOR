@@ -3,7 +3,6 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Area } from 'src/app/interfaces/Area.interface';
 import { AreaService } from 'src/app/servicios/area.service';
-import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { ModalService } from 'src/app/servicios/modal.service';
 import { MyValidators } from 'src/app/utils/validators';
 
@@ -18,7 +17,6 @@ export class AreaComponent implements OnInit {
     private router: Router,
     private formBuilder: FormBuilder,
     private service: AreaService,
-    private usuarioService: AutentificacionService,
     private modalService: ModalService,
   ) { }
 
@@ -26,7 +24,7 @@ export class AreaComponent implements OnInit {
   editItemId: string = '';
   modaltitle: string = 'Agregar';
   modalMsg: string = '¿Desea guardar el registro?';
-  USR_ID = this.usuarioService.getUserIdLocal();
+
 
   form = this.formBuilder.group({
     nom: ['', MyValidators.required],

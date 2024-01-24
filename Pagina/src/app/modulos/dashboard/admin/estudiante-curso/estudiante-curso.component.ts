@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { lastValueFrom } from 'rxjs';
 import { Curso } from 'src/app/interfaces/Curso.interface';
 import { Estudiante } from 'src/app/interfaces/Estudiante.interface';
 import { EstudianteCursoParalelo } from 'src/app/interfaces/EstudianteCursoParalelo.interface';
-import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { CursoService } from 'src/app/servicios/curso.service';
 import { EstudianteCursoService } from 'src/app/servicios/estudiante-curso.service';
 import { ModalService } from 'src/app/servicios/modal.service';
@@ -17,7 +17,6 @@ export class EstudianteCursoComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private modalService: ModalService,
-    private usuarioService: AutentificacionService,
     private service: EstudianteCursoService,
     private cursoService: CursoService
   ) { }
@@ -36,7 +35,7 @@ export class EstudianteCursoComponent implements OnInit {
   modaltitle: string = 'Agregar';
   modalMsg: string = '¿Desea guardar el registro?';
   action: string = '';
-  USR_ID = this.usuarioService.getUserIdLocal();
+
   AL_ID: string = '0';
   ESTADO: number = 1;
   form = this.formBuilder.group({
@@ -75,6 +74,7 @@ export class EstudianteCursoComponent implements OnInit {
         if (value.response) {
           this.noMatriculados = value.data;
         } else {
+          this.noMatriculados = [];
           console.log(value.message);
         }
       },
@@ -90,6 +90,7 @@ export class EstudianteCursoComponent implements OnInit {
         if (value.response) {
           this.matriculas = value.data;
         } else {
+          this.matriculas = [];
           console.log(value.message);
         }
       },
@@ -109,11 +110,12 @@ export class EstudianteCursoComponent implements OnInit {
       this.action = value.action;
       this.modalMsg = '¿Desea desactivar los items seleccionados?';
       this.openModal('Desactivar', this.modalMsg, 'warning', true);
-    } else {
-      console.log(value);
+    } else if (value.action === 'eliminar') {
+      this.action = value.action;
+      this.modalMsg = '¿Desea eliminar los items seleccionados?';
+      this.openModal('Eliminar', this.modalMsg, 'warning', true);
     }
   }
-
 
   crear() {
     if (this.form.valid) {
@@ -133,13 +135,13 @@ export class EstudianteCursoComponent implements OnInit {
     }
   }
 
-  desactivar() {
+  desactivarMatricula() {
     if (this.idsEstudiantes.length === 0) {
       this.modalMsg = 'Debe seleccionar al menos un item.'
       this.openModal('Error', this.modalMsg, 'danger', false);
       return;
     }
-    let datos=this.idsEstudiantes.map(item => item.id);    
+    let datos = this.idsEstudiantes.map(item => item.id);
     this.service.updateEstado(datos).subscribe({
       next: (value) => {
         this.handleResponse(value);
@@ -148,14 +150,41 @@ export class EstudianteCursoComponent implements OnInit {
     });
   }
 
+  async eliminarMatricula() {
+    if (this.idsEstudiantes.length !== 0) {
+      const errors: string[] = [];
+      try {
+        for (const element of this.idsEstudiantes) {
+          const response = await lastValueFrom(this.service.delete(element['id']));
+          if (!response.response) {
+            errors.push(`Error en la eliminación de ${element['name']}: ${response.message}`);
+            break; // Detener en el primer error
+          }
+        }
+
+        if (errors.length > 0) {
+          const errorMessage = errors.join('\n');
+          this.openModal('Oops...', errorMessage, 'danger', false);
+        } else {
+          this.openModal('¡Eliminado!', 'Eliminación exitosa', 'success', false);
+        }
+        this.clear();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
   openModal(tittle: string, message: string, alertType: string, form: boolean) {
     this.modalService.openModal(tittle, message, alertType, form)
       .then((result) => {
         if (result === 'save' && form) {
           if (this.action === 'create') {
             this.crear();
-          } else {
-            this.desactivar();
+          } else if (this.action === 'desactivar') {
+            this.desactivarMatricula();
+          } else if (this.action === 'eliminar') {
+            this.eliminarMatricula();
           }
         }
       })

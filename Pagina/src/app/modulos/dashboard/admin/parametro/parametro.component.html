@@ -8,21 +8,21 @@
     </nav>
     <div class="card text-start border-0 rounded shadow">
         <div class="card-body">
-            <form
+            <form [formGroup]="form" (ngSubmit)="onSubmit()"
                 class="row row-cols-1 row-cols-sm-1 g-3 justify-content-center justify-content-md-start align-items-center">
                 <div class="col">
-                    <label for="PRLL_NOM" class="form-label">Nombre:</label>
-                    <input type="text" id="PRLL_NOM" formControlName="PRLL_NOM" class="form-control" />
+                    <label for="PRMT_NOM" class="form-label">Nombre:</label>
+                    <input type="text" id="PRMT_NOM" formControlName="PRMT_NOM" class="form-control" />
                 </div>
                 <div class="col">
-                    <label for="PRLL_NOM" class="form-label">Descripción:</label>
-                        <textarea class="form-control" id="descripcion" style="height: 100px"></textarea>
+                    <label for="PRMT_DESCR" class="form-label">Descripción:</label>
+                    <textarea class="form-control" id="PRMT_DESCR" style="height: 100px"
+                        formControlName="PRMT_DESCR"></textarea>
                 </div>
-                <div class="col">
-                    <label for="formFile" class="form-label">Imagen: </label>
-                    <input class="form-control" type="file" id="formFile">
+                <div class="col" *ngIf="hasImage">
+                    <label for="PRMT_IMG" class="form-label">Imagen: </label>
+                    <input class="form-control" type="file" id="PRMT_IMG" formControlName="PRMT_IMG">
                 </div>
-
                 <div class="col-12 col-sm-12 text-center text-md-start">
                     <button type="submit" [disabled]="false" class="btn btn-dark">Guardar</button>
                 </div>

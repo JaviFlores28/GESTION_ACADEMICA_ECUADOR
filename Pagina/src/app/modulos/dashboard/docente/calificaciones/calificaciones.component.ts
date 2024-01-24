@@ -6,7 +6,6 @@ import { EscalasReferencialesCalificaciones } from 'src/app/interfaces/EscalasRe
 import { Parcial } from 'src/app/interfaces/Parcial.interface';
 import { Periodo } from 'src/app/interfaces/Periodo.interface';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
-import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { CalififcacionCuantitativaService } from 'src/app/servicios/calififcacion-cuantitativa.service';
 import { EscalasReferencialesCalificacionesService } from 'src/app/servicios/escalas-referenciales-calificaciones.service';
 import { EstudianteCursoParaleloService } from 'src/app/servicios/estudiante-curso-paralelo.service';
@@ -25,7 +24,6 @@ export class CalificacionesComponent implements OnInit {
     private service: ProfesorAsignaturaService,
     private estudianteCursoParaleloservice: EstudianteCursoParaleloService,
     private anioService: AnioLectivoService,
-    private usuarioService: AutentificacionService,
     private calificacioncuantitativaService: CalififcacionCuantitativaService,
     private modalService: ModalService,
     private escalasService: EscalasReferencialesCalificacionesService,
@@ -35,7 +33,7 @@ export class CalificacionesComponent implements OnInit {
   elementoId: string = '';
   PRLL_ID: string = '';
   CRS_ID: string = '';
-  USR_ID = this.usuarioService.getUserIdLocal();
+
   mostrarToast: boolean = false;
   mensajeToast: string = '';
   backgroundToast: string = 'bg-success';

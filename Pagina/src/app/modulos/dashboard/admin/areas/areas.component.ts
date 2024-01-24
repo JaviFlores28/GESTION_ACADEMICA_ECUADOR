@@ -53,7 +53,6 @@ export class AreasComponent implements OnInit {
   }
 
   async checkedsAction(values: any) {
-
     if (values.action === 'eliminar' && values.data.length > 0) {
       const errors: string[] = [];
       try {

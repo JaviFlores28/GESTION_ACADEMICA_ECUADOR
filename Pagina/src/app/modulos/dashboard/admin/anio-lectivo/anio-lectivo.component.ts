@@ -4,7 +4,6 @@ import { getFormattedDate } from 'src/app/sistema/variables/variables';
 import { AnioLectivoService } from 'src/app/servicios/anio-lectivo.service';
 import { ModalService } from 'src/app/servicios/modal.service';
 import { AnioLectivo } from 'src/app/interfaces/AnioLectivo.interface';
-import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { MyValidators } from 'src/app/utils/validators';
 
 @Component({
@@ -15,7 +14,6 @@ import { MyValidators } from 'src/app/utils/validators';
 export class AnioLectivoComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
-    private usuarioService: AutentificacionService,
     private service: AnioLectivoService,
     private modalService: ModalService,
   ) { }
@@ -24,7 +22,7 @@ export class AnioLectivoComponent implements OnInit {
   editItemId: string = '';
 modaltitle: string = 'Agregar';
   modalMsg: string = '¿Desea guardar el registro?';  
-  USR_ID = this.usuarioService.getUserIdLocal();
+
 
   form = this.formBuilder.group({
     AL_NOM: ['', MyValidators.required],

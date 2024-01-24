@@ -3,7 +3,6 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Curso } from 'src/app/interfaces/Curso.interface';
-import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { CursoService } from 'src/app/servicios/curso.service';
 import { ModalService } from 'src/app/servicios/modal.service';
 import { MyValidators } from 'src/app/utils/validators';
@@ -19,7 +18,6 @@ export class CursoComponent {
     private router: Router,
     private formBuilder: FormBuilder,
     private service: CursoService,
-    private usuarioService: AutentificacionService,
     private modalService: ModalService,
   ) { }
 
@@ -27,7 +25,7 @@ export class CursoComponent {
   editItemId: string = '';
   modaltitle: string = 'Agregar';
   modalMsg: string = '¿Desea guardar el registro?';
-  USR_ID = this.usuarioService.getUserIdLocal();
+
 
   icon = faInfoCircle;
 

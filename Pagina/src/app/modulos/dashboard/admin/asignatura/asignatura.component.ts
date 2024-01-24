@@ -7,7 +7,6 @@ import { Asignatura } from 'src/app/interfaces/Asignatura.interface';
 import { Curso } from 'src/app/interfaces/Curso.interface';
 import { AreaService } from 'src/app/servicios/area.service';
 import { AsignaturaService } from 'src/app/servicios/asignatura.service';
-import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { ModalService } from 'src/app/servicios/modal.service';
 import { MyValidators } from 'src/app/utils/validators';
 
@@ -24,7 +23,6 @@ export class AsignaturaComponent {
     private service: AsignaturaService,
     private areaService: AreaService,
     private modalService: ModalService,
-    private usuarioService: AutentificacionService,
   ) { }
 
   modoEdicion: boolean = false;
@@ -32,7 +30,7 @@ export class AsignaturaComponent {
   icon = faInfoCircle;
 modaltitle: string = 'Agregar';
   modalMsg: string = '¿Desea guardar el registro?';  
-  USR_ID = this.usuarioService.getUserIdLocal();
+
 
   areas: Area[] = [];
   cursos: Curso[] = [];

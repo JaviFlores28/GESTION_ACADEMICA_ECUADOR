@@ -3,7 +3,6 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Paralelo } from 'src/app/interfaces/Paralelo.interface';
-import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 import { ModalService } from 'src/app/servicios/modal.service';
 import { ParaleloService } from 'src/app/servicios/paralelo.service';
 
@@ -17,7 +16,6 @@ export class ParaleloComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private formBuilder: FormBuilder,
-    private usuarioService: AutentificacionService,
     private service: ParaleloService,
     private modalService: ModalService,
   ) { }
@@ -27,7 +25,6 @@ export class ParaleloComponent implements OnInit {
   modaltitle: string = 'Agregar';
   modalMsg: string = '¿Desea guardar el registro?'; 
   icon = faInfoCircle;
-  USR_ID = this.usuarioService.getUserIdLocal();
 
   form = this.formBuilder.group({
     PRLL_NOM: ['', Validators.required],

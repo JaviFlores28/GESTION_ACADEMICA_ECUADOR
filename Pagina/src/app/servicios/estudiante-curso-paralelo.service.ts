@@ -35,8 +35,8 @@ export class EstudianteCursoParaleloService extends ErrorHandlerService {
     return this.http.put(this.apiUrl, data).pipe(catchError(this.handleError));
   }
 
-  delete(ids: string[]): Observable<any> {
-    return this.http.post(`${this.apiUrl}-delete`, ids).pipe(catchError(this.handleError));
+  delete(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}?id=${id}`).pipe(catchError(this.handleError));
   }
 
   updateEstado(arrayData: any): Observable<any> {

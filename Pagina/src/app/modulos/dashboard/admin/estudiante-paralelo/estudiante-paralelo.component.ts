@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { lastValueFrom } from 'rxjs';
 import { Curso } from 'src/app/interfaces/Curso.interface';
 import { EstudianteCurso } from 'src/app/interfaces/EstudianteCurso.interface';
 import { EstudianteCursoParalelo } from 'src/app/interfaces/EstudianteCursoParalelo.interface';
@@ -34,8 +35,8 @@ export class EstudianteParaleloComponent implements OnInit {
   estudianteCurso: EstudianteCurso[] = [];
   estudiantesParalelos: EstudianteCursoParalelo[] = [];
 
-  idsEstudianteCurso: string[] = [];
-  idsEstudianteCursoParalelo: string[] = [];
+  idsEstudianteCurso: { id: string, name: string }[] = [];
+  idsEstudianteCursoParalelo: { id: string, name: string }[] = [];
 
   headersEstudianteCurso = ['CÉDULA', 'NOMBRES'];
   camposEstudianteCurso = ['EST_CRS_ID', 'EST_DNI', 'EST_NOM'];
@@ -133,6 +134,7 @@ export class EstudianteParaleloComponent implements OnInit {
         if (value.response) {
           this.estudianteCurso = value.data;
         } else {
+          this.estudianteCurso =[];
           console.log(value.message);
         }
       },
@@ -148,6 +150,7 @@ export class EstudianteParaleloComponent implements OnInit {
         if (value.response) {
           this.estudiantesParalelos = value.data;
         } else {
+          this.estudiantesParalelos=[];
           console.log(value.message);
         }
       },
@@ -158,22 +161,27 @@ export class EstudianteParaleloComponent implements OnInit {
   }
 
   estudiantesParaleloAction(value: any) {
-    this.idsEstudianteCurso = value.data;
+    this.idsEstudianteCursoParalelo = value.data;
     if (value.action === 'desactivar') {
       this.action = value.action;
       this.modalMsg = '¿Desea desactivar los items seleccionados?';
       this.openModal('Desactivar', this.modalMsg, 'warning', true);
     }
+    if (value.action === 'eliminar') {
+      this.action = value.action;
+      this.modalMsg = '¿Desea eliminar los items seleccionados?';
+      this.openModal('Eliminar', this.modalMsg, 'warning', true);
+    }
   }
 
   estudianteCursoAction(value: any) {
-    this.idsEstudianteCursoParalelo = value.data;
+    this.idsEstudianteCurso = value.data;
   }
 
   crear() {
     if (this.form.valid) {
       let estudiantes = {
-        arrayIds: this.idsEstudianteCursoParalelo,
+        arrayIds: this.idsEstudianteCurso.map(element => element.id),
         AL_ID: this.AL_ID,
         PRLL_ID: this.form.value.PRLL_ID,
         PASE: this.PASE,
@@ -190,19 +198,59 @@ export class EstudianteParaleloComponent implements OnInit {
     }
   }
 
-  desactivar() {
-    if (this.idsEstudianteCurso.length === 0) {
+  async desactivar() {
+    if (this.idsEstudianteCursoParalelo.length === 0) {
       this.modalMsg = 'Debe seleccionar al menos un item.'
       this.openModal('Error', this.modalMsg, 'danger', false);
       return;
     }
-    this.service.updateEstado(this.idsEstudianteCurso).subscribe({
-      next: (value) => {
-        this.handleResponse(value);
-      },
-      error: (error) => this.handleErrorResponse(error),
-    });
+    const errors: string[] = [];
+    try {
+      for (const element of this.idsEstudianteCursoParalelo) {
+        const response = await lastValueFrom(this.service.updateEstado(element.id));
+        if (!response.response) {
+          errors.push(`Error en el cambio de estado de ${element['name']}: ${response.message}`);
+          break; // Detener en el primer error
+        }
+      }
+
+      if (errors.length > 0) {
+        const errorMessage = errors.join('\n');
+        this.openModal('Oops...', errorMessage, 'danger', false);
+      } else {
+        this.openModal('¡Completado!', 'Cambio de estado exitoso', 'success', false);
+      }
+      this.clear();
+    } catch (error) {
+      console.log(error);
+    }
   }
+
+  async eliminar() {
+    if (this.idsEstudianteCursoParalelo.length !== 0) {
+      const errors: string[] = [];
+      try {
+        for (const element of this.idsEstudianteCursoParalelo) {
+          const response = await lastValueFrom(this.service.delete(element.id));
+          if (!response.response) {
+            errors.push(`Error en la eliminación de ${element.name}: ${response.message}`);
+            break; // Detener en el primer error
+          }
+        }
+
+        if (errors.length > 0) {
+          const errorMessage = errors.join('\n');
+          this.openModal('Oops...', errorMessage, 'danger', false);
+        } else {
+          this.openModal('¡Eliminado!', 'Eliminación exitosa', 'success', false);
+        }
+        this.clear();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
 
   openModal(tittle: string, message: string, alertType: string, form: boolean) {
     this.modalService.openModal(tittle, message, alertType, form)
@@ -210,8 +258,10 @@ export class EstudianteParaleloComponent implements OnInit {
         if (result === 'save' && form) {
           if (this.action === 'create') {
             this.crear();
-          } else {
+          } else if (this.action === 'desactivar') {
             this.desactivar();
+          } else if (this.action === 'eliminar') {
+            this.eliminar();
           }
         }
       })
@@ -222,8 +272,7 @@ export class EstudianteParaleloComponent implements OnInit {
 
   handleResponse(value: any) {
     if (!value.response) {
-      this.openModal('Oops...', 'Ha ocurrido un error intente nuevamente.', 'danger', false);
-      console.log(value.message);
+      this.openModal('Oops...', value.message, 'danger', false);
     } else {
       this.clear();
       this.openModal('¡Completado!', value.message, 'success', false);

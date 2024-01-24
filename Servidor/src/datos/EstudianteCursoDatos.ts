@@ -14,7 +14,7 @@ class EstudianteCursoDatos {
   static sqlGetById: string = 'SELECT * FROM estudiante_curso WHERE EST_CRS_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM vista_estudiante_curso WHERE ESTADO = 1 ';
   static sqlGetNoMatriculados: string = 'SELECT a.* FROM vista_estudiante AS a LEFT JOIN estudiante_curso AS b ON b.EST_ID = a.EST_ID AND (b.ESTADO = 1 OR b.CRS_ID = (SELECT CRS_ID FROM curso ORDER BY CRS_ORDEN DESC LIMIT 1)) WHERE A.ESTADO=1 AND b.EST_ID IS NULL ORDER BY a.EST_NOM ASC;';
-  static sqlGetByCurso: string = 'SELECT A.* FROM vista_estudiante_curso A INNER JOIN estudiante_curso B ON A.EST_CRS_ID = B.EST_CRS_ID LEFT JOIN estudiante_curso_paralelo ECP ON A.EST_CRS_ID = ECP.EST_CRS_ID AND ECP.ESTADO = 1 WHERE A.ESTADO = 1 AND B.CRS_ID = ? AND ECP.EST_CRS_ID IS NULL;';
+  static sqlGetByCurso: string = 'SELECT A.* FROM vista_estudiante_curso A INNER JOIN estudiante_curso B ON A.EST_CRS_ID = B.EST_CRS_ID LEFT JOIN estudiante_curso_paralelo ECP ON A.EST_CRS_ID = ECP.EST_CRS_ID AND ECP.ESTADO = 1 WHERE A.ESTADO = 1 AND B.CRS_ID = ? AND ECP.EST_CRS_ID IS NULL ORDER BY A.EST_NOM ASC;';
 
   static async insert(estudiante_curso: EstudianteCursoEntidad): Promise<Respuesta> {
     try {

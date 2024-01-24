@@ -267,3 +267,8 @@ VALUES (UUID(), 'PA', 'Próximo a alcanzar los aprendizajes requeridos', '4.01',
 -- Para NA (No alcanza los aprendizajes requeridos)
 INSERT INTO `escalas_referenciales_calificaciones` (`ESCL_ID`, `ESCL_ABRV`, `ESCL_DESCR`, `ESCL_INI`, `ESCL_FIN`, `ESTADO`)
 VALUES (UUID(), 'NA', 'No alcanza los aprendizajes requeridos', '0', '4.00', '1');
+INSERT INTO `parametro`(`PRMT_ID`, `PRMT_NOM`, `PRMT_DESCR`, `PRMT_URL_IMG`, `ESTADO`) VALUES (uuid(),'LOGO','LOGO','URL',1);
+INSERT INTO `parametro`(`PRMT_ID`, `PRMT_NOM`, `PRMT_DESCR`, `PRMT_URL_IMG`, `ESTADO`) VALUES (uuid(),'NOMBRE','UNIDAD EDUCATIVA FRAY BARTOLOMÉ DE LAS CASAS','URL',1);
+INSERT INTO `parametro`(`PRMT_ID`, `PRMT_NOM`, `PRMT_DESCR`, `PRMT_URL_IMG`, `ESTADO`) VALUES (uuid(),'VISION','Formar estudiantes con valores, conocimientos y habilidades para la vida, que contribuyan al desarrollo de la sociedad.','URL',1);
+INSERT INTO `parametro`(`PRMT_ID`, `PRMT_NOM`, `PRMT_DESCR`, `PRMT_URL_IMG`, `ESTADO`) VALUES (uuid(),'MISION','Ser una institución educativa líder en la formación de estudiantes con valores, conocimientos y habilidades para la vida, que contribuyan al desarrollo de la sociedad.','URL',1);
+

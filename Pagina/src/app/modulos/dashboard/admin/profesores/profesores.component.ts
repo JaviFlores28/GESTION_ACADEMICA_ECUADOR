@@ -47,7 +47,7 @@ export class ProfesoresComponent {
 
   filaAction(data: any) {
     if (data.option === 'editar') {
-      this.router.navigate(['editar/' + data.id], { relativeTo: this.route });
+      this.router.navigate(['../editar/' + data.id], { relativeTo: this.route });
     } else if (data.option === 'eliminar') {
       this.delete(data.id)
     }
