@@ -12,7 +12,7 @@ class ProfesorAsignaturaParaleloDatos {
   static sqlSelect: string = `SELECT * FROM vista_profesor_asignatura_paralelo `;
   static sqlGetById: string = 'SELECT * FROM profesor_asignatura_paralelo WHERE PRF_ASG_PRLL_ID = ?';
   static sqlGetEnabled: string = 'SELECT * FROM vista_profesor_asignatura_paralelo WHERE ESTADO = 1 ';
-  static sqlGetByPrf: string = 'SELECT a.* FROM vista_profesor_asignatura_paralelo as a JOIN profesor_asignatura_paralelo as b ON a.PRF_ASG_PRLL_ID = b.PRF_ASG_PRLL_ID WHERE b.ESTADO = 1 AND b.AL_ID = ? AND b.PRF_ID = ?;';
+  static sqlGetByPrf: string = 'SELECT a.* FROM vista_profesor_asignatura_paralelo as a JOIN profesor_asignatura_paralelo as b ON a.PRF_ASG_PRLL_ID = b.PRF_ASG_PRLL_ID WHERE b.ESTADO = 1 AND b.AL_ID = ? AND b.PRF_ID = ? ORDER BY ASG_NOM ASC';
 
   static async insert(profesor_asignatura_paralelo: ProfesorAsignaturaParaleloEntidad): Promise<Respuesta> {
     try {

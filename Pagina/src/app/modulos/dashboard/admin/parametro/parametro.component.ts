@@ -16,7 +16,6 @@ export class ParametroComponent implements OnInit {
     private service: ParametrosService,
     private route: ActivatedRoute,
     private modalService: ModalService,
-
   ) { }
   modoEdicion: boolean = false;
   elementoId: string = '';

@@ -24,7 +24,7 @@
                     <input class="form-control" type="file" id="PRMT_IMG" formControlName="PRMT_IMG">
                 </div>
                 <div class="col-12 col-sm-12 text-center text-md-start">
-                    <button type="submit" [disabled]="false" class="btn btn-dark">Guardar</button>
+                    <button type="submit" [disabled]="!form.valid" class="btn btn-dark">Guardar</button>
                 </div>
             </form>
         </div>

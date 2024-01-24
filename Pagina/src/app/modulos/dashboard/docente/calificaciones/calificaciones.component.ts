@@ -327,7 +327,7 @@ export class CalificacionesComponent implements OnInit {
 
   }
 
-  editar(calificacion: any) {    
+  editar(calificacion: any) {
     this.calificacioncuantitativaService.put(calificacion).subscribe({
       next: (response) => {
         this.handleResponse(response);
@@ -415,7 +415,7 @@ export class CalificacionesComponent implements OnInit {
 
     const html = clonedTable?.outerHTML;
 
-    this.reporteServicio.post(html).subscribe({
+    this.reporteServicio.post({ tipo: 'html' }, html).subscribe({
       next: (response: Blob) => {
         const blobUrl = URL.createObjectURL(response);
         const link = document.createElement('a');

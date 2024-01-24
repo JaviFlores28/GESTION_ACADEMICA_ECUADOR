@@ -14,13 +14,13 @@ export class ReporteService extends ErrorHandlerService {
     super();
   }
 
-  post(html: any): Observable<Blob> {
+  post(data: any, html?: any): Observable<Blob> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Accept': 'application/pdf',
     });
 
-    return this.http.post(this.apiUrl, { html }, {
+    return this.http.post(this.apiUrl, { data, html }, {
       headers,
       responseType: 'blob', // Importante: responseType 'blob' para manejar contenido binario
     }).pipe(

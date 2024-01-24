@@ -34,6 +34,7 @@ import { EstudiantesCursosComponent } from './admin/estudiantes-cursos/estudiant
 import { AdministradoresComponent } from './admin/administradores/administradores.component';
 import { EscalaComponent } from './admin/escala/escala.component';
 import { ParametroComponent } from './admin/parametro/parametro.component';
+import { ReportesComponent } from './representante/reportes/reportes.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [authGuardLogin] },
@@ -163,8 +164,8 @@ const routes: Routes = [
             component: CursosComponent,
           },
           {
-            path: 'calificaciones',
-            component: CursosComponent,
+            path: 'reportes',
+            component: ReportesComponent,
           },
         ],
       },

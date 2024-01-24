@@ -1,0 +1,50 @@
+<div class="container">
+    <div class="card text-start border border-0 rounded shadow">
+        <div class="card-body">
+            <div class="row">
+                <div class="col d-flex align-items-center">
+                    <div class="mt-3 mb-4">
+                        <span class="h2 card-title">Reporte representantes</span>
+                    </div>
+                </div>
+            </div>
+            <form [formGroup]="form" class="row gy-2 gx-3 align-items-center">
+                <label class="col-sm-1 col-form-label col-form-label-sm">Año lectivo:</label>
+                <div class="col-sm-8">
+                    <select class="form-select" id="aniolectivo" formControlName="select">
+                        <option *ngFor="let option of options" [value]="option.value">{{ option.name }}</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button (click)="onSubmit()" class="btn btn-primary">Buscar</button>
+                </div>
+            </form>
+            <div *ngIf="data.length>0" class="row">
+                <div class="table-responsive">
+                    <table class="table table-striped text-center">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col" *ngFor="let header of headers">
+                                    {{ header }}
+                                </th>
+                                <th scope="col">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let campo of data;let i = index">
+                                <th scope="row">{{ i + 1 }}</th>
+                                <td *ngFor="let valor of obtenerValores(campo)">
+                                    {{ valor }}
+                                </td>
+                                <td><button class="btn btn-danger" (click)="generarPDF(campo.id)">Generar PDF</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

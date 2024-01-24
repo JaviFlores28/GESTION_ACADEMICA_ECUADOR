@@ -92,10 +92,10 @@ export const navbarData: NavBarData[] = [
     rol: 'A',
     icon: faBookOpen,
     items: [
-      {
+     /*  {
         routelink: 'all',
         label: 'Todos',
-      },
+      }, */
       {
         routelink: 'asignar-cursos',
         label: 'Asignar Cursos',
@@ -112,10 +112,10 @@ export const navbarData: NavBarData[] = [
         routelink: 'all',
         label: 'Todos',
       },
-      {
+     /*  {
         routelink: 'all-asignaciones',
         label: 'Asignaciones',
-      },
+      }, */
       {
         routelink: 'asignar-paralelo',
         label: 'Asignar paralelos',
@@ -132,10 +132,10 @@ export const navbarData: NavBarData[] = [
         routelink: 'cursos',
         label: 'Mis cursos',
       },
-      {
+     /*  {
         routelink: 'horarios',
         label: 'Horarios',
-      }
+      } */
     ],
   },
   {
@@ -144,12 +144,12 @@ export const navbarData: NavBarData[] = [
     label: 'Representante',
     rol: 'R',
     items: [
-      {
+    /*   {
         routelink: 'horarios',
         label: 'Horarios',
-      },
+      }, */
       {
-        routelink: 'estudiantes',
+        routelink: 'reportes',
         label: 'Estudiantes',
       },
     ],

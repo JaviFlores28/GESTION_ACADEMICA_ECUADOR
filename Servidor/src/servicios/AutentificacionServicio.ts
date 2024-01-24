@@ -12,7 +12,6 @@ declare module 'express-session' {
   }
 }
 const router = Router();
-
 router.use(
   session({
     secret: process.env.KEY_ENCRYPT || 'UEFBC-2023-VF',

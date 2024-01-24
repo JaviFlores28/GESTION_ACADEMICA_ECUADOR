@@ -8,7 +8,7 @@ class Funciones {
     const ciphertext = CryptoJS.AES.encrypt(plaintext, KEY_ENCRYPT || '').toString();
     return ciphertext;
   }
-
+  
   static decrypt(ciphertext: string): string {
     const bytes = CryptoJS.AES.decrypt(ciphertext, KEY_ENCRYPT || '');
     const plaintext = bytes.toString(CryptoJS.enc.Utf8);
@@ -46,13 +46,14 @@ class Funciones {
   }
   static mapErrorCodeToMessage(code: string, msg?: string): string {
     const errorMessages: { [key: string]: string; } = {
-      'ER_DUP_ENTRY': 'Entrada duplicada. Ya existe un registro con ese valor.',
-      'ER_ROW_IS_REFERENCED_2': 'No se puede eliminar este objeto porque está siendo referenciado por otros registros.',
-      'ER_NO_REFERENCED_ROW_2': 'No se puede agregar o actualizar este registro hijo porque no existe el registro padre correspondiente.',
-      'ER_PARSE_ERROR': 'Error de sintaxis en la consulta SQL.',
-      'ER_DATA_TOO_LONG': 'Los datos son demasiado largos para el campo correspondiente.',
-      'ER_ACCESS_DENIED_ERROR': 'Acceso denegado. El usuario no tiene los permisos necesarios para realizar la operación.',
-      'ECONNREFUSED': 'Base de datos inaccesible.'
+      'ER_DUP_ENTRY': '¡Ups! Parece que ya hay una entrada igual. Por favor, elige un valor único.',
+      'ER_ROW_IS_REFERENCED_2': 'No podemos eliminar esto porque otros registros lo están usando. ¡Es muy popular!',
+      'ER_NO_REFERENCED_ROW_2': 'No podemos agregar o actualizar este registro porque su "padre" no existe. ¡Vamos a necesitar al padre primero!',
+      'ER_PARSE_ERROR': 'Parece que hubo un pequeño error en la forma en que formulaste tu pregunta SQL. ¿Podemos revisarlo juntos?',
+      'ER_DATA_TOO_LONG': 'Lo siento, pero los datos que estás intentando ingresar son demasiado largos. ¿Puedes reducirlos un poco?',
+      'ER_ACCESS_DENIED_ERROR': '¡Detente! Acceso denegado. Necesitarás permisos especiales para realizar esta operación.',
+      'ECONNREFUSED': 'Oops, no podemos acceder a la base de datos en este momento. ¿Verificaste la conexión?',
+      'ER_WRONG_ARGUMENTS': 'Oops, parece que hubo un problema con el formato. ¿Podrías revisar los datos ingresados?'    
     };    
     return errorMessages[code] || '' + msg;
   }

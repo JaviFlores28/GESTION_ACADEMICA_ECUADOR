@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 class EscalasReferencialesCalificacionesDatos {
   static sqlInsert: string = `INSERT INTO escalas_referenciales_calificaciones (ESCL_ID, ESCL_ABRV, ESCL_DESCR, ESCL_INI, ESCL_FIN)VALUES(?, ?, ?, ?, ?);`;
-  static sqlUpdate: string = `UPDATE escalas_referenciales_calificaciones SET ESCL_ABRV=?,ESCL_DESCR=?,ESCL_INI=?,ESCL_FIN=? WHERE ESCL_ID=?;`;
+  static sqlUpdate: string = `UPDATE escalas_referenciales_calificaciones SET ESCL_ABRV=?,ESCL_DESCR=?,ESCL_INI=?,ESCL_FIN=?,ESTADO=? WHERE ESCL_ID=?;`;
   static sqlUpdateEstado: string = 'UPDATE escalas_referenciales_calificaciones SET ESTADO = CASE WHEN ESTADO = 1 THEN 0 ELSE 1 END  WHERE  ESCL_ID  =?;';
   static sqlDelete: string = `DELETE FROM escalas_referenciales_calificaciones WHERE ESCL_ID = ?`;
   static sqlSelect: string = `SELECT * FROM escalas_referenciales_calificaciones ORDER BY ESTADO DESC`;
@@ -33,7 +33,6 @@ class EscalasReferencialesCalificacionesDatos {
   static async update(escalas_referenciales_calificaciones: EscalasReferencialesCalificacionesEntidad): Promise<Respuesta> {
     try {
       const pool = await BaseDatos.getInstanceDataBase();
-
       const newEscalasReferencialesCalificaciones = new EscalasReferencialesCalificacionesEntidad(escalas_referenciales_calificaciones.ESCL_ID, escalas_referenciales_calificaciones.ESCL_ABRV, escalas_referenciales_calificaciones.ESCL_DESCR, escalas_referenciales_calificaciones.ESCL_INI, escalas_referenciales_calificaciones.ESCL_FIN, escalas_referenciales_calificaciones.ESTADO);
       let sql = this.sqlUpdate;
       const [result] = await pool.execute<any>(sql, newEscalasReferencialesCalificaciones.toArrayUpdate());
@@ -42,6 +41,8 @@ class EscalasReferencialesCalificacionesDatos {
       }
       return { response: true, data: true, message: 'Campos actualizados' }; // Retorna true si se pudo actualizar;
     } catch (error: any) {
+      console.log(error);
+      
       error.message = Funciones.mapErrorCodeToMessage(error.code, error.message);
       return { response: false, data: null, message: error.message };
     }

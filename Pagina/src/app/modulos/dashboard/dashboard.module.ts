@@ -45,6 +45,7 @@ import { EstudiantesCursosComponent } from './admin/estudiantes-cursos/estudiant
 import { AdministradoresComponent } from './admin/administradores/administradores.component';
 import { ParametroComponent } from './admin/parametro/parametro.component';
 import { EscalaComponent } from './admin/escala/escala.component';
+import { ReportesComponent } from './representante/reportes/reportes.component';
 
 @NgModule({
   declarations: [
@@ -85,6 +86,7 @@ import { EscalaComponent } from './admin/escala/escala.component';
     AdministradoresComponent,
     ParametroComponent,
     EscalaComponent,
+    ReportesComponent,
   ],
   imports: [CommonModule, DashboardRoutingModule, FormsModule, ReactiveFormsModule, FontAwesomeModule, NgbModule, NgSelectModule, NgTableComponent],
 })

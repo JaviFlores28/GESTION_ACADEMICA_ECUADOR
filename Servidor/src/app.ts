@@ -1,8 +1,5 @@
-import express from 'express';
 import cors from 'cors';
-import * as dotenv from 'dotenv';
-import session from 'express-session';
-
+import express from 'express';
 import AnioLectivoServicio from './servicios/AnioLectivoServicio';
 import AreaServicio from './servicios/AreaServicio';
 import AsignaturaServicio from './servicios/AsignaturaServicio';
