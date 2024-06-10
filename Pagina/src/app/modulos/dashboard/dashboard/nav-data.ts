@@ -1,154 +1,173 @@
-import { faChalkboardTeacher, faHome, faLaptopFile, faSchool, faUsers } from "@fortawesome/free-solid-svg-icons";
-import { NavBarData } from "src/app/modelos/interfaces_sistema/NavBarData.interface";
-
+import { faBookOpen, faChalkboardTeacher, faChildren, faFlaskVial, faGears, faGraduationCap, faHome, faLaptopFile, faPenRuler, faPeopleGroup, faPeopleLine, faPeopleRoof, faPerson, faPersonChalkboard, faSchool, faSubscript, faUser, faUserGear, faUsers, faUsersLine, faUsersRectangle } from '@fortawesome/free-solid-svg-icons';
+import { NavBarData } from 'src/app/sistema/interfaces/NavBarData.interface';
 
 export const navbarData: NavBarData[] = [
-    {
-        routelink: '/dashboard',
-        icon: faHome,
-        label: 'Inicio',
-        rol: 'T'
-    },
-    {
-        routelink: 'docente',
-        icon: faChalkboardTeacher,
-        label: 'Profesores',
-        rol: 'T',
-        items: [
-            {
-                routelink: 'cursos',
-                label: 'Mis cursos',
-            },
-            {
-                routelink: 'horarios',
-                label: 'Horarios',
-            },
-            {
-                routelink: 'planes-tudios',
-                label: 'Planes de estudio',
-            },
-        ]
-    },
-    {
-        routelink: 'Representante',
-        icon: faUsers,
-        label: 'Representante',
-        rol: 'T',
-        items: [
-            {
-                routelink: 'horarios',
-                label: 'Horarios',
-            },
-            {
-                routelink: 'calificaciones',
-                label: 'Calificaciones',
-            },
-            {
-                routelink: 'planestudios',
-                label: 'Planes de estudio',
-            },
-            {
-                routelink: 'solicitudes',
-                label: 'Solicitudes',
-            },
-        ]
-
-    },
-    {
+  {
+    routelink: '',
+    icon: faHome,
+    label: 'Inicio',
+    rol: 'T',
+  },
+  {
+    routelink: 'sistema',
+    label: 'Sistema',
+    rol: 'A',
+    icon: faGears,
+  },
+  {
+    routelink: 'anios',
+    label: 'Años lectivos',
+    rol: 'A',
+    icon: faGraduationCap,
+    items: [
+      {
+        routelink: 'inicializar',
+        label: 'Inicializar',
+      },
+      {
+        routelink: 'all',
+        label: 'Todos',
+      },
+      {
+        routelink: 'periodos',
+        label: 'Periodos',
+      },
+    ],
+  },
+  {
+    routelink: 'areas',
+    label: 'Áreas',
+    rol: 'A',
+    icon: faFlaskVial,
+  },
+  {
+    routelink: 'asignaturas',
+    label: 'Asignaturas',
+    rol: 'A',
+    icon: faPenRuler,
+  },
+  {
+    routelink: 'cursos',
+    label: 'Cursos',
+    rol: 'A',
+    icon: faPeopleRoof,
+  },
+  {
+    routelink: 'representantes',
+    label: 'Representantes',
+    rol: 'A',
+    icon: faUser,
+  },
+  {
+    routelink: 'estudiantes',
+    label: 'Estudiantes',
+    rol: 'A',
+    icon: faPeopleLine,
+  },
+  {
+    routelink: 'profesores',
+    label: 'Profesores',
+    rol: 'A',
+    icon: faPersonChalkboard,
+    items: [
+      {
+        routelink: 'all',
+        label: 'Todos',
+      },
+      {
+        routelink: 'asignar-profesor',
+        label: 'Asignar profesores',
+      },
+    ]
+  },
+  {
+    routelink: 'administradores',
+    label: 'Administradores',
+    rol: 'A',
+    icon: faUserGear,
+  },
+  {
+    routelink: 'matriculas',
+    label: 'Matrículas',
+    rol: 'A',
+    icon: faBookOpen,
+    items: [
+     /*  {
+        routelink: 'all',
+        label: 'Todos',
+      }, */
+      {
+        routelink: 'asignar-cursos',
+        label: 'Asignar Cursos',
+      }
+    ]
+  },
+  {
+    routelink: 'paralelos',
+    label: 'Paralelos',
+    rol: 'A',
+    icon: faUsersRectangle,
+    items: [
+      {
+        routelink: 'all',
+        label: 'Todos',
+      },
+     /*  {
+        routelink: 'all-asignaciones',
+        label: 'Asignaciones',
+      }, */
+      {
+        routelink: 'asignar-paralelo',
+        label: 'Asignar paralelos',
+      }
+    ]
+  },
+  {
+    routelink: 'docente',
+    icon: faChalkboardTeacher,
+    label: 'Profesores',
+    rol: 'P',
+    items: [
+      {
+        routelink: 'cursos',
+        label: 'Mis cursos',
+      },
+     /*  {
+        routelink: 'horarios',
+        label: 'Horarios',
+      } */
+    ],
+  },
+  {
+    routelink: 'representante',
+    icon: faUsers,
+    label: 'Representante',
+    rol: 'R',
+    items: [
+    /*   {
+        routelink: 'horarios',
+        label: 'Horarios',
+      }, */
+      {
+        routelink: 'reportes',
+        label: 'Estudiantes',
+      },
+    ],
+  },
+  {
+    routelink: 'reporte',
+    icon: faLaptopFile,
+    label: 'Reportes',
+    rol: 'A',
+    items: [
+      {
+        routelink: 'calificaciones',
+        label: 'Calificaciones',
+      },
+      {
         routelink: 'institucion',
-        icon: faSchool,
         label: 'Institución',
-        rol: 'A',
-        items: [
-            {
-                routelink: 'institucion/anio-lectivo',
-                label: 'Año lectivo',
-                items: [
-                    {
-                        routelink: 'activo',
-                        label: 'Año actual',
-                    },
-                    {
-                        routelink: 'anios',
-                        label: 'Años lectivos',
-                    }
-                ]
-            },
-            {
-                routelink: 'areas',
-                label: 'Areas',
-            },
-            {
-                routelink: 'cursos',
-                label: 'Cursos',
-            },
-            {
-                routelink: 'asignaturas',
-                label: 'Asignaturas',
-            },
-            {
-                routelink: 'representantes',
-                label: 'Representantes',
-            },
-            {
-                routelink: 'estudiantes',
-                label: 'Estudiantes',
-            },
-            {
-                routelink: 'matriculas',
-                label: 'Matrículas',
-            },
-            {
-                routelink: 'institucion/paralelos',
-                label: 'Paralelos',
-                items: [
-                    {
-                        routelink: 'crear-paralelo',
-                        label: 'Crear',
-                    }, {
-                        routelink: 'asignar-paralelo',
-                        label: 'Asignar',
-                    }]
-            },
-            {
-                routelink: 'institucion/profesores',
-                label: 'Profesores',
-                items: [
-                    {
-                        routelink: 'crear-profesor',
-                        label: 'Crear',
-                    }, {
-                        routelink: 'asignar-profesor',
-                        label: 'Asignar',
-                    }]
-            },
-            {
-                routelink: 'solicitudes',
-                label: 'Solicitudes',
-            },
-        ]
-    },
-    {
-        routelink: 'reporte',
-        icon: faLaptopFile,
-        label: 'Reportes',
-        rol: 'T',
-        items: [
-            {
-                routelink: 'calificaciones',
-                label: 'Calificaciones',
-            },
-            {
-                routelink: 'cursos',
-                label: 'Cursos',
-            }
-        ]
-    },
-    {
-        routelink: 'usuarios',
-        icon: faUsers,
-        label: 'Usuarios',
-        rol: 'T',
-    },
-
+      },
+    ],
+  },
 ];

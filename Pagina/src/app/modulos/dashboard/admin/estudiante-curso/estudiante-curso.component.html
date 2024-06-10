@@ -1,0 +1,56 @@
+<div class="container-fluid">
+  <nav aria-label="breadcrumb">
+    <h3 class="fw-custom-semibold">Matrículas</h3>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a class="text-black fw-custom-semibold" routerLink="../all">Matrículas</a>
+      </li>
+      <li class="breadcrumb-item active">Asignar cursos</li>
+    </ol>
+  </nav>
+  <div class="row row-cols-1 row-cols-md-2 g-3 justify-content-center align-items-start">
+    <div class="col">
+      <p class="shadow rounded-top-4 text-center h4 p-2 mb-2 bg-dark text-white">Estudiantes</p>
+      <div class="row row-cols-1 g-3">
+        <div class="col">
+          <div class="card text-start  border-0 rounded shadow">
+            <div class="card-body">
+              <form class="row g-3 justify-content-start align-items-end" [formGroup]="form" (ngSubmit)="onSubmit()">
+                <div class="col">
+                  <label for="CRS_ID" class="form-label">Curso:</label>
+                  <ng-select [items]="cursos" bindLabel="CRS_NOM" bindValue="CRS_ID" formControlName="CRS_ID"
+                    id="CRS_ID"> </ng-select>
+                </div>
+                <div class="col">
+                  <div class="btn-group" role="group">
+                    <button type="submit" [disabled]="idsEstudiantes.length <= 0 || !form.valid"
+                      class="btn btn-dark">Guardar</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card text-start rounded-bottom-5  border-0 shadow">
+            <div class="card-body">
+              <app-ng-table tableName="nomatriculados" [data]="noMatriculados" [headers]="headersNoMatriculados"
+                [campos]="camposNoMatriculados" [rowButtons]="false" [checkButtons]="false" [statusButton]="false"
+                (actionOnChecks)="estudiantesaction($event)"></app-ng-table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <p class="shadow rounded-top-4 text-center h4 p-2 mb-2 bg-dark text-white">Matrículas</p>
+      <div class="card text-start rounded-bottom-5 border-0 shadow">
+        <div class="card-body">
+          <app-ng-table tableName="matriculados" [pageSize]="20" [data]="matriculas" [headers]="headersMatriculados"
+            [campos]="camposMatriculados" [rowButtons]="false"  [statusButton]="false"
+            (actionOnChecks)="matriculasAction($event)"></app-ng-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

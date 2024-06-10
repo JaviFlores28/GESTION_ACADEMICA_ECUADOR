@@ -1,28 +1,34 @@
 import { Component, OnInit } from '@angular/core';
-import { Validators, FormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faCircleCheck, faCircleXmark, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalComponent } from 'src/app/componentes/modal/modal.component';
-import { Area } from 'src/app/modelos/interfaces/Area.interface';
+import { Area } from 'src/app/interfaces/Area.interface';
 import { AreaService } from 'src/app/servicios/area.service';
-import { UsuarioService } from 'src/app/servicios/usuario.service';
+import { ModalService } from 'src/app/servicios/modal.service';
+import { MyValidators } from 'src/app/utils/validators';
 
 @Component({
   selector: 'app-area',
   templateUrl: './area.component.html',
-  styleUrls: ['./area.component.scss']
+  styleUrls: ['./area.component.scss'],
 })
 export class AreaComponent implements OnInit {
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: AreaService, private serviceUsuario: UsuarioService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private service: AreaService,
+    private modalService: ModalService,
+  ) { }
 
   modoEdicion: boolean = false;
-  elementoId: string = '';
-  icon = faInfoCircle;
+  editItemId: string = '';
+  modaltitle: string = 'Agregar';
+  modalMsg: string = '¿Desea guardar el registro?';
+
 
   form = this.formBuilder.group({
-    nom: ['', Validators.required],
-    estado: [true]
+    nom: ['', MyValidators.required],
+    estado: [true],
   });
 
   ngOnInit(): void {
@@ -30,53 +36,34 @@ export class AreaComponent implements OnInit {
   }
 
   validarEdicion() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id) {
         this.modoEdicion = true;
-        this.elementoId = id;
-        this.loadData();
+        this.editItemId = id;
+        this.modaltitle = 'Editar';
+        this.modalMsg = '¿Desea editar el registro?'; 
+        this.loadDataEdit();
       } else {
         this.modoEdicion = false;
-        this.elementoId = '';
+        this.editItemId = '';
       }
     });
   }
 
   onSubmit() {
-    this.openConfirmationModal();
+    this.openModal(this.modaltitle, this.modalMsg, 'warning', true);
   }
 
   crear() {
     if (this.form.valid) {
-      let userid = this.serviceUsuario.getUserLoggedId();
-      if (userid !== '') {
-        const area: Area = {
-          AREA_ID: '0',
-          AREA_NOM: this.form.value.nom || '',
-          ESTADO: (this.form.value.estado) ? 1 : 0,
-          CREADOR_ID: userid
-        };
-        this.service.post(area).subscribe(
-          {
-            next: (response) => {
-              if (!response.data) {
-                this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-                console.log(response.message);
-              } else {
-                this.openAlertModal(response.message, 'success')
-                console.log(response.message);
-                this.form.reset();
-                this.router.navigate(['../'], { relativeTo: this.route });
-              }
-            },
-            error: (error) => {
-              this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-              console.log(error);;
-            }
-          }
-        );
-      }
+      const area: Area = this.buildObject();
+      this.service.post(area).subscribe({
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
@@ -84,40 +71,40 @@ export class AreaComponent implements OnInit {
 
   editar() {
     if (this.form.valid) {
-      const area: Area = {
-        AREA_ID: this.elementoId,
-        AREA_NOM: this.form.value.nom || '',
-        ESTADO: (this.form.value.estado) ? 1 : 0,
-        CREADOR_ID: '1'
-      };
-      this.service.put(area).subscribe(
-        {
-          next: (response) => {
-            if (!response.data) {
-              this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-              console.log(response.message);
-            } else {
-              this.openAlertModal(response.message, 'success')
-              console.log(response.message);
-            }
-
-          },
-          error: (errordata) => {
-            this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-            console.log(errordata);
-          }
-        }
-      );
-      // this.form.reset();
+      const area: Area = this.buildObjectEdit();
+      this.service.put(area).subscribe({
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
   }
 
-  loadData() {
-    this.service.searchById(this.elementoId).subscribe({
+  buildObject() {
+    const area: Area = {
+      AREA_ID: '0',
+      AREA_NOM: this.form.value.nom || '',
+      ESTADO: this.form.value.estado ? 1 : 0,
+    };
+    return area;
+  }
+
+  buildObjectEdit() {
+    const area: Area = {
+      AREA_ID: this.editItemId,
+      AREA_NOM: this.form.value.nom || '',
+      ESTADO: this.form.value.estado ? 1 : 0,
+    };
+    return area;
+  }
+
+  loadDataEdit() {
+    this.service.getById(this.editItemId).subscribe({
       next: (value) => {
-        if (value.data) {
+        if (value.response) {
           this.llenarForm(value.data);
         } else {
           console.log(value.message);
@@ -125,43 +112,56 @@ export class AreaComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
   llenarForm(data: Area) {
-    this.form.get('estado')?.setValue(data.ESTADO === 1);// Asumiendo que 'estado' es un control en tu formulario
-    this.form.get('nom')?.setValue(data.AREA_NOM); // Asumiendo que 'nom' es un control en tu formulario
+    this.form.get('estado')?.setValue(data.ESTADO === 1);
+    this.form.get('nom')?.setValue(data.AREA_NOM);
   }
 
-  openAlertModal(content: string, alertType: string) {
-    const modalRef = this.ngBootstrap.open(ModalComponent);
-    modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
-    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = content);
-    modalRef.componentInstance.icon = (alertType == 'success') ? faCircleCheck : (alertType == 'danger') ? faCircleXmark : faInfoCircle;
-    modalRef.componentInstance.color = alertType;
-    modalRef.componentInstance.modal = false;
-  }
 
-  openConfirmationModal() {
-    const modalRef = this.ngBootstrap.open(ModalComponent);
-    modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
-
-    // Usa el operador Elvis para asegurarte de que activeModal y contenido estén definidos
-    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = (!this.modoEdicion) ? '¿Desea guardar el área?' : '¿Desea editar el área?');
-    modalRef.componentInstance.icon = faInfoCircle;
-    modalRef.componentInstance.color = 'warning';
-    modalRef.result.then((result) => {
-      if (result === 'save') {
-        if (this.modoEdicion) {
-          this.editar();
-        } else {
-          this.crear();
+  openModal(tittle: string, message: string, alertType: string, form: boolean) {
+    this.modalService.openModal(tittle, message, alertType, form)
+      .then((result) => {
+        if (result === 'save' && form) {
+          if (this.modoEdicion) {
+            this.editar();
+          } else {
+            this.crear();
+          }
         }
-      }
-    }).catch((error) => {
-      console.log(error);
-    });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
+
+
+  handleResponse(value: any) {
+    if (!value.response) {
+      this.openModal('Oops...', 'Ha ocurrido un error intente nuevamente.', 'danger', false);
+      console.log(value.message);
+    } else {
+      if (this.modoEdicion) {
+        this.openModal('¡Completado!', value.message, 'success', false);
+      } else {
+        this.openModal('¡Completado!', value.message, 'success', false);
+        this.clear();
+      }
+    }
+  }
+
+  handleErrorResponse(error: any) {
+    this.openModal('Oops...', error, 'danger', false);
+    console.log(error);
+  }
+
+  clear() {
+    this.form.reset();
+    this.router.navigate(['../'], { relativeTo: this.route });
+  }
+
 
 }

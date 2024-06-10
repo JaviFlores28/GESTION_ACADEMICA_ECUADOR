@@ -2,58 +2,101 @@ import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { faUserTie } from '@fortawesome/free-solid-svg-icons';
-import { UsuarioLogin } from 'src/app/modelos/interfaces_sistema/usuario-Login.interface';
-import { UsuarioService } from 'src/app/servicios/usuario.service';
+import { UsuarioLogin } from 'src/app/sistema/interfaces/usuario-Login.interface';
+import { ModalService } from 'src/app/servicios/modal.service';
+import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-
-  constructor(private router: Router, private formBuilder: FormBuilder, private service: UsuarioService, private renderer: Renderer2, private el: ElementRef) {
-  }
+  constructor(
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private service: AutentificacionService,
+    private renderer: Renderer2,
+    private el: ElementRef,
+    private modalService: ModalService,
+  ) { }
 
   icon = faUserTie;
+  HAS_2FA = false;
+
   formulario = this.formBuilder.group({
     usuario: ['administrador', [Validators.required, Validators.minLength(8)]],
-    pswd: ['admin', Validators.required]
-  })
+    pswd: ['admin', Validators.required],
+  });
+
+  formulario2AF = this.formBuilder.group({
+    TOKEN: ['', [Validators.required, Validators.minLength(6)]],
+  });
 
   ngOnInit(): void {
     this.addStyle();
   }
 
-  get usuario() { return this.formulario.get('usuario'); }
-  get pswd() { return this.formulario.get('pswd'); }
+  get usuario() {
+    return this.formulario.get('usuario');
+  }
+  get pswd() {
+    return this.formulario.get('pswd');
+  }
 
   login() {
     if (this.formulario.valid) {
       const usuario: UsuarioLogin = {
-        usuario: this.formulario.value.usuario || '', // Si es null o undefined, se asigna una cadena vacía.
-        pswd: this.formulario.value.pswd || '' // Igual aquí para pswd
+        USUARIO: this.formulario.value.usuario || '', // Si es null o undefined, se asigna una cadena vacía.
+        USR_PSWD: this.formulario.value.pswd || '', // Igual aquí para pswd
       };
-      this.service.validarUsuario(usuario).subscribe(
-        {
-          next: (response) => {
-            if (response.data === null) {
-              console.log(response.message);
+      this.service.login(usuario).subscribe({
+        next: (value) => {
+          if (!value.response) {
+            console.log(value.message);
+            
+            this.openAlertModal('Error', value.message, 'danger', false);
+          } else {
+            if (!value.data.AUTHENTICATED) {
+              this.HAS_2FA = true;
             } else {
-              this.service.login(response.data)
-              this.resetStyle()
-              this.router.navigate(['/home']);
-            }
-          },
-          error: (error) => {
-            console.error(error);
+              this.resetStyle();
+              this.service.setUserIdLocal(value.data.USER_ID);
+              this.router.navigate(['']);
 
+            }
           }
-        }
-      );
+        },
+        error: (error) => {
+          this.openAlertModal('Error', error, 'danger', false);
+          console.error(error);
+        },
+      });
       this.formulario.reset();
     } else {
       this.formulario.markAllAsTouched();
+    }
+  }
+
+
+  validar2FA() {
+    if (this.formulario2AF.valid) {
+      const TOKEN = this.formulario2AF.value.TOKEN || '';
+      this.service.authentificated(TOKEN).subscribe({
+        next: (value) => {
+          if (!value.response) {
+            this.openAlertModal('Error', value.message, 'danger', false);
+          } else {
+            this.resetStyle();
+            this.service.setUserIdLocal(value.data.USER_ID);
+            this.router.navigate(['']);
+          }
+        },
+        error: (error) => {
+          this.openAlertModal('Error', error, 'danger', false);
+          console.error(error);
+        },
+      });
     }
   }
 
@@ -83,6 +126,11 @@ export class LoginComponent implements OnInit {
     this.renderer.removeStyle(appRootElement, 'justify-content');
   }
 
+  openAlertModal(tittle: string, message: string, alertType: string, form: boolean) {
+    this.modalService.openModal(tittle, message, alertType, form);
+  }
 
-
+  reload() {
+    location.reload();
+  }
 }

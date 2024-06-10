@@ -1,140 +1,266 @@
 <div class="container-fluid pb-3">
-    <form
-        class="row row-cols-1 row-cols-md-2 g-3 justify-content-center justify-content-md-start align-items-md-start align-items-center"
-        [formGroup]="form" (ngSubmit)="onSubmit()">
+  <nav aria-label="breadcrumb" *ngIf="!isMyInfo">
+    <h3 class="fw-custom-semibold">Sistema</h3>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a class="text-black fw-custom-semibold" [routerLink]="routerLink">{{ titulo }}</a>
+      </li>
+      <li class="breadcrumb-item active">{{ modoEdicion ? 'Editar' : 'Crear' }}</li>
+    </ol>
+  </nav>
+  <div class="row row-cols-1 row-cols-md-2 g-3">
+    <div class="col">
+      <form class="row row-cols-1 g-3" [formGroup]="form">
         <div class="col">
-            <div class="card text-start border border-0 rounded shadow h-100">
-                <div class="card-body">
-                    <h5 class="card-title"> <fa-icon [icon]="icon" size="1x"></fa-icon> Datos informativos</h5>
-                    <hr>
-                    <div class="row g-3">
-                        <div class="col-md-12 col-lg-6">
-                            <label class="form-label" for="USR_DNI">Cédula:</label>
-                            <input class="form-control" id="USR_DNI" type="text" formControlName="USR_DNI">
-                        </div>
-                        <div class="col-md-12 col-lg-6">
-                            <label class="form-label" for="USR_FECH_NAC" class="form-label">Fecha de nacimiento:</label>
-                            <input class="form-control" type="date" class="form-control" id="USR_FECH_NAC"
-                                formControlName="USR_FECH_NAC">
-                        </div>
-                        <div class="col-md-12 col-lg-6">
-                            <label class="form-label" for="USR_NOM">Primer nombre:</label>
-                            <input class="form-control" type="text" formControlName="USR_NOM">
-                        </div>
-                        <div class="col-md-12 col-lg-6">
-                            <label class="form-label" for="USR_NOM2">Segundo nombre:</label>
-                            <input class="form-control" type="atext" formControlName="USR_NOM2">
-                        </div>
-                        <div class="col-md-12 col-lg-6">
-                            <label class="form-label" for="USR_APE">Primer apellido:</label>
-                            <input class="form-control" type="text" formControlName="USR_APE">
-                        </div>
-                        <div class="col-md-12 col-lg-6">
-                            <label class="form-label" for="USR_APE2">Segundo apellido:</label>
-                            <input class="form-control" type="text" formControlName="USR_APE2">
-                        </div>
-                        <div class="col-md-12 col-12">
-                            <label class="form-label" for="USR_DIR">Dirección domicilio:</label>
-                            <input class="form-control" type="text" formControlName="USR_DIR" id="USR_DIR">
-                        </div>
-                        <div class="col-md-12 col-lg-6">
-                            <label class="form-label" for="USR_TEL">Teléfono:</label>
-                            <input class="form-control" type="text" formControlName="USR_TEL" pattern="^[0-9]+">
-                        </div>
-                        <div class="col-md-12 col-lg-6">
-                            <label class="form-label" for="USR_CEL">Celular:</label>
-                            <input class="form-control" type="text" formControlName="USR_CEL" pattern="^[0-9]+">
-                        </div>
-                        <div class="col-md-12 col-lg-6">
-                            <label class="form-label" for="USR_EMAIL">Correo:</label>
-                            <input class="form-control" id="USR_EMAIL" type="text" formControlName="USR_EMAIL">
-                        </div>
-                        <div class="col-md-12 col-lg-6">
-                            <label class="form-label" for="USR_GEN">Género:</label>
-                            <select class="form-select" formControlName="USR_GEN" id="USR_GEN">
-                                <option value="1">Femenino</option>
-                                <option value="2">Masculino</option>
-                            </select>
-                        </div>
-                    </div>
+          <div class="card text-start border-0 rounded shadow h-100">
+            <div class="card-body">
+              <h5 class="card-title"><fa-icon [icon]="icon" size="1x"></fa-icon> Datos informativos</h5>
+              <hr />
+              <div class="row g-3">
+                <div class="col-md-12 col-lg-6">
+                  <label class="form-label" for="USR_DNI">Cédula:</label>
+                  <input class="form-control" id="USR_DNI" type="text" formControlName="USR_DNI" />
+                  <div *ngIf="form.controls.USR_DNI.touched">
+                    <p *ngIf="form.controls.USR_DNI.hasError('required')" class="mssg-wrng">
+                      *La cédula es obligatoria
+                    </p>
+                    <p *ngIf="form.get('USR_DNI')?.hasError('cedulaInvalida')" class="mssg-wrng">
+                      {{ form.get('USR_DNI')?.getError('message') }}
+                    </p>
+                  </div>
                 </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="row row-cols-1 g-3">
-               <div class="col">
-                <div class="card text-start border border-0 rounded shadow" *ngIf="isProf">
-                    <div class="card-body">
-                        <h5 class="card-title"> <fa-icon [icon]="faperson" size="1x"></fa-icon> Datos institucionales
-                        </h5>
-                        <hr>
-                        <div class="row g-3">
-                            <div class="col-md-12 col-lg-6">
-                                <label class="form-label" for="PRF_FECH_INGR_INST" class="form-label">Fecha de
-                                    ingreso a la institución:</label>
-                                <input class="form-control" type="date" class="form-control" id="PRF_FECH_INGR_INST"
-                                    formControlName="PRF_FECH_INGR_INST">
-                            </div>
-                            <div class="col-md-12 col-lg-6">
-                                <label class="form-label" for="PRF_FECH_INGR_MAG" class="form-label">Fecha de
-                                    ingreso al magisterio:</label>
-                                <input class="form-control" type="date" class="form-control" id="PRF_FECH_INGR_MAG"
-                                    formControlName="PRF_FECH_INGR_MAG">
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-md-12 col-lg-6">
+                  <label class="form-label" for="USR_FECH_NAC" class="form-label">Fecha de nacimiento:</label>
+                  <input class="form-control" type="date" class="form-control" id="USR_FECH_NAC"
+                    formControlName="USR_FECH_NAC" />
                 </div>
-               </div>
-              <div class="col">
-                <div class="card text-start border border-0 rounded shadow">
-                    <div class="card-body">
-                        <h5 class="card-title"> <fa-icon [icon]="fauser" size="1x"></fa-icon> Datos de usuario </h5>
-                        <hr>
-                        <div class="row row-cols-lg-auto row-cols-1 g-3 justify-content-center justify-content-md-start align-items-center">
-                            <div class="col">
-                                <label class="form-label" for="USUARIO">Usuario:</label>
-                                <input class="form-control" type="text" formControlName="USUARIO">
-                            </div>
-                            <div class="col">
-                                <label for="ESTADO" class="form-label pb-2">Estado</label>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" id="ESTADO" type="checkbox" role="switch"
-                                        formControlName="ESTADO">
-                                </div>
-                            </div>
-                            <div class="col text-center text-md-start">
-                                <button type="submit" class="btn btn-dark" [disabled]="!form.valid">Guardar</button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-md-12 col-lg-6">
+                  <label class="form-label" for="USR_NOM">Primer nombre:</label>
+                  <input class="form-control" type="text" formControlName="USR_NOM" />
+                  <div *ngIf="form.controls.USR_NOM.touched && form.controls.USR_NOM.invalid" >
+                    <p *ngIf="form.controls.USR_NOM.hasError('required')" class="mssg-wrng">
+                      *Campo obligatorio
+                    </p>
+                    <p *ngIf=" form.controls.USR_NOM.hasError('minlength')" class="mssg-wrng">
+                      *Nombre no válido
+                    </p>
+                    <p *ngIf="form.get('USR_NOM')?.hasError('soloLetras')" class="mssg-wrng">
+                      {{ form.get('USR_NOM')?.getError('message') }}
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-12 col-lg-6">
+                  <label class="form-label" for="USR_NOM2">Segundo nombre:</label>
+                  <input class="form-control" type="atext" formControlName="USR_NOM2" />
+                  <div *ngIf="form.controls.USR_NOM2.touched && form.controls.USR_NOM2.invalid" >
+                    <p *ngIf="form.controls.USR_NOM2.hasError('required')" class="mssg-wrng">
+                      *Campo obligatorio
+                    </p>
+                    <p *ngIf=" form.controls.USR_NOM2.hasError('minlength')" class="mssg-wrng">
+                      *Nombre no válido
+                    </p>
+                    <p *ngIf="form.get('USR_NOM2')?.hasError('soloLetras')" class="mssg-wrng">
+                      {{ form.get('USR_NOM2')?.getError('message') }}
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-12 col-lg-6">
+                  <label class="form-label" for="USR_APE">Primer apellido:</label>
+                  <input class="form-control" type="text" formControlName="USR_APE" />
+                  <div *ngIf="form.controls.USR_APE.touched && form.controls.USR_APE.invalid" >
+                    <p *ngIf="form.controls.USR_APE.hasError('required')" class="mssg-wrng">
+                      *Campo obligatorio
+                    </p>
+                    <p *ngIf=" form.controls.USR_APE.hasError('minlength')" class="mssg-wrng">
+                      *Apellido no válido
+                    </p>
+                    <p *ngIf="form.get('USR_APE')?.hasError('soloLetras')" class="mssg-wrng">
+                      {{ form.get('USR_APE')?.getError('message') }}
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-12 col-lg-6">
+                  <label class="form-label" for="USR_APE2">Segundo apellido:</label>
+                  <input class="form-control" type="text" formControlName="USR_APE2" />
+                  <div *ngIf="form.controls.USR_APE2.touched && form.controls.USR_APE2.invalid" >
+                    <p *ngIf="form.controls.USR_APE2.hasError('required')" class="mssg-wrng">
+                      *Campo obligatorio
+                    </p>
+                    <p *ngIf=" form.controls.USR_APE2.hasError('minlength')" class="mssg-wrng">
+                      *Apellido no válido
+                    </p>
+                    <p *ngIf="form.get('USR_APE2')?.hasError('soloLetras')" class="mssg-wrng">
+                      {{ form.get('USR_APE2')?.getError('message') }}
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-12 col-12">
+                  <label class="form-label" for="USR_DIR">Dirección domicilio:</label>
+                  <input class="form-control" type="text" formControlName="USR_DIR" id="USR_DIR" />
+                  <div *ngIf="form.controls.USR_DIR.touched && form.controls.USR_DIR.invalid" >
+                    <p *ngIf="form.controls.USR_DIR.hasError('required')" class="mssg-wrng">
+                      *Campo obligatorio
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-12 col-lg-6">
+                  <label class="form-label" for="USR_TEL">Teléfono:</label>
+                  <input class="form-control" type="text" formControlName="USR_TEL" pattern="^[0-9]+" />
+                  <div *ngIf="form.controls.USR_TEL.touched && form.controls.USR_TEL.invalid" >
+                    <p *ngIf="form.controls.USR_TEL.hasError('required')" class="mssg-wrng">
+                      *Campo obligatorio
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-12 col-lg-6">
+                  <label class="form-label" for="USR_CEL">Celular:</label>
+                  <input class="form-control" type="text" formControlName="USR_CEL" />
+                  <div *ngIf="form.controls.USR_CEL.touched">
+                    <p *ngIf="form.controls.USR_CEL.hasError('required')" class="mssg-wrng">
+                      *Campo obligatorio
+                    </p>
+                    <p *ngIf="form.get('USR_CEL')?.hasError('celularInvalido')" class="mssg-wrng">
+                      {{ form.get('USR_CEL')?.getError('message') }}
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-12 col-lg-6">
+                  <label class="form-label" for="USR_EMAIL">Correo:</label>
+                  <input class="form-control" id="USR_EMAIL" type="email" formControlName="USR_EMAIL" />
+                  <div *ngIf="form.controls.USR_EMAIL.touched && form.controls.USR_TEL.invalid" >
+                    <p *ngIf="form.controls.USR_EMAIL.hasError('required')" class="mssg-wrng">
+                      *Campo obligatorio
+                    </p>
+                    <p *ngIf="form.get('USR_EMAIL')?.hasError('correoValido')" class="mssg-wrng">
+                      {{ form.get('USR_EMAIL')?.getError('message') }}
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-12 col-lg-6">
+                  <label class="form-label" for="USR_GEN">Género:</label>
+                  <select class="form-select" formControlName="USR_GEN" id="USR_GEN">
+                    <option value="1">Femenino</option>
+                    <option value="2">Masculino</option>
+                  </select>
                 </div>
               </div>
             </div>
-        </div>
-        <div class="col">
-            <div class="card text-start border border-0 rounded shadow" *ngIf="modoEdicion">
-                <div class="card-body">
-                    <h5 class="card-title"> <fa-icon [icon]="fakey" size="1x"></fa-icon> Cambiar Contraseña</h5>
-                    <hr>
-                    <form class="row row-cols-12 row-cols-lg-2 row-cols-md-1 g-3 justify-content-center justify-content-md-start align-items-md-start align-items-center"
-                        [formGroup]="formPswd" (ngSubmit)="onSubmitPswd()">
-                        <div class="col">
-                            <label for="USR_PSWD" class="form-label">Contraseña actual:</label>
-                            <input type="password" formControlName="USR_PSWD" class="form-control" id="USR_PSWD">
+          </div>
 
-                        </div>
-                        <div class="col">
-                            <label for="USR_PSWD_NEW" class="form-label">Nueva contraseña:</label>
-                            <input type="password" formControlName="USR_PSWD_NEW" class="form-control"
-                                id="USR_PSWD_NEW">
-                        </div>
-                        <div class="col">
-                            <button type="submit" class="btn btn-dark" [disabled]="!formPswd.valid">Cambiar</button>
-                        </div>
-                    </form>
+        </div>
+        <div class="col" *ngIf="isProf">
+          <div class="card text-start border-0 rounded shadow">
+            <div class="card-body">
+              <h5 class="card-title"><fa-icon [icon]="faperson" size="1x"></fa-icon> Datos institucionales</h5>
+              <hr />
+              <div class="row g-3">
+                <div class="col-md-12 col-lg-6">
+                  <label class="form-label" for="PRF_FECH_INGR_INST" class="form-label">Fecha de ingreso a la
+                    institución:</label>
+                  <input class="form-control" type="date" class="form-control" id="PRF_FECH_INGR_INST"
+                    formControlName="PRF_FECH_INGR_INST" />
                 </div>
+                <div class="col-md-12 col-lg-6">
+                  <label class="form-label" for="PRF_FECH_INGR_MAG" class="form-label">Fecha de ingreso al
+                    magisterio:</label>
+                  <input class="form-control" type="date" class="form-control" id="PRF_FECH_INGR_MAG"
+                    formControlName="PRF_FECH_INGR_MAG" />
+                </div>
+              </div>
             </div>
+          </div>
         </div>
-    </form>
-
+      </form>
+    </div>
+    <div class="col">
+      <div class="row row-cols-1 g-3">
+        <form class="col" [formGroup]="form">
+          <div class="card text-start border-0 rounded shadow">
+            <div class="card-body">
+              <h5 class="card-title"><fa-icon [icon]="fauser" size="1x"></fa-icon> Datos de usuario</h5>
+              <hr />
+              <div
+                class="row row-cols-lg-auto row-cols-1 g-3 justify-content-center justify-content-md-start align-items-center">
+                <div class="col">
+                  <label class="form-label" for="USUARIO">Usuario:</label>
+                  <input class="form-control" type="text" formControlName="USUARIO" />
+                </div>
+                <div class="col" *ngIf="!isMyInfo">
+                  <label for="ESTADO" class="form-label pb-2">Estado</label>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" id="ESTADO" type="checkbox" role="switch"
+                      formControlName="ESTADO" />
+                  </div>
+                </div>
+                <div class="col text-center text-md-start">
+                  <button type="submit" class="btn btn-dark" (click)="onSubmit()"
+                    [disabled]="!form.valid">Guardar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <form class="col" [formGroup]="formPswd" (ngSubmit)="onSubmitPswd()" *ngIf="isMyInfo">
+          <div class="card text-start border-0 rounded shadow" *ngIf="modoEdicion">
+            <div class="card-body">
+              <h5 class="card-title"><fa-icon [icon]="fakey" size="1x"></fa-icon> Cambiar Contraseña</h5>
+              <hr />
+              <div
+                class="row row-cols-1 row-cols-lg-2 row-cols-md-1 g-3 justify-content-center justify-content-md-start align-items-md-start align-items-center">
+                <div class="col">
+                  <label for="USR_PSWD" class="form-label">Contraseña actual:</label>
+                  <input type="password" formControlName="USR_PSWD" class="form-control" id="USR_PSWD" />
+                </div>
+                <div class="col">
+                  <label for="USR_PSWD_NEW" class="form-label">Nueva contraseña:</label>
+                  <input type="password" formControlName="USR_PSWD_NEW" class="form-control" id="USR_PSWD_NEW" />
+                </div>
+                <div class="col">
+                  <button type="submit" class="btn btn-dark" [disabled]="!formPswd.valid">Cambiar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <form class="col" [formGroup]="form2FA" *ngIf="isMyInfo">
+          <div class="card text-start border-0 rounded shadow">
+            <div class="card-body">
+              <h5 class="card-title"><fa-icon [icon]="fa2fa" size="1x"></fa-icon> Autentificacion de dos factores</h5>
+              <hr>
+              <div class="row row-cols-1 g-3">
+                <div class="col" *ngIf="form2FA.value.HAS_2FA">
+                  <p class="fw-light">
+                   La autentificación de dos factores se encuentra activa.
+                  </p>
+                  <button type="button" class="btn btn-dark" (click)="disable2FA()">Desactivar</button>
+                </div>
+              </div>
+              <div class="col" *ngIf="!form2FA.value.HAS_2FA">
+                <div class="row row-cols-1 g-3 justify-content-center align-items-start">
+                  <div class="col">
+                    <p class="fw-light">
+                      1. Por favor, Instale la aplicación de autenticación como Microsoft Authenticator en su teléfono.
+                    </p>
+                    <p class="fw-light">2. Escanee el código QR para activar la Autenticación de Dos Factores.</p>
+                    <img class="img-fluid"
+                      src="data:image/png;base64,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"
+                      alt="">
+                  </div>
+                  <div class="col">
+                    <label for="verificationCode" class="form-label fw-light">3. Ingrese el codigo generado en la app y
+                      precione activar:</label>
+                    <input type="text" class="form-control" id="verificationCode" formControlName="TOKEN">
+                  </div>
+                  <div class="col">
+                    <button type="button" class="btn btn-dark" [disabled]="!form2FA.valid"
+                      (click)="enable2FA()">Activar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>

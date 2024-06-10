@@ -1,0 +1,145 @@
+<div class="container-fluid">
+  <nav aria-label="breadcrumb">
+    <h3 class="fw-custom-semibold">Años lectivos</h3>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active pe-2">Periodos</li>
+    </ol>
+  </nav>
+  <div class="row row-cols-2 g-3">
+    <ng-container *ngFor=" let periodo of periodos">
+      <div class="col">
+        <p class="shadow rounded-top-4 text-center h4 p-2 mb-2 bg-dark text-white "><b>Periodo:</b> {{ periodo.PRD_NOM
+          }}</p>
+        <div class="row row-cols-1 g-3">
+          <div class="col">
+            <div class="card text-start border-0 rounded shadow">
+              <div class="card-body">
+                <table class="table justify-content-center align-items-center text-center">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Fecha Inicio</th>
+                      <th scope="col">Fecha Fin</th>
+                      <th scope="col">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody class="table-group-divider">
+                    <tr>
+                      <td>
+                        <div class="input-group">
+                          <input class="form-control" placeholder="yyyy-mm-dd" [minDate]="today"
+                            [name]="'periodoIni_' + periodo.PRD_ID" [(ngModel)]="periodo.PRD_INI"
+                            [footerTemplate]="footerTemplate" ngbDatepicker #a="ngbDatepicker"
+                            [disabled]="periodo['inputsDisabled']" />
+                          <button class="btn btn-outline-secondary" (click)="a.toggle()" type="button"
+                            [disabled]="periodo['inputsDisabled']">
+                            <fa-icon [icon]="icon"></fa-icon>
+                          </button>
+                        </div>
+                        <ng-template #footerTemplate>
+                          <hr class="my-0" />
+                          <button class="btn btn-primary btn-sm m-2 float-start"
+                            (click)="periodo.PRD_INI=today;a.close()">Today</button>
+                          <button class="btn btn-secondary btn-sm m-2 float-end" (click)="a.close()">Close</button>
+                        </ng-template>
+                      </td>
+                      <td>
+                        <div class="input-group">
+                          <input class="form-control" placeholder="yyyy-mm-dd" [minDate]="periodo.PRD_INI || today"
+                            [name]="'parcialFin_' + periodo.PRD_ID" [(ngModel)]="periodo.PRD_FIN"
+                            [footerTemplate]="footerTemplate2" ngbDatepicker #b="ngbDatepicker"
+                            [disabled]="periodo['inputsDisabled']" />
+                          <button class="btn btn-outline-secondary" (click)="b.toggle()" type="button"
+                            [disabled]="periodo['inputsDisabled']">
+                            <fa-icon [icon]="icon"></fa-icon>
+                          </button>
+                        </div>
+                        <ng-template #footerTemplate2>
+                          <hr class="my-0" />
+                          <button class="btn btn-primary btn-sm m-2 float-start"
+                            (click)="periodo.PRD_FIN=today;b.close()">Today</button>
+                          <button class="btn btn-secondary btn-sm m-2 float-end" (click)="a.close()">Close</button>
+                        </ng-template>
+                      </td>
+                      <td>
+                        <button type="button" class="btn btn-sm btn-primary"
+                          (click)="accionButton(periodo,$event,'periodo')">
+                          Editar</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card text-start border-0 rounded shadow">
+              <div class="card-body">
+                <table class="table justify-content-center align-items-center text-center">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Parcial</th>
+                      <th scope="col">Fecha Inicio</th>
+                      <th scope="col">Fecha Fin</th>
+                      <th scope="col">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody class="table-group-divider">
+                    <ng-container *ngFor="let parcial of periodo['parciales']">
+                      <tr>
+                        <td>
+                          {{parcial.PRCL_NOM}}
+                        </td>
+                        <td>
+                          <div class="input-group">
+                            <input class="form-control" placeholder="yyyy-mm-dd" [minDate]="today"
+                              [name]="'parcialIni_' + periodo.PRD_ID + '_' + parcial.PRCL_ID"
+                              [(ngModel)]="parcial.PRCL_INI" [footerTemplate]="footerTemplate" ngbDatepicker
+                              #a="ngbDatepicker" [disabled]="parcial.inputsDisabled" />
+                            <button class="btn btn-outline-secondary" (click)="a.toggle()" type="button"
+                              [disabled]="parcial.inputsDisabled">
+                              <fa-icon [icon]="icon"></fa-icon>
+                            </button>
+                          </div>
+                          <ng-template #footerTemplate>
+                            <hr class="my-0" />
+                            <button class="btn btn-primary btn-sm m-2 float-start"
+                              (click)="parcial.PRCL_INI=today;a.close()">Today</button>
+                            <button class="btn btn-secondary btn-sm m-2 float-end" (click)="a.close()">Close</button>
+                          </ng-template>
+                        </td>
+                        <td>
+                          <div class="input-group">
+                            <input class="form-control" placeholder="yyyy-mm-dd" [minDate]="parcial.PRCL_INI || today"
+                              [maxDate]="periodo.PRD_FIN"
+                              [name]="'parcialFin_' + periodo.PRD_ID + '_' + parcial.PRCL_ID"
+                              [(ngModel)]="parcial.PRCL_FIN" [footerTemplate]="footerTemplate2" ngbDatepicker
+                              #b="ngbDatepicker" [disabled]="parcial.inputsDisabled" />
+                            <button class="btn btn-outline-secondary" (click)="b.toggle()" type="button"
+                              [disabled]="parcial.inputsDisabled">
+                              <fa-icon [icon]="icon"></fa-icon>
+                            </button>
+                          </div>
+                          <ng-template #footerTemplate2>
+                            <hr class="my-0" />
+                            <button class="btn btn-primary btn-sm m-2 float-start"
+                              (click)="parcial.PRCL_FIN=today;b.close()">Today</button>
+                            <button class="btn btn-secondary btn-sm m-2 float-end" (click)="a.close()">Close</button>
+                          </ng-template>
+                        </td>
+                        <td>
+                          <button type="button" class="btn btn-sm btn-primary"
+                            (click)="accionButton(parcial,$event,'parcial')">
+                            Editar</button>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

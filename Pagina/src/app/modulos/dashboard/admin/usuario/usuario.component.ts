@@ -1,169 +1,201 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { faCircleCheck, faCircleXmark, faInfoCircle, faKey, faPersonChalkboard, faUser } from '@fortawesome/free-solid-svg-icons';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalComponent } from 'src/app/componentes/modal/modal.component';
-import { DetalleUsuarioProfesor } from 'src/app/modelos/interfaces/DetalleUsuarioProfesor.interface';
-import { Usuario } from 'src/app/modelos/interfaces/Usuario.interface';
-import { getFormattedDate } from 'src/app/modelos/variables/variables';
-import { DetalleUsuarioProfesorService } from 'src/app/servicios/detalle-usuario-profesor.service';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { faIdBadge, faInfoCircle, faKey, faPersonChalkboard, faUser } from '@fortawesome/free-solid-svg-icons';
+import { UsuarioProfesor } from 'src/app/interfaces/UsuarioProfesor.interface';
+import { Usuario } from 'src/app/interfaces/Usuario.interface';
+import { getFormattedDate } from 'src/app/sistema/variables/variables';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
+import { UsuarioProfesorService } from 'src/app/servicios/usuario-profesor.service';
+import { ModalService } from 'src/app/servicios/modal.service';
+import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
+import { MyValidators } from 'src/app/utils/validators';
 
 @Component({
   selector: 'app-usuario',
   templateUrl: './usuario.component.html',
-  styleUrls: ['./usuario.component.scss']
+  styleUrls: ['./usuario.component.scss'],
 })
 export class UsuarioComponent {
-
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: UsuarioService, private serviceDetalle: DetalleUsuarioProfesorService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private service: UsuarioService,
+    private detalleService: UsuarioProfesorService,
+    private modalService: ModalService,
+    private authService: AutentificacionService
+  ) { }
 
   modoEdicion: boolean = false;
-  elementoId: string = '';
+  rutaActual: string[] = [];
+  routerLink: string = '../';
+  titulo: string = '';
+  modaltitle: string = 'Agregar';
+  modalMsg: string = '¿Desea guardar el registro?'; elementoId: string = '';
   icon = faInfoCircle;
   fauser = faUser;
   fakey = faKey;
   faperson = faPersonChalkboard;
+  fa2fa = faIdBadge;
   isRep = false;
   isAdmin = false;
   isProf = false;
+  isMyInfo = false;
+  QR = '';
 
   form = this.formBuilder.group({
-    USR_DNI: ['', Validators.required],
-    USR_NOM: ['', Validators.required],
-    USR_NOM2: ['', Validators.required],
-    USR_APE: ['', Validators.required],
-    USR_APE2: ['', Validators.required],
-    USR_DIR: ['', Validators.required],
-    USR_TEL: ['', Validators.required],
-    USR_CEL: ['', Validators.required],
-    USR_EMAIL: ['', Validators.required],
-    USR_FECH_NAC: [getFormattedDate(new Date()), Validators.required],
-    USR_GEN: ['', Validators.required],
-    USUARIO: [{ value: '', disabled: true }, Validators.required],
-    ESTADO: [true, Validators.required],
-    PRF_FECH_INGR_INST: [getFormattedDate(new Date()), Validators.required],
-    PRF_FECH_INGR_MAG: [getFormattedDate(new Date()), Validators.required]
-  })
+    USR_DNI: ['', MyValidators.required, MyValidators.validateCedula],
+    USR_NOM: ['', MyValidators.required,MyValidators.soloLetras],
+    USR_NOM2: ['', MyValidators.required,MyValidators.soloLetras],
+    USR_APE: ['', MyValidators.required,MyValidators.soloLetras],
+    USR_APE2: ['', MyValidators.required,MyValidators.soloLetras],
+    USR_DIR: ['', MyValidators.required],
+    USR_TEL: ['', MyValidators.required],
+    USR_CEL: ['', MyValidators.required,MyValidators.validateCelular],
+    USR_EMAIL: ['', MyValidators.required, MyValidators.validarCorreo],
+    USR_FECH_NAC: [getFormattedDate(new Date()), MyValidators.required],
+    USR_GEN: ['', MyValidators.required],
+    USUARIO: [{ value: '', disabled: true }, MyValidators.required],
+    ESTADO: [true],
+    PRF_FECH_INGR_INST: [getFormattedDate(new Date())],
+    PRF_FECH_INGR_MAG: [getFormattedDate(new Date())],
+  });
 
   formPswd = this.formBuilder.group({
     USR_PSWD_NEW: ['', Validators.required],
-    USR_PSWD: ['', Validators.required]
-  })
+    USR_PSWD: ['', Validators.required],
+  });
+
+  form2FA = this.formBuilder.group({
+    HAS_2FA: [false],
+    TOKEN: ['']
+  }
+  )
 
   ngOnInit(): void {
-    this.determinarRolDesdeRuta();
     this.validarEdicion();
   }
 
-  determinarRolDesdeRuta() {
-    const rutaActual = this.router.url.split('/');
-    const rol = rutaActual[2];
-
-    if (rol === 'usuarios') {
-      this.isAdmin = true;
-    } else if (rol === 'institucion') {
-      const subrol = rutaActual[3];
-      this.isRep = (subrol === 'representantes');
-      this.isProf = (subrol === 'profesores');
-    }
-  }
 
   validarEdicion() {
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
+    this.rutaActual = this.router.url.split('/');
+    this.route.paramMap.subscribe((params) => {
+      const id = this.getIdFromParams(params);
+      this.determinarRolDesdeRuta();
       if (id) {
-        this.modoEdicion = true;
-        this.elementoId = id;
-        this.loadData();
+        this.setupEdicion(id);
       } else {
-        this.modoEdicion = false;
-        this.elementoId = '';
+        this.setupNuevo();
       }
     });
   }
 
+  private getIdFromParams(params: ParamMap): string {
+    return this.rutaActual[2] === 'myinfo' ? this.authService.getUserIdLocal() : params.get('id');
+  }
+
+  determinarRolDesdeRuta() {
+    this.titulo = this.rutaActual[2].charAt(0).toUpperCase() + this.rutaActual[2].slice(1);
+    const rol = this.rutaActual[2];
+    this.isAdmin = rol === 'administradores';
+    this.isRep = rol === 'representantes';
+    this.isProf = rol === 'profesores';
+    this.isMyInfo = this.rutaActual[2] === 'myinfo';
+    this.routerLink += this.isProf ? 'all' : '';
+  }
+
+
+  private setupEdicion(id: string): void {
+    this.modoEdicion = true;
+    this.elementoId = id;
+    this.modaltitle = 'Editar';
+    this.modalMsg = '¿Desea editar el registro?';
+    this.routerLink = this.isProf ? '../../all' : '../../';
+    this.loadDataEdit();
+  }
+
+  private setupNuevo(): void {
+    this.modoEdicion = false;
+    this.elementoId = '';
+  }
+
+
   onSubmit() {
-    this.openConfirmationModal();
+    this.openModal(this.modaltitle, this.modalMsg, 'warning', true);
   }
 
   onSubmitPswd() {
     if (this.form.valid) {
-      //const userId = this.service.getUserLoggedId();
-
       const pswd = { id: this.elementoId, pswdNew: this.formPswd.value.USR_PSWD_NEW, pswdOld: this.formPswd.value.USR_PSWD };
-      this.service.updatePswd(pswd).subscribe(
-        {
-          next: (response) => {
-            this.handleResponse(response);
-          },
-          error: (error) => this.handleErrorResponse(error)
-        }
-      );
+      this.service.updatePswd(pswd).subscribe({
+        next: (response) => {
+          this.handleResponse(response);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
+  }
+
+  disable2FA(){
+    this.authService.disable2FA().subscribe({
+      next: (value) => {
+        if (value.response) {
+          this.handleResponse(value);
+        } else {
+          this.handleErrorResponse(value.message)
+        }
+      },
+      error: (err) => {
+        this.handleErrorResponse(err)
+      },
+    })
+  }
+  enable2FA() {
+    const token = this.form2FA.value.TOKEN || ''
+    this.authService.enable2FA(token).subscribe({
+      next: (value) => {
+        if (value.response) {
+          this.handleResponse(value);
+        } else {
+          this.handleErrorResponse(value.message)
+        }
+      },
+      error: (err) => {
+        this.handleErrorResponse(err)
+      },
+    })
   }
 
   crear() {
     if (this.form.valid) {
-      //const userId = this.service.getUserLoggedId();
       const usuario: Usuario = this.buildObject();
-      const detalle = this.isProf ? this.buildDetalleUsuarioProfesorObject() : undefined;
-
-      this.service.post(usuario, detalle).subscribe(
-        {
-          next: (response) => {
-            this.handleResponse(response);
-          },
-          error: (error) => this.handleErrorResponse(error)
-        }
-      );
+      const detalle = this.isProf ? this.buildUsuarioProfesorObject() : undefined;
+      this.service.post(usuario, detalle).subscribe({
+        next: (response) => {
+          this.handleResponse(response);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
   }
-
 
   editar() {
     if (this.form.valid) {
       const usuario: Usuario = this.buildObjectEdit();
-
-      this.service.put(usuario).subscribe(
-        {
-          next: (response) => {
-            this.handleResponse(response);
-          },
-          error: (error) => this.handleErrorResponse(error)
-        }
-      );
-
+      this.service.put(usuario).subscribe({
+        next: (response) => {
+          this.handleResponse(response);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
-  }
-
-  handleResponse(response: any) {
-    if (!response.data) {
-      this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
-      console.log(response.message);
-    } else {
-      if (this.modoEdicion) {
-        this.openAlertModal(response.message, 'success');
-        console.log(response.message);
-      } else {
-        this.openAlertModal(response.message, 'success');
-        this.form.reset();
-        this.router.navigate(['../editar/' + response.data], { relativeTo: this.route });
-      }
-
-    }
-  }
-
-  handleErrorResponse(error: any) {
-    this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger');
-    console.log(error);
   }
 
   buildObjectEdit() {
@@ -178,14 +210,16 @@ export class UsuarioComponent {
       USR_TEL: this.form.value.USR_TEL || '',
       USR_CEL: this.form.value.USR_CEL || '',
       USR_EMAIL: this.form.value.USR_EMAIL || '',
-      USR_FECH_NAC: (this.form.value.USR_FECH_NAC) ? new Date(this.form.value.USR_FECH_NAC) : new Date(),
+      USR_FECH_NAC: this.form.value.USR_FECH_NAC ? new Date(this.form.value.USR_FECH_NAC) : new Date(),
       USR_GEN: this.form.value.USR_GEN || '',
       USUARIO: 'NO USER',
-      ROL_PRF: (this.isProf) ? 1 : 0,
-      ROL_REPR: (this.isRep) ? 1 : 0,
-      ROL_ADMIN: (this.isAdmin) ? 1 : 0,
-      ESTADO: (this.form.value.ESTADO) ? 1 : 0,
-      USR_PSWD: 'NO PSWD'
+      ROL_PRF: this.isProf ? 1 : 0,
+      ROL_REPR: this.isRep ? 1 : 0,
+      ROL_ADMIN: this.isAdmin ? 1 : 0,
+      ESTADO: this.form.value.ESTADO ? 1 : 0,
+      USR_PSWD: 'NO PSWD',
+      FA_KEY: '',
+      HAS_2FA: this.form2FA.value.HAS_2FA ? 1 : 0
     };
     return usuario;
   }
@@ -205,42 +239,58 @@ export class UsuarioComponent {
       USR_FECH_NAC: this.form.value.USR_FECH_NAC ? new Date(this.form.value.USR_FECH_NAC) : new Date(),
       USR_GEN: this.form.value.USR_GEN || '',
       USUARIO: 'NO USER',
-      ROL_PRF: (this.isProf) ? 1 : 0,
-      ROL_REPR: (this.isRep) ? 1 : 0,
-      ROL_ADMIN: (this.isAdmin) ? 1 : 0,
-      ESTADO: (this.form.value.ESTADO) ? 1 : 0,
-      USR_PSWD: 'NO PSWD'
+      ROL_PRF: this.isProf ? 1 : 0,
+      ROL_REPR: this.isRep ? 1 : 0,
+      ROL_ADMIN: this.isAdmin ? 1 : 0,
+      ESTADO: this.form.value.ESTADO ? 1 : 0,
+      USR_PSWD: 'NO PSWD',
+      FA_KEY: '',
+      HAS_2FA: 0
     };
     return usuario;
   }
 
-  buildDetalleUsuarioProfesorObject() {
-    const detalle: DetalleUsuarioProfesor = {
-      DTLL_PRF_ID: '0',
+  buildUsuarioProfesorObject() {
+    const detalle: UsuarioProfesor = {
+      USR_ID: '0',
       PRF_FECH_INGR_INST: this.form.value.PRF_FECH_INGR_INST ? new Date(this.form.value.PRF_FECH_INGR_INST) : new Date(),
       PRF_FECH_INGR_MAG: this.form.value.PRF_FECH_INGR_MAG ? new Date(this.form.value.PRF_FECH_INGR_MAG) : new Date(),
-      USR_ID: '0'
-    }
+    };
     return detalle;
   }
 
-  loadData() {
-    this.service.searchById(this.elementoId).subscribe({
+  loadDataEdit() {
+    this.service.getById(this.elementoId).subscribe({
       next: (value) => {
         if (value.data) {
-          this.loadForm(value.data);
-          this.loadDetalle()
+          this.llenarForm(value.data);
+          if (this.isProf) {
+            this.loadDetalle();
+          }
         } else {
           console.log(value.message);
         }
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
-  loadForm(data: Usuario) {
+  loadDetalle() {
+    this.detalleService.getById(this.elementoId).subscribe({
+      next: (value) => {
+        if (value.data) {
+          this.llenarFormDetalle(value.data);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
+  }
+
+  llenarForm(data: Usuario) {
     this.form.get('USR_DNI')?.setValue(data.USR_DNI);
     this.form.get('USR_NOM')?.setValue(data.USR_NOM);
     this.form.get('USR_NOM2')?.setValue(data.USR_NOM2);
@@ -253,59 +303,59 @@ export class UsuarioComponent {
     this.form.get('USR_FECH_NAC')?.setValue(getFormattedDate(data.USR_FECH_NAC));
     this.form.get('USR_GEN')?.setValue(data.USR_GEN);
     this.form.get('USUARIO')?.setValue(data.USUARIO);
-    this.form.get('ESTADO')?.setValue(data.ESTADO !== 0); // Asumiendo que 'estado' es un control en tu formulario
-    this.isAdmin = (data.ROL_ADMIN !== 0);
-    this.isProf = (data.ROL_PRF !== 0);
-    this.isRep = (data.ROL_REPR !== 0);
+    this.form.get('ESTADO')?.setValue(data.ESTADO !== 0);
+    this.isAdmin = data.ROL_ADMIN !== 0;
+    this.isProf = data.ROL_PRF !== 0;
+    this.isRep = data.ROL_REPR !== 0;
+    this.form2FA.get('HAS_2FA')?.setValue(data.HAS_2FA !== 0);
   }
 
-  loadDetalle() {
-    this.serviceDetalle.searchById(this.elementoId).subscribe({
-      next: (value) => {
-        if (value.data) {
-          this.loadFormDetalle(value.data)
-        }
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    });
-  }
-
-  loadFormDetalle(data: any) {
+  llenarFormDetalle(data: any) {
     this.form.get('PRF_FECH_INGR_INST')?.setValue(getFormattedDate(data.PRF_FECH_INGR_INST));
     this.form.get('PRF_FECH_INGR_MAG')?.setValue(getFormattedDate(data.PRF_FECH_INGR_MAG));
   }
 
-  openAlertModal(content: string, alertType: string) {
-    const modalRef = this.ngBootstrap.open(ModalComponent);
-    modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
-    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = content);
-    modalRef.componentInstance.icon = (alertType == 'success') ? faCircleCheck : (alertType == 'danger') ? faCircleXmark : faInfoCircle;
-    modalRef.componentInstance.color = alertType;
-    modalRef.componentInstance.modal = false;
+  openModal(tittle: string, message: string, alertType: string, form: boolean) {
+    this.modalService.openModal(tittle, message, alertType, form)
+      .then((result) => {
+        if (result === 'save' && form) {
+          if (this.modoEdicion) {
+            this.editar();
+          } else {
+            this.crear();
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
-  openConfirmationModal() {
-    const modalRef = this.ngBootstrap.open(ModalComponent);
-    modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
-
-    // Usa el operador Elvis para asegurarte de que activeModal y contenido estén definidos
-    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = (!this.modoEdicion) ? '¿Desea guardar?' : '¿Desea editar?');
-    modalRef.componentInstance.icon = faInfoCircle;
-    modalRef.componentInstance.color = 'warning';
-    modalRef.result.then((result) => {
-      if (result === 'save') {
-        if (this.modoEdicion) {
-          this.editar();
-
-        } else {
-          this.crear();
-        }
+  handleResponse(value: any) {
+    if (!value.response) {
+      //'Ha ocurrido un error intente nuevamente.'
+      this.openModal('Oops...', value.message, 'danger', false);
+      console.log(value.message);
+    } else {
+      if (this.modoEdicion) {
+        this.openModal('¡Completado!', value.message, 'success', false);
+        this.loadDataEdit();
+        this.form.get('USUARIO')?.disable();
+      } else {
+        this.openModal('¡Completado!', value.message, 'success', false);
+        this.clear();
       }
-    }).catch((error) => {
-      console.log(error);
-    });
+    }
+  }
+
+  handleErrorResponse(error: any) {
+    this.openModal('Oops...', error, 'danger', false);
+    console.log(error);
+  }
+
+  clear() {
+    this.form.reset();
+    location.reload();
   }
 
 }

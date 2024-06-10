@@ -3,21 +3,25 @@
  @import "~@ng-select/ng-select/themes/default.theme.css";
  */
 
-
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';
 
 /* Importing ng-select SCSS file. */
-@import "~@ng-select/ng-select/themes/default.theme.css";
-
+@import '~@ng-select/ng-select/themes/default.theme.css';
 
 * {
-   margin: 0;
-    padding: 0;
-    box-sizing: border-box; 
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-   position: relative;
-   // font-family: 'Roboto', sans-serif;
+  position: relative;
+  // font-family: 'Roboto', sans-serif;
+}
+.mssg-wrng{
+  flex: auto;
+  color: rgb(255, 37, 37);
+  font-style: italic;
+  font-size: small;
 }

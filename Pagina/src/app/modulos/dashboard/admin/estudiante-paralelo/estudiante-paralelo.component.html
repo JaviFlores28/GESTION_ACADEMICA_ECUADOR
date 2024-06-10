@@ -1,0 +1,68 @@
+<div class="container-fluid">
+  <nav aria-label="breadcrumb">
+    <h3 class="fw-custom-semibold">Paralelos</h3>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a class="text-black fw-custom-semibold"
+        routerLink="../all-asignaciones">Asignaciones</a></li>
+    <li class="breadcrumb-item active">Asignar paralelos</li>
+    </ol>
+  </nav>
+
+  <form class="row row-cols-2 g-3" [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="existeAnio">
+    <div class="col">
+      <p class="shadow rounded-top-4 text-center h4 p-2 mb-2 bg-dark text-white ">Estudiantes</p>
+      <div class="row row-cols-1 g-3">
+        <div class="col">
+          <div class="card text-start border-0 rounded shadow">
+            <div class="card-body">
+              <div class="row align-items-end justify-content-center">
+                <div class="col">
+                  <label for="CRS_ID" class="form-label">Curso:</label>
+                  <ng-select [items]="cursos" bindLabel="CRS_NOM" bindValue="CRS_ID" formControlName="CRS_ID"
+                    id="CRS_ID">
+                  </ng-select>
+                </div>
+                <div class="col">
+                  <label for="PRLL_ID" class="form-label">Paralelo:</label>
+                  <ng-select [items]="paralelos" bindLabel="PRLL_NOM" bindValue="PRLL_ID" formControlName="PRLL_ID"
+                    id="PRLL_ID"> </ng-select>
+                </div>
+                <div class="col">
+                  <div class="btn-group" role="group">
+                    <button type="submit" [disabled]="idsEstudianteCurso.length <= 0 || !form.valid"
+                      class="btn btn-dark">Guardar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card text-start rounded-bottom-5 border-0 shadow">
+            <div class="card-body">
+              <app-ng-table tableName="estudianteCurso" [data]="estudianteCurso" [headers]="headersEstudianteCurso"
+                [campos]="camposEstudianteCurso" [rowButtons]="false" [checkButtons]="false" [statusButton]="false" (actionOnChecks)="estudianteCursoAction($event)"></app-ng-table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <p class="shadow rounded-top-4 text-center h4 p-2 mb-2 bg-dark text-white">Registros</p>
+      <div class="card text-start rounded-bottom-5 border-0 shadow">
+        <div class="card-body">
+          <app-ng-table tableName="estudiantesParalelos" [pageSize]="20" [data]="estudiantesParalelos"
+            [headers]="headersEstudianteCursoParalelo" [campos]="camposEstudianteCursoParalelo" [rowButtons]="false" [statusButton]="false"
+            [pageSize]="30" (actionOnChecks)="estudiantesParaleloAction($event)"></app-ng-table>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="row" *ngIf="!existeAnio">
+    <div class="col">
+      <div class="alert alert-danger" role="alert">
+        No existe un año lectivo activo
+      </div>
+    </div>
+  </div>
+</div>

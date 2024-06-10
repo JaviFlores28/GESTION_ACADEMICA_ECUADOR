@@ -1,98 +1,80 @@
 import { Component } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faCircleCheck, faCircleXmark, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalComponent } from 'src/app/componentes/modal/modal.component';
-import { Area } from 'src/app/modelos/interfaces/Area.interface';
-import { Asignatura } from 'src/app/modelos/interfaces/Asignatura.interface';
-import { Curso } from 'src/app/modelos/interfaces/Curso.interface';
-
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { Area } from 'src/app/interfaces/Area.interface';
+import { Asignatura } from 'src/app/interfaces/Asignatura.interface';
+import { Curso } from 'src/app/interfaces/Curso.interface';
 import { AreaService } from 'src/app/servicios/area.service';
 import { AsignaturaService } from 'src/app/servicios/asignatura.service';
-import { CursoService } from 'src/app/servicios/curso.service';
-import { UsuarioService } from 'src/app/servicios/usuario.service';
+import { ModalService } from 'src/app/servicios/modal.service';
+import { MyValidators } from 'src/app/utils/validators';
 
 @Component({
   selector: 'app-asignatura',
   templateUrl: './asignatura.component.html',
-  styleUrls: ['./asignatura.component.scss']
+  styleUrls: ['./asignatura.component.scss'],
 })
 export class AsignaturaComponent {
-  constructor(private ngBootstrap: NgbModal, private route: ActivatedRoute, private router: Router, private formBuilder: FormBuilder, private service: AsignaturaService, private serviceArea: AreaService, private serviceCursos: CursoService, private serviceUsuario: UsuarioService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private service: AsignaturaService,
+    private areaService: AreaService,
+    private modalService: ModalService,
+  ) { }
 
   modoEdicion: boolean = false;
-  elementoId: string = '';
+  editItemId: string = '';
+  icon = faInfoCircle;
+modaltitle: string = 'Agregar';
+  modalMsg: string = '¿Desea guardar el registro?';  
+
+
   areas: Area[] = [];
   cursos: Curso[] = [];
-  icon = faInfoCircle;
 
   form = this.formBuilder.group({
-    nom: ['', Validators.required],
-    cltv: [false, Validators.required],
-    curso: ['', Validators.required],
-    area: ['', Validators.required],
-    estado: [true, Validators.required]
+    nom: ['', MyValidators.required],
+    cltv: [false, MyValidators.required],
+    area: ['', MyValidators.required],
+    estado: [true],
   });
-
 
   ngOnInit(): void {
     this.validarEdicion();
     this.loadAreas();
-    this.loadCursos();
   }
 
   validarEdicion() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id) {
         this.modoEdicion = true;
-        this.elementoId = id;
-        this.loadData();
+        this.editItemId = id;
+this.modaltitle = 'Editar';
+        this.modalMsg = '¿Desea editar el registro?';        this.loadDataEdit();
       } else {
         this.modoEdicion = false;
-        this.elementoId = '';
+        this.editItemId = '';
       }
     });
   }
 
   onSubmit() {
-    this.openConfirmationModal();
+    this.openModal(this.modaltitle, this.modalMsg, 'warning', true);
   }
 
   crear() {
     if (this.form.valid) {
-      let userid = this.serviceUsuario.getUserLoggedId();
-      if (userid !== '') {
-        const asignatura: Asignatura = {
-          ASG_ID: '1',
-          ASG_NOM: this.form.value.nom || '',
-          ASG_TIPO: (this.form.value.cltv) ? '1' : '2',
-          AREA_ID: this.form.value.area || '',
-          CRS_ID: this.form.value.curso || '',
-          ESTADO: (this.form.value.estado) ? 1 : 0,
-          CREADOR_ID: userid || ''
-        };
-        this.service.post(asignatura).subscribe(
-          {
-            next: (response) => {
-              if (!response.data) {
-                this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-                console.log(response.message);
-              } else {
-                this.openAlertModal(response.message, 'success')
-                console.log(response.message);
-                this.form.reset();
-                this.router.navigate(['../'], { relativeTo: this.route });
-              }
-            },
-            error: (error) => {
-              this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-              console.log(error);;
-            }
-          }
-        );
-      }
+      const asignatura: Asignatura = this.buildObject();
+      this.service.post(asignatura).subscribe({
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
@@ -100,43 +82,44 @@ export class AsignaturaComponent {
 
   editar() {
     if (this.form.valid) {
-      const asignatura: Asignatura = {
-        ASG_ID: this.elementoId,
-        ASG_NOM: this.form.value.nom || '',
-        ASG_TIPO: (this.form.value.cltv) ? '1' : '2',
-        AREA_ID: this.form.value.area || '',
-        CRS_ID: this.form.value.curso || '',
-        ESTADO: (this.form.value.estado) ? 1 : 0,
-        CREADOR_ID: '1'
-      };
-      this.service.put(asignatura).subscribe(
-        {
-          next: (response) => {
-            if (!response.data) {
-              this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-              console.log(response.message);
-            } else {
-              this.openAlertModal(response.message, 'success')
-              console.log(response.message);
-            }
-
-          },
-          error: (errordata) => {
-            this.openAlertModal('Ha ocurrido un error intente nuevamente.', 'danger')
-            console.log(errordata);
-          }
-        }
-      );
-      // this.form.reset();
+      const asignatura: Asignatura = this.buildObjectEdit();
+      this.service.put(asignatura).subscribe({
+        next: (value) => {
+          this.handleResponse(value);
+        },
+        error: (error) => this.handleErrorResponse(error),
+      });
     } else {
       this.form.markAllAsTouched();
     }
   }
 
-  loadData() {
-    this.service.searchById(this.elementoId).subscribe({
+  buildObject() {
+    const asignatura: Asignatura = {
+      ASG_ID: '1',
+      ASG_NOM: this.form.value.nom || '',
+      ASG_TIPO: this.form.value.cltv ? '1' : '2',
+      AREA_ID: this.form.value.area || '',
+      ESTADO: this.form.value.estado ? 1 : 0,
+    };
+    return asignatura;
+  }
+
+  buildObjectEdit() {
+    const asignatura: Asignatura = {
+      ASG_ID: this.editItemId,
+      ASG_NOM: this.form.value.nom || '',
+      ASG_TIPO: this.form.value.cltv ? '1' : '2',
+      AREA_ID: this.form.value.area || '',
+      ESTADO: this.form.value.estado ? 1 : 0,
+    };
+    return asignatura;
+  }
+
+  loadDataEdit() {
+    this.service.getById(this.editItemId).subscribe({
       next: (value) => {
-        if (value.data) {
+        if (value.response) {
           this.llenarForm(value.data);
         } else {
           console.log(value.message);
@@ -144,77 +127,71 @@ export class AsignaturaComponent {
       },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
   loadAreas() {
-    this.serviceArea.getEnabled().subscribe({
+    this.areaService.getEnabled().subscribe({
       next: (value) => {
-        if (value.data) {
-          this.areas = value.data
+        if (value.response) {
+          this.areas = value.data;
         } else {
           console.log(value.message);
         }
       },
       error: (error) => {
         console.log(error);
-      }
-    });
-  }
-
-  loadCursos() {
-    this.serviceCursos.getEnabled().subscribe({
-      next: (value) => {
-        if (value.data) {
-          this.cursos = value.data
-        } else {
-          console.log(value.message);
-        }
       },
-      error: (error) => {
-        console.log(error);
-      }
     });
   }
 
   llenarForm(data: Asignatura) {
-    const estado = data.ESTADO
-    const tipo = (data.ASG_TIPO === 'CUALITATIVA');
-    this.form.get('nom')?.setValue(data.ASG_NOM); // Asumiendo que 'nom' es un control en tu formulario
-    this.form.get('cltv')?.setValue(tipo); // Asumiendo que 'nom' es un control en tu formulario
-    this.form.get('area')?.setValue(data.AREA_ID); // Asumiendo que 'nom' es un control en tu formulario
-    this.form.get('curso')?.setValue(data.CRS_ID); // Asumiendo que 'nom' es un control en tu formulario
-    this.form.get('estado')?.setValue(data.ESTADO === 1); // Asumiendo que 'estado' es un control en tu formulario
+    this.form.get('nom')?.setValue(data.ASG_NOM);
+    this.form.get('cltv')?.setValue(data.ASG_TIPO === 'CUALITATIVA');
+    this.form.get('area')?.setValue(data.AREA_ID);
+    this.form.get('estado')?.setValue(data.ESTADO === 1);
   }
 
-  openAlertModal(content: string, alertType: string) {
-    const modalRef = this.ngBootstrap.open(ModalComponent);
-    modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
-    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = content);
-    modalRef.componentInstance.icon = (alertType == 'success') ? faCircleCheck : (alertType == 'danger') ? faCircleXmark : faInfoCircle;
-    modalRef.componentInstance.color = alertType;
-    modalRef.componentInstance.modal = false;
-  }
-
-  openConfirmationModal() {
-    const modalRef = this.ngBootstrap.open(ModalComponent);
-    modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
-
-    // Usa el operador Elvis para asegurarte de que activeModal y contenido estén definidos
-    modalRef.componentInstance?.activeModal && (modalRef.componentInstance.contenido = (!this.modoEdicion) ? '¿Desea guardar la asignatura?' : '¿Desea editar la asignatura?');
-    modalRef.componentInstance.icon = faInfoCircle;
-    modalRef.componentInstance.color = 'warning';
-    modalRef.result.then((result) => {
-      if (result === 'save') {
-        if (this.modoEdicion) {
-          this.editar();
-        } else {
-          this.crear();
+  openModal(tittle: string, message: string, alertType: string, form: boolean) {
+    this.modalService.openModal(tittle, message, alertType, form)
+      .then((result) => {
+        if (result === 'save' && form) {
+          if (this.modoEdicion) {
+            this.editar();
+          } else {
+            this.crear();
+          }
         }
-      }
-    }).catch((error) => {
-      console.log(error);
-    });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
+
+  handleResponse(value: any) {
+    if (!value.response) {
+      //'Ha ocurrido un error intente nuevamente.'
+      this.openModal('Oops...', value.message, 'danger', false);
+      console.log(value.message);
+    } else {
+      if (this.modoEdicion) {
+        this.openModal('¡Completado!', value.message, 'success', false);
+      } else {
+        this.openModal('¡Completado!', value.message, 'success', false);
+        this.clear();
+      }
+    }
+  }
+
+  handleErrorResponse(error: any) {
+    this.openModal('Oops...', error, 'danger', false);
+    console.log(error);
+  }
+
+  clear() {
+    this.form.reset();
+    this.router.navigate(['../'], { relativeTo: this.route });
+  }
+
 }

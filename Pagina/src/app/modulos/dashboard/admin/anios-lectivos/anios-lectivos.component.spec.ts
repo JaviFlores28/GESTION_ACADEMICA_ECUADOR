@@ -8,7 +8,7 @@ describe('AniosLectivosComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AniosLectivosComponent]
+      declarations: [AniosLectivosComponent],
     });
     fixture = TestBed.createComponent(AniosLectivosComponent);
     component = fixture.componentInstance;

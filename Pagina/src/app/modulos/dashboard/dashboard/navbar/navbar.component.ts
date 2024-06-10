@@ -1,26 +1,30 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { faExclamationTriangle, faUser } from '@fortawesome/free-solid-svg-icons';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalComponent } from 'src/app/componentes/modal/modal.component';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { AutentificacionService } from 'src/app/servicios/autentificacion.service';
+import { ModalService } from 'src/app/servicios/modal.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss']
+  styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent implements OnInit {
-  constructor(private ngBootstrap: NgbModal, private servicio: UsuarioService, private router: Router) { }
+  constructor(
+    private servicio: UsuarioService,
+    private authService: AutentificacionService,
+    private modalService: ModalService,
+  ) { }
 
   @Input() collapsed = true;
   @Input() screenWidth = 0;
   nombre: string = '';
-  userid: string = '';
-  icon = faUser
+  USR_ID: string = this.authService.getUserIdLocal();
+  icon = faUser;
+  modalMsg: string = '¿Desea cerrar sesión?';
 
   ngOnInit(): void {
-    this.getuserInfo()
+    this.getuserInfo();
   }
 
   getHeadClass(): string {
@@ -33,29 +37,36 @@ export class NavbarComponent implements OnInit {
     return styleClass;
   }
 
-  async getuserInfo() {
-    let usuario = await this.servicio.getUserLogged();
-    this.nombre = usuario?.USR_NOM || '' + usuario?.USR_APE;
-    this.userid = usuario?.USR_ID || '';
+  getuserInfo() {
+    this.servicio.getById(this.USR_ID).subscribe({
+      next: (value) => {
+        if (value.response) {
+          this.nombre = value.data.USR_NOM || '' + value.data.USR_APE;
+        }
+      },
+      error(err) {
+        console.log(err);
+      },
+    });
   }
 
-
-
   openModal() {
-    const modalRef = this.ngBootstrap.open(ModalComponent);
-    modalRef.componentInstance.activeModal.update({ size: 'sm', centered: true });
-    modalRef.componentInstance.contenido = '¿Desea cerrar sesión?';
-    // modalRef.componentInstance.icon = faExclamationTriangle;
-    modalRef.result.then((result) => {
+    this.modalService.openModal('Cerrar sesión', this.modalMsg, 'warning', true).then((result) => {
       if (result === 'save') {
-        this.servicio.logout();
-        // Redirigir al usuario al login
-        this.router.navigate(['']); // Ajusta la ruta según tu configuración
-        // O recargar la página
-        window.location.reload();
+        this.authService.logout().subscribe({
+          next: (value) => {
+            if (value.response) {
+              this.authService.removeUserIdLocal();
+              window.location.reload();
+            }
+          },
+          error(err) {
+            console.log(err);
+          },
+        });
       }
     }).catch((error) => {
-      // Lógica para manejar el cierre inesperado del modal
-    });
+        console.log(error);
+      });
   }
 }

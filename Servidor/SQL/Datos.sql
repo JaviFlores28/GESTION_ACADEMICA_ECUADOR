@@ -1,2 +1,35 @@
-INSERT INTO `usuario` (`USR_ID`, `USR_DNI`, `USR_NOM`, `USR_NOM2`, `USR_APE`, `USR_APE2`, `USR_DIR`, `USR_TEL`, `USR_CEL`, `USR_EMAIL`, `USR_FECH_NAC`, `USR_GEN`, `USUARIO`, `USR_PSWD`, `ROL_PRF`, `ROL_REPR`, `ROL_ADMIN`, `ESTADO`) VALUES
+INSERT IGNORE INTO usuario (USR_ID, USR_DNI, USR_NOM, USR_NOM2, USR_APE, USR_APE2, USR_DIR, USR_TEL, USR_CEL, USR_EMAIL, USR_FECH_NAC, USR_GEN, USUARIO, USR_PSWD, ROL_PRF, ROL_REPR, ROL_ADMIN, ESTADO) VALUES
 ('ed0c7194-bf84-4907-acaa-75c8be8430d2', '1', 'Administrador', 'Administrador', 'Administrador', 'Administrador', 'Administrador', '123454632', '1232314', 'Administrador', '2023-10-17', '1', 'administrador', 'U2FsdGVkX19VTz/GYGtYPxjERLIw8BIxPZvwL7m9J2E=', 0, 0, 1, 1);
+INSERT INTO `escalas_referenciales_calificaciones` (`ESCL_ID`, `ESCL_ABRV`, `ESCL_DESCR`, `ESCL_INI`, `ESCL_FIN`) VALUES ('1bccaadb-9972-11ee-ac08-d8bbc1792148', 'DA', 'Domina los aprendizajes requeridos', '9.00', '10.00')
+INSERT INTO `escalas_referenciales_calificaciones` (`ESCL_ID`, `ESCL_ABRV`, `ESCL_DESCR`, `ESCL_INI`, `ESCL_FIN`) VALUES ('3e7df356-9972-11ee-ac08-d8bbc1792148', 'AA', 'Alcanza los aprendizajes requeridos', '7', '8.99');
+INSERT INTO `escalas_referenciales_calificaciones` (`ESCL_ID`, `ESCL_ABRV`, `ESCL_DESCR`, `ESCL_INI`, `ESCL_FIN`) VALUES ('593bcdf3-9972-11ee-ac08-d8bbc1792148', 'PA', 'Próximo a alcanzar los aprendizajes requeridos', '4.01', '6.99');
+INSERT INTO `escalas_referenciales_calificaciones` (`ESCL_ID`, `ESCL_ABRV`, `ESCL_DESCR`, `ESCL_INI`, `ESCL_FIN`) VALUES ('7947e33d-9972-11ee-ac08-d8bbc1792148', 'NA', ' NA No alcanza los aprendizajes requeridos', '0', '4');
+INSERT INTO `parametro`(`PRMT_ID`, `PRMT_NOM`, `PRMT_DESCR`, `PRMT_URL_IMG`, `ESTADO`) VALUES (uuid(),'LOGO','LOGO','URL',1);
+INSERT INTO `parametro`(`PRMT_ID`, `PRMT_NOM`, `PRMT_DESCR`, `PRMT_URL_IMG`, `ESTADO`) VALUES (uuid(),'NOMBRE','UNIDAD EDUCATIVA FRAY BARTOLOMÉ DE LAS CASAS','URL',1);
+INSERT INTO `parametro`(`PRMT_ID`, `PRMT_NOM`, `PRMT_DESCR`, `PRMT_URL_IMG`, `ESTADO`) VALUES (uuid(),'VISION','Formar estudiantes con valores, conocimientos y habilidades para la vida, que contribuyan al desarrollo de la sociedad.','URL',1);
+INSERT INTO `parametro`(`PRMT_ID`, `PRMT_NOM`, `PRMT_DESCR`, `PRMT_URL_IMG`, `ESTADO`) VALUES (uuid(),'MISION','Ser una institución educativa líder en la formación de estudiantes con valores, conocimientos y habilidades para la vida, que contribuyan al desarrollo de la sociedad.','URL',1);
+INSERT IGNORE INTO PARALELO (PRLL_ID, PRLL_NOM, ESTADO) values ('f950c90e-952a-4b86-a467-6604eb87e75e', 'A', true);
+INSERT IGNORE INTO PARALELO (PRLL_ID, PRLL_NOM, ESTADO) values ('44128dc2-ada2-49dd-867c-eeef335e79b6', 'B', true);
+INSERT IGNORE INTO PARALELO (PRLL_ID, PRLL_NOM, ESTADO) values ('302d3b7d-d58d-46a0-99ff-bb10319d2bcf', 'C', true);
+INSERT IGNORE INTO PARALELO (PRLL_ID, PRLL_NOM, ESTADO) values ('f5b0b7d5-2b48-4c88-893d-a4db0c025f1b', 'D', true);
+INSERT IGNORE INTO PARALELO (PRLL_ID, PRLL_NOM, ESTADO) values ('79ed93ee-02a3-4310-bdee-61e42516d992', 'E', true);
+INSERT IGNORE INTO PARALELO (PRLL_ID, PRLL_NOM, ESTADO) values ('42214b92-17d8-4505-8592-7362c3abe55d', 'F', true);
+INSERT IGNORE INTO PARALELO (PRLL_ID, PRLL_NOM, ESTADO) values ('161ce155-6fef-4f8b-9ad5-d7a47f24910d', 'G', true);
+INSERT IGNORE INTO PARALELO (PRLL_ID, PRLL_NOM, ESTADO) values ('aa70428f-16b0-4f2c-bdbb-e3664d5f1912', 'H', true);
+INSERT IGNORE INTO PARALELO (PRLL_ID, PRLL_NOM, ESTADO) values ('a7ef7e89-c398-4fc6-aa39-23f695494a23', 'I', true);
+INSERT IGNORE INTO PARALELO (PRLL_ID, PRLL_NOM, ESTADO) values ('a8cd9ac1-f344-4df4-9909-0e3e9b429b1b', 'J', true);
+INSERT IGNORE INTO CURSO (CRS_ID, CRS_NOM, CRS_TIPO, CRS_ORDEN, ESTADO) values ('8a9f434f-6327-4ad4-bb94-9c90594bd6ef', 1, 'EGB', 1, true);
+INSERT IGNORE INTO CURSO (CRS_ID, CRS_NOM, CRS_TIPO, CRS_ORDEN, ESTADO) values ('6f8c9041-2172-4aee-9986-59a33355c91e', 2, 'EGB', 2, true);
+INSERT IGNORE INTO CURSO (CRS_ID, CRS_NOM, CRS_TIPO, CRS_ORDEN, ESTADO) values ('07a7bba2-5d49-4295-9791-eaacc8e766f7', 3, 'EGB', 3, true);
+INSERT IGNORE INTO CURSO (CRS_ID, CRS_NOM, CRS_TIPO, CRS_ORDEN, ESTADO) values ('caca5d0a-c840-4167-90ca-e6308b4420c8', 4, 'EGB', 4, true);
+INSERT IGNORE INTO CURSO (CRS_ID, CRS_NOM, CRS_TIPO, CRS_ORDEN, ESTADO) values ('ad75a414-b8f5-4427-bf6d-37079ec62322', 5, 'EGB', 5, true);
+INSERT IGNORE INTO CURSO (CRS_ID, CRS_NOM, CRS_TIPO, CRS_ORDEN, ESTADO) values ('9724d57d-591f-4d13-8a67-03de034972d5', 6, 'EGB', 6, true);
+INSERT IGNORE INTO CURSO (CRS_ID, CRS_NOM, CRS_TIPO, CRS_ORDEN, ESTADO) values ('0eaeb5b7-89ef-4564-adb2-386220c89038', 7, 'EGB', 7, true);
+INSERT IGNORE INTO CURSO (CRS_ID, CRS_NOM, CRS_TIPO, CRS_ORDEN, ESTADO) values ('a9a78b4c-77ef-44ad-97e3-68d7a7898584', 8, 'EGB', 8, true);
+INSERT IGNORE INTO CURSO (CRS_ID, CRS_NOM, CRS_TIPO, CRS_ORDEN, ESTADO) values ('e1092c38-2911-4627-b8d7-c5b9e96ad79b', 9, 'EGB', 9, true);
+INSERT IGNORE INTO CURSO (CRS_ID, CRS_NOM, CRS_TIPO, CRS_ORDEN, ESTADO) values ('4330dbc6-61cb-4699-b473-ab2f48b49218', 10, 'EGB', 10, true);
+INSERT IGNORE INTO CURSO (CRS_ID, CRS_NOM, CRS_TIPO, CRS_ORDEN, ESTADO) values ('76c274ef-abd3-458b-8f52-da637a2ef81a', 11, 'EGB', 11, true);
+INSERT IGNORE INTO CURSO (CRS_ID, CRS_NOM, CRS_TIPO, CRS_ORDEN, ESTADO) values ('d88d7b41-608b-4fe2-a78c-7e32dc7259e0', 12, 'EGB', 12, true);
+INSERT IGNORE INTO CURSO (CRS_ID, CRS_NOM, CRS_TIPO, CRS_ORDEN, ESTADO) values ('739c02ad-cf03-4a35-abd3-7306b1561274', 13, 'BGU', 13, true);
+INSERT IGNORE INTO CURSO (CRS_ID, CRS_NOM, CRS_TIPO, CRS_ORDEN, ESTADO) values ('f9c2b360-d8b9-48b0-a2e1-2adf5b562505', 14, 'BGU', 14, true);
+INSERT IGNORE INTO CURSO (CRS_ID, CRS_NOM, CRS_TIPO, CRS_ORDEN, ESTADO) values ('b59d39fe-94bb-475b-ac57-d72e1f649cd0', 15, 'BGU', 15, true);

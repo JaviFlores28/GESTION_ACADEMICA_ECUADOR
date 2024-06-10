@@ -1,21 +1,26 @@
-
 # SERVIDOR UEFBC
 
 ## COMANDOS PARA INICIALIZAR EL PROYECTO
-> **Nota:** solo en caso de un proyecto nuevo 
+
+> **Nota:** solo en caso de un proyecto nuevo
 
 1. Instale lo siguiente:
+
 ```shell
 npm init -y # crea el archivo inicial de package.json
 npm i typescript -D # soporte para typescript
-npx tsc --init # crea el archivo inicial de tsconfig.json 
+npx tsc --init # crea el archivo inicial de tsconfig.json
 npm install ts-node-dev -D # soporte para desarrollo en typescript
 ```
+
 2. Modifique tsconfig.json
+
 ```json
-"outDir": "./build", 
+"outDir": "./build",
 ```
-3. Modifique tambien para excluir los archivos create y test 
+
+3. Modifique tambien para excluir los archivos create y test
+
 ```json
 "compilerOptions": {
 },
@@ -24,24 +29,29 @@ npm install ts-node-dev -D # soporte para desarrollo en typescript
     "src/test.ts"
 ]
 ```
+
 4. Modifique package.js
-> **Nota:** create.ts o npm run generate no ejecutar en este momento, solo era para cambios iniciales de la base de datos
+   > **Nota:** create.ts o npm run generate no ejecutar en este momento, solo era para cambios iniciales de la base de datos
 
 ```js
- "scripts": {
+  "scripts": {
     "prestart": "tsc",
     "start": "node build/app.js",
     "generate": "ts-node-dev src/create.ts",
+    "database": "ts-node-dev src/database.ts",
     "dev": "ts-node-dev src/app.ts",
-    "testdev": "ts-node-dev src/test.ts"
+    "test": "ts-node-dev src/test.ts"
   },
-  ```
+```
+
 5. Instalaremos las dependencias de desarrollo
 
 ### DEPENDENCIAS DE DESARROLLO
+
 ```shell
-npm i dotenv  
-npm i mysql2
+npm i dotenv --save
+npm i --save mysql2
+npm i --save-dev @types/node
 npm i express
 npm i --save-dev @types/express
 npm i uuid
@@ -50,13 +60,18 @@ npm install crypto-js
 npm i --save-dev @types/crypto-js
 npm install cors
 npm i --save-dev @types/cors
-npm i --save-dev @types/node #recomendado
+npm i --save-dev --save-exact prettier
+
 ```
+
 ## COMANDOS PARA COMPILAR EL PROYECTO
 
 ```shell
 npm start # para produccion
 npm run dev # para desarrollo
-npm run testdev # para testeo en consola
+npm run generate # para generar archivos desde base de datos
+npm run test # para testeo desde consola en archivo test
+npm run database # para crear la base de datos
 
 ```
+ 

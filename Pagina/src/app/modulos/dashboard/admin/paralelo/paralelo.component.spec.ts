@@ -8,7 +8,7 @@ describe('ParaleloComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ParaleloComponent]
+      declarations: [ParaleloComponent],
     });
     fixture = TestBed.createComponent(ParaleloComponent);
     component = fixture.componentInstance;
